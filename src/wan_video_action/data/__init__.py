@@ -1,17 +1,29 @@
 from .operators import (
-    ApplyOperatorToDict,
+    RouteByKeyExtension,
+    ToAbsolutePathByKeyExtension,
     ResolvePromptEmbPath,
     LoadVideoChunk,
     LoadGIFChunk,
     ImageCropAndResize,
     ToVideoTensor,
+    LoadCobotAction,
+    create_video_operator,
+    JOINT_AND_EEF_NAMES,
+    JOINT_NAMES,
+    EEF_NAMES,
 )
 
 __all__ = [
-    "ApplyOperatorToDict",
+    "RouteByKeyExtension",
+    "ToAbsolutePathByKeyExtension",
     "ResolvePromptEmbPath",
     "LoadVideoChunk",
     "LoadGIFChunk",
     "ImageCropAndResize",
     "ToVideoTensor",
+    "LoadCobotAction",
+    "create_video_operator",
+    "JOINT_AND_EEF_NAMES",
+    "JOINT_NAMES",
+    "EEF_NAMES",
 ]
