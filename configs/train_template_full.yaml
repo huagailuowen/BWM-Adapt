@@ -84,7 +84,7 @@ model:
 # ============================================================================
 action:
   # [KEY] Action/state representation: joint/eef × abs/delta. (choices: "joint_abs", "eef_abs", "joint_delta", "eef_delta")
-  action_type: "joint_abs"
+  action_type: "eef_delta"
 
   # [OPTIONAL] Path to robot normalization stats (stat.json).
   action_stat_path: null
@@ -120,8 +120,11 @@ training:
   # [OPTIONAL] Max timestep boundary (for mixed models, e.g., Wan-AI/Wan2.2-I2V-A14B).
   max_timestep_boundary: 1.0
 
-  # [OPTIONAL] Min timestep boundary (for mixed models, e.g., Wan-AI/Wan2.2-I2V-A14B). 
+  # [OPTIONAL] Min timestep boundary (for mixed models, e.g., Wan-AI/Wan2.2-I2V-A14B).
   min_timestep_boundary: 0.0
+
+  # [TUNABLE] Batch size per GPU.
+  batch_size: 1
 
 # ============================================================================
 # Output Configuration
@@ -216,7 +219,7 @@ infer:
   chunk_infer: true
 
   # [OPTIONAL] Output video FPS.
-  fps: 30
+  fps: 24
 
   # [OPTIONAL] Disable evaluation metrics.
   enable_metrics: true
