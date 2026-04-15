@@ -1,32 +1,25 @@
 __version__ = "0.1.0"
 
 from .pipelines.wan_video_action import (
-    WanVideoActionPipeline,
+    build_wan_video_action_pipeline,
     WanVideoUnit_ActionEmbedder,
+    model_fn_wan_video_action,
 )
-from .models.wan_video_action_encoder import WanVideoActionEncoder
-from .data.operators import LoadCobotAction
+from .models import WanVideoActionEncoder
+from .data import LoadCobotAction
 from .parsers import (
-    WanModuleConfig,
-    TextMode,
-    ActionMode,
-    load_model_config,
-    add_module_config,
-    add_action_config,
-    add_infer_config,
+    merge_yaml_and_args,
+    prepare_runtime_config,
+    add_general_config,
 )
-
 
 __all__ = [
-    "WanVideoActionPipeline",
+    "build_wan_video_action_pipeline",
     "WanVideoActionEncoder",
     "WanVideoUnit_ActionEmbedder",
+    "model_fn_wan_video_action",
     "LoadCobotAction",
-    "WanModuleConfig",
-    "TextMode",
-    "ActionMode",
-    "load_model_config",
-    "add_module_config",
-    "add_action_config",
-    "add_infer_config",
+    "merge_yaml_and_args",
+    "prepare_runtime_config",
+    "add_general_config",
 ]
