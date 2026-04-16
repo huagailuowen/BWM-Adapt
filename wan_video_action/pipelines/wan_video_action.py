@@ -5,12 +5,44 @@ from typing import Optional, Union
 from diffsynth.pipelines.wan_video import WanVideoPipeline
 from diffsynth.diffusion.base_pipeline import PipelineUnit
 from diffsynth.core.device.npu_compatible_device import get_device_type
-from diffsynth.core import ModelConfig
+from diffsynth.core import ModelConfig, load_state_dict
 from diffsynth.core.vram.initialization import skip_model_initialization
 from diffsynth.models.wan_video_dit import sinusoidal_embedding_1d
 
-from ..parsers import WanModuleConfig
 from ..models.wan_video_action_encoder import WanVideoActionEncoder
+
+
+def load_checkpoint_weights(pipe, ckpt_path: str):
+    print(f"Loading training weights from checkpoint: {ckpt_path}")
+    state_dict = load_state_dict(ckpt_path, torch_dtype=pipe.torch_dtype, device="cpu")
+
+    states = {"dit": {}, "action_encoder": {}}
+    ignored_count = 0
+
+    for k, v in state_dict.items():
+        clean_k = k.removeprefix("pipe.")
+
+        if clean_k.startswith("action_encoder."):
+            states["action_encoder"][clean_k.removeprefix("action_encoder.")] = v
+        elif clean_k.startswith("dit."):
+            states["dit"][clean_k.removeprefix("dit.")] = v
+        elif k.startswith("pipe."):
+            ignored_count += 1
+        else:
+            raise KeyError(f"Unknown bare key detected: {k}")
+
+    for name, st in states.items():
+        if not st:
+            continue
+        module = getattr(pipe, name, None)
+        if module:
+            res = module.load_state_dict(st, strict=False, assign=(name == "action_encoder"))
+            print(f"  - Loaded {name} keys: {len(st)} (missing={len(res.missing_keys)}, unexpected={len(res.unexpected_keys)})")
+        else:
+            print(f"  - Warning: {name} weights found ({len(st)} keys), but pipeline.{name} is None")
+
+    if ignored_count:
+        print(f"  - Ignored {ignored_count} keys with unsupported `pipe.*` prefixes")
 
 
 def build_wan_video_action_pipeline(
@@ -22,12 +54,9 @@ def build_wan_video_action_pipeline(
     redirect_common_files: bool = True,
     use_usp: bool = False,
     vram_limit: float = None,
-    cfg: Optional[WanModuleConfig] = None,
+    args = None,
 ):
     
-    if cfg is None:
-        cfg = WanModuleConfig()
-
     pipe = WanVideoPipeline.from_pretrained(
         torch_dtype=torch_dtype,
         device=device,
@@ -39,27 +68,35 @@ def build_wan_video_action_pipeline(
         vram_limit=vram_limit
     )
 
-    pipe.cfg = cfg
+    pipe.args = args
     pipe.action_encoder = None
 
-    if cfg.action_enabled:
-        action_dim = cfg.action_dim
+    if args.action_mode != "none":
         dim = getattr(pipe.dit, "dim", 1536) if pipe.dit is not None else 1536
+        has_ckpt = getattr(args, "ckpt_path", None) is not None
 
-        with skip_model_initialization():
+        if has_ckpt:
+            with skip_model_initialization():
+                pipe.action_encoder = WanVideoActionEncoder(
+                    action_dim=args.action_dim,
+                    dim=dim,
+                    num_action_per_chunk=81 if args.action_mode == "adaln" else None,
+                )
+            load_checkpoint_weights(pipe, args.ckpt_path)
+        else:
             pipe.action_encoder = WanVideoActionEncoder(
-                action_dim=action_dim,
+                action_dim=args.action_dim,
                 dim=dim,
-                num_action_per_chunk=81 if cfg.action_mode.value == "adaln" else None,
+                num_action_per_chunk=81 if args.action_mode == "adaln" else None,
             )
 
         pipe.action_encoder = pipe.action_encoder.to(dtype=pipe.torch_dtype, device=pipe.device)
         pipe.action_encoder.eval()
 
-    if not cfg.text_enabled:
+    if args.text_mode == "none":
         pipe.units = [u for u in pipe.units if u.__class__.__name__ != "WanVideoUnit_PromptEmbedder"]
         
-    if cfg.action_enabled:
+    if args.action_mode != "none":
         pipe.units.append(WanVideoUnit_ActionEmbedder())
 
     pipe.model_fn = model_fn_wan_video_action
@@ -81,8 +118,7 @@ class WanVideoUnit_ActionEmbedder(PipelineUnit):
         pipe.load_models_to_device(self.onload_model_names)
         action = torch.as_tensor(action, device=pipe.device, dtype=pipe.torch_dtype)
 
-        cfg = pipe.cfg
-        if cfg.action_mode.value == "noise":
+        if pipe.args.action_mode == "noise":
             length = (num_frames - 1) // 4 + 1
             action = torch.concat(
                 [torch.repeat_interleave(action[:, 0:1], repeats=4, dim=1), action[:, 1:]],
@@ -90,7 +126,7 @@ class WanVideoUnit_ActionEmbedder(PipelineUnit):
             )
             action = action.contiguous().view(action.shape[0], length, 4, action.shape[-1]).mean(dim=2)
 
-        if cfg.action_mode.value == "adaln":
+        if pipe.args.action_mode == "adaln":
             action = rearrange(action, "b f d -> b (f d)").contiguous()
 
         action_emb = pipe.action_encoder(action)

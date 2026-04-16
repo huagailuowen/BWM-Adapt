@@ -1,7 +1,8 @@
 import torch, os, argparse, accelerate, warnings, json
-from diffsynth.core import UnifiedDataset, load_state_dict
+from diffsynth.core import UnifiedDataset
 from wan_video_action.data.operators import LoadCobotAction, ResolvePromptEmbPath, create_video_operator
-from diffsynth.pipelines.wan_video import WanVideoPipeline, ModelConfig
+from diffsynth.core import ModelConfig
+from wan_video_action.pipelines.wan_video_action import build_wan_video_action_pipeline
 from diffsynth.diffusion import *
 from wan_video_action.parsers import merge_yaml_and_args, prepare_runtime_config, add_general_config
 from wan_video_action.utils import set_global_seed
@@ -29,6 +30,7 @@ class WanTrainingModule(DiffusionTrainingModule):
         max_timestep_boundary=1.0,
         min_timestep_boundary=0.0,
         num_history_frames=1,
+        args=None,
     ):
         super().__init__()
         # Warning
@@ -39,7 +41,7 @@ class WanTrainingModule(DiffusionTrainingModule):
         # Load models
         model_configs = self.parse_model_configs(model_paths, model_id_with_origin_paths, fp8_models=fp8_models, offload_models=offload_models, device=device)
         tokenizer_config = ModelConfig(model_id="Wan-AI/Wan2.1-T2V-1.3B", origin_file_pattern="google/umt5-xxl/") if enable_text and tokenizer_path is None else (ModelConfig(tokenizer_path) if enable_text and tokenizer_path else None)
-        self.pipe = WanVideoPipeline.from_pretrained(torch_dtype=torch.bfloat16, device=device, model_configs=model_configs, tokenizer_config=tokenizer_config)
+        self.pipe = build_wan_video_action_pipeline(torch_dtype=torch.bfloat16, device=device, model_configs=model_configs, tokenizer_config=tokenizer_config, args=args)
         self.pipe = self.split_pipeline_units(task, self.pipe, trainable_models, lora_base_model)
 
         # Training mode
@@ -50,8 +52,6 @@ class WanTrainingModule(DiffusionTrainingModule):
             task=task,
         )
 
-        if ckpt_path is not None:
-            self.load_checkpoint_weights(ckpt_path)
         if not enable_text:
             self.freeze_text_modules()
 
@@ -72,38 +72,6 @@ class WanTrainingModule(DiffusionTrainingModule):
         self.max_timestep_boundary = max_timestep_boundary
         self.min_timestep_boundary = min_timestep_boundary
         self.num_history_frames = num_history_frames
-
-    def load_checkpoint_weights(self, ckpt_path: str):
-        print(f"Loading training weights from checkpoint: {ckpt_path}")
-        state_dict = load_state_dict(ckpt_path, torch_dtype=self.pipe.torch_dtype, device="cpu")
-        
-        states = {"dit": {}, "action_encoder": {}}
-        ignored_count = 0
-        
-        for k, v in state_dict.items():
-            clean_k = k.removeprefix("pipe.") 
-            
-            if clean_k.startswith("action_encoder."):
-                states["action_encoder"][clean_k.removeprefix("action_encoder.")] = v
-            elif clean_k.startswith("dit."):
-                states["dit"][clean_k.removeprefix("dit.")] = v
-            elif k.startswith("pipe."): 
-                ignored_count += 1
-            else:
-                raise KeyError(f"Unknown bare key detected: {k}")
-
-        for name, st in states.items():
-            if not st: continue
-            module = getattr(self.pipe, name, None)
-            
-            if module:
-                res = module.load_state_dict(st, strict=False, assign=(name == "action_encoder"))
-                print(f"  - Loaded {name} keys: {len(st)} (missing={len(res.missing_keys)}, unexpected={len(res.unexpected_keys)})")
-            else:
-                print(f"  - Warning: {name} weights found ({len(st)} keys), but pipeline.{name} is None")
-
-        if ignored_count:
-            print(f"  - Ignored {ignored_count} keys with unsupported `pipe.*` prefixes")
 
     def freeze_text_modules(self):  
         self.pipe.dit.text_embedding.requires_grad_(False)
@@ -136,7 +104,7 @@ class WanTrainingModule(DiffusionTrainingModule):
             "prompt_emb": data.get("negative_prompt_emb"),
         }
         inputs_shared = {
-            "input_video": video,
+            "input_video": data["video"],
             "action": data.get("action"),
             "height": data["video"][0].size[1],
             "width": data["video"][0].size[0],
@@ -189,7 +157,7 @@ if __name__ == "__main__":
     )
 
     special_operator_map = {}
-    if "text" in set(runtime_config["module_bases"]) and "prompt_emb" in runtime_config["data_file_keys"]:
+    if runtime_config["text_enabled"] and "prompt_emb" in runtime_config["data_file_keys"]:
         special_operator_map["prompt_emb"] = ResolvePromptEmbPath(base_path=args.dataset_base_path)
 
     with open(args.action_stat_path, "r") as f:
@@ -248,6 +216,7 @@ if __name__ == "__main__":
         max_timestep_boundary=args.max_timestep_boundary,
         min_timestep_boundary=args.min_timestep_boundary,
         num_history_frames=args.num_history_frames,
+        args=args,
     )
 
     model_logger = ModelLogger(
