@@ -185,11 +185,13 @@ def add_config_support(parser: argparse.ArgumentParser):
 def add_general_config(parser: argparse.ArgumentParser):
     parser = add_config_support(parser)
     parser = add_dataset_base_config(parser)
+    parser = add_video_size_config(parser)
     parser = add_model_config(parser)
+    parser = add_action_config(parser)
     parser = add_training_config(parser)
     parser = add_output_config(parser)
     parser = add_lora_config(parser)
     parser = add_gradient_config(parser)
     parser = add_tracking_config(parser)
-    parser = add_action_config(parser)
+    parser = add_infer_config(parser)
     return parser
