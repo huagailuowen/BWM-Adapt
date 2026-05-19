@@ -12,6 +12,7 @@ from .operators import (
     JOINT_NAMES,
     EEF_NAMES,
 )
+from .unified_dataset import RoboTwinUnifiedDataset
 
 __all__ = [
     "RouteByKeyExtension",
@@ -26,4 +27,5 @@ __all__ = [
     "JOINT_AND_EEF_NAMES",
     "JOINT_NAMES",
     "EEF_NAMES",
+    "RoboTwinUnifiedDataset",
 ]

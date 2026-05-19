@@ -177,8 +177,8 @@ if __name__ == "__main__":
             height_division_factor=16,
             width_division_factor=16,
             num_frames=args.num_frames,
-            time_division_factor=4,
-            time_division_remainder=1,
+            time_division_factor=args.time_division_factor,
+            time_division_remainder=args.time_division_remainder,
             resize_mode=args.resize_mode,
         ),
         special_operator_map=special_operator_map,
@@ -189,7 +189,9 @@ if __name__ == "__main__":
             base_path=args.dataset_base_path,
             action_type=args.action_type,
             stat=stat,
-            num_frames=args.num_frames
+            num_frames=args.num_frames,
+            time_division_factor=args.time_division_factor,
+            time_division_remainder=args.time_division_remainder,
         )
 
     model = WanTrainingModule(

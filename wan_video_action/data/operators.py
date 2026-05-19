@@ -15,6 +15,7 @@ from diffsynth.core.data.operators import (
     SequencialProcess,
     ToList,
 )
+from wan_video_action.utils import align_num_frames, resolve_path
 
 """
 Class: DataProcessingOperator
@@ -56,7 +57,7 @@ class ToAbsolutePathByKeyExtension(DataProcessingOperator):
         
     def __call__(self, data):
         path = data.get(self.key, "") if isinstance(data, dict) else data
-        return os.path.join(self.base_path, path)
+        return resolve_path(self.base_path, path)
 
 
 class ResolvePromptEmbPath(DataProcessingOperator):
@@ -64,9 +65,7 @@ class ResolvePromptEmbPath(DataProcessingOperator):
         self.base_path = base_path
 
     def __call__(self, data: str):
-        if os.path.isabs(data):
-            return data
-        return os.path.join(self.base_path, data)
+        return resolve_path(self.base_path, data)
 
 
 class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
@@ -84,8 +83,7 @@ class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
         else:
             raise TypeError(f"Expected 'data' to be a dict, but received {type(data).__name__}.")
             
-        if not os.path.isabs(path):
-            path = os.path.join(self.base_path, path)
+        path = resolve_path(self.base_path, path)
             
         reader = self.get_reader(path)
         raw_frame_rate = reader.get_meta_data()['fps']
@@ -99,9 +97,11 @@ class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
         available_frames = int(clip_frames * self.frame_rate / raw_frame_rate) if self.fix_frame_rate else clip_frames
         num_frames = self.num_frames
         if available_frames < num_frames:
-            num_frames = available_frames
-            while num_frames > 1 and num_frames % self.time_division_factor != self.time_division_remainder:
-                num_frames -= 1
+            num_frames = align_num_frames(
+                available_frames,
+                time_division_factor=self.time_division_factor,
+                time_division_remainder=self.time_division_remainder,
+            )
         
         frames = []
         for frame_id in range(num_frames):
@@ -126,9 +126,11 @@ class LoadGIFChunk(DataProcessingOperator):
     def get_num_frames(self, clip_frames):
         num_frames = self.num_frames
         if clip_frames < num_frames:
-            num_frames = clip_frames
-            while num_frames > 1 and num_frames % self.time_division_factor != self.time_division_remainder:
-                num_frames -= 1
+            num_frames = align_num_frames(
+                clip_frames,
+                time_division_factor=self.time_division_factor,
+                time_division_remainder=self.time_division_remainder,
+            )
         return num_frames
         
     def __call__(self, data, start_frame=None, end_frame=None):
@@ -139,8 +141,7 @@ class LoadGIFChunk(DataProcessingOperator):
         else:
             raise TypeError(f"Expected 'data' to be a dict, but received {type(data).__name__}.")
             
-        if not os.path.isabs(path):
-            path = os.path.join(self.base_path, path)
+        path = resolve_path(self.base_path, path)
             
         images = iio.imread(path, mode="RGB")
         total_raw_frames = len(images)
@@ -341,14 +342,16 @@ class LoadCobotAction(DataProcessingOperator):
     def __init__(
         self,
         base_path="",
-        action_type="joint_abs",
+        action_type="eef_abs",
         stat=None,
         use_percentile_stats=True,
         num_frames=81,
+        align_num_frames=True,
         time_division_factor=4,
         time_division_remainder=1,
     ):
         self.num_frames = num_frames
+        self.align_num_frames = bool(align_num_frames)
         self.time_division_factor = time_division_factor
         self.time_division_remainder = time_division_remainder
         """
@@ -357,25 +360,49 @@ class LoadCobotAction(DataProcessingOperator):
             joint_delta (原 action_joint：关节相对动作/增量)
             eef_delta (原 action_pose：末端相对动作/增量)
         """
-        if action_type not in ("joint_abs", "eef_abs", "joint_delta", "eef_delta"):
+        # Compatibility aliases for older script conventions.
+        action_type_alias = {
+            "joint_abs": "state_joint",
+            "eef_abs": "state_pose",
+            "joint_delta": "action_joint",
+            "eef_delta": "action_pose",
+        }
+        action_type = action_type_alias.get(action_type, action_type)
+
+        if action_type not in ("state_joint", "state_pose", "action_joint", "action_pose"):
             raise ValueError(f"Unsupported action type: {action_type}")
         self.base_path = base_path
         self.action_type = action_type
         self.stat = stat or {}
         self.use_percentile_stats = use_percentile_stats
-        # TODO: rename "use_state" to "use_absolute"
-        self.use_absolute = action_type.endswith("_abs")
-        self.use_joint = action_type.startswith("joint_")
+        # `state_*` means read observation.state and `action_*` means read action.
+        self.use_state = action_type.startswith("state_")
+        self.use_joint = action_type.endswith("_joint")
         name_to_idx = {name: idx for idx, name in enumerate(JOINT_AND_EEF_NAMES)}
         self.indices = [name_to_idx[name] for name in (JOINT_NAMES if self.use_joint else EEF_NAMES)]
         self._stat_min = None
         self._stat_max = None
-        if self.stat and action_type in self.stat:
-            entry = self.stat[action_type]
+
+        entry = None
+        if isinstance(self.stat, dict):
+            if action_type in self.stat and isinstance(self.stat[action_type], dict):
+                entry = self.stat[action_type]
+            elif all(k in self.stat for k in ("min", "max")):
+                # Backward-compat mode: accept direct per-type dict payload.
+                entry = self.stat
+
+        if entry is not None:
             if self.use_percentile_stats:
-                # Filter out abnormal sensor spikes 
-                self._stat_min = np.asarray(entry.get("p01", []), dtype=np.float32)
-                self._stat_max = np.asarray(entry.get("p99", []), dtype=np.float32)
+                # Prefer percentile stats if available; fallback to min/max for datasets
+                # that do not provide p01/p99 (e.g. current RoboTwin export).
+                p01 = entry.get("p01")
+                p99 = entry.get("p99")
+                if p01 is not None and p99 is not None:
+                    self._stat_min = np.asarray(p01, dtype=np.float32)
+                    self._stat_max = np.asarray(p99, dtype=np.float32)
+                elif "min" in entry and "max" in entry:
+                    self._stat_min = np.asarray(entry.get("min", []), dtype=np.float32)
+                    self._stat_max = np.asarray(entry.get("max", []), dtype=np.float32)
             else:
                 self._stat_min = np.asarray(entry.get("min", []), dtype=np.float32)
                 self._stat_max = np.asarray(entry.get("max", []), dtype=np.float32)
@@ -393,10 +420,7 @@ class LoadCobotAction(DataProcessingOperator):
         if not parquet_rel:
             raise KeyError("Missing parquet path in metadata 'data' field.")
         
-        if os.path.isabs(parquet_rel):
-            parquet_path = parquet_rel
-        else:
-            parquet_path = os.path.join(self.base_path, parquet_rel)
+        parquet_path = resolve_path(self.base_path, parquet_rel)
 
         start_frame = int(start_frame)
         end_frame = int(end_frame)
@@ -432,11 +456,17 @@ class LoadCobotAction(DataProcessingOperator):
         return np.asarray(data[start:end], dtype=np.float32)
 
     def get_num_frames(self, total_frames):
+        if self.num_frames is None:
+            return int(total_frames)
         num_frames = int(self.num_frames)
         if int(total_frames) < num_frames:
             num_frames = int(total_frames)
-            while num_frames > 1 and num_frames % self.time_division_factor != self.time_division_remainder:
-                num_frames -= 1
+            if self.align_num_frames:
+                num_frames = align_num_frames(
+                    num_frames,
+                    time_division_factor=self.time_division_factor,
+                    time_division_remainder=self.time_division_remainder,
+                )
         return num_frames
 
     def __call__(self, data: str, start_frame=None, end_frame=None):
@@ -444,7 +474,7 @@ class LoadCobotAction(DataProcessingOperator):
             data, start_frame, end_frame
         )
         num_frames = self.get_num_frames(end_frame - start_frame + 1)
-        column = "observation.state" if self.use_absolute else "action"
+        column = "observation.state" if self.use_state else "action"
         arr = self._read_slice(parquet_path, column, start_frame, num_frames)
         if arr.ndim != 2:
             raise ValueError(f"Unexpected action shape {arr.shape} in {parquet_path}")

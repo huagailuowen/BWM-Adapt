@@ -1,0 +1,46 @@
+# RoboTwin Wan2.2 TI2V inference profile.
+# This file stores public, reproducible inference parameters only.
+# Keep machine-local paths in scripts/local.sh.
+
+dataset:
+  dataset_base_path: ""
+  dataset_metadata_path: null
+
+video:
+  height: 672
+  width: 896
+  max_pixels: 16777216
+  num_frames: 57
+  num_history_frames: 9
+  time_division_factor: 4
+  time_division_remainder: 1
+  resize_mode: "crop"
+  spatial_division_factor: 32
+
+model:
+  model_paths: ""
+  model_config_path: "configs/model/wan2_2_ti2v_5b.yaml"
+  text_mode: "none"
+  action_mode: "adaln"
+
+action:
+  # Code-facing alias. LoadCobotAction maps eef_abs to dataset key state_pose.
+  action_type: "eef_abs"
+  action_stat_path: null
+  action_dim: 14
+
+training:
+  seed: 42
+  mixed_precision: "bf16"
+
+output:
+  ckpt_path: null
+  output_path: "outputs/robotwin_infer"
+
+infer:
+  cfg_scale: 1.0
+  num_inference_steps: 50
+  fps: 24
+  quality: 5
+  start_index: 0
+  max_samples: 0

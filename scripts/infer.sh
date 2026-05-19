@@ -1,64 +1,35 @@
 #!/bin/bash
 set -euo pipefail
 
-# ===========================================
-# Environment Configuration (Machine-specific)
-# ===========================================
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+LOCAL_CONFIG="${LOCAL_CONFIG:-${SCRIPT_DIR}/local.sh}"
 
-export CUDA_VISIBLE_DEVICES="0"
-
-MODEL_DIR="/path/to/wan2.1/Wan2.1-Fun-V1.1-1.3B-InP"
-DATASET_DIR="/path/to/dataset"
-
-TAG="exp_001"
-EPOCH=9
-
-# ===========================================
-# Config Selection (Experiment-specific)
-# ===========================================
-
-CONFIG_FILE="configs/infer_noise_base.yaml"
-
-# Checkpoint path (derived from TAG and EPOCH by default)
-CKPT_OVERRIDE=""  # Leave empty to use default: Ckpt/${TAG}/epoch-${EPOCH}.safetensors
-
-# Optional: metrics, chunk inference
-ENABLE_METRICS=1  # 1=enable, 0=disable
-CHUNK_INFER=0     # 1=enable, 0=disable
-
-# ===========================================
-# Launch Inference
-# ===========================================
-
-# Determine checkpoint path
-if [ -n "${CKPT_OVERRIDE}" ]; then
-  CKPT_PATH="${CKPT_OVERRIDE}"
-else
-  CKPT_PATH="Ckpt/${TAG}/epoch-${EPOCH}/epoch-${EPOCH}.safetensors"
+if [[ -f "${LOCAL_CONFIG}" ]]; then
+  # shellcheck source=/dev/null
+  source "${LOCAL_CONFIG}"
 fi
 
-echo "Starting inference..."
-echo "  Config: ${CONFIG_FILE}"
-echo "  Model: ${MODEL_DIR}"
-echo "  Dataset: ${DATASET_DIR}"
-echo "  Checkpoint: ${CKPT_PATH}"
+cd "${REPO_ROOT}"
 
-# Build command
-CMD="python scripts/infer.py \
-  --config ${CONFIG_FILE} \
-  --model_paths ${MODEL_DIR} \
-  --dataset_base_path ${DATASET_DIR} \
-  --ckpt_path ${CKPT_PATH}"
+export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 
-# Add optional flags
-if [ "${ENABLE_METRICS}" -eq 1 ]; then
-  CMD="${CMD} --enable_metrics"
-fi
+CONFIG_PATH="${CONFIG_PATH:-configs/infer/robotwin_ti2v_720p.yaml}"
+MODEL_PATH="${MODEL_PATH:-/path/to/Wan2.2-TI2V-5B}"
+CKPT_PATH="${CKPT_PATH:-ckpt/5_15_chunk_57_720p_2k_200ood/step-12000/step-12000.safetensors}"
+DATASET_BASE_PATH="${DATASET_BASE_PATH:-/path/to/RoboTwin2.0_lerobot}"
+METADATA_PATH="${METADATA_PATH:-/path/to/episodes_val_720p_test0.jsonl}"
+ACTION_STAT_PATH="${ACTION_STAT_PATH:-/path/to/RoboTwin2.0_lerobot/stat.json}"
+OUTPUT_DIR="${OUTPUT_DIR:-outputs/robotwin_infer}"
+MAX_SAMPLES="${MAX_SAMPLES:-1}"
+PYTHON_BIN="${PYTHON_BIN:-python}"
 
-if [ "${CHUNK_INFER}" -eq 1 ]; then
-  CMD="${CMD} --chunk_infer"
-fi
-
-echo "Command: ${CMD}"
-echo ""
-eval "${CMD}"
+"${PYTHON_BIN}" scripts/infer.py \
+  --config "${CONFIG_PATH}" \
+  --model_path "${MODEL_PATH}" \
+  --ckpt_path "${CKPT_PATH}" \
+  --dataset_base_path "${DATASET_BASE_PATH}" \
+  --metadata_path "${METADATA_PATH}" \
+  --action_stat_path "${ACTION_STAT_PATH}" \
+  --output_path "${OUTPUT_DIR}" \
+  --max_samples "${MAX_SAMPLES}"
