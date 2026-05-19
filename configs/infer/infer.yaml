@@ -35,7 +35,7 @@ training:
 
 output:
   ckpt_path: null
-  output_path: "outputs/robotwin_infer"
+  output_path: "outputs/inference"
 
 infer:
   cfg_scale: 1.0
