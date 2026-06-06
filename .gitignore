@@ -23,6 +23,8 @@ wandb/
 *.png
 *.jpg
 !assets/**/*.mp4
+!assets/images/
+!assets/images/**
 
 # IDE
 .vscode/

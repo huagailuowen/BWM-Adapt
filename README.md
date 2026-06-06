@@ -13,8 +13,39 @@
 
 ## 🗞️ News
 
+- **[2026-05]** 🏆 **Top results on WorldArena Leaderboard!** BLM ranks 1st among open-source models on Track 1 and Track 2 Data Engine, while BWM-fast ranks 2nd overall on Track 1.
 - **[2026-05]** 🚀 **Inference code released!** Generate action-conditioned robot manipulation videos with BWM. See [🛠️ Usage](#️-usage).
 - **[2026-05]** 🎉 **Model definition released!** The BWM architecture and core model components are now available.
+
+## 🏆 Competition Results
+
+### **CVPR 2026 WorldArena Challenge**
+
+- **BLM**: 🥇 **1st Place** among open-source models on **Track 1** and **Track 2 Data Engine**.
+- **BWM-fast**: 🥈 **2nd Place** on the overall **Track 1** leaderboard.
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="assets/images/track-1-open-source.png" alt="Track 1 open-source leaderboard" width="420"><br>
+      <sub>Track 1 open-source leaderboard</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="assets/images/track-2-DE-open-source.png" alt="Track 2 Data Engine open-source leaderboard" width="420"><br>
+      <sub>Track 2 Data Engine open-source leaderboard</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="assets/images/track-1-total.png" alt="Track 1 overall leaderboard" width="420"><br>
+      <sub>Track 1 overall leaderboard</sub>
+    </td>
+  </tr>
+</table>
+
+Leaderboard: https://huggingface.co/spaces/WorldArena/WorldArena
 
 ## Table of Contents
 - [✅ TODO](#-todo)
@@ -31,7 +62,7 @@
 
 - [x] Release inference code
 - [x] Release model definition
-- [ ] Release model weights
+- [x] Release model weights
 - [ ] Release training code
 - [ ] Release technical report
 
@@ -238,16 +269,5 @@ We also acknowledge the following engineering contributions:
 ## 📜 Citing
 
 If you find **BWM** is useful in your research or applications, please consider giving us a **star** 🌟.
-
-<!-- If you find **ABot-PhysWorld** is useful in your research or applications, please consider giving us a **star** 🌟 and **citing** it by the following BibTeX entry:
-
-```
-@article{chen2026abotphysworld,
-  title={ABot-PhysWorld: Interactive World Foundation Model for Robotic Manipulation with Physics Alignment},
-  author={Yuzhi Chen, Ronghan Chen, Dongjie Huo, Yandan Yang, Dekang Qi, Haoyun Liu, Tong Lin, Shuang Zeng, Junjin Xiao, Xinyuan Chang, Feng Xiong, Xing Wei, Zhiheng Ma, Mu Xu},
-  journal={arXiv preprint arXiv:2603.23376},
-  year={2026}
-}
-``` -->
 
 ---
