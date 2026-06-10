@@ -54,6 +54,7 @@ Leaderboard: https://huggingface.co/spaces/WorldArena/WorldArena
 - [🛠️ Usage](#️-usage)
 - [🏋️ Training](#️-training)
 - [🙏 Acknowledgements](#-acknowledgements)
+- [📧 Contact](#-contact)
 - [📜 Citing](#-Citing)
 
 ---
@@ -261,10 +262,42 @@ We also acknowledge the following engineering contributions:
 
 - Wentao Tan: basic architecture design · [Email](mailto:tan.wt.lucky@gmail.com) · [GitHub](https://github.com/FutureTwT)
 - Zengrong Lin: core code implementation · [Email](mailto:zengronglin@tongji.edu.cn) · [GitHub](https://github.com/zzezze)
-- Yang Sun: code refactoring and software maintainability · [Email](mailto:1006954899@qq.com) · [GitHub](https://github.com/DandelionWow)
+- Yang Sun: code refactoring and software maintainability · [Email](mailto:young7869264s@gmail.com) · [GitHub](https://github.com/DandelionWow)
+
+We further thank all project contributors for their valuable discussions, support for the paper experiments, and participation in the WorldArena challenge.
+
+- Supervision: Heng Tao Shen
+- Principal Investigator: Lei Zhu
+- Student Project Leadership: Wentao Tan, Tianshi Wang
+- WorldArena Challenge:
+  - Strategy Design: Wentao Tan, Bowen Wang
+  - Inference-Time Scaling: Tianshi Wang, Chenming Li
+  - Data Pipeline: Bowen Wang, Enci Xie, Wentao Tan, Chenming Li, Yang Sun, Yipeng Chen, Xuebin Fang, Zequn Wang
+  - Metric Analysis: Wentao Tan, Enci Xie, Chenming Li, Tianshi Wang
+  - Closed-Loop Rollout: Zequn Wang, Zhe Li, Heng Zhi, Zengrong Lin
+- Model Architecture:
+  - Innovation: Wentao Tan, Zengrong Lin, Enci Xie, Baixu Ji
+  - Model Training: Zengrong Lin, Yang Sun, Zhe Li
+- Post Training: Yang Sun, Zengrong Lin, Wentao Tan
+- Baselines: Zequn Wang, Heng Zhi, Yipeng Chen, Chenyu Liu
+- VLAs Support:
+  - Real-World: Heng Zhi
+  - Simulation: Heng Zhi, Baixu Ji
+- Infrastructure:
+  - Distributed Evaluation: Wenhao Liu
+  - Real-World Setup: Zhe Li
+- Discussion Support: Fengling Li, Pengfei Zhang, Lanyun Zhu, Ying Cheng, Jingkuan Song, Xing Xu, Yunfan Ren, Qi Zhang
+- Other Contributions: Wenjie Yang, Hao Xue, Chen Xu
 
 ---
 
+## 📧 Contact
+
+Contributors are listed in alphabetical order by English name.
+
+[Baixu Ji](mailto:baixuji@tongji.edu.cn), [Bowen Wang](mailto:wbw1090809192@gmail.com), [Chen Xu](mailto:1187092474@qq.com), [Chenming Li](mailto:2252661@tongji.edu.cn), [Chenyu Liu](mailto:2431993@tongji.edu.cn), [Enci Xie](mailto:elect@tongji.edu.cn), [Fengling Li](mailto:fenglingli2023@gmail.com), [Hao Xue](mailto:2534205@tongji.edu.cn), [Heng Tao Shen](mailto:shenhengtao@tongji.edu.cn), [Heng Zhi](mailto:2431992@tongji.edu.cn), [Jingkuan Song](mailto:jingkuan.song@gmail.com), [Lanyun Zhu](mailto:zhulanyun1999@gmail.com), [Lei Zhu](mailto:leizhu0608@gmail.com), [Pengfei Zhang](mailto:mima.zpf@gmail.com), [Qi Zhang](mailto:zhangqi_cs@tongji.edu.cn), [Tianshi Wang](mailto:tswang0116@163.com), [Wenhao Liu](mailto:liuwwhh594@gmail.com), [Wenjie Yang](mailto:blankyang@tongji.edu.cn), [Wentao Tan](mailto:tan.wt.lucky@gmail.com), [Xing Xu](mailto:interxuxing@hotmail.com), [Xuebin Fang](mailto:xuebinfang@163.com), [Yang Sun](mailto:young7869264s@gmail.com), [Ying Cheng](mailto:yingcheng@tongji.edu.cn), [Yipeng Chen](mailto:2431994@tongji.edu.cn), [Yunfan Ren](mailto:yunfan@tongji.edu.cn), [Zengrong Lin](mailto:zengronglin@tongji.edu.cn), [Zequn Wang](mailto:wangzequn369@gmail.com), [Zhe Li](mailto:zheli25@tongji.edu.cn)
+
+---
 
 ## 📜 Citing
 
