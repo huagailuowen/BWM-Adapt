@@ -266,28 +266,28 @@ We also acknowledge the following engineering contributions:
 
 We further thank all project contributors for their valuable discussions, support for the paper experiments, and participation in the WorldArena challenge.
 
-- Supervision: Heng Tao Shen
-- Principal Investigator: Lei Zhu
-- Student Project Leadership: Wentao Tan, Tianshi Wang
-- WorldArena Challenge:
-  - Strategy Design: Wentao Tan, Bowen Wang
-  - Inference-Time Scaling: Tianshi Wang, Chenming Li
-  - Data Pipeline: Bowen Wang, Enci Xie, Wentao Tan, Chenming Li, Yang Sun, Yipeng Chen, Xuebin Fang, Zequn Wang
-  - Metric Analysis: Wentao Tan, Enci Xie, Chenming Li, Tianshi Wang
-  - Closed-Loop Rollout: Zequn Wang, Zhe Li, Heng Zhi, Zengrong Lin
-- Model Architecture:
-  - Innovation: Wentao Tan, Zengrong Lin, Enci Xie, Baixu Ji
-  - Model Training: Zengrong Lin, Yang Sun, Zhe Li
-- Post Training: Yang Sun, Zengrong Lin, Wentao Tan
-- Baselines: Zequn Wang, Heng Zhi, Yipeng Chen, Chenyu Liu
-- VLAs Support:
-  - Real-World: Heng Zhi
-  - Simulation: Heng Zhi, Baixu Ji
-- Infrastructure:
-  - Distributed Evaluation: Wenhao Liu
-  - Real-World Setup: Zhe Li
-- Discussion Support: Fengling Li, Pengfei Zhang, Lanyun Zhu, Ying Cheng, Jingkuan Song, Xing Xu, Yunfan Ren, Qi Zhang
-- Other Contributions: Wenjie Yang, Hao Xue, Chen Xu
+- **Supervision**: Heng Tao Shen
+- **Principal Investigator**: Lei Zhu
+- **Student Project Leadership**: Wentao Tan, Tianshi Wang
+- **WorldArena Challenge**:
+  - **Strategy Design**: Wentao Tan, Bowen Wang
+  - **Inference-Time Scaling**: Tianshi Wang, Chenming Li
+  - **Data Pipeline**: Bowen Wang, Enci Xie, Wentao Tan, Chenming Li, Yang Sun, Yipeng Chen, Xuebin Fang, Zequn Wang
+  - **Metric Analysis**: Wentao Tan, Enci Xie, Chenming Li, Tianshi Wang
+  - **Closed-Loop Rollout**: Zequn Wang, Zhe Li, Heng Zhi, Zengrong Lin
+- **Model Architecture**:
+  - **Innovation**: Wentao Tan, Zengrong Lin, Enci Xie, Baixu Ji
+  - **Model Training**: Zengrong Lin, Yang Sun, Zhe Li
+- **Post Training**: Yang Sun, Zengrong Lin, Wentao Tan
+- **Baselines**: Zequn Wang, Heng Zhi, Yipeng Chen, Chenyu Liu
+- **VLAs Support**:
+  - **Real-World**: Heng Zhi
+  - **Simulation**: Heng Zhi, Baixu Ji
+- **Infrastructure**:
+  - **Distributed Evaluation**: Wenhao Liu
+  - **Real-World Setup**: Zhe Li
+- **Discussion Support**: Fengling Li, Pengfei Zhang, Lanyun Zhu, Ying Cheng, Jingkuan Song, Xing Xu, Yunfan Ren, Qi Zhang
+- **Other Contributions**: Wenjie Yang, Hao Xue, Chen Xu
 
 ---
 
