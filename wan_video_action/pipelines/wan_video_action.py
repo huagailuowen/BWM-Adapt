@@ -10,6 +10,7 @@ from diffsynth.core import ModelConfig, load_state_dict
 from diffsynth.models.wan_video_dit import sinusoidal_embedding_1d
 
 from ..models.wan_video_action_encoder import WanVideoActionEncoder
+from ..models.physical_context import PhysicalContextEncoder, PhysicalResidualAdapterBank
 from ..models.wan_video_vae import apply_wan_vae_compat
 
 
@@ -69,6 +70,38 @@ def _restore_history_condition_latents(
     inputs_shared["latents"][:, :, :history_t] = conditioning_latents[:, :, :history_t]
 
 
+def _resolve_arg(args, name: str, default):
+    if args is None:
+        return default
+    return getattr(args, name, default)
+
+
+def _append_context_tokens(context: Optional[torch.Tensor], tokens: Optional[torch.Tensor]) -> Optional[torch.Tensor]:
+    if tokens is None:
+        return context
+    if context is None:
+        return tokens
+    return torch.cat([context, tokens], dim=1)
+
+
+def _parse_adapter_layers(layers: Optional[str], num_layers: int) -> Optional[list[int]]:
+    if layers is None:
+        return None
+    layers = str(layers).strip().lower()
+    if layers in {"", "all"}:
+        return None
+    if layers.startswith("uniform:"):
+        count = int(layers.split(":", 1)[1])
+        if count <= 0:
+            raise ValueError(f"uniform adapter layer count must be positive, got {count}.")
+        if count >= num_layers:
+            return list(range(num_layers))
+        if count == 1:
+            return [num_layers // 2]
+        return sorted(set(round(i * (num_layers - 1) / (count - 1)) for i in range(count)))
+    return [int(part.strip()) for part in layers.split(",") if part.strip()]
+
+
 def _build_wan2_action_units(pipe: WanVideoPipeline):
     selected = [
         unit for unit in pipe.units
@@ -80,6 +113,8 @@ def _build_wan2_action_units(pipe: WanVideoPipeline):
     selected.append(WanVideoUnit_InputVideoEmbedder())
     selected.append(WanVideoUnit_ImageEmbedderFused())
     selected.append(WanVideoUnit_ActionEmbedder())
+    if getattr(pipe, "physical_context_encoder", None) is not None:
+        selected.append(WanVideoUnit_PhysicalContextEmbedder())
     return selected
 
 
@@ -96,6 +131,7 @@ def _install_wan_video_action_call(pipeline: WanVideoPipeline) -> None:
         num_frames: int = 81,
         num_history_frames: int = 1,
         action: Optional[torch.Tensor] = None,
+        physical_context: Optional[torch.Tensor] = None,
         cfg_scale: float = 1.0,
         num_inference_steps: int = 50,
         sigma_shift: float = 5.0,
@@ -123,6 +159,7 @@ def _install_wan_video_action_call(pipeline: WanVideoPipeline) -> None:
             "num_frames": num_frames,
             "num_history_frames": num_history_frames,
             "action": action,
+            "physical_context": physical_context,
             "cfg_scale": cfg_scale,
             "tiled": tiled,
             "tile_size": tile_size,
@@ -218,17 +255,35 @@ def load_checkpoint_weights(pipe, ckpt_path: str):
 
     dit = pipe.dit
     action_encoder = pipe.action_encoder
+    physical_context_encoder = getattr(pipe, "physical_context_encoder", None)
+    physical_adapter_bank = getattr(pipe, "physical_adapter_bank", None)
 
     action_prefix = "pipe.action_encoder."
+    physical_prefix = "pipe.physical_context_encoder."
+    adapter_prefix = "pipe.physical_adapter_bank."
     action_state = {
         key[len(action_prefix):]: value
         for key, value in state_dict.items()
         if key.startswith(action_prefix)
     }
+    physical_state = {
+        key[len(physical_prefix):]: value
+        for key, value in state_dict.items()
+        if key.startswith(physical_prefix)
+    }
+    adapter_state = {
+        key[len(adapter_prefix):]: value
+        for key, value in state_dict.items()
+        if key.startswith(adapter_prefix)
+    }
     dit_state = {
         key: value
         for key, value in state_dict.items()
-        if not key.startswith(action_prefix)
+        if (
+            not key.startswith(action_prefix)
+            and not key.startswith(physical_prefix)
+            and not key.startswith(adapter_prefix)
+        )
     }
 
     dit_result = dit.load_state_dict(dit_state, strict=False)
@@ -242,6 +297,18 @@ def load_checkpoint_weights(pipe, ckpt_path: str):
         f"  - Loaded action_encoder keys: {len(action_state)} "
         f"(missing={len(action_result.missing_keys)}, unexpected={len(action_result.unexpected_keys)})"
     )
+    if physical_context_encoder is not None and physical_state:
+        physical_result = physical_context_encoder.load_state_dict(physical_state, strict=False)
+        print(
+            f"  - Loaded physical_context_encoder keys: {len(physical_state)} "
+            f"(missing={len(physical_result.missing_keys)}, unexpected={len(physical_result.unexpected_keys)})"
+        )
+    if physical_adapter_bank is not None and adapter_state:
+        adapter_result = physical_adapter_bank.load_state_dict(adapter_state, strict=False)
+        print(
+            f"  - Loaded physical_adapter_bank keys: {len(adapter_state)} "
+            f"(missing={len(adapter_result.missing_keys)}, unexpected={len(adapter_result.unexpected_keys)})"
+        )
 
 
 def build_wan_video_action_pipeline(
@@ -254,7 +321,43 @@ def build_wan_video_action_pipeline(
     ckpt_path: Optional[str] = None,
     action_dim: int = 14,
     action_mode: str = "adaln",
+    physical_context_mode: str = "none",
+    physical_context_dim: int = 128,
+    physical_context_tokens: int = 1,
+    physical_context_hidden_dim: Optional[int] = None,
+    physical_context_init_std: float = 0.0,
+    physical_adapter_mode: str = "none",
+    physical_adapter_rank: int = 16,
+    physical_adapter_layers: str = "all",
+    physical_adapter_gate_init: float = 0.0,
+    args: Optional[object] = None,
 ):
+    action_dim = int(_resolve_arg(args, "action_dim", action_dim))
+    action_mode = str(_resolve_arg(args, "action_mode", action_mode))
+    physical_context_mode = str(_resolve_arg(args, "physical_context_mode", physical_context_mode)).lower()
+    physical_context_dim = int(_resolve_arg(args, "physical_context_dim", physical_context_dim))
+    physical_context_tokens = int(_resolve_arg(args, "physical_context_tokens", physical_context_tokens))
+    physical_context_hidden_dim = _resolve_arg(args, "physical_context_hidden_dim", physical_context_hidden_dim)
+    if physical_context_hidden_dim in (0, "0"):
+        physical_context_hidden_dim = None
+    elif physical_context_hidden_dim is not None:
+        physical_context_hidden_dim = int(physical_context_hidden_dim)
+    physical_context_init_std = float(_resolve_arg(args, "physical_context_init_std", physical_context_init_std))
+    physical_adapter_mode = str(_resolve_arg(args, "physical_adapter_mode", physical_adapter_mode)).lower()
+    physical_adapter_rank = int(_resolve_arg(args, "physical_adapter_rank", physical_adapter_rank))
+    physical_adapter_layers = str(_resolve_arg(args, "physical_adapter_layers", physical_adapter_layers))
+    physical_adapter_gate_init = float(_resolve_arg(args, "physical_adapter_gate_init", physical_adapter_gate_init))
+    if physical_context_mode not in {"none", "token", "modulation", "both"}:
+        raise ValueError(
+            "physical_context_mode must be one of none, token, modulation, both; "
+            f"got {physical_context_mode}."
+        )
+    if physical_adapter_mode not in {"none", "residual"}:
+        raise ValueError(
+            "physical_adapter_mode must be one of none, residual; "
+            f"got {physical_adapter_mode}."
+        )
+
     pipe = WanVideoPipeline.from_pretrained(
         torch_dtype=torch_dtype,
         device=device,
@@ -274,6 +377,32 @@ def build_wan_video_action_pipeline(
     )
     pipe.action_encoder = pipe.action_encoder.to(dtype=pipe.torch_dtype, device=pipe.device)
     pipe.action_encoder.eval()
+
+    pipe.physical_context_mode = physical_context_mode
+    pipe.physical_context_encoder = None
+    if physical_context_mode != "none":
+        pipe.physical_context_encoder = PhysicalContextEncoder(
+            context_dim=physical_context_dim,
+            model_dim=pipe.dit.dim,
+            num_tokens=physical_context_tokens,
+            hidden_dim=physical_context_hidden_dim,
+            init_std=physical_context_init_std,
+        ).to(dtype=pipe.torch_dtype, device=pipe.device)
+        pipe.physical_context_encoder.eval()
+
+    pipe.physical_adapter_mode = physical_adapter_mode
+    pipe.physical_adapter_bank = None
+    if physical_adapter_mode == "residual":
+        adapter_layers = _parse_adapter_layers(physical_adapter_layers, len(pipe.dit.blocks))
+        pipe.physical_adapter_bank = PhysicalResidualAdapterBank(
+            dim=pipe.dit.dim,
+            num_layers=len(pipe.dit.blocks),
+            rank=physical_adapter_rank,
+            layers=adapter_layers,
+            gate_init=physical_adapter_gate_init,
+        ).to(dtype=pipe.torch_dtype, device=pipe.device)
+        pipe.physical_adapter_bank.eval()
+        pipe.in_iteration_models = tuple(pipe.in_iteration_models) + ("physical_adapter_bank",)
 
     if ckpt_path is not None:
         load_checkpoint_weights(pipe, ckpt_path)
@@ -317,6 +446,48 @@ class WanVideoUnit_ActionEmbedder(PipelineUnit):
             )
         action_emb, action_mod_emb = pipe.action_encoder.encode_ti2v2(action)
         return {"action_emb": action_emb, "action_mod_emb": action_mod_emb}
+
+
+class WanVideoUnit_PhysicalContextEmbedder(PipelineUnit):
+    def __init__(self):
+        super().__init__(
+            input_params=("physical_context", "action", "num_frames"),
+            output_params=("physical_context_emb", "physical_mod_emb"),
+            onload_model_names=("physical_context_encoder",),
+        )
+
+    def process(self, pipe, physical_context=None, action=None, num_frames=None):
+        mode = getattr(pipe, "physical_context_mode", "none")
+        if mode == "none":
+            return {}
+        if pipe.physical_context_encoder is None:
+            raise ValueError("physical_context_mode is enabled, but physical_context_encoder is not available.")
+        if any(param.device != pipe.device for param in pipe.physical_context_encoder.parameters()):
+            pipe.physical_context_encoder = pipe.physical_context_encoder.to(device=pipe.device, dtype=pipe.torch_dtype)
+
+        pipe.load_models_to_device(self.onload_model_names)
+        if action is not None:
+            batch_size = int(torch.as_tensor(action).shape[0])
+        elif physical_context is not None:
+            context_tensor = torch.as_tensor(physical_context)
+            batch_size = 1 if context_tensor.ndim <= 2 else int(context_tensor.shape[0])
+        else:
+            batch_size = 1
+
+        target_groups = (int(num_frames) - 1) // 4 + 1
+        token_emb, mod_emb = pipe.physical_context_encoder(
+            physical_context,
+            batch_size=batch_size,
+            target_groups=target_groups,
+            dtype=pipe.torch_dtype,
+            device=pipe.device,
+        )
+        outputs = {}
+        if mode in {"token", "both"}:
+            outputs["physical_context_emb"] = token_emb
+        if mode in {"modulation", "both"}:
+            outputs["physical_mod_emb"] = mod_emb
+        return outputs
 
 
 class WanVideoUnit_InputVideoEmbedder(PipelineUnit):
@@ -386,6 +557,10 @@ def model_fn_wan_video_action(
     action_emb: Optional[torch.Tensor] = None,
     action_mod_emb: Optional[torch.Tensor] = None,
     action_injection_mode: str = "none",
+    physical_context_emb: Optional[torch.Tensor] = None,
+    physical_mod_emb: Optional[torch.Tensor] = None,
+    physical_context_mode: str = "none",
+    physical_adapter_bank: Optional[PhysicalResidualAdapterBank] = None,
     clip_feature: Optional[torch.Tensor] = None,
     y: Optional[torch.Tensor] = None,
     fuse_vae_embedding_in_latents: bool = False,
@@ -422,19 +597,26 @@ def model_fn_wan_video_action(
 
     if action_emb is None or action_mod_emb is None:
         raise ValueError("`action:adaln` requires both `action_emb` and `action_mod_emb`.")
-    if context is None:
-        context = action_emb
-    else:
-        context = torch.cat([context, action_emb], dim=1)
+    context = _append_context_tokens(context, physical_context_emb)
+    context = _append_context_tokens(context, action_emb)
     text_token_count = context.shape[1]
     if t.shape[1] % action_mod_emb.shape[1] != 0:
         raise RuntimeError(
             f"Temporal group mismatch: t.shape={tuple(t.shape)}, action_mod_emb.shape={tuple(action_mod_emb.shape)}. "
             "Expected t.shape[1] to be divisible by action_mod_emb.shape[1]."
         )
-    num_spatial_tokens = t.shape[1] // action_mod_emb.shape[1]
+    target_mod_groups = action_mod_emb.shape[1]
+    num_spatial_tokens = t.shape[1] // target_mod_groups
     action_mod_emb = action_mod_emb.unsqueeze(2).repeat(1, 1, num_spatial_tokens, 1).flatten(1, 2)
     t = t + action_mod_emb
+    if physical_mod_emb is not None:
+        if physical_mod_emb.shape[1] != target_mod_groups:
+            raise RuntimeError(
+                f"Physical temporal group mismatch: physical_mod_emb.shape={tuple(physical_mod_emb.shape)}, "
+                f"expected_groups={target_mod_groups}."
+            )
+        physical_mod_emb = physical_mod_emb.unsqueeze(2).repeat(1, 1, num_spatial_tokens, 1).flatten(1, 2)
+        t = t + physical_mod_emb
 
     if t.ndim == 3:
         t_mod = dit.time_projection(t).unflatten(2, (6, dit.dim))
@@ -469,7 +651,7 @@ def model_fn_wan_video_action(
             return module(*inputs)
         return custom_forward
 
-    for block in dit.blocks:
+    for layer_idx, block in enumerate(dit.blocks):
         if hasattr(block, "cross_attn") and hasattr(block.cross_attn, "text_token_count"):
             block.cross_attn.text_token_count = text_token_count
         if use_gradient_checkpointing_offload:
@@ -487,6 +669,8 @@ def model_fn_wan_video_action(
             )
         else:
             x = block(x, context, t_mod, freqs)
+        if physical_adapter_bank is not None:
+            x = physical_adapter_bank(layer_idx, x)
 
     x = dit.head(x, t)
     x = dit.unpatchify(x, (f, h, w))

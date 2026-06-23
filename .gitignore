@@ -10,6 +10,8 @@ __pycache__/
 *.pt
 *.ckpt
 *.safetensors
+/ckpt/
+/models/
 
 # Outputs
 checkpoints/

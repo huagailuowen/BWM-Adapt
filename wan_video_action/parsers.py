@@ -116,6 +116,29 @@ def add_action_config(parser: argparse.ArgumentParser):
     return parser
 
 
+def add_physical_context_config(parser: argparse.ArgumentParser):
+    group = parser.add_argument_group("physical_context")
+    group.add_argument(
+        "--physical_context_mode",
+        type=str,
+        default="none",
+        choices=["none", "token", "modulation", "both"],
+        help="[KEY] How latent physical code C conditions the world model.",
+    )
+    group.add_argument("--physical_context_dim", type=int, default=128, help="[TUNABLE] Latent physical code dimension.")
+    group.add_argument("--physical_context_tokens", type=int, default=1, help="[TUNABLE] Number of C tokens inserted into cross-attention context.")
+    group.add_argument("--physical_context_hidden_dim", type=int, default=0, help="[TUNABLE] Hidden width for C projection MLPs. 0 selects a small default.")
+    group.add_argument("--physical_context_init_std", type=float, default=0.0, help="[OPTIONAL] Std for non-zero default C initialization.")
+    group.add_argument("--physical_adapter_mode", type=str, default="none", choices=["none", "residual"], help="[KEY] TTTE2E-style lightweight parameter adaptation mode.")
+    group.add_argument("--physical_adapter_rank", type=int, default=16, help="[TUNABLE] Low-rank width for residual physical adapters.")
+    group.add_argument("--physical_adapter_layers", type=str, default="all", help='[TUNABLE] Adapter layer set: "all", "uniform:N", or comma-separated layer indices.')
+    group.add_argument("--physical_adapter_gate_init", type=float, default=0.0, help="[OPTIONAL] Initial residual adapter gate value.")
+    group.add_argument("--physical_support_weight", type=float, default=1.0, help="[PLANNED] Weight for support-trajectory adaptation loss.")
+    group.add_argument("--physical_query_weight", type=float, default=1.0, help="[PLANNED] Weight for same-property query loss.")
+    group.add_argument("--physical_specificity_weight", type=float, default=0.0, help="[PLANNED] Penalty against overfitting only the support trajectory.")
+    return parser
+
+
 def add_training_config(parser: argparse.ArgumentParser):
     group = parser.add_argument_group("training")
     group.add_argument("--learning_rate", type=float, default=1e-4, help="[TUNABLE] Learning rate.")
@@ -196,6 +219,7 @@ def add_general_config(parser: argparse.ArgumentParser):
     parser = add_video_size_config(parser)
     parser = add_model_config(parser)
     parser = add_action_config(parser)
+    parser = add_physical_context_config(parser)
     parser = add_training_config(parser)
     parser = add_output_config(parser)
     parser = add_lora_config(parser)

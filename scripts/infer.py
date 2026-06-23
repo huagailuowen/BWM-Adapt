@@ -109,6 +109,7 @@ def _run_autoregressive(
         chunk_video = pipe(
             input_video=chunk_input_video,
             action=chunk_action,
+            physical_context=sample.get("physical_context"),
             seed=seed,
             rand_device="cpu",
             tiled=False,
@@ -163,6 +164,7 @@ def build_pipeline(args):
         ckpt_path=args.ckpt_path,
         action_dim=args.action_dim,
         action_mode=args.action_mode,
+        args=args,
     )
     pipe.use_gradient_checkpointing = False
     pipe.use_gradient_checkpointing_offload = False

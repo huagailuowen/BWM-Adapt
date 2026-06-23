@@ -1,0 +1,213 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Optional
+
+import torch
+import torch.nn as nn
+
+
+@dataclass(frozen=True)
+class PhysicalContextConfig:
+    context_dim: int = 128
+    model_dim: int = 1536
+    num_tokens: int = 1
+    hidden_dim: Optional[int] = None
+    init_std: float = 0.0
+
+
+class BiasFreeMLP(nn.Module):
+    def __init__(self, in_dim: int, hidden_dim: int, out_dim: int):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.LayerNorm(in_dim),
+            nn.Linear(in_dim, hidden_dim, bias=False),
+            nn.GELU(approximate="tanh"),
+            nn.Linear(hidden_dim, out_dim, bias=False),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.net(x)
+
+
+class PhysicalContextEncoder(nn.Module):
+    """
+    Project a latent physical-property code C into BWM conditioning channels.
+
+    The default context starts at zero, so enabling the module is initially close
+    to the base action-conditioned model. The projection weights are non-zero,
+    which keeps gradients flowing into both the default C and the projectors.
+    """
+
+    def __init__(
+        self,
+        context_dim: int = 128,
+        model_dim: int = 1536,
+        num_tokens: int = 1,
+        hidden_dim: Optional[int] = None,
+        init_std: float = 0.0,
+    ):
+        super().__init__()
+        if context_dim <= 0:
+            raise ValueError(f"context_dim must be positive, got {context_dim}.")
+        if model_dim <= 0:
+            raise ValueError(f"model_dim must be positive, got {model_dim}.")
+        if num_tokens <= 0:
+            raise ValueError(f"num_tokens must be positive, got {num_tokens}.")
+
+        hidden_dim = int(hidden_dim or min(model_dim, max(context_dim * 4, 128)))
+        self.config = PhysicalContextConfig(
+            context_dim=int(context_dim),
+            model_dim=int(model_dim),
+            num_tokens=int(num_tokens),
+            hidden_dim=hidden_dim,
+            init_std=float(init_std),
+        )
+        self.default_context = nn.Parameter(torch.zeros(num_tokens, context_dim))
+        if init_std > 0:
+            nn.init.normal_(self.default_context, mean=0.0, std=init_std)
+
+        self.token_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim)
+        self.mod_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim)
+
+    @property
+    def context_dim(self) -> int:
+        return self.config.context_dim
+
+    @property
+    def model_dim(self) -> int:
+        return self.config.model_dim
+
+    @property
+    def num_tokens(self) -> int:
+        return self.config.num_tokens
+
+    def _normalize_context(
+        self,
+        physical_context: Optional[torch.Tensor],
+        *,
+        batch_size: int,
+        dtype: torch.dtype,
+        device: torch.device | str,
+    ) -> torch.Tensor:
+        if physical_context is None:
+            context = self.default_context.unsqueeze(0).expand(batch_size, -1, -1)
+            return context.to(device=device, dtype=dtype)
+
+        context = torch.as_tensor(physical_context, device=device, dtype=dtype)
+        if context.ndim == 1:
+            context = context.view(1, 1, -1)
+        elif context.ndim == 2:
+            if context.shape[-1] != self.context_dim:
+                raise ValueError(
+                    f"Expected physical_context last dim {self.context_dim}, got shape={tuple(context.shape)}."
+                )
+            if context.shape[0] == batch_size:
+                context = context.unsqueeze(1)
+            elif context.shape[0] == self.num_tokens or batch_size == 1:
+                context = context.unsqueeze(0)
+            else:
+                raise ValueError(
+                    "Ambiguous 2D physical_context. Use shape (B, C), (tokens, C), or (B, tokens, C); "
+                    f"got shape={tuple(context.shape)} with batch_size={batch_size}."
+                )
+        elif context.ndim != 3:
+            raise ValueError(
+                "physical_context must have shape (C,), (tokens, C), or (B, tokens, C); "
+                f"got shape={tuple(context.shape)}."
+            )
+
+        if context.shape[-1] != self.context_dim:
+            raise ValueError(
+                f"Expected physical_context last dim {self.context_dim}, got shape={tuple(context.shape)}."
+            )
+        if context.shape[1] != self.num_tokens:
+            if context.shape[1] == 1:
+                context = context.expand(-1, self.num_tokens, -1)
+            else:
+                raise ValueError(
+                    f"Expected {self.num_tokens} physical context tokens, got {context.shape[1]}."
+                )
+        if context.shape[0] == 1 and batch_size != 1:
+            context = context.expand(batch_size, -1, -1)
+        elif context.shape[0] != batch_size:
+            raise ValueError(
+                f"physical_context batch size {context.shape[0]} does not match expected batch_size={batch_size}."
+            )
+        return context
+
+    def forward(
+        self,
+        physical_context: Optional[torch.Tensor] = None,
+        *,
+        batch_size: int = 1,
+        target_groups: int = 1,
+        dtype: Optional[torch.dtype] = None,
+        device: Optional[torch.device | str] = None,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        if target_groups <= 0:
+            raise ValueError(f"target_groups must be positive, got {target_groups}.")
+
+        dtype = dtype or self.default_context.dtype
+        device = device or self.default_context.device
+        context = self._normalize_context(
+            physical_context,
+            batch_size=int(batch_size),
+            dtype=dtype,
+            device=device,
+        )
+        token_emb = self.token_projector(context)
+        pooled_context = context.mean(dim=1)
+        mod_emb = self.mod_projector(pooled_context).unsqueeze(1).expand(-1, int(target_groups), -1)
+        return token_emb, mod_emb
+
+
+class LowRankResidualAdapter(nn.Module):
+    def __init__(self, dim: int, rank: int = 16, gate_init: float = 0.0):
+        super().__init__()
+        if rank <= 0:
+            raise ValueError(f"rank must be positive, got {rank}.")
+        self.norm = nn.LayerNorm(dim)
+        self.down = nn.Linear(dim, rank, bias=False)
+        self.up = nn.Linear(rank, dim, bias=False)
+        self.gate = nn.Parameter(torch.tensor(float(gate_init)))
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return x + self.gate * self.up(self.down(self.norm(x)))
+
+
+class PhysicalResidualAdapterBank(nn.Module):
+    """
+    TTTE2E-style lightweight trainable residual adapters for selected DiT blocks.
+
+    This is deliberately independent from the token-injection C path: it supports
+    the alternative experiment where test-time adaptation directly updates a
+    small parameter subset while the Wan backbone stays frozen.
+    """
+
+    def __init__(
+        self,
+        dim: int,
+        num_layers: int,
+        rank: int = 16,
+        layers: Optional[list[int]] = None,
+        gate_init: float = 0.0,
+    ):
+        super().__init__()
+        if num_layers <= 0:
+            raise ValueError(f"num_layers must be positive, got {num_layers}.")
+        selected = list(range(num_layers)) if layers is None else sorted(set(int(layer) for layer in layers))
+        invalid = [layer for layer in selected if layer < 0 or layer >= num_layers]
+        if invalid:
+            raise ValueError(f"Adapter layer indices out of range for num_layers={num_layers}: {invalid}.")
+        self.num_layers = int(num_layers)
+        self.selected_layers = tuple(selected)
+        self.adapters = nn.ModuleDict(
+            {str(layer): LowRankResidualAdapter(dim=dim, rank=rank, gate_init=gate_init) for layer in selected}
+        )
+
+    def forward(self, layer_index: int, x: torch.Tensor) -> torch.Tensor:
+        key = str(int(layer_index))
+        if key not in self.adapters:
+            return x
+        return self.adapters[key](x)
