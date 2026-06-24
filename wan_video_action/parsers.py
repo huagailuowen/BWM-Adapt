@@ -1,5 +1,8 @@
 import argparse
+import glob
+import json
 import os
+import sys
 from omegaconf import OmegaConf
 
 
@@ -10,9 +13,16 @@ def merge_yaml_and_args(yaml_path, parser, args):
 
     yaml_dict = OmegaConf.to_container(OmegaConf.load(yaml_path), resolve=True) or {}
 
+    explicit_cli_keys = set()
+    argv = sys.argv[1:]
+    for action in parser._actions:
+        for option in action.option_strings:
+            if option.startswith("--") and (option in argv or any(arg.startswith(f"{option}=") for arg in argv)):
+                explicit_cli_keys.add(action.dest)
+
     cli_overrides = {}
     for key, value in vars(args).items():
-        if value != parser.get_default(key):
+        if key in explicit_cli_keys or value != parser.get_default(key):
             cli_overrides[key] = value
             
     for section in yaml_dict.values():
@@ -41,9 +51,27 @@ def prepare_runtime_config(args):
 
     model_paths = getattr(args, "model_paths", "")
     yaml_modules_map = cfg.get("modules", {})
+
+    def resolve_module_path(module_entry):
+        if isinstance(module_entry, (list, tuple)):
+            return [os.path.join(model_paths, path) for path in module_entry]
+
+        path = os.path.join(model_paths, module_entry)
+        if isinstance(module_entry, str) and module_entry.endswith(".safetensors.index.json"):
+            with open(path, "r", encoding="utf-8") as f:
+                index = json.load(f)
+            weight_files = sorted(set(index.get("weight_map", {}).values()))
+            if weight_files:
+                return [os.path.join(os.path.dirname(path), file_name) for file_name in weight_files]
+
+        if isinstance(module_entry, str) and glob.has_magic(path):
+            matches = sorted(glob.glob(path))
+            return matches if len(matches) != 1 else matches[0]
+
+        return path
     
     paths_list = [
-        os.path.join(model_paths, yaml_modules_map[m.split(":")[0]])
+        resolve_module_path(yaml_modules_map[m.split(":")[0]])
         for m in enabled_mods if m.split(":")[0] in yaml_modules_map
     ]
 
@@ -87,6 +115,7 @@ def add_video_size_config(parser: argparse.ArgumentParser):
     group.add_argument("--time_division_remainder", type=int, default=1, help="[OPTIONAL] Temporal frame remainder used with time_division_factor.")
     group.add_argument("--spatial_division_factor", type=int, default=32, help="[OPTIONAL] Spatial size divisor used to align frame height and width.")
     group.add_argument("--chunk_mode", type=str, default="static", choices=["static", "dynamic"], help="[OPTIONAL] Sampling mode for video chunks, static uses dataset bounds and dynamic uses random crop.")
+    group.add_argument("--pad_short_chunks", action="store_true", default=False, help="[KEY] Repeat-pad video/action chunks that run past episode end instead of shortening them.")
     return parser
 
 
@@ -160,6 +189,9 @@ def add_output_config(parser: argparse.ArgumentParser):
     group.add_argument("--output_path", type=str, default="./models", help="[KEY] Output save path.")
     group.add_argument("--remove_prefix_in_ckpt", type=str, default="pipe.dit.", help='[OPTIONAL] Remove prefix in ckpt. (default: "pipe.dit.")')
     group.add_argument("--save_steps", type=int, default=None, help="[OPTIONAL] Number of checkpoint saving intervals. If None, checkpoints will be saved every epoch.")
+    group.add_argument("--checkpoint_save_minutes", type=float, default=0.0, help="[OPTIONAL] Save checkpoints by wall-clock interval. 0 disables timed checkpoints.")
+    group.add_argument("--checkpoint_keep_last", type=int, default=0, help="[OPTIONAL] Keep only the newest N .safetensors checkpoints in output_path. 0 disables pruning.")
+    group.add_argument("--log_steps", type=int, default=10, help="[OPTIONAL] Print training loss every N optimizer steps on the main process.")
     group.add_argument("--ckpt_path", type=str, default=None, help="[OPTIONAL] Path to model checkpoint (.safetensors) used to initialize training weights (model-only resume).")
     group.add_argument("--resume_from", type=str, default=None, help="[OPTIONAL] Path to a checkpoint directory saved by accelerator (e.g., output_path/epoch-0).")
     return parser

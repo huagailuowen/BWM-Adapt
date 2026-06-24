@@ -113,7 +113,7 @@ def _run_autoregressive(
             seed=seed,
             rand_device="cpu",
             tiled=False,
-            height=int(args.height),
+            height=int(args.height) * int(chunk_input_video.shape[0]),
             width=int(args.width),
             num_frames=infer_frames,
             num_history_frames=int(args.num_history_frames),
@@ -146,10 +146,13 @@ def _run_autoregressive(
 
 def build_pipeline(args):
     runtime_config = prepare_runtime_config(args)
-    model_configs = [
-        ModelConfig(path=resolve_model_path(model_path))
-        for model_path in runtime_config["model_paths_list"]
-    ]
+    model_configs = []
+    for model_path in runtime_config["model_paths_list"]:
+        if isinstance(model_path, (list, tuple)):
+            model_configs.append(ModelConfig(path=[resolve_model_path(path) for path in model_path]))
+        else:
+            resolved_path = resolve_model_path(model_path)
+            model_configs.append(ModelConfig(path=resolved_path))
 
     print("[resolved_models] model_configs:", [config.path for config in model_configs])
 
@@ -203,6 +206,8 @@ def build_infer_dataset(args):
                 align_num_frames=False,
                 time_division_factor=args.time_division_factor,
                 time_division_remainder=args.time_division_remainder,
+                pad_short=True,
+                output_dim=args.action_dim,
             )
         },
     )
@@ -230,7 +235,10 @@ def prepare_sample_for_rollout(sample: Dict, sample_index: int, pipe, args) -> D
     sample["start_frame"] = start_frame
     sample["end_frame"] = end_frame
     sample["raw_action_shape"] = raw_action_shape
-    sample["output_path"] = os.path.join(args.output_path, f"episode{episode_index}.mp4")
+    sample["output_path"] = os.path.join(
+        args.output_path,
+        f"sample{sample_index:04d}_episode{episode_index:06d}_frames{start_frame:04d}-{end_frame:04d}.mp4",
+    )
     sample["action"] = action[:, :total_frames]
     return sample
 

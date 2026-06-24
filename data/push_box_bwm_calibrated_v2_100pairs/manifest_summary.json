@@ -1,0 +1,22 @@
+{
+  "datasets": {
+    "libero_push_box_calibrated_v2_100pairs_hidden_angled_lerobot": {
+      "episodes": 50,
+      "test_episodes": 25,
+      "train_episodes": 25
+    },
+    "libero_push_box_calibrated_v2_100pairs_hidden_straight_lerobot": {
+      "episodes": 50,
+      "test_episodes": 25,
+      "train_episodes": 25
+    }
+  },
+  "num_frames": 81,
+  "prompt": "observe how the cream cheese box slides after a short robot push on the table; no target is shown",
+  "test_samples": 100,
+  "train_samples": 200,
+  "video_keys": [
+    "observation.images.image",
+    "observation.images.wrist_image"
+  ]
+}

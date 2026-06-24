@@ -23,6 +23,7 @@ class RoboTwinUnifiedDataset(UnifiedDataset):
         self.main_data_operator = main_data_operator
         self.special_operator_map = {} if special_operator_map is None else dict(special_operator_map)
         self.sample_indices = None if sample_indices is None else [int(index) for index in sample_indices]
+        self.load_from_cache = False
         self.data = self._load_metadata(metadata_path)
         self._apply_sample_selection()
         print(f"Dataset size: {len(self.data)}, repeat: {self.repeat}, total: {len(self)}")

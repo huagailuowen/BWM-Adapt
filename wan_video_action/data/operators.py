@@ -69,11 +69,22 @@ class ResolvePromptEmbPath(DataProcessingOperator):
 
 
 class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
-    def __init__(self, base_path="", num_frames=81, time_division_factor=4, time_division_remainder=1, frame_processor=lambda x: x, frame_rate=24, fix_frame_rate=False):
+    def __init__(
+        self,
+        base_path="",
+        num_frames=81,
+        time_division_factor=4,
+        time_division_remainder=1,
+        frame_processor=lambda x: x,
+        frame_rate=24,
+        fix_frame_rate=False,
+        pad_short=False,
+    ):
         FrameSamplerByRateMixin.__init__(self, num_frames, time_division_factor, time_division_remainder, frame_rate, fix_frame_rate)
         self.base_path = base_path
         # frame_processor is build in the video loader for high efficiency.
         self.frame_processor = frame_processor
+        self.pad_short = bool(pad_short)
 
     def __call__(self, data, start_frame=None, end_frame=None):
         if isinstance(data, dict):
@@ -90,13 +101,15 @@ class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
         total_raw_frames = reader.count_frames()
         
         start = max(0, start_frame if start_frame is not None else 0)
-        end = min(total_raw_frames, end_frame if end_frame is not None else total_raw_frames)
+        end = min(total_raw_frames, (end_frame + 1) if end_frame is not None else total_raw_frames)
         clip_frames = max(0, end - start)
+        if clip_frames <= 0:
+            raise ValueError(f"No frames available in {path} for start={start_frame}, end={end_frame}.")
 
         # x / clip_frames = self.frame_rate / raw_frame_rate
         available_frames = int(clip_frames * self.frame_rate / raw_frame_rate) if self.fix_frame_rate else clip_frames
         num_frames = self.num_frames
-        if available_frames < num_frames:
+        if available_frames < num_frames and not self.pad_short:
             num_frames = align_num_frames(
                 available_frames,
                 time_division_factor=self.time_division_factor,
@@ -106,6 +119,7 @@ class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
         frames = []
         for frame_id in range(num_frames):
             frame_id = self.map_single_frame_id(frame_id, raw_frame_rate, clip_frames)
+            frame_id = min(frame_id, clip_frames - 1)
             frame = reader.get_data(start + frame_id)
             frame = Image.fromarray(frame)
             frame = self.frame_processor(frame)
@@ -115,17 +129,26 @@ class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
     
 
 class LoadGIFChunk(DataProcessingOperator):
-    def __init__(self, base_path="", num_frames=81, time_division_factor=4, time_division_remainder=1, frame_processor=lambda x: x):
+    def __init__(
+        self,
+        base_path="",
+        num_frames=81,
+        time_division_factor=4,
+        time_division_remainder=1,
+        frame_processor=lambda x: x,
+        pad_short=False,
+    ):
         self.base_path = base_path
         self.num_frames = num_frames
         self.time_division_factor = time_division_factor
         self.time_division_remainder = time_division_remainder
         # frame_processor is build in the video loader for high efficiency.
         self.frame_processor = frame_processor
+        self.pad_short = bool(pad_short)
 
     def get_num_frames(self, clip_frames):
         num_frames = self.num_frames
-        if clip_frames < num_frames:
+        if clip_frames < num_frames and not self.pad_short:
             num_frames = align_num_frames(
                 clip_frames,
                 time_division_factor=self.time_division_factor,
@@ -147,12 +170,15 @@ class LoadGIFChunk(DataProcessingOperator):
         total_raw_frames = len(images)
         
         start = max(0, start_frame if start_frame is not None else 0)
-        end = min(total_raw_frames, end_frame if end_frame is not None else total_raw_frames)
+        end = min(total_raw_frames, (end_frame + 1) if end_frame is not None else total_raw_frames)
         clip_frames = max(0, end - start)
+        if clip_frames <= 0:
+            raise ValueError(f"No frames available in {path} for start={start_frame}, end={end_frame}.")
 
         num_frames = self.get_num_frames(clip_frames)
         frames = []
-        for img in images[start : start + num_frames]:
+        for frame_id in range(num_frames):
+            img = images[start + min(frame_id, clip_frames - 1)]
             frame = Image.fromarray(img)
             frame = self.frame_processor(frame)
             frames.append(frame)
@@ -349,18 +375,23 @@ class LoadCobotAction(DataProcessingOperator):
         align_num_frames=True,
         time_division_factor=4,
         time_division_remainder=1,
+        pad_short=False,
+        output_dim=None,
     ):
         self.num_frames = num_frames
         self.align_num_frames = bool(align_num_frames)
         self.time_division_factor = time_division_factor
         self.time_division_remainder = time_division_remainder
+        self.pad_short = bool(pad_short)
+        self.output_dim = None if output_dim is None else int(output_dim)
         """
             joint_abs (原 state_joint：关节绝对位置)
             eef_abs (原 state_pose：末端绝对位姿)
             joint_delta (原 action_joint：关节相对动作/增量)
             eef_delta (原 action_pose：末端相对动作/增量)
         """
-        # TODO: Compatibility aliases for older script conventions.
+        requested_action_type = action_type
+        # Compatibility aliases for older script conventions.
         action_type_alias = {
             "joint_abs": "state_joint",
             "eef_abs": "state_pose",
@@ -372,6 +403,7 @@ class LoadCobotAction(DataProcessingOperator):
         if action_type not in ("state_joint", "state_pose", "action_joint", "action_pose"):
             raise ValueError(f"Unsupported action type: {action_type}")
         self.base_path = base_path
+        self.requested_action_type = requested_action_type
         self.action_type = action_type
         self.stat = stat or {}
         self.use_percentile_stats = use_percentile_stats
@@ -387,6 +419,8 @@ class LoadCobotAction(DataProcessingOperator):
         if isinstance(self.stat, dict):
             if action_type in self.stat and isinstance(self.stat[action_type], dict):
                 entry = self.stat[action_type]
+            elif requested_action_type in self.stat and isinstance(self.stat[requested_action_type], dict):
+                entry = self.stat[requested_action_type]
             elif all(k in self.stat for k in ("min", "max")):
                 # Backward-compat mode: accept direct per-type dict payload.
                 entry = self.stat
@@ -443,21 +477,45 @@ class LoadCobotAction(DataProcessingOperator):
         ndata = 2 * (data - data_min) / (data_max - data_min + eps) - 1.0
         return np.clip(ndata, clip_min, clip_max)
 
+    def _match_output_dim(self, arr: np.ndarray) -> np.ndarray:
+        if self.output_dim is None or arr.shape[1] == self.output_dim:
+            return arr
+        if self.output_dim == 14 and (not self.use_joint) and arr.shape[1] == 7:
+            padded = np.zeros((arr.shape[0], 14), dtype=arr.dtype)
+            # BWM's 14-D EEF convention is [left_eef(7), right_eef(7)].
+            padded[:, 7:] = arr
+            return padded
+        raise ValueError(
+            f"Cannot adapt action width {arr.shape[1]} to output_dim={self.output_dim} "
+            f"for action type {self.action_type}"
+        )
+
     def _read_slice(self, parquet_path, column, start_frame, num_frames):
         start = int(start_frame)
         end = start + int(num_frames)
         table = pq.read_table(parquet_path, columns=[column])
         data = table.to_pydict()[column]
         if end > len(data):
-            raise ValueError(
-                f"Not enough rows in {parquet_path} for slice "
-                f"start={start_frame}, num_frames={num_frames}"
-            )
+            if not self.pad_short:
+                raise ValueError(
+                    f"Not enough rows in {parquet_path} for slice "
+                    f"start={start_frame}, num_frames={num_frames}"
+                )
+            if start >= len(data):
+                raise ValueError(
+                    f"No rows in {parquet_path} for padded slice "
+                    f"start={start_frame}, num_frames={num_frames}"
+                )
+            rows = list(data[start:])
+            rows.extend([rows[-1]] * (end - len(data)))
+            return np.asarray(rows, dtype=np.float32)
         return np.asarray(data[start:end], dtype=np.float32)
 
     def get_num_frames(self, total_frames):
         if self.num_frames is None:
             return int(total_frames)
+        if self.pad_short:
+            return int(self.num_frames)
         num_frames = int(self.num_frames)
         if int(total_frames) < num_frames:
             num_frames = int(total_frames)
@@ -484,12 +542,15 @@ class LoadCobotAction(DataProcessingOperator):
             pass
         elif (not self.use_joint) and arr.shape[1] == len(EEF_NAMES):
             pass
+        elif (not self.use_joint) and arr.shape[1] == 7:
+            pass
         else:
             raise ValueError(
                 f"Unexpected action width {arr.shape[1]} for action type {self.action_type} in {parquet_path}"
             )
         min_vals, max_vals = self._get_min_max()
         arr = self._normalize_bound(arr, min_vals, max_vals)
+        arr = self._match_output_dim(arr)
         return arr[None, ...]
 
 
@@ -498,14 +559,28 @@ def create_video_operator(
     max_pixels=1920*1080, height=None, width=None,
     height_division_factor=16, width_division_factor=16,
     num_frames=81, time_division_factor=4, time_division_remainder=1,
-    resize_mode="fit", default_key="data"
+    resize_mode="fit", default_key="data", pad_short=False,
 ):
     image_processor = ImageCropAndResize(height, width, max_pixels, height_division_factor, width_division_factor, resize_mode=resize_mode)
     
     image_pipeline = ToAbsolutePathByKeyExtension(base_path) >> LoadImage() >> image_processor >> ToList()
     
-    gif_pipeline = LoadGIFChunk(base_path=base_path, num_frames=num_frames, time_division_factor=time_division_factor, time_division_remainder=time_division_remainder, frame_processor=image_processor)
-    video_pipeline = LoadVideoChunk(base_path=base_path, num_frames=num_frames, time_division_factor=time_division_factor, time_division_remainder=time_division_remainder, frame_processor=image_processor)
+    gif_pipeline = LoadGIFChunk(
+        base_path=base_path,
+        num_frames=num_frames,
+        time_division_factor=time_division_factor,
+        time_division_remainder=time_division_remainder,
+        frame_processor=image_processor,
+        pad_short=pad_short,
+    )
+    video_pipeline = LoadVideoChunk(
+        base_path=base_path,
+        num_frames=num_frames,
+        time_division_factor=time_division_factor,
+        time_division_remainder=time_division_remainder,
+        frame_processor=image_processor,
+        pad_short=pad_short,
+    )
     
     video_operator = RouteByKeyExtension(key=default_key, operator_map=[
         (("jpg", "jpeg", "png", "webp"), image_pipeline),

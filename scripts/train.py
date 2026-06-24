@@ -1,5 +1,8 @@
+import glob
+import time
 import torch, os, argparse, accelerate, warnings, json
-from diffsynth.core import UnifiedDataset
+from accelerate.utils import broadcast
+from wan_video_action.data import RoboTwinUnifiedDataset
 from wan_video_action.data.operators import LoadCobotAction, ResolvePromptEmbPath, create_video_operator
 from wan_video_action.data.data_utils import pack_paths
 from diffsynth.core import ModelConfig
@@ -8,6 +11,92 @@ from diffsynth.diffusion import *
 from wan_video_action.parsers import merge_yaml_and_args, prepare_runtime_config, add_general_config
 from wan_video_action.utils import set_global_seed
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+
+class TimedRetentionModelLogger(ModelLogger):
+    def __init__(
+        self,
+        output_path,
+        remove_prefix_in_ckpt=None,
+        state_dict_converter=lambda x: x,
+        save_minutes: float = 0.0,
+        keep_last: int = 0,
+        log_steps: int = 10,
+    ):
+        super().__init__(output_path, remove_prefix_in_ckpt=remove_prefix_in_ckpt, state_dict_converter=state_dict_converter)
+        self.save_seconds = float(save_minutes) * 60.0 if save_minutes else 0.0
+        self.keep_last = int(keep_last or 0)
+        self.log_steps = int(log_steps or 0)
+        self.last_save_time = time.monotonic()
+
+    def on_step_end(self, accelerator, model, save_steps=None, **kwargs):
+        self.num_steps += 1
+        loss = kwargs.get("loss")
+        if self.log_steps > 0 and self.num_steps % self.log_steps == 0 and accelerator.is_main_process:
+            loss_value = None
+            if loss is not None:
+                loss_value = float(loss.detach().to(dtype=torch.float32).cpu())
+            if loss_value is None:
+                print(f"[train] step={self.num_steps}", flush=True)
+            else:
+                print(f"[train] step={self.num_steps} loss={loss_value:.6f}", flush=True)
+
+        should_save = False
+        file_name = None
+        if save_steps is not None and self.num_steps % int(save_steps) == 0:
+            should_save = True
+            file_name = f"step-{self.num_steps}.safetensors"
+        timed_save = False
+        if self.save_seconds > 0 and accelerator.is_main_process:
+            timed_save = time.monotonic() - self.last_save_time >= self.save_seconds
+        if self.save_seconds > 0 and accelerator.num_processes > 1:
+            timed_save_tensor = torch.tensor(int(timed_save), device=accelerator.device)
+            timed_save = bool(broadcast(timed_save_tensor, from_process=0).item())
+        if timed_save:
+            should_save = True
+            file_name = f"step-{self.num_steps}.safetensors"
+        if should_save and file_name is not None:
+            if accelerator.is_main_process:
+                print(f"[checkpoint] saving {os.path.join(self.output_path, file_name)}", flush=True)
+            self.save_model(accelerator, model, file_name)
+            self.last_save_time = time.monotonic()
+
+    def on_epoch_end(self, accelerator, model, epoch_id):
+        self.save_model(accelerator, model, f"epoch-{epoch_id}.safetensors")
+
+    def on_training_end(self, accelerator, model, save_steps=None):
+        if save_steps is not None and self.num_steps % int(save_steps) == 0:
+            return
+        self.save_model(accelerator, model, f"step-{self.num_steps}.safetensors")
+
+    def save_model(self, accelerator, model, file_name):
+        accelerator.wait_for_everyone()
+        state_dict = accelerator.get_state_dict(model)
+        if accelerator.is_main_process:
+            state_dict = accelerator.unwrap_model(model).export_trainable_state_dict(
+                state_dict,
+                remove_prefix=self.remove_prefix_in_ckpt,
+            )
+            state_dict = self.state_dict_converter(state_dict)
+            os.makedirs(self.output_path, exist_ok=True)
+            path = os.path.join(self.output_path, file_name)
+            accelerator.save(state_dict, path, safe_serialization=True)
+            print(f"[checkpoint] saved {path}", flush=True)
+            self._prune_old_checkpoints()
+
+    def _prune_old_checkpoints(self):
+        if self.keep_last <= 0:
+            return
+        paths = sorted(
+            glob.glob(os.path.join(self.output_path, "*.safetensors")),
+            key=lambda path: os.path.getmtime(path),
+        )
+        for path in paths[:-self.keep_last]:
+            try:
+                os.remove(path)
+                print(f"[checkpoint] pruned {path}", flush=True)
+            except FileNotFoundError:
+                pass
 
 
 class WanTrainingModule(DiffusionTrainingModule):
@@ -61,6 +150,7 @@ class WanTrainingModule(DiffusionTrainingModule):
             preset_lora_path, preset_lora_model,
             task=task,
         )
+        self.freeze_unused_action_modules()
 
         if not enable_text:
             self.freeze_text_modules()
@@ -86,11 +176,15 @@ class WanTrainingModule(DiffusionTrainingModule):
     def freeze_text_modules(self):  
         self.pipe.dit.text_embedding.requires_grad_(False)
         self.pipe.dit.text_embedding.eval()
-        
-        for block in self.pipe.dit.blocks:
-            for module in [block.cross_attn.k, block.cross_attn.v, block.cross_attn.norm_k]:
-                module.requires_grad_(False)
-                module.eval()
+
+    def freeze_unused_action_modules(self):
+        if getattr(self.pipe, "action_injection_mode", "none") != "adaln":
+            return
+        action_encoder = getattr(self.pipe, "action_encoder", None)
+        action_embedding = getattr(action_encoder, "action_embedding", None)
+        if action_embedding is not None:
+            action_embedding.requires_grad_(False)
+            action_embedding.eval()
 
     def parse_extra_inputs(self, data, extra_inputs, inputs_shared):
         for extra_input in extra_inputs:
@@ -104,7 +198,21 @@ class WanTrainingModule(DiffusionTrainingModule):
                 inputs_shared[extra_input] = data[extra_input]
         return inputs_shared
 
+    def _video_geometry(self, video):
+        if torch.is_tensor(video):
+            if video.ndim == 5:
+                num_views = int(video.shape[0])
+                return int(video.shape[-2]) * num_views, int(video.shape[-1]), int(video.shape[2]), num_views
+            if video.ndim == 4:
+                return int(video.shape[-2]), int(video.shape[-1]), int(video.shape[1]), 1
+            raise ValueError(f"Unsupported tensor video shape: {tuple(video.shape)}")
+        if isinstance(video[0], (list, tuple)):
+            num_views = len(video)
+            return video[0][0].size[1] * num_views, video[0][0].size[0], len(video[0]), num_views
+        return video[0].size[1], video[0].size[0], len(video), 1
+
     def get_pipeline_inputs(self, data):
+        height, width, num_frames, num_views = self._video_geometry(data["video"])
         inputs_posi = {
             "prompt": data.get("prompt"),
             "prompt_emb": data.get("prompt_emb"),
@@ -116,9 +224,10 @@ class WanTrainingModule(DiffusionTrainingModule):
         inputs_shared = {
             "input_video": data["video"],
             "action": data.get("action"),
-            "height": data["video"][0].size[1],
-            "width": data["video"][0].size[0],
-            "num_frames": len(data["video"]),
+            "height": height,
+            "width": width,
+            "num_frames": num_frames,
+            "num_views": num_views,
             "num_history_frames": self.num_history_frames,
             "cfg_scale": 1,
             "tiled": False,
@@ -176,7 +285,7 @@ if __name__ == "__main__":
         stats = json.load(f)
     stat = {args.action_type: stats[args.action_type]} if args.action_type in stats else stats
 
-    dataset = UnifiedDataset(
+    dataset = RoboTwinUnifiedDataset(
         base_path=args.dataset_base_path,
         metadata_path=args.dataset_metadata_path,
         repeat=args.dataset_repeat,
@@ -192,6 +301,7 @@ if __name__ == "__main__":
             time_division_factor=args.time_division_factor,
             time_division_remainder=args.time_division_remainder,
             resize_mode=args.resize_mode,
+            pad_short=args.pad_short_chunks,
         ),
         special_operator_map=special_operator_map,
     )
@@ -210,6 +320,8 @@ if __name__ == "__main__":
             num_frames=args.num_frames,
             time_division_factor=args.time_division_factor,
             time_division_remainder=args.time_division_remainder,
+            pad_short=args.pad_short_chunks,
+            output_dim=args.action_dim,
         )
 
     model = WanTrainingModule(
@@ -239,9 +351,12 @@ if __name__ == "__main__":
         args=args,
     )
 
-    model_logger = ModelLogger(
+    model_logger = TimedRetentionModelLogger(
         args.output_path,
         remove_prefix_in_ckpt=args.remove_prefix_in_ckpt,
+        save_minutes=args.checkpoint_save_minutes,
+        keep_last=args.checkpoint_keep_last,
+        log_steps=args.log_steps,
     )
     launcher_map = {
         "sft:data_process": launch_data_process_task,

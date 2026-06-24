@@ -1,0 +1,104 @@
+# Stage 1 low-dimensional C ablation. Same data/training path as medium C.
+
+dataset:
+  dataset_base_path: "/inspire/hdd/project/robot-reasoning/xuyue-p-xuyue/cy/tool_adaptation_Project/TTTdynamics/repos/FastWAM/data/libero_push_box_calibrated_v2_100pairs"
+  dataset_metadata_path: "data/push_box_bwm_calibrated_v2_100pairs/train.jsonl"
+  dataset_repeat: 20
+  dataset_num_workers: 2
+  data_file_keys: "video,action"
+
+video:
+  height: 224
+  width: 224
+  max_pixels: 16777216
+  num_frames: 81
+  resize_mode: "fit"
+  num_history_frames: 1
+  time_division_factor: 4
+  time_division_remainder: 1
+  spatial_division_factor: 32
+  chunk_mode: "static"
+  pad_short_chunks: true
+
+model:
+  model_paths: "models/Wan2.2-TI2V-5B"
+  model_id_with_origin_paths: null
+  extra_inputs: null
+  fp8_models: null
+  offload_models: null
+  model_config_path: "configs/model/wan2_2_ti2v_5b.yaml"
+  initialize_model_on_cpu: false
+  text_mode: "none"
+  enable_text: false
+  enable_dit: true
+  enable_vae: true
+  enable_image: false
+  action_mode: "adaln"
+
+action:
+  action_type: "eef_delta"
+  action_stat_path: "data/push_box_bwm_calibrated_v2_100pairs/action_stats.json"
+  action_dim: 14
+
+physical_context:
+  physical_context_mode: "both"
+  physical_context_dim: 16
+  physical_context_tokens: 1
+  physical_context_hidden_dim: 0
+  physical_context_init_std: 0.0
+  physical_adapter_mode: "none"
+  physical_support_weight: 1.0
+  physical_query_weight: 1.0
+  physical_specificity_weight: 0.1
+
+training:
+  learning_rate: 1e-5
+  num_epochs: 2
+  trainable_models: "dit,action_encoder,physical_context_encoder"
+  find_unused_parameters: false
+  weight_decay: 0.01
+  task: "sft"
+  seed: 20260624
+  mixed_precision: "bf16"
+  max_timestep_boundary: 1.0
+  min_timestep_boundary: 0.0
+  batch_size: 1
+
+output:
+  output_path: "./outputs/push_box_low_c_stage1"
+  remove_prefix_in_ckpt: "pipe.dit."
+  save_steps: null
+  checkpoint_save_minutes: 20
+  checkpoint_keep_last: 2
+  log_steps: 5
+  ckpt_path: "ckpt/BLM/step-12000.safetensors"
+  resume_from: null
+
+lora:
+  lora_base_model: null
+  lora_target_modules: null
+  lora_rank: 32
+  lora_checkpoint: null
+  preset_lora_path: null
+  preset_lora_model: null
+
+gradient:
+  use_gradient_checkpointing: true
+  use_gradient_checkpointing_offload: false
+  gradient_accumulation_steps: 4
+  max_grad_norm: 0.5
+
+tracking:
+  use_wandb: false
+  use_swanlab: false
+  swanlab_experiment_name: null
+
+infer:
+  cfg_scale: 5.0
+  num_inference_steps: 50
+  negative_prompt: "The video is not of a high quality, it has a low resolution. Watermark present in each frame. The background is solid. Strange body and strange trajectory. Distortion"
+  negative_prompt_emb: null
+  quality: 5
+  chunk_infer: true
+  fps: 20
+  enable_metrics: true
