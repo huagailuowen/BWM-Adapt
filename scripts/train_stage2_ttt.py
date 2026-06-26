@@ -361,7 +361,7 @@ def add_stage2_config(parser: argparse.ArgumentParser):
     group.add_argument("--stage2_query_weight", type=float, default=1.0)
     group.add_argument("--stage2_show_eval_weight", type=float, default=0.1)
     group.add_argument("--stage2_gap_weight", type=float, default=0.2)
-    group.add_argument("--stage2_gap_margin", type=float, default=0.05)
+    group.add_argument("--stage2_gap_margin", type=float, default=0.03)
     group.add_argument("--stage2_context_reg_weight", type=float, default=1e-3)
     group.add_argument("--stage2_improvement_eps", type=float, default=1e-4)
     return parser

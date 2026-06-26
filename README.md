@@ -248,7 +248,7 @@ L_context_reg   = mean((C_adapted - C0)^2)
 
 rel_show_imp  = (L_show_base - stopgrad(L_show_adapted)) / (abs(L_show_base) + 1e-4)
 rel_query_imp = (L_query_base - L_query_adapted) / (abs(L_query_base) + 1e-4)
-L_gap         = relu(stopgrad(rel_show_imp) - rel_query_imp - 0.05)^2
+L_gap         = relu(stopgrad(rel_show_imp) - rel_query_imp - 0.03)^2
 ```
 
 The gap term penalizes cases where the support trajectory improves much more than the held-out same-friction query trajectories. This is meant to discourage support-only memorization.
