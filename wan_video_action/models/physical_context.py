@@ -171,9 +171,23 @@ class LowRankResidualAdapter(nn.Module):
         self.down = nn.Linear(dim, rank, bias=False)
         self.up = nn.Linear(rank, dim, bias=False)
         self.gate = nn.Parameter(torch.tensor(float(gate_init)))
+        self.cond_norm = nn.LayerNorm(dim)
+        self.cond_gate = nn.Linear(dim, 1, bias=False)
+        nn.init.zeros_(self.cond_gate.weight)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return x + self.gate * self.up(self.down(self.norm(x)))
+    def forward(self, x: torch.Tensor, conditioning: Optional[torch.Tensor] = None) -> torch.Tensor:
+        gate = self.gate
+        if conditioning is not None:
+            if conditioning.ndim == 3:
+                conditioning = conditioning.mean(dim=1)
+            if conditioning.ndim != 2 or conditioning.shape[-1] != x.shape[-1]:
+                raise ValueError(
+                    "Adapter conditioning must have shape (B, D) or (B, T, D); "
+                    f"got conditioning={tuple(conditioning.shape)}, x={tuple(x.shape)}."
+                )
+            cond_gate = self.cond_gate(self.cond_norm(conditioning)).to(dtype=x.dtype)
+            gate = gate.to(dtype=x.dtype) + cond_gate.view(cond_gate.shape[0], 1, 1)
+        return x + gate * self.up(self.down(self.norm(x)))
 
 
 class PhysicalResidualAdapterBank(nn.Module):
@@ -206,8 +220,13 @@ class PhysicalResidualAdapterBank(nn.Module):
             {str(layer): LowRankResidualAdapter(dim=dim, rank=rank, gate_init=gate_init) for layer in selected}
         )
 
-    def forward(self, layer_index: int, x: torch.Tensor) -> torch.Tensor:
+    def forward(
+        self,
+        layer_index: int,
+        x: torch.Tensor,
+        conditioning: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
         key = str(int(layer_index))
         if key not in self.adapters:
             return x
-        return self.adapters[key](x)
+        return self.adapters[key](x, conditioning=conditioning)

@@ -1,0 +1,455 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import random
+import sys
+from collections import defaultdict
+from pathlib import Path
+
+import imageio.v2 as imageio
+import numpy as np
+import torch
+from PIL import Image, ImageDraw
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+if str(REPO_ROOT / "scripts") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "scripts"))
+
+from infer import (  # noqa: E402
+    _parse_sample_indices,
+    _run_autoregressive,
+    build_infer_dataset,
+    build_pipeline,
+    prepare_sample_for_rollout,
+)
+from make_gt_pred_comparison import (  # noqa: E402
+    _default_pred_name,
+    _read_gt_video,
+    _read_pred_video,
+    _resize_rgb,
+)
+from train_stage2_ttt import add_stage2_config  # noqa: E402
+from wan_video_action.data import LoadCobotAction, RoboTwinUnifiedDataset, create_video_operator  # noqa: E402
+from wan_video_action.parsers import add_general_config, merge_yaml_and_args, prepare_runtime_config  # noqa: E402
+from wan_video_action.pipelines.wan_video_action import load_checkpoint_weights  # noqa: E402
+from wan_video_action.utils import set_global_seed  # noqa: E402
+
+
+def _read_jsonl(path: str | Path) -> list[dict]:
+    rows = []
+    with Path(path).open("r", encoding="utf-8") as f:
+        for line in f:
+            text = line.strip()
+            if text:
+                rows.append(json.loads(text))
+    return rows
+
+
+def _write_jsonl(path: Path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        for row in rows:
+            f.write(json.dumps(row, sort_keys=True) + "\n")
+
+
+def _build_support_dataset(args, runtime_config):
+    with open(args.action_stat_path, "r", encoding="utf-8") as f:
+        stats = json.load(f)
+    stat = {args.action_type: stats[args.action_type]} if args.action_type in stats else stats
+
+    special_operator_map = {}
+    if "action" in runtime_config["data_file_keys"]:
+        special_operator_map["action"] = LoadCobotAction(
+            base_path=args.dataset_base_path,
+            action_type=args.action_type,
+            stat=stat,
+            num_frames=args.num_frames,
+            time_division_factor=args.time_division_factor,
+            time_division_remainder=args.time_division_remainder,
+            pad_short=args.pad_short_chunks,
+            output_dim=args.action_dim,
+        )
+
+    return RoboTwinUnifiedDataset(
+        base_path=args.dataset_base_path,
+        metadata_path=args.support_metadata_path,
+        repeat=1,
+        data_file_keys=runtime_config["data_file_keys"],
+        main_data_operator=create_video_operator(
+            base_path=args.dataset_base_path,
+            max_pixels=args.max_pixels,
+            height=args.height,
+            width=args.width,
+            height_division_factor=16,
+            width_division_factor=16,
+            num_frames=args.num_frames,
+            time_division_factor=args.time_division_factor,
+            time_division_remainder=args.time_division_remainder,
+            resize_mode=args.resize_mode,
+            pad_short=args.pad_short_chunks,
+        ),
+        special_operator_map=special_operator_map,
+    )
+
+
+def _group_rows(rows: list[dict], group_keys: str) -> dict[tuple, list[int]]:
+    keys = tuple(part.strip() for part in group_keys.split(",") if part.strip())
+    groups: dict[tuple, list[int]] = defaultdict(list)
+    for index, row in enumerate(rows):
+        groups[tuple(row.get(key) for key in keys)].append(index)
+    return groups
+
+
+def _support_sort_key(row: dict):
+    push_start = int(row.get("push_start", 60))
+    start = int(row.get("start_frame", 0))
+    is_push_focus = row.get("chunk_type") == "push_focus"
+    return (
+        0 if is_push_focus else 1,
+        abs(start - max(0, push_start - 10)),
+        int(row.get("episode_index", 0)),
+        str(row.get("sample_id", "")),
+    )
+
+
+def _select_support_indices(
+    *,
+    support_rows: list[dict],
+    support_groups: dict[tuple, list[int]],
+    group_key: tuple,
+    support_count: int,
+    seed: int,
+) -> list[int]:
+    candidates = list(support_groups[group_key])
+    stable_group_id = int(hashlib.sha1(str(group_key).encode("utf-8")).hexdigest()[:8], 16)
+    rng = random.Random(seed + stable_group_id)
+    candidates.sort(key=lambda index: _support_sort_key(support_rows[index]))
+
+    selected = []
+    used_episodes = set()
+    for index in candidates:
+        episode = support_rows[index].get("episode_index")
+        if episode in used_episodes:
+            continue
+        selected.append(index)
+        used_episodes.add(episode)
+        if len(selected) >= support_count:
+            return selected
+
+    remaining = [index for index in candidates if index not in selected]
+    rng.shuffle(remaining)
+    selected.extend(remaining[: max(0, support_count - len(selected))])
+    return selected
+
+
+def _freeze_pipe(pipe) -> None:
+    for name in ("dit", "vae", "action_encoder", "physical_context_encoder", "physical_adapter_bank"):
+        module = getattr(pipe, name, None)
+        if module is not None:
+            module.requires_grad_(False)
+            module.eval()
+    pipe.eval()
+
+
+def _video_geometry(video: torch.Tensor) -> tuple[int, int, int, int]:
+    if video.ndim != 5:
+        raise ValueError(f"Expected video tensor (V,C,T,H,W), got {tuple(video.shape)}")
+    num_views = int(video.shape[0])
+    return int(video.shape[-2]) * num_views, int(video.shape[-1]), int(video.shape[2]), num_views
+
+
+def _prepare_loss_inputs(pipe, data: dict, physical_context: torch.Tensor, args):
+    height, width, num_frames, num_views = _video_geometry(data["video"])
+    inputs_shared = {
+        "input_video": data["video"],
+        "action": data.get("action"),
+        "height": height,
+        "width": width,
+        "num_frames": num_frames,
+        "num_views": num_views,
+        "num_history_frames": int(args.num_history_frames),
+        "cfg_scale": 1,
+        "tiled": False,
+        "rand_device": pipe.device,
+        "physical_context": physical_context,
+        "use_gradient_checkpointing": bool(args.use_gradient_checkpointing),
+        "use_gradient_checkpointing_offload": bool(args.use_gradient_checkpointing_offload),
+        "max_timestep_boundary": float(args.max_timestep_boundary),
+        "min_timestep_boundary": float(args.min_timestep_boundary),
+    }
+    inputs_posi = {"prompt": data.get("prompt"), "prompt_emb": data.get("prompt_emb")}
+    inputs_nega = {"negative_prompt": data.get("negative_prompt"), "prompt_emb": data.get("negative_prompt_emb")}
+    inputs = (inputs_shared, inputs_posi, inputs_nega)
+    for unit in pipe.units:
+        inputs = pipe.unit_runner(unit, pipe, *inputs)
+    return inputs
+
+
+def _shared_inputs(inputs):
+    return inputs[0] if isinstance(inputs, tuple) else inputs
+
+
+def _sample_timestep(pipe, inputs: dict, args) -> torch.Tensor:
+    inputs = _shared_inputs(inputs)
+    max_idx = int(float(args.max_timestep_boundary) * len(pipe.scheduler.timesteps))
+    min_idx = int(float(args.min_timestep_boundary) * len(pipe.scheduler.timesteps))
+    max_idx = max(min_idx + 1, max_idx)
+    timestep_id = torch.randint(min_idx, max_idx, (1,))
+    return pipe.scheduler.timesteps[timestep_id].to(dtype=pipe.torch_dtype, device=pipe.device)
+
+
+def _flow_match_loss(pipe, inputs, args) -> torch.Tensor:
+    inputs = dict(_shared_inputs(inputs))
+    timestep = _sample_timestep(pipe, inputs, args)
+    noise = torch.randn_like(inputs["input_latents"])
+    inputs["latents"] = pipe.scheduler.add_noise(inputs["input_latents"], noise, timestep)
+    target = pipe.scheduler.training_target(inputs["input_latents"], noise, timestep)
+    if "first_frame_latents" in inputs:
+        inputs["latents"][:, :, 0:1] = inputs["first_frame_latents"]
+
+    models = {name: getattr(pipe, name) for name in pipe.in_iteration_models}
+    pred = pipe.model_fn(**models, **inputs, timestep=timestep)
+    if "first_frame_latents" in inputs:
+        pred = pred[:, :, 1:]
+        target = target[:, :, 1:]
+    loss = torch.nn.functional.mse_loss(pred.float(), target.float())
+    return loss * pipe.scheduler.training_weight(timestep)
+
+
+def _context_reg(pipe, context: torch.Tensor) -> torch.Tensor:
+    target = pipe.physical_context_encoder.default_context.detach().to(dtype=context.dtype, device=context.device)
+    return torch.mean((context.float() - target.float()) ** 2)
+
+
+def _adapt_context(pipe, support_items: list[dict], args) -> tuple[torch.Tensor, list[float]]:
+    if pipe.physical_context_encoder is None:
+        raise ValueError("Stage2 TTT inference requires physical_context_mode != 'none'.")
+
+    pipe.scheduler.set_timesteps(1000, training=True)
+    context = pipe.physical_context_encoder.default_context.detach().clone()
+    context = context.to(dtype=pipe.torch_dtype, device=pipe.device).requires_grad_(True)
+    losses = []
+    for inner_idx in range(int(args.stage2_inner_steps)):
+        support_losses = []
+        for item in support_items:
+            inputs = _prepare_loss_inputs(pipe, item, context, args)
+            support_losses.append(_flow_match_loss(pipe, inputs, args))
+        loss = torch.stack(support_losses).mean()
+        if float(args.stage2_context_reg_weight) > 0:
+            loss = loss + float(args.stage2_context_reg_weight) * _context_reg(pipe, context)
+        (grad,) = torch.autograd.grad(loss, context, create_graph=False)
+        if float(args.stage2_inner_grad_clip) > 0:
+            grad_norm = grad.float().norm().clamp_min(1e-6)
+            scale = min(1.0, float(args.stage2_inner_grad_clip) / float(grad_norm.detach().cpu()))
+            grad = grad * scale
+        context = (context - float(args.stage2_inner_lr) * grad).detach().requires_grad_(True)
+        losses.append(float(loss.detach().float().cpu()))
+        print(f"[inner] step={inner_idx + 1} loss={losses[-1]:.6f}", flush=True)
+    return context.detach(), losses
+
+
+def _draw_label(frame: np.ndarray, label: str) -> np.ndarray:
+    image = Image.fromarray(frame).convert("RGB")
+    draw = ImageDraw.Draw(image)
+    width = max(88, 9 * len(label) + 12)
+    draw.rectangle((0, 0, width, 22), fill=(0, 0, 0))
+    draw.text((6, 5), label, fill=(255, 255, 255))
+    return np.asarray(image, dtype=np.uint8)
+
+
+def _write_three_way_comparison(
+    *,
+    row: dict,
+    sample_index: int,
+    dataset_base_path: Path,
+    stage1_pred_path: Path,
+    stage2_pred_path: Path,
+    output_dir: Path,
+    width: int,
+    height: int,
+    fps: int,
+    quality: int,
+) -> Path:
+    num_views = len(row["video"])
+    target_width = width * num_views
+    total_frames = int(row.get("length", row["end_frame"] - row["start_frame"] + 1))
+    gt_frames = _read_gt_video(row, dataset_base_path, width, height, total_frames)
+    stage1_frames = _read_pred_video(stage1_pred_path, target_width, height)
+    stage2_frames = _read_pred_video(stage2_pred_path, target_width, height)
+    total = min(len(gt_frames), len(stage1_frames), len(stage2_frames))
+    if total <= 0:
+        raise RuntimeError(f"No frames to compare for sample_index={sample_index}.")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    name = _default_pred_name(sample_index, row).replace(".mp4", "_gt_stage1_stage2ttt.mp4")
+    output_path = output_dir / name
+    with imageio.get_writer(str(output_path), fps=fps, codec="libx264", quality=quality) as writer:
+        for frame_id in range(total):
+            gt = _draw_label(_resize_rgb(gt_frames[frame_id], target_width, height), "GT")
+            stage1 = _draw_label(_resize_rgb(stage1_frames[frame_id], target_width, height), "STAGE1")
+            stage2 = _draw_label(_resize_rgb(stage2_frames[frame_id], target_width, height), "STAGE2+TTT")
+            writer.append_data(np.concatenate([gt, stage1, stage2], axis=0))
+    return output_path
+
+
+def parse_args():
+    parser = argparse.ArgumentParser("Stage2 TTT test-time inference and comparison.")
+    parser = add_stage2_config(add_general_config(parser))
+    parser.add_argument("--stage2_ckpt_path", type=str, required=True)
+    parser.add_argument("--support_metadata_path", type=str, default="data/push_box_bwm_calibrated_v2_100pairs/train.jsonl")
+    parser.add_argument("--support_count", type=int, default=2)
+    parser.add_argument("--sample_indices", type=str, default=None)
+    parser.add_argument("--baseline_pred_dir", type=str, default=None)
+    parser.add_argument("--comparison_output_path", type=str, default=None)
+    parser.add_argument("--skip_existing", action="store_true", default=False)
+    parser.add_argument("--dry_run", action="store_true", default=False)
+    args = parser.parse_args()
+    if args.config is not None:
+        args = merge_yaml_and_args(args.config, parser, args)
+    return args
+
+
+def main() -> None:
+    args = parse_args()
+    set_global_seed(int(args.seed))
+
+    query_rows = _read_jsonl(args.dataset_metadata_path)
+    support_rows = _read_jsonl(args.support_metadata_path)
+    support_groups = _group_rows(support_rows, args.stage2_group_keys)
+
+    sample_indices = _parse_sample_indices(args.sample_indices)
+    if sample_indices is None:
+        start = int(args.start_index)
+        end = len(query_rows) if not args.max_samples else min(len(query_rows), start + int(args.max_samples))
+        sample_indices = list(range(start, end))
+    if args.max_samples and args.sample_indices is not None:
+        sample_indices = sample_indices[: int(args.max_samples)]
+
+    support_plan = {}
+    for sample_index in sample_indices:
+        row = query_rows[int(sample_index)]
+        group_key = tuple(row.get(name.strip()) for name in args.stage2_group_keys.split(",") if name.strip())
+        if group_key not in support_groups:
+            raise KeyError(f"No support rows for group={group_key}.")
+        if group_key not in support_plan:
+            support_plan[group_key] = _select_support_indices(
+                support_rows=support_rows,
+                support_groups=support_groups,
+                group_key=group_key,
+                support_count=int(args.support_count),
+                seed=int(args.seed),
+            )
+        print(
+            f"[plan] query={sample_index} group={group_key} "
+            f"support={support_plan[group_key]}",
+            flush=True,
+        )
+
+    output_path = Path(args.output_path)
+    comparison_path = Path(args.comparison_output_path) if args.comparison_output_path else output_path.parent / "comparison_videos"
+    plan_rows = []
+    for group_key, indices in sorted(support_plan.items(), key=lambda item: str(item[0])):
+        plan_rows.append(
+            {
+                "group_key": list(group_key),
+                "support_indices": indices,
+                "support_sample_ids": [support_rows[index].get("sample_id") for index in indices],
+                "support_episode_indices": [support_rows[index].get("episode_index") for index in indices],
+            }
+        )
+    _write_jsonl(output_path.parent / "support_plan.jsonl", plan_rows)
+    if args.dry_run:
+        return
+
+    runtime_config = prepare_runtime_config(args)
+    support_dataset = _build_support_dataset(args, runtime_config)
+    query_dataset = build_infer_dataset(args)
+
+    pipe = build_pipeline(args)
+    load_checkpoint_weights(pipe, args.stage2_ckpt_path)
+    _freeze_pipe(pipe)
+
+    context_cache: dict[tuple, tuple[torch.Tensor, list[float]]] = {}
+    result_rows = []
+    output_path.mkdir(parents=True, exist_ok=True)
+    comparison_path.mkdir(parents=True, exist_ok=True)
+
+    for sample_index in sample_indices:
+        sample_index = int(sample_index)
+        row = query_rows[sample_index]
+        group_key = tuple(row.get(name.strip()) for name in args.stage2_group_keys.split(",") if name.strip())
+        pred_name = _default_pred_name(sample_index, row)
+        pred_path = output_path / pred_name
+
+        if group_key not in context_cache:
+            support_indices = support_plan[group_key]
+            print(f"[adapt] group={group_key} support={support_indices}", flush=True)
+            support_items = [support_dataset[index] for index in support_indices]
+            context_cache[group_key] = _adapt_context(pipe, support_items, args)
+            torch.cuda.empty_cache()
+
+        adapted_context, inner_losses = context_cache[group_key]
+        if pred_path.exists() and args.skip_existing:
+            print(f"[skip] existing prediction {pred_path}", flush=True)
+        else:
+            sample = query_dataset[sample_index]
+            sample = prepare_sample_for_rollout(sample, sample_index, pipe, args)
+            sample["physical_context"] = adapted_context
+            print(
+                f"[sample] sample_index={sample_index} group={group_key} "
+                f"episode={sample['episode_index']} output={pred_path}",
+                flush=True,
+            )
+            _run_autoregressive(pipe=pipe, sample=sample, args=args)
+            torch.cuda.empty_cache()
+
+        comparison_file = None
+        if args.baseline_pred_dir:
+            stage1_pred_path = Path(args.baseline_pred_dir) / pred_name
+            if not stage1_pred_path.exists():
+                print(f"[comparison_skip] missing stage1 baseline {stage1_pred_path}", flush=True)
+            elif not pred_path.exists():
+                print(f"[comparison_skip] missing stage2 prediction {pred_path}", flush=True)
+            else:
+                comparison_file = _write_three_way_comparison(
+                    row=row,
+                    sample_index=sample_index,
+                    dataset_base_path=Path(args.dataset_base_path),
+                    stage1_pred_path=stage1_pred_path,
+                    stage2_pred_path=pred_path,
+                    output_dir=comparison_path,
+                    width=int(args.width),
+                    height=int(args.height),
+                    fps=int(args.fps),
+                    quality=int(args.quality),
+                )
+                print(f"[comparison] {comparison_file}", flush=True)
+
+        result_rows.append(
+            {
+                "sample_index": sample_index,
+                "sample_id": row.get("sample_id"),
+                "episode_index": row.get("episode_index"),
+                "group_key": list(group_key),
+                "support_indices": support_plan[group_key],
+                "inner_losses": inner_losses,
+                "prediction_path": str(pred_path),
+                "comparison_path": None if comparison_file is None else str(comparison_file),
+                "context_norm": float(adapted_context.float().norm().cpu()),
+            }
+        )
+        _write_jsonl(output_path.parent / "results.jsonl", result_rows)
+
+    print(f"[done] predictions={output_path}", flush=True)
+    print(f"[done] comparisons={comparison_path}", flush=True)
+
+
+if __name__ == "__main__":
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
+    main()

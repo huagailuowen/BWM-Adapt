@@ -147,6 +147,157 @@ L_property_separation: optional contrastive term between different property grou
 
 The key metric is whether adapting from `A` improves `B/C/D`, not just `A`.
 
+## Implemented Push-Box Workflow
+
+The current implementation targets the FastWAM hidden push-box dataset:
+
+```text
+FastWAM/data/libero_push_box_calibrated_v2_100pairs
+```
+
+The prepared BWM manifests live under:
+
+```text
+data/push_box_bwm_calibrated_v2_100pairs/
+  train.jsonl
+  test.jsonl
+  action_stats.json
+```
+
+Rows are grouped by:
+
+```text
+source_split, friction_mu
+```
+
+where `source_split` is `straight` or `angled`, and `friction_mu` is one of the calibrated friction bins. Push-focused chunks are sampled around frame starts 50 to 75, with short end-of-episode chunks padded by repeating the last valid frame/action.
+
+### Stage 1: Video Finetuning
+
+Stage 1 adapts the base action-conditioned BWM to the push-box video distribution.
+
+Config:
+
+```text
+configs/train/train_push_box_medium_c_stage1_10k.yaml
+```
+
+The in-domain checkpoint used by later experiments is:
+
+```text
+outputs/push_box_medium_c_stage1_10k_4gpu/step-10000.safetensors
+```
+
+This file is an experiment artifact and is ignored by git.
+
+### Stage 2: First-Order TTT Meta-Training
+
+Stage 2 trains a medium-dimensional latent physical code `C` plus C-conditioned low-rank residual adapters.
+
+Main script:
+
+```text
+scripts/train_stage2_ttt.py
+```
+
+Configs:
+
+```text
+configs/train/train_push_box_medium_c_stage2_ttt.yaml
+configs/train/train_push_box_medium_c_stage2_ttt_10k_2gpu.yaml
+```
+
+Trainable modules:
+
+```text
+physical_context_encoder
+physical_adapter_bank
+```
+
+Frozen modules:
+
+```text
+DiT backbone
+VAE
+text/language path
+action encoder
+```
+
+For each meta-task, support and query chunks come from the same `source_split,friction_mu` group. The inner loop starts from `physical_context_encoder.default_context` and updates only the task-local `C` for 5 gradient steps:
+
+```text
+C <- C - 0.05 * clip_grad(d L_inner / d C, max_norm=1.0)
+```
+
+The outer loop is first-order and updates only the context encoder and residual adapter bank:
+
+```text
+L_outer =
+  1.0   * L_query_adapted
++ 0.1   * L_show_adapted
++ 0.2   * L_gap
++ 0.001 * L_context_reg
+```
+
+Definitions:
+
+```text
+L_query_adapted = mean flow-matching loss on held-out same-property query chunks using adapted C
+L_show_adapted  = mean flow-matching loss on support chunks using adapted C
+L_context_reg   = mean((C_adapted - C0)^2)
+
+rel_show_imp  = (L_show_base - stopgrad(L_show_adapted)) / (abs(L_show_base) + 1e-4)
+rel_query_imp = (L_query_base - L_query_adapted) / (abs(L_query_base) + 1e-4)
+L_gap         = relu(stopgrad(rel_show_imp) - rel_query_imp - 0.05)^2
+```
+
+The gap term penalizes cases where the support trajectory improves much more than the held-out same-friction query trajectories. This is meant to discourage support-only memorization.
+
+Guard scripts:
+
+```text
+scripts/run_stage2_ttt_guard.sh
+scripts/run_stage2_ttt_10k_gpu01_guard.sh
+```
+
+These scripts run long jobs in `tmux`-friendly shells and restore GPU holder sessions for GPUs 2 and 3 when the job exits.
+
+### Stage 2 Test-Time Evaluation
+
+Stage 2 evaluation adapts on training support episodes and predicts different held-out test episodes from the same `source_split,friction_mu` group. The query ground truth is used only for visualization and metrics, not for TTT.
+
+Main inference script:
+
+```text
+scripts/infer_stage2_ttt.py
+```
+
+The standard comparison layout is:
+
+```text
+top:    query GT
+middle: stage1 prediction without TTT
+bottom: stage2 + TTT prediction
+```
+
+The detailed comparison layout also includes the support GT videos used for adaptation:
+
+```text
+row 1: TTT support 1 GT
+row 2: TTT support 2 GT
+row 3: query GT
+row 4: stage1 prediction without TTT
+row 5: stage2 + TTT prediction
+```
+
+Comparison helper:
+
+```text
+scripts/make_ttt_support_comparison.py
+```
+
+Outputs, logs, videos, images, checkpoints, and local model/data files are git-ignored. Keep experiment artifacts under `outputs/` or `logs/`.
+
 ## Code Entry Points
 
 - `wan_video_action/models/physical_context.py`: latent C encoder and low-rank residual adapters.
@@ -154,6 +305,9 @@ The key metric is whether adapting from `A` improves `B/C/D`, not just `A`.
 - `wan_video_action/parsers.py`: CLI/YAML knobs for physical context and adapters.
 - `scripts/train.py`: training entry point.
 - `scripts/infer.py`: rollout entry point.
+- `scripts/train_stage2_ttt.py`: first-order support/query TTT meta-training entry point.
+- `scripts/infer_stage2_ttt.py`: test-time C adaptation and rollout entry point.
+- `scripts/make_ttt_support_comparison.py`: support/query/stage1/stage2 comparison video builder.
 - `tests/physical_context_smoke.py`: CPU-only shape and gradient smoke test.
 
 ## Smoke Tests

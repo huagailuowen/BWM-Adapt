@@ -22,10 +22,32 @@ from wan_video_action.utils import align_num_frames, resolve_model_path, save_vi
 def parse_args():
     parser = argparse.ArgumentParser("RoboTwin inference entrypoint.")
     parser = add_general_config(parser)
+    parser.add_argument(
+        "--sample_indices",
+        type=str,
+        default=None,
+        help="[OPTIONAL] Comma/range list of metadata row indices to process, e.g. 2,10,20-22.",
+    )
     args = parser.parse_args()
     if args.config is not None:
         args = merge_yaml_and_args(args.config, parser, args)
     return args
+
+
+def _parse_sample_indices(value: str | None):
+    if not value:
+        return None
+    indices = []
+    for part in value.split(","):
+        part = part.strip()
+        if not part:
+            continue
+        if "-" in part:
+            start, end = part.split("-", 1)
+            indices.extend(range(int(start), int(end) + 1))
+        else:
+            indices.append(int(part))
+    return indices
 
 
 def _build_autoregressive_history_indices(
@@ -269,8 +291,14 @@ def main():
 
     pipe = build_pipeline(args)
 
+    sample_indices = _parse_sample_indices(getattr(args, "sample_indices", None))
+    if sample_indices is None:
+        sample_indices = range(args.start_index, len(dataset))
+
     processed = 0
-    for sample_index in range(args.start_index, len(dataset)):
+    for sample_index in sample_indices:
+        if sample_index < 0 or sample_index >= len(dataset):
+            raise IndexError(f"sample_index={sample_index} is outside dataset length {len(dataset)}")
         if args.max_samples and processed >= args.max_samples:
             break
 

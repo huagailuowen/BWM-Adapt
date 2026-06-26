@@ -609,12 +609,14 @@ def model_fn_wan_video_action(
     num_spatial_tokens = t.shape[1] // target_mod_groups
     action_mod_emb = action_mod_emb.unsqueeze(2).repeat(1, 1, num_spatial_tokens, 1).flatten(1, 2)
     t = t + action_mod_emb
+    physical_adapter_condition = None
     if physical_mod_emb is not None:
         if physical_mod_emb.shape[1] != target_mod_groups:
             raise RuntimeError(
                 f"Physical temporal group mismatch: physical_mod_emb.shape={tuple(physical_mod_emb.shape)}, "
                 f"expected_groups={target_mod_groups}."
             )
+        physical_adapter_condition = physical_mod_emb.mean(dim=1)
         physical_mod_emb = physical_mod_emb.unsqueeze(2).repeat(1, 1, num_spatial_tokens, 1).flatten(1, 2)
         t = t + physical_mod_emb
 
@@ -670,7 +672,7 @@ def model_fn_wan_video_action(
         else:
             x = block(x, context, t_mod, freqs)
         if physical_adapter_bank is not None:
-            x = physical_adapter_bank(layer_idx, x)
+            x = physical_adapter_bank(layer_idx, x, conditioning=physical_adapter_condition)
 
     x = dit.head(x, t)
     x = dit.unpatchify(x, (f, h, w))
