@@ -9,14 +9,14 @@ Goal:
 Generate hidden push-box episodes where friction is the environment-level property. The dataset must support test-time adaptation: given 1-3 support rollouts from one friction value, the model should improve prediction on other held-out rollouts with the same friction but different poses, push lengths, and push directions.
 
 Target dataset size:
-- 8 friction levels.
+- 9 friction levels.
 - For each friction level:
   - 25 straight-push episodes.
   - 25 angled-push episodes.
-- Total: 8 * (25 straight + 25 angled) = 400 episodes.
+- Total: 9 * (25 straight + 25 angled) = 450 episodes.
 
 Friction levels:
-Use 8 clearly separated but physically plausible table friction coefficients. Include the previous bins as anchors if possible:
+Use 9 clearly separated but physically plausible table friction coefficients. Include the previous bins as anchors if possible:
 - 0.005
 - 0.01
 - 0.02
@@ -24,6 +24,7 @@ Use 8 clearly separated but physically plausible table friction coefficients. In
 - 0.05
 - 0.08
 - 0.12
+- 0.15
 - 0.2
 
 Trajectory diversity requirements:
@@ -113,4 +114,3 @@ Deliverables:
 3. The metadata summary table.
 4. A short note explaining any rejected or regenerated episodes.
 ```
-
