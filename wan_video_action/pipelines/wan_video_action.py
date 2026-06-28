@@ -90,6 +90,15 @@ def _parse_adapter_layers(layers: Optional[str], num_layers: int) -> Optional[li
     layers = str(layers).strip().lower()
     if layers in {"", "all"}:
         return None
+    if layers in {"last_quarter", "last-quarter"}:
+        start = (3 * num_layers) // 4
+        return list(range(start, num_layers))
+    if layers.startswith("last:"):
+        count = int(layers.split(":", 1)[1])
+        if count <= 0:
+            raise ValueError(f"last adapter layer count must be positive, got {count}.")
+        start = max(0, num_layers - count)
+        return list(range(start, num_layers))
     if layers.startswith("uniform:"):
         count = int(layers.split(":", 1)[1])
         if count <= 0:

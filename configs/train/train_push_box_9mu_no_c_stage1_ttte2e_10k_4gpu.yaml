@@ -1,16 +1,19 @@
-# BWM-Adapt residual-adapter parameter-adaptation template.
-# This trains only a small low-rank residual adapter bank by default.
+# Stage 1-B: no-C push-box video finetune for the TTT-E2E mild branch.
+# This run deliberately disables latent C and residual adapters so the Stage2-B
+# checkpoint has no train/test mismatch when TTT-E2E starts from no-C inputs.
+# With 900 train rows, repeat=45, and 4 DDP processes, one epoch gives about
+# 10125 optimizer steps on the main process.
 
 dataset:
-  dataset_base_path: ""
-  dataset_metadata_path: null
-  dataset_repeat: 1
-  dataset_num_workers: 0
+  dataset_base_path: "/inspire/hdd/project/robot-reasoning/xuyue-p-xuyue/cy/tool_adaptation_Project/TTTdynamics/repos/FastWAM/data/libero_push_box_friction_9mu_450"
+  dataset_metadata_path: "data/push_box_bwm_friction_9mu_450/train.jsonl"
+  dataset_repeat: 45
+  dataset_num_workers: 2
   data_file_keys: "video,action"
 
 video:
-  height: 288
-  width: 384
+  height: 224
+  width: 224
   max_pixels: 16777216
   num_frames: 81
   resize_mode: "fit"
@@ -19,55 +22,60 @@ video:
   time_division_remainder: 1
   spatial_division_factor: 32
   chunk_mode: "static"
+  pad_short_chunks: true
 
 model:
-  model_paths: ""
+  model_paths: "models/Wan2.2-TI2V-5B"
   model_id_with_origin_paths: null
   extra_inputs: null
   fp8_models: null
   offload_models: null
   model_config_path: "configs/model/wan2_2_ti2v_5b.yaml"
   initialize_model_on_cpu: false
-  text_mode: "emb"
-  enable_text: true
+  text_mode: "none"
+  enable_text: false
   enable_dit: true
   enable_vae: true
-  enable_image: true
+  enable_image: false
   action_mode: "adaln"
 
 action:
   action_type: "eef_delta"
-  action_stat_path: null
+  action_stat_path: "data/push_box_bwm_friction_9mu_450/action_stats.json"
   action_dim: 14
 
 physical_context:
   physical_context_mode: "none"
-  physical_adapter_mode: "residual"
+  physical_context_dim: 128
+  physical_context_tokens: 1
+  physical_context_hidden_dim: 0
+  physical_context_init_std: 0.0
+  physical_adapter_mode: "none"
   physical_adapter_rank: 16
-  physical_adapter_layers: "uniform:8"
+  physical_adapter_layers: "last_quarter"
   physical_adapter_gate_init: 0.0
-  physical_support_weight: 1.0
-  physical_query_weight: 1.0
-  physical_specificity_weight: 0.1
 
 training:
-  learning_rate: 1e-4
+  learning_rate: 1e-5
   num_epochs: 1
-  trainable_models: "physical_adapter_bank"
+  trainable_models: "dit,action_encoder"
   find_unused_parameters: false
   weight_decay: 0.01
   task: "sft"
-  seed: 42
+  seed: 20260628
   mixed_precision: "bf16"
   max_timestep_boundary: 1.0
   min_timestep_boundary: 0.0
   batch_size: 1
 
 output:
-  output_path: "./outputs/physical_adapter_residual"
+  output_path: "./outputs/push_box_9mu_no_c_stage1_ttte2e_10k_4gpu"
   remove_prefix_in_ckpt: "pipe.dit."
   save_steps: null
-  ckpt_path: null
+  checkpoint_save_minutes: 20
+  checkpoint_keep_last: 2
+  log_steps: 10
+  ckpt_path: "ckpt/BLM/step-12000.safetensors"
   resume_from: null
 
 lora:
@@ -96,5 +104,5 @@ infer:
   negative_prompt_emb: null
   quality: 5
   chunk_infer: true
-  fps: 24
+  fps: 20
   enable_metrics: true

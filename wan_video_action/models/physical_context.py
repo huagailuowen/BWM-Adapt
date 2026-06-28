@@ -192,11 +192,13 @@ class LowRankResidualAdapter(nn.Module):
 
 class PhysicalResidualAdapterBank(nn.Module):
     """
-    TTTE2E-style lightweight trainable residual adapters for selected DiT blocks.
+    Lightweight trainable residual adapters for selected DiT blocks.
 
     This is deliberately independent from the token-injection C path: it supports
     the alternative experiment where test-time adaptation directly updates a
-    small parameter subset while the Wan backbone stays frozen.
+    small parameter subset while the Wan backbone stays frozen. It is a
+    conservative parameter-adaptation baseline, not a direct implementation of
+    TTT-E2E's updated-MLP design.
     """
 
     def __init__(

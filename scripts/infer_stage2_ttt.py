@@ -40,6 +40,16 @@ from wan_video_action.parsers import add_general_config, merge_yaml_and_args, pr
 from wan_video_action.pipelines.wan_video_action import load_checkpoint_weights  # noqa: E402
 from wan_video_action.utils import set_global_seed  # noqa: E402
 
+TTT_ADAPT_SCOPES = (
+    "context",
+    "adapter_gates",
+    "context_adapter_gates",
+    "adapter_lowrank",
+    "context_adapter_lowrank",
+    "adapter_all",
+    "context_adapter_all",
+)
+
 
 def _read_jsonl(path: str | Path) -> list[dict]:
     rows = []
@@ -157,6 +167,116 @@ def _freeze_pipe(pipe) -> None:
     pipe.eval()
 
 
+def _uses_context_adaptation(scope: str) -> bool:
+    return str(scope) == "context" or str(scope).startswith("context_")
+
+
+def _adapter_kind(scope: str) -> str | None:
+    scope = str(scope)
+    if "adapter_gates" in scope:
+        return "gates"
+    if "adapter_lowrank" in scope:
+        return "lowrank"
+    if "adapter_all" in scope:
+        return "all"
+    return None
+
+
+def _adapter_param_allowed(name: str, kind: str) -> bool:
+    if kind == "gates":
+        return name.endswith(".gate") or name.endswith(".cond_gate.weight")
+    if kind == "lowrank":
+        return (
+            name.endswith(".gate")
+            or name.endswith(".cond_gate.weight")
+            or name.endswith(".down.weight")
+            or name.endswith(".up.weight")
+        )
+    if kind == "all":
+        return True
+    raise ValueError(f"Unsupported adapter adaptation kind: {kind}.")
+
+
+def _select_ttt_adapter_params(pipe, scope: str) -> list[tuple[str, torch.nn.Parameter]]:
+    kind = _adapter_kind(scope)
+    if kind is None:
+        return []
+    bank = getattr(pipe, "physical_adapter_bank", None)
+    if bank is None:
+        raise ValueError(f"ttt_adapt_scope={scope} requires physical_adapter_mode='residual'.")
+    selected = [
+        (name, param)
+        for name, param in bank.named_parameters()
+        if _adapter_param_allowed(name, kind)
+    ]
+    if not selected:
+        raise ValueError(f"No adapter parameters selected for ttt_adapt_scope={scope}.")
+    return selected
+
+
+def _clone_named_params(named_params: list[tuple[str, torch.nn.Parameter]]) -> dict[str, torch.Tensor]:
+    return {name: param.detach().clone() for name, param in named_params}
+
+
+def _restore_named_params(
+    named_params: list[tuple[str, torch.nn.Parameter]],
+    state: dict[str, torch.Tensor],
+) -> None:
+    with torch.no_grad():
+        for name, param in named_params:
+            if name not in state:
+                raise KeyError(f"Missing adapted adapter parameter '{name}'.")
+            param.copy_(state[name].to(device=param.device, dtype=param.dtype))
+
+
+def _set_requires_grad(
+    named_params: list[tuple[str, torch.nn.Parameter]],
+    enabled: bool,
+) -> list[tuple[torch.nn.Parameter, bool]]:
+    previous = []
+    for _, param in named_params:
+        previous.append((param, bool(param.requires_grad)))
+        param.requires_grad_(enabled)
+    return previous
+
+
+def _restore_requires_grad(previous: list[tuple[torch.nn.Parameter, bool]]) -> None:
+    for param, old_value in previous:
+        param.requires_grad_(old_value)
+
+
+def _adapter_reg_loss(
+    named_params: list[tuple[str, torch.nn.Parameter]],
+    base_state: dict[str, torch.Tensor],
+) -> torch.Tensor:
+    if not named_params:
+        raise ValueError("adapter_reg_loss requires non-empty adapter params.")
+    losses = []
+    for name, param in named_params:
+        base = base_state[name].to(device=param.device, dtype=param.dtype)
+        losses.append(torch.mean((param.float() - base.float()) ** 2))
+    return torch.stack(losses).mean()
+
+
+def _clip_grad_list(
+    grads: list[torch.Tensor | None],
+    max_norm: float,
+) -> list[torch.Tensor | None]:
+    if max_norm <= 0:
+        return grads
+    valid = [grad for grad in grads if grad is not None]
+    if not valid:
+        return grads
+    norm_sq = torch.stack([grad.detach().float().pow(2).sum() for grad in valid]).sum()
+    grad_norm = torch.sqrt(norm_sq).clamp_min(1e-6)
+    scale = min(1.0, float(max_norm) / float(grad_norm.cpu()))
+    return [None if grad is None else grad * scale for grad in grads]
+
+
+def _count_params(named_params: list[tuple[str, torch.nn.Parameter]]) -> int:
+    return int(sum(param.numel() for _, param in named_params))
+
+
 def _video_geometry(video: torch.Tensor) -> tuple[int, int, int, int]:
     if video.ndim != 5:
         raise ValueError(f"Expected video tensor (V,C,T,H,W), got {tuple(video.shape)}")
@@ -227,31 +347,90 @@ def _context_reg(pipe, context: torch.Tensor) -> torch.Tensor:
     return torch.mean((context.float() - target.float()) ** 2)
 
 
-def _adapt_context(pipe, support_items: list[dict], args) -> tuple[torch.Tensor, list[float]]:
+def _adapt_ttt_state(
+    pipe,
+    support_items: list[dict],
+    args,
+    *,
+    adapter_named_params: list[tuple[str, torch.nn.Parameter]],
+    base_adapter_state: dict[str, torch.Tensor],
+) -> tuple[torch.Tensor, list[float], dict[str, torch.Tensor], dict[str, float]]:
     if pipe.physical_context_encoder is None:
         raise ValueError("Stage2 TTT inference requires physical_context_mode != 'none'.")
 
+    scope = str(args.ttt_adapt_scope)
+    use_context = _uses_context_adaptation(scope)
+    use_adapter = bool(adapter_named_params)
     pipe.scheduler.set_timesteps(1000, training=True)
     context = pipe.physical_context_encoder.default_context.detach().clone()
-    context = context.to(dtype=pipe.torch_dtype, device=pipe.device).requires_grad_(True)
+    context = context.to(dtype=pipe.torch_dtype, device=pipe.device)
+    if use_context:
+        context = context.requires_grad_(True)
+    if use_adapter:
+        _restore_named_params(adapter_named_params, base_adapter_state)
+    previous_requires_grad = _set_requires_grad(adapter_named_params, True)
+
     losses = []
-    for inner_idx in range(int(args.stage2_inner_steps)):
-        support_losses = []
-        for item in support_items:
-            inputs = _prepare_loss_inputs(pipe, item, context, args)
-            support_losses.append(_flow_match_loss(pipe, inputs, args))
-        loss = torch.stack(support_losses).mean()
-        if float(args.stage2_context_reg_weight) > 0:
-            loss = loss + float(args.stage2_context_reg_weight) * _context_reg(pipe, context)
-        (grad,) = torch.autograd.grad(loss, context, create_graph=False)
-        if float(args.stage2_inner_grad_clip) > 0:
-            grad_norm = grad.float().norm().clamp_min(1e-6)
-            scale = min(1.0, float(args.stage2_inner_grad_clip) / float(grad_norm.detach().cpu()))
-            grad = grad * scale
-        context = (context - float(args.stage2_inner_lr) * grad).detach().requires_grad_(True)
-        losses.append(float(loss.detach().float().cpu()))
-        print(f"[inner] step={inner_idx + 1} loss={losses[-1]:.6f}", flush=True)
-    return context.detach(), losses
+    adapter_reg_value = 0.0
+    try:
+        for inner_idx in range(int(args.stage2_inner_steps)):
+            support_losses = []
+            for item in support_items:
+                inputs = _prepare_loss_inputs(pipe, item, context, args)
+                support_losses.append(_flow_match_loss(pipe, inputs, args))
+            support_loss = torch.stack(support_losses).mean()
+            loss = support_loss
+            context_reg_value = 0.0
+            if use_context and float(args.stage2_context_reg_weight) > 0:
+                context_reg = _context_reg(pipe, context)
+                context_reg_value = float(context_reg.detach().float().cpu())
+                loss = loss + float(args.stage2_context_reg_weight) * context_reg
+            if use_adapter and float(args.ttt_adapter_reg_weight) > 0:
+                adapter_reg = _adapter_reg_loss(adapter_named_params, base_adapter_state)
+                adapter_reg_value = float(adapter_reg.detach().float().cpu())
+                loss = loss + float(args.ttt_adapter_reg_weight) * adapter_reg
+
+            grad_targets: list[torch.Tensor] = []
+            if use_context:
+                grad_targets.append(context)
+            grad_targets.extend(param for _, param in adapter_named_params)
+            grads = torch.autograd.grad(loss, grad_targets, create_graph=False, allow_unused=True)
+
+            offset = 0
+            if use_context:
+                context_grad = grads[0]
+                if context_grad is None:
+                    context_grad = torch.zeros_like(context)
+                if float(args.stage2_inner_grad_clip) > 0:
+                    grad_norm = context_grad.float().norm().clamp_min(1e-6)
+                    scale = min(1.0, float(args.stage2_inner_grad_clip) / float(grad_norm.detach().cpu()))
+                    context_grad = context_grad * scale
+                context = (context - float(args.stage2_inner_lr) * context_grad).detach().requires_grad_(True)
+                offset = 1
+
+            if use_adapter:
+                adapter_grads = _clip_grad_list(list(grads[offset:]), float(args.ttt_adapter_grad_clip))
+                with torch.no_grad():
+                    for (_, param), grad in zip(adapter_named_params, adapter_grads):
+                        if grad is not None:
+                            param.add_(grad, alpha=-float(args.ttt_adapter_lr))
+
+            losses.append(float(loss.detach().float().cpu()))
+            print(
+                f"[inner] step={inner_idx + 1} scope={scope} loss={losses[-1]:.6f} "
+                f"support={float(support_loss.detach().float().cpu()):.6f} "
+                f"context_reg={context_reg_value:.6f} adapter_reg={adapter_reg_value:.6f}",
+                flush=True,
+            )
+    finally:
+        _restore_requires_grad(previous_requires_grad)
+
+    adapted_adapter_state = _clone_named_params(adapter_named_params) if use_adapter else {}
+    metrics = {
+        "adapter_params": float(_count_params(adapter_named_params)),
+        "adapter_reg": float(adapter_reg_value),
+    }
+    return context.detach(), losses, adapted_adapter_state, metrics
 
 
 def _draw_label(frame: np.ndarray, label: str) -> np.ndarray:
@@ -304,6 +483,22 @@ def parse_args():
     parser.add_argument("--stage2_ckpt_path", type=str, required=True)
     parser.add_argument("--support_metadata_path", type=str, default="data/push_box_bwm_calibrated_v2_100pairs/train.jsonl")
     parser.add_argument("--support_count", type=int, default=2)
+    parser.add_argument(
+        "--ttt_adapt_scope",
+        type=str,
+        default="context",
+        choices=TTT_ADAPT_SCOPES,
+        help=(
+            "Test-time trainable subset. Default 'context' preserves the medium-C inner loop. "
+            "'context_adapter_gates' adds conservative local gate/cond-gate updates with far fewer "
+            "parameters than adapting the whole adapter bank. These adapter scopes are ablations "
+            "inside the latent-C branch; use scripts/infer_stage2_ttte2e.py for the separate "
+            "TTT-E2E mild branch."
+        ),
+    )
+    parser.add_argument("--ttt_adapter_lr", type=float, default=1e-3)
+    parser.add_argument("--ttt_adapter_grad_clip", type=float, default=0.1)
+    parser.add_argument("--ttt_adapter_reg_weight", type=float, default=1e-4)
     parser.add_argument("--sample_indices", type=str, default=None)
     parser.add_argument("--baseline_pred_dir", type=str, default=None)
     parser.add_argument("--comparison_output_path", type=str, default=None)
@@ -374,8 +569,17 @@ def main() -> None:
     pipe = build_pipeline(args)
     load_checkpoint_weights(pipe, args.stage2_ckpt_path)
     _freeze_pipe(pipe)
+    adapter_named_params = _select_ttt_adapter_params(pipe, args.ttt_adapt_scope)
+    base_adapter_state = _clone_named_params(adapter_named_params)
+    print(
+        f"[ttt_scope] scope={args.ttt_adapt_scope} "
+        f"context={_uses_context_adaptation(args.ttt_adapt_scope)} "
+        f"adapter_tensors={len(adapter_named_params)} adapter_params={_count_params(adapter_named_params)} "
+        f"adapter_lr={float(args.ttt_adapter_lr):g} adapter_reg={float(args.ttt_adapter_reg_weight):g}",
+        flush=True,
+    )
 
-    context_cache: dict[tuple, tuple[torch.Tensor, list[float]]] = {}
+    context_cache: dict[tuple, tuple[torch.Tensor, list[float], dict[str, torch.Tensor], dict[str, float]]] = {}
     result_rows = []
     output_path.mkdir(parents=True, exist_ok=True)
     comparison_path.mkdir(parents=True, exist_ok=True)
@@ -391,10 +595,18 @@ def main() -> None:
             support_indices = support_plan[group_key]
             print(f"[adapt] group={group_key} support={support_indices}", flush=True)
             support_items = [support_dataset[index] for index in support_indices]
-            context_cache[group_key] = _adapt_context(pipe, support_items, args)
+            context_cache[group_key] = _adapt_ttt_state(
+                pipe,
+                support_items,
+                args,
+                adapter_named_params=adapter_named_params,
+                base_adapter_state=base_adapter_state,
+            )
             torch.cuda.empty_cache()
 
-        adapted_context, inner_losses = context_cache[group_key]
+        adapted_context, inner_losses, adapted_adapter_state, adapt_metrics = context_cache[group_key]
+        if adapter_named_params:
+            _restore_named_params(adapter_named_params, adapted_adapter_state)
         if pred_path.exists() and args.skip_existing:
             print(f"[skip] existing prediction {pred_path}", flush=True)
         else:
@@ -438,10 +650,13 @@ def main() -> None:
                 "episode_index": row.get("episode_index"),
                 "group_key": list(group_key),
                 "support_indices": support_plan[group_key],
+                "ttt_adapt_scope": args.ttt_adapt_scope,
                 "inner_losses": inner_losses,
                 "prediction_path": str(pred_path),
                 "comparison_path": None if comparison_file is None else str(comparison_file),
                 "context_norm": float(adapted_context.float().norm().cpu()),
+                "adapter_param_count": int(adapt_metrics.get("adapter_params", 0)),
+                "adapter_reg": float(adapt_metrics.get("adapter_reg", 0.0)),
             }
         )
         _write_jsonl(output_path.parent / "results.jsonl", result_rows)

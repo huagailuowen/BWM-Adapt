@@ -70,11 +70,31 @@ Useful experiments:
 - Multiple tokens: 1 to 5 tokens.
 - Token-only versus token plus modulation.
 
-### 2. TTTE2E-Style Residual Adapter
+### 2. TTT-E2E Mild Parameter Adaptation
 
 Implemented as `PhysicalResidualAdapterBank`.
 
-This is the parameter-adaptation baseline: insert low-rank residual adapters after selected DiT blocks and update only these small modules at adaptation time.
+This is the second architecture family. It should not use latent `C` as the
+main adaptive state. The test-time state is a small set of model parameters.
+
+The official TTT-E2E implementation uses `train_mode: meta`, splits the
+Transformer into prefix and suffix blocks, stores permanent prime FFN parameters
+in `PrimeStorage`, then updates `language_model.**.suffix_blocks.feed_forward_prime.**`
+with the same next-token task loss on each chunk. The outer optimizer trains the
+initialization through those unrolled inner updates. Its released E2E configs
+set `model.prime: true` and choose a suffix length of roughly the last quarter
+of blocks.
+
+Our BWM version is deliberately milder so it can train on the 5B video model:
+
+- keep the pretrained DiT, VAE, text/language path, and action encoder frozen;
+- attach low-rank MLP-side residual adapters to late DiT blocks;
+- default to `physical_adapter_layers: "last_quarter"`;
+- inner loop updates only adapter fast weights with video flow-matching loss;
+- outer loop trains the adapter initialization on held-out same-friction query
+  chunks after the support update;
+- first-order meta-gradients are the default; second-order is optional and
+  expected to be much more memory hungry.
 
 Config knobs:
 
@@ -82,11 +102,13 @@ Config knobs:
 physical_context:
   physical_adapter_mode: "residual"   # none | residual
   physical_adapter_rank: 16
-  physical_adapter_layers: "uniform:8"
+  physical_adapter_layers: "last_quarter"
   physical_adapter_gate_init: 0.0
 ```
 
-The gate starts at zero, so the base world model behavior is unchanged before training. We can train all adapters, uniformly selected adapters, or an explicit layer list.
+The gate starts at zero, so the base world model behavior is unchanged before
+training. The layer selector supports `all`, `uniform:N`, `last_quarter`,
+`last:N`, or an explicit comma-separated layer list.
 
 ## Training Plan
 
@@ -149,10 +171,16 @@ The key metric is whether adapting from `A` improves `B/C/D`, not just `A`.
 
 ## Implemented Push-Box Workflow
 
-The current implementation targets the FastWAM hidden push-box dataset:
+The original small push-box experiments used:
 
 ```text
 FastWAM/data/libero_push_box_calibrated_v2_100pairs
+```
+
+The current large push-box experiments use the 9-friction dataset:
+
+```text
+FastWAM/data/libero_push_box_friction_9mu_450
 ```
 
 The prepared BWM manifests live under:
@@ -162,6 +190,11 @@ data/push_box_bwm_calibrated_v2_100pairs/
   train.jsonl
   test.jsonl
   action_stats.json
+
+data/push_box_bwm_friction_9mu_450/
+  train.jsonl      # 900 chunks
+  test.jsonl       # 450 chunks
+  action_stats.json
 ```
 
 Rows are grouped by:
@@ -170,11 +203,18 @@ Rows are grouped by:
 source_split, friction_mu
 ```
 
-where `source_split` is `straight` or `angled`, and `friction_mu` is one of the calibrated friction bins. Push-focused chunks are sampled around frame starts 50 to 75, with short end-of-episode chunks padded by repeating the last valid frame/action.
+where `source_split` is `straight` or `angled`, and `friction_mu` is one of the
+friction bins. The 9-friction manifest has 18 groups:
+`straight/angled x 9 friction values`, with roughly 50 trajectories per setting.
+Push-focused chunks are sampled around frame starts 50 to 75, with short
+end-of-episode chunks padded by repeating the last valid frame/action.
 
-### Stage 1: Video Finetuning
+### Stage 1A: Latent-C Video Finetuning
 
-Stage 1 adapts the base action-conditioned BWM to the push-box video distribution.
+Stage 1A adapts the base action-conditioned BWM to the push-box video
+distribution for the latent-C branch. It includes `physical_context_encoder`
+and therefore should not be reused as the base checkpoint for the no-C
+TTT-E2E branch.
 
 Config:
 
@@ -190,9 +230,45 @@ outputs/push_box_medium_c_stage1_10k_4gpu/step-10000.safetensors
 
 This file is an experiment artifact and is ignored by git.
 
-### Stage 2: First-Order TTT Meta-Training
+### Stage 1B: No-C Video Finetuning For TTT-E2E
 
-Stage 2 trains a medium-dimensional latent physical code `C` plus C-conditioned low-rank residual adapters.
+Stage 1B is the required source checkpoint for the TTT-E2E mild branch. It uses
+the large 9-friction dataset and explicitly disables both latent `C` and
+residual adapters:
+
+```text
+physical_context_mode: none
+physical_adapter_mode: none
+trainable_models: dit,action_encoder
+```
+
+Config:
+
+```text
+configs/train/train_push_box_9mu_no_c_stage1_ttte2e_10k_4gpu.yaml
+```
+
+Guard script:
+
+```text
+scripts/run_stage1_ttte2e_9mu_10k_4gpu_guard.sh
+```
+
+Expected checkpoint:
+
+```text
+outputs/push_box_9mu_no_c_stage1_ttte2e_10k_4gpu/step-10125.safetensors
+```
+
+Stage 2B defaults to this checkpoint. Reusing the old medium-C Stage1 checkpoint
+for Stage 2B is only acceptable for code smoke tests, not for the main
+comparison, because that checkpoint was trained with C tokens/modulation.
+
+### Stage 2A: Latent-C First-Order TTT Meta-Training
+
+Stage 2A is the first architecture family. It trains a medium-dimensional latent
+physical code `C` plus C-conditioned low-rank residual adapters. The inner loop
+updates the task-local `C`; it does not update model parameters.
 
 Main script:
 
@@ -205,6 +281,7 @@ Configs:
 ```text
 configs/train/train_push_box_medium_c_stage2_ttt.yaml
 configs/train/train_push_box_medium_c_stage2_ttt_10k_2gpu.yaml
+configs/train/train_push_box_9mu_medium_c_stage2_ttt_10k_4gpu.yaml
 ```
 
 Trainable modules:
@@ -262,9 +339,98 @@ scripts/run_stage2_ttt_10k_gpu01_guard.sh
 
 These scripts run long jobs in `tmux`-friendly shells and restore GPU holder sessions for GPUs 2 and 3 when the job exits.
 
-### Stage 2 Test-Time Evaluation
+### Stage 2B: TTT-E2E Mild Meta-Training
 
-Stage 2 evaluation adapts on training support episodes and predicts different held-out test episodes from the same `source_split,friction_mu` group. The query ground truth is used only for visualization and metrics, not for TTT.
+Stage 2B is the second architecture family. It is closer to the official
+TTT-E2E idea because the inner loop updates parameters with the task loss. It
+does not use latent `C`.
+
+Main script:
+
+```text
+scripts/train_stage2_ttte2e.py
+```
+
+Inference script:
+
+```text
+scripts/infer_stage2_ttte2e.py
+```
+
+Default config:
+
+```text
+configs/train/train_push_box_9mu_ttte2e_mild_stage2_10k_4gpu.yaml
+```
+
+Required source checkpoint:
+
+```text
+outputs/push_box_9mu_no_c_stage1_ttte2e_10k_4gpu/step-10125.safetensors
+```
+
+Trainable modules:
+
+```text
+physical_adapter_bank
+```
+
+Frozen modules:
+
+```text
+DiT backbone
+VAE
+text/language path
+action encoder
+physical_context_encoder is disabled
+```
+
+Inner-loop fast weights:
+
+```text
+physical_adapter_bank late-block gate/down/up parameters
+```
+
+For each support/query meta-task, the script starts from the current adapter
+initialization `theta0` and performs 5 first-order inner SGD steps:
+
+```text
+theta_fast <- theta_fast - 0.001 * clip_grad(d L_inner / d theta_fast, max_norm=0.1)
+```
+
+The default outer loss mirrors Stage 2A but replaces context regularization with
+adapter-delta regularization:
+
+```text
+L_outer =
+  1.0    * L_query_adapted
++ 0.1    * L_show_adapted
++ 0.2    * L_gap
++ 0.0001 * L_adapter_reg
+```
+
+Definitions:
+
+```text
+L_query_adapted = mean flow-matching loss on held-out same-property query chunks using theta_fast
+L_show_adapted  = mean flow-matching loss on support chunks using theta_fast
+L_adapter_reg   = mean_j mean((theta_fast_j - theta0_j)^2)
+
+rel_show_imp  = (L_show_base - stopgrad(L_show_adapted)) / (abs(L_show_base) + 1e-4)
+rel_query_imp = (L_query_base - L_query_adapted) / (abs(L_query_base) + 1e-4)
+L_gap         = relu(stopgrad(rel_show_imp) - rel_query_imp - 0.03)^2
+```
+
+This is milder than the paper in three ways: it updates adapters instead of the
+pretrained FFN weights, it uses a low-rank parameter subset by default, and it
+uses first-order meta-gradients unless `--ttte2e_second_order` is explicitly
+enabled.
+
+### Stage 2A Test-Time Evaluation
+
+Stage 2A evaluation adapts on training support episodes and predicts different
+held-out test episodes from the same `source_split,friction_mu` group. The query
+ground truth is used only for visualization and metrics, not for TTT.
 
 Main inference script:
 
@@ -296,7 +462,22 @@ Comparison helper:
 scripts/make_ttt_support_comparison.py
 ```
 
-Outputs, logs, videos, images, checkpoints, and local model/data files are git-ignored. Keep experiment artifacts under `outputs/` or `logs/`.
+### Stage 2B Test-Time Evaluation
+
+Stage 2B evaluation follows the same leakage rule as Stage 2A: use support rows
+from the train split, update adapter fast weights, then predict disjoint test
+rows from the same `source_split,friction_mu` group. It should use the no-C
+Stage1-B baseline prediction for comparison.
+
+Main inference script:
+
+```text
+scripts/infer_stage2_ttte2e.py
+```
+
+Outputs, logs, videos, images, checkpoints, raw videos, and local model files
+are git-ignored. Metadata manifests under `data/push_box_bwm_*` are small and
+may be committed.
 
 ## Code Entry Points
 
@@ -305,8 +486,11 @@ Outputs, logs, videos, images, checkpoints, and local model/data files are git-i
 - `wan_video_action/parsers.py`: CLI/YAML knobs for physical context and adapters.
 - `scripts/train.py`: training entry point.
 - `scripts/infer.py`: rollout entry point.
-- `scripts/train_stage2_ttt.py`: first-order support/query TTT meta-training entry point.
-- `scripts/infer_stage2_ttt.py`: test-time C adaptation and rollout entry point.
+- `scripts/run_stage1_ttte2e_9mu_10k_4gpu_guard.sh`: Stage 1B no-C 9mu guarded training launcher.
+- `scripts/train_stage2_ttt.py`: Stage 2A latent-C first-order support/query TTT meta-training entry point.
+- `scripts/train_stage2_ttte2e.py`: Stage 2B TTT-E2E mild adapter-fast-weight meta-training entry point.
+- `scripts/infer_stage2_ttt.py`: Stage 2A test-time C adaptation and rollout entry point.
+- `scripts/infer_stage2_ttte2e.py`: Stage 2B test-time adapter-fast-weight adaptation and rollout entry point.
 - `scripts/make_ttt_support_comparison.py`: support/query/stage1/stage2 comparison video builder.
 - `tests/physical_context_smoke.py`: CPU-only shape and gradient smoke test.
 
@@ -327,4 +511,4 @@ CUDA_VISIBLE_DEVICES='' PYTHONPATH=. .venv/bin/python scripts/infer.py --help
 - Keep support/query splits grouped by physical property.
 - Do not report success based only on support-trajectory reconstruction.
 - Always compare same-property held-out trajectory improvement.
-- Keep raw BWM finetune, latent-C adaptation, and adapter adaptation as separate runs.
+- Keep raw BWM finetune, latent-C adaptation, and TTT-E2E mild adapter-fast-weight adaptation as separate runs.
