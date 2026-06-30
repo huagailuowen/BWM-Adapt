@@ -1,14 +1,14 @@
-# Stage 2 TTT-E2E mild run on 4 GPUs using the 6-friction straight-jitter hidden HAI dataset.
-# This is the Type2/no-latent-C branch. It initializes from the completed Stage1-B
-# no-C checkpoint and trains residual adapter fast weights with support/query TTT.
-# With tasks_per_epoch=40000 and 4 DDP processes, one epoch gives about 10000
-# optimizer steps on the main process.
+# Stage1 adapter warmup for 6-friction hidden-straight push-box.
+# Starts from the completed Stage1 GA4 no-C checkpoint, enables residual adapters
+# on every DiT layer, initializes every independent layer gate to 0.07, and runs
+# normal SFT/BC without TTT inner-loop. The generated metadata has 16000 rows,
+# giving about 4000 logged training steps on 4 DDP processes.
 
 dataset:
   dataset_base_path: "/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox/libero_push_box_6fric_50pairs_straight_jitter_35_35_direct_lerobot_hai-machine_2026-06-29"
-  dataset_metadata_path: "data/push_box_bwm_6fric_50pairs_straight_jitter_35_35_hidden_straight/train.jsonl"
+  dataset_metadata_path: "data/push_box_bwm_6fric_50pairs_straight_jitter_35_35_hidden_straight/train_stage1_adapter_warmup_4000steps.jsonl"
   dataset_repeat: 1
-  dataset_num_workers: 1
+  dataset_num_workers: 2
   data_file_keys: "video,action"
 
 video:
@@ -53,37 +53,12 @@ physical_context:
   physical_adapter_mode: "residual"
   physical_adapter_rank: 16
   physical_adapter_layers: "all"
-  physical_adapter_gate_init: 0.0
-
-stage2_ttt:
-  stage2_group_keys: "source_split,friction_mu"
-  stage2_tasks_per_epoch: 40000
-  stage2_support_min: 1
-  stage2_support_max: 2
-  stage2_query_min: 4
-  stage2_query_max: 6
-  stage2_inner_steps: 5
-  stage2_inner_lr: 0.05
-  stage2_inner_grad_clip: 1.0
-  stage2_query_weight: 1.0
-  stage2_show_eval_weight: 0.1
-  stage2_gap_weight: 0.2
-  stage2_gap_margin: 0.03
-  stage2_context_reg_weight: 0.0
-  stage2_improvement_eps: 0.0001
-
-stage2_ttte2e:
-  ttte2e_inner_param_scope: "lowrank"
-  ttte2e_inner_lr: 0.001
-  ttte2e_inner_grad_clip: 0.1
-  ttte2e_inner_reg_weight: 0.0001
-  ttte2e_outer_reg_weight: 0.0001
-  ttte2e_second_order: false
+  physical_adapter_gate_init: 0.07
 
 training:
   learning_rate: 1e-5
   num_epochs: 1
-  trainable_models: "physical_adapter_bank"
+  trainable_models: "dit,action_encoder,physical_adapter_bank"
   find_unused_parameters: false
   weight_decay: 0.01
   task: "sft"
@@ -94,11 +69,11 @@ training:
   batch_size: 1
 
 output:
-  output_path: "./outputs/push_box_6fric_50pairs_straight_jitter_35_35_hidden_straight_ttte2e_mild_stage2_10k_4gpu_PENDING_JOB"
-  remove_prefix_in_ckpt: null
-  save_steps: null
-  checkpoint_save_minutes: 20
-  checkpoint_keep_last: 0
+  output_path: "./outputs/push_box_6fric_hidden_straight_stage1_adapter_warmup_all_layers_gate007_4000_PENDING_JOB"
+  remove_prefix_in_ckpt: "pipe.dit."
+  save_steps: 1000
+  checkpoint_save_minutes: 0
+  checkpoint_keep_last: 2
   log_steps: 10
   ckpt_path: "STAGE1_GA4_FINAL_CKPT_PLACEHOLDER"
   resume_from: null
