@@ -59,7 +59,7 @@ training:
   learning_rate: 1e-5
   num_epochs: 1
   trainable_models: "dit,action_encoder,physical_adapter_bank"
-  find_unused_parameters: false
+  find_unused_parameters: true
   weight_decay: 0.01
   task: "sft"
   seed: 20260630

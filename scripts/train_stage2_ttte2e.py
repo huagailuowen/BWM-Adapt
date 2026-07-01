@@ -25,6 +25,9 @@ from wan_video_action.utils import set_global_seed
 
 
 TTTE2E_PARAM_SCOPES = ("gates", "lowrank", "all")
+TTTE2E_OUTER_DIT_LAYER_SCOPES = ("none", "all", "last_half", "last_third")
+TTTE2E_INNER_OPTIMIZERS = ("sgd", "adam")
+TTTE2E_OUTER_OBJECTIVES = ("adapted_loss", "relative_improve", "hybrid_loss_relative_improve")
 
 
 def _adapter_param_allowed(name: str, scope: str) -> bool:
@@ -50,6 +53,60 @@ def _clip_grad_tensors(
     grad_norm = torch.sqrt(norm_sq).clamp_min(1e-6)
     scale = min(1.0, float(max_norm) / float(grad_norm.cpu()))
     return tuple(None if grad is None else grad * scale for grad in grads)
+
+
+def _parse_inner_lr_schedule(raw: str, inner_steps: int, default_lr: float) -> tuple[float, ...]:
+    text = str(raw or "").strip()
+    if not text:
+        return tuple(float(default_lr) for _ in range(int(inner_steps)))
+
+    values: list[float] = []
+    for part in text.split(","):
+        item = part.strip()
+        if not item:
+            continue
+        if "@" in item:
+            count_text, lr_text = item.split("@", 1)
+            values.extend([float(lr_text)] * int(count_text))
+        else:
+            values.append(float(item))
+
+    if len(values) != int(inner_steps):
+        raise ValueError(
+            f"ttte2e_inner_lr_schedule expands to {len(values)} values, "
+            f"but stage2_inner_steps={inner_steps}."
+        )
+    return tuple(values)
+
+
+def _freeze_dit_except_layer_scope(dit: torch.nn.Module, scope: str) -> tuple[int, int]:
+    if scope == "none":
+        dit.requires_grad_(False)
+        return 0, len(getattr(dit, "blocks", ()))
+    if scope == "all":
+        return len(getattr(dit, "blocks", ())), len(getattr(dit, "blocks", ()))
+    if scope == "last_half":
+        blocks = getattr(dit, "blocks", None)
+        if blocks is None:
+            raise ValueError("outer DiT layer scope requires pipe.dit.blocks.")
+        num_blocks = len(blocks)
+        start = num_blocks // 2
+        dit.requires_grad_(False)
+        for block in blocks[start:]:
+            block.requires_grad_(True)
+        return num_blocks - start, num_blocks
+    if scope != "last_third":
+        raise ValueError(f"Unsupported outer DiT layer scope: {scope}.")
+
+    blocks = getattr(dit, "blocks", None)
+    if blocks is None:
+        raise ValueError("outer DiT layer scope requires pipe.dit.blocks.")
+    num_blocks = len(blocks)
+    start = (num_blocks * 2) // 3
+    dit.requires_grad_(False)
+    for block in blocks[start:]:
+        block.requires_grad_(True)
+    return num_blocks - start, num_blocks
 
 
 class FunctionalAdapterBank(torch.nn.Module):
@@ -87,9 +144,25 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
         super().__init__(*args, **kwargs)
         self.inner_steps = int(stage2_args.stage2_inner_steps)
         self.inner_lr = float(stage2_args.ttte2e_inner_lr)
+        self.inner_lr_schedule = _parse_inner_lr_schedule(
+            str(stage2_args.ttte2e_inner_lr_schedule),
+            self.inner_steps,
+            self.inner_lr,
+        )
+        self.inner_optimizer = str(stage2_args.ttte2e_inner_optimizer)
         self.inner_grad_clip = float(stage2_args.ttte2e_inner_grad_clip)
         self.inner_reg_weight = float(stage2_args.ttte2e_inner_reg_weight)
         self.outer_reg_weight = float(stage2_args.ttte2e_outer_reg_weight)
+        self.outer_objective = str(stage2_args.ttte2e_outer_objective)
+        self.relative_improve_weight = float(stage2_args.ttte2e_relative_improve_weight)
+        self.inner_fix_support_noise = bool(stage2_args.ttte2e_inner_fix_support_noise)
+        self.inner_converge = bool(stage2_args.ttte2e_inner_converge)
+        self.inner_converge_min_steps = max(1, int(stage2_args.ttte2e_inner_converge_min_steps))
+        self.inner_converge_patience = max(1, int(stage2_args.ttte2e_inner_converge_patience))
+        self.inner_converge_rel_tol = float(stage2_args.ttte2e_inner_converge_rel_tol)
+        self.inner_adam_beta1 = float(stage2_args.ttte2e_inner_adam_beta1)
+        self.inner_adam_beta2 = float(stage2_args.ttte2e_inner_adam_beta2)
+        self.inner_adam_eps = float(stage2_args.ttte2e_inner_adam_eps)
         self.second_order = bool(stage2_args.ttte2e_second_order)
         self.query_weight = float(stage2_args.stage2_query_weight)
         self.show_eval_weight = float(stage2_args.stage2_show_eval_weight)
@@ -97,7 +170,14 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
         self.gap_margin = float(stage2_args.stage2_gap_margin)
         self.improvement_eps = float(stage2_args.stage2_improvement_eps)
         self.param_scope = str(stage2_args.ttte2e_inner_param_scope)
+        self.outer_dit_layers = str(stage2_args.ttte2e_outer_dit_layers)
         self.last_metrics = {}
+        self._last_inner_steps_used = 0
+        self._last_inner_converged = False
+        self._last_inner_start_loss = 0.0
+        self._last_inner_final_loss = 0.0
+        self._last_inner_rel_drop = 0.0
+        self._last_inner_lr_used_last = 0.0
 
         if getattr(self.pipe, "physical_context_encoder", None) is not None:
             raise ValueError(
@@ -106,6 +186,17 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
         if getattr(self.pipe, "physical_adapter_bank", None) is None:
             raise ValueError(
                 "TTT-E2E mild branch requires physical_adapter_mode='residual'."
+            )
+
+        if self.outer_dit_layers != "all":
+            selected_blocks, total_blocks = _freeze_dit_except_layer_scope(
+                self.pipe.dit,
+                self.outer_dit_layers,
+            )
+            print(
+                f"TTT-E2E outer DiT trainable scope: {self.outer_dit_layers} "
+                f"({selected_blocks}/{total_blocks} blocks)",
+                flush=True,
             )
 
         selected = []
@@ -150,6 +241,21 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
             base = base_params[name].to(device=fast.device, dtype=fast.dtype)
             parts.append((fast.float() - base.float()).pow(2).sum())
         return torch.sqrt(torch.stack(parts).sum().clamp_min(1e-12))
+
+    @staticmethod
+    def _param_l2_norm(params: dict[str, torch.Tensor]) -> torch.Tensor:
+        parts = [value.detach().float().pow(2).sum() for value in params.values()]
+        return torch.sqrt(torch.stack(parts).sum().clamp_min(1e-12))
+
+    @staticmethod
+    def _gate_stats(params: dict[str, torch.Tensor]) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        gates = [value.detach().float().reshape(-1) for name, value in params.items() if name.endswith(".gate")]
+        if not gates:
+            device = next(iter(params.values())).device
+            zero = torch.zeros((), device=device)
+            return zero, zero, zero
+        values = torch.cat(gates)
+        return values.abs().mean(), values.abs().max(), values.mean()
 
     def _prepare_loss_inputs(self, data: dict):
         inputs = self.get_pipeline_inputs(data)
@@ -220,6 +326,33 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
     ) -> torch.Tensor:
         return self._mean_stack([self._sft_loss(item, fast_adapter_params=fast_params) for item in support])
 
+    def _prepare_support_objective(self, support: list[dict]) -> list[tuple[object, torch.Tensor, torch.Tensor]]:
+        objective = []
+        with torch.no_grad():
+            for item in support:
+                inputs = self._prepare_loss_inputs(item)
+                timestep = self._sample_timestep(inputs)
+                noise = torch.randn_like(self._shared_inputs(inputs)["input_latents"])
+                objective.append((inputs, timestep, noise))
+        return objective
+
+    def _support_objective_loss(
+        self,
+        objective: list[tuple[object, torch.Tensor, torch.Tensor]],
+        fast_params: dict[str, torch.Tensor],
+    ) -> torch.Tensor:
+        return self._mean_stack(
+            [
+                self._flow_match_loss_from_inputs(
+                    inputs,
+                    fast_adapter_params=fast_params,
+                    timestep=timestep,
+                    noise=noise,
+                )
+                for inputs, timestep, noise in objective
+            ]
+        )
+
     def _adapt_adapter_params(
         self,
         support: list[dict],
@@ -227,11 +360,24 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
     ) -> tuple[dict[str, torch.Tensor], torch.Tensor]:
         fast_params: dict[str, torch.Tensor] = {name: param for name, param in base_params.items()}
         last_inner_loss = None
-        for _ in range(self.inner_steps):
-            support_loss = self._support_loss(support, fast_params)
+        support_objective = self._prepare_support_objective(support) if self.inner_fix_support_noise else None
+        loss_history = []
+        steps_used = 0
+        converged = False
+        adam_m: dict[str, torch.Tensor] = {}
+        adam_v: dict[str, torch.Tensor] = {}
+        if self.inner_optimizer == "adam":
+            adam_m = {name: torch.zeros_like(param, dtype=torch.float32) for name, param in fast_params.items()}
+            adam_v = {name: torch.zeros_like(param, dtype=torch.float32) for name, param in fast_params.items()}
+        for step_idx in range(self.inner_steps):
+            if support_objective is None:
+                support_loss = self._support_loss(support, fast_params)
+            else:
+                support_loss = self._support_objective_loss(support_objective, fast_params)
             inner_loss = support_loss
             if self.inner_reg_weight > 0:
                 inner_loss = inner_loss + self.inner_reg_weight * self._adapter_reg(fast_params, base_params)
+            loss_history.append(float(inner_loss.detach().float().cpu()))
             grads = torch.autograd.grad(
                 inner_loss,
                 tuple(fast_params.values()),
@@ -240,14 +386,46 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
             )
             grads = _clip_grad_tensors(grads, self.inner_grad_clip)
             next_params = {}
+            lr = float(self.inner_lr_schedule[step_idx])
             for (name, value), grad in zip(fast_params.items(), grads):
                 if grad is None:
                     grad = torch.zeros_like(value)
-                next_params[name] = value - self.inner_lr * grad
+                if self.inner_optimizer == "adam":
+                    grad_f = grad.float()
+                    adam_m[name] = self.inner_adam_beta1 * adam_m[name] + (1.0 - self.inner_adam_beta1) * grad_f
+                    adam_v[name] = self.inner_adam_beta2 * adam_v[name] + (1.0 - self.inner_adam_beta2) * grad_f.pow(2)
+                    bias_correction1 = 1.0 - self.inner_adam_beta1 ** (step_idx + 1)
+                    bias_correction2 = 1.0 - self.inner_adam_beta2 ** (step_idx + 1)
+                    update = (adam_m[name] / bias_correction1) / (
+                        (adam_v[name] / bias_correction2).sqrt() + self.inner_adam_eps
+                    )
+                    next_params[name] = (value.float() - lr * update).to(dtype=value.dtype)
+                else:
+                    next_params[name] = value - lr * grad
             fast_params = next_params
             last_inner_loss = inner_loss
+            steps_used = step_idx + 1
+            if self.inner_converge and steps_used >= self.inner_converge_min_steps:
+                if len(loss_history) > self.inner_converge_patience:
+                    previous = loss_history[-self.inner_converge_patience - 1]
+                    current = loss_history[-1]
+                    rel_drop = (previous - current) / (abs(previous) + 1e-8)
+                    if rel_drop < self.inner_converge_rel_tol:
+                        converged = True
+                        break
         if last_inner_loss is None:
             last_inner_loss = torch.zeros((), device=self.pipe.device, dtype=torch.float32)
+        if loss_history:
+            self._last_inner_start_loss = loss_history[0]
+            self._last_inner_final_loss = loss_history[-1]
+            self._last_inner_rel_drop = (loss_history[0] - loss_history[-1]) / (abs(loss_history[0]) + 1e-8)
+        else:
+            self._last_inner_start_loss = 0.0
+            self._last_inner_final_loss = float(last_inner_loss.detach().float().cpu())
+            self._last_inner_rel_drop = 0.0
+        self._last_inner_steps_used = steps_used
+        self._last_inner_converged = converged
+        self._last_inner_lr_used_last = float(self.inner_lr_schedule[max(0, min(steps_used, len(self.inner_lr_schedule)) - 1)])
         return fast_params, last_inner_loss
 
     def _paired_baseline_adapted_loss(
@@ -305,13 +483,35 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
         rel_query_imp = (query_baseline_loss - query_adapted_loss) / (
             query_baseline_loss.abs() + self.improvement_eps
         )
+        rel_show_imp_for_loss = (show_baseline_loss.detach() - show_adapted_loss) / (
+            show_baseline_loss.detach().abs() + self.improvement_eps
+        )
+        rel_query_imp_for_loss = (query_baseline_loss.detach() - query_adapted_loss) / (
+            query_baseline_loss.detach().abs() + self.improvement_eps
+        )
         gap_loss = torch.relu(rel_show_imp.detach() - rel_query_imp - self.gap_margin) ** 2
         adapter_reg = self._adapter_reg(fast_params, base_params)
         adapter_delta_norm = self._adapter_delta_norm(fast_params, base_params)
+        base_param_norm = self._param_l2_norm(base_params)
+        base_gate_abs_mean, base_gate_abs_max, base_gate_mean = self._gate_stats(base_params)
+        fast_gate_abs_mean, fast_gate_abs_max, fast_gate_mean = self._gate_stats(fast_params)
 
-        loss = self.query_weight * query_adapted_loss
-        if self.show_eval_weight > 0:
-            loss = loss + self.show_eval_weight * show_adapted_loss
+        if self.outer_objective == "relative_improve":
+            loss = -self.query_weight * rel_query_imp_for_loss
+            if self.show_eval_weight > 0:
+                loss = loss - self.show_eval_weight * rel_show_imp_for_loss
+        elif self.outer_objective == "hybrid_loss_relative_improve":
+            loss = self.query_weight * query_adapted_loss
+            if self.show_eval_weight > 0:
+                loss = loss + self.show_eval_weight * show_adapted_loss
+            loss = loss - self.relative_improve_weight * (
+                self.query_weight * rel_query_imp_for_loss
+                + self.show_eval_weight * rel_show_imp_for_loss
+            )
+        else:
+            loss = self.query_weight * query_adapted_loss
+            if self.show_eval_weight > 0:
+                loss = loss + self.show_eval_weight * show_adapted_loss
         if self.gap_weight > 0:
             loss = loss + self.gap_weight * gap_loss
         if self.outer_reg_weight > 0:
@@ -319,14 +519,34 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
 
         self.last_metrics = {
             "loss": float(loss.detach().float().cpu()),
+            "query_base": float(query_baseline_loss.detach().float().cpu()),
             "query": float(query_adapted_loss.detach().float().cpu()),
+            "show_base": float(show_baseline_loss.detach().float().cpu()),
             "show": float(show_adapted_loss.detach().float().cpu()),
             "gap": float(gap_loss.detach().float().cpu()),
             "rel_show_imp": float(rel_show_imp.detach().float().cpu()),
             "rel_query_imp": float(rel_query_imp.detach().float().cpu()),
             "inner": float(inner_loss.detach().float().cpu()),
+            "inner_lr_first": float(self.inner_lr_schedule[0]),
+            "inner_lr_last": float(self.inner_lr_schedule[-1]),
+            "inner_lr_used_last": self._last_inner_lr_used_last,
+            "inner_steps_used": float(self._last_inner_steps_used),
+            "inner_converged": float(self._last_inner_converged),
+            "relative_objective": float(self.outer_objective == "relative_improve"),
+            "hybrid_objective": float(self.outer_objective == "hybrid_loss_relative_improve"),
+            "relative_improve_weight": self.relative_improve_weight,
+            "inner_start": self._last_inner_start_loss,
+            "inner_final": self._last_inner_final_loss,
+            "inner_rel_drop": self._last_inner_rel_drop,
             "adapter_reg": float(adapter_reg.detach().float().cpu()),
             "adapter_delta_norm": float(adapter_delta_norm.detach().float().cpu()),
+            "adapter_delta_rel": float((adapter_delta_norm.detach() / base_param_norm.clamp_min(1e-12)).float().cpu()),
+            "base_gate_abs_mean": float(base_gate_abs_mean.float().cpu()),
+            "base_gate_abs_max": float(base_gate_abs_max.float().cpu()),
+            "base_gate_mean": float(base_gate_mean.float().cpu()),
+            "fast_gate_abs_mean": float(fast_gate_abs_mean.float().cpu()),
+            "fast_gate_abs_max": float(fast_gate_abs_max.float().cpu()),
+            "fast_gate_mean": float(fast_gate_mean.float().cpu()),
         }
         return loss
 
@@ -335,9 +555,43 @@ def add_ttte2e_config(parser: argparse.ArgumentParser):
     group = parser.add_argument_group("stage2_ttte2e")
     group.add_argument("--ttte2e_inner_param_scope", type=str, default="lowrank", choices=TTTE2E_PARAM_SCOPES)
     group.add_argument("--ttte2e_inner_lr", type=float, default=1e-3)
+    group.add_argument(
+        "--ttte2e_inner_lr_schedule",
+        type=str,
+        default="",
+        help='Optional comma schedule for inner LR, e.g. "5@0.12,5@0.04" or ten comma-separated LR values.',
+    )
+    group.add_argument("--ttte2e_inner_optimizer", type=str, default="sgd", choices=TTTE2E_INNER_OPTIMIZERS)
     group.add_argument("--ttte2e_inner_grad_clip", type=float, default=0.1)
     group.add_argument("--ttte2e_inner_reg_weight", type=float, default=1e-4)
     group.add_argument("--ttte2e_outer_reg_weight", type=float, default=1e-4)
+    group.add_argument("--ttte2e_outer_objective", type=str, default="adapted_loss", choices=TTTE2E_OUTER_OBJECTIVES)
+    group.add_argument("--ttte2e_relative_improve_weight", type=float, default=1.0)
+    group.add_argument(
+        "--ttte2e_inner_fix_support_noise",
+        action="store_true",
+        default=False,
+        help="Reuse one fixed timestep/noise draw per support sample during the inner loop.",
+    )
+    group.add_argument(
+        "--ttte2e_inner_converge",
+        action="store_true",
+        default=False,
+        help="Stop the inner loop early when fixed support objective improvement has plateaued.",
+    )
+    group.add_argument("--ttte2e_inner_converge_min_steps", type=int, default=10)
+    group.add_argument("--ttte2e_inner_converge_patience", type=int, default=5)
+    group.add_argument("--ttte2e_inner_converge_rel_tol", type=float, default=1e-4)
+    group.add_argument("--ttte2e_inner_adam_beta1", type=float, default=0.9)
+    group.add_argument("--ttte2e_inner_adam_beta2", type=float, default=0.999)
+    group.add_argument("--ttte2e_inner_adam_eps", type=float, default=1e-8)
+    group.add_argument(
+        "--ttte2e_outer_dit_layers",
+        type=str,
+        default="none",
+        choices=TTTE2E_OUTER_DIT_LAYER_SCOPES,
+        help="Optional DiT parameter subset updated by the outer loop. Inner loop still only adapts adapter fast weights.",
+    )
     group.add_argument(
         "--ttte2e_second_order",
         action="store_true",

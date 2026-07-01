@@ -62,7 +62,7 @@ stage2_ttt:
   stage2_support_max: 2
   stage2_query_min: 4
   stage2_query_max: 6
-  stage2_inner_steps: 5
+  stage2_inner_steps: 10
   stage2_inner_lr: 0.05
   stage2_inner_grad_clip: 1.0
   stage2_query_weight: 1.0
@@ -74,16 +74,17 @@ stage2_ttt:
 
 stage2_ttte2e:
   ttte2e_inner_param_scope: "lowrank"
-  ttte2e_inner_lr: 0.001
-  ttte2e_inner_grad_clip: 0.1
-  ttte2e_inner_reg_weight: 0.0001
-  ttte2e_outer_reg_weight: 0.0001
+  ttte2e_inner_lr: 0.02
+  ttte2e_inner_grad_clip: 1.0
+  ttte2e_inner_reg_weight: 0.0
+  ttte2e_outer_reg_weight: 0.0
+  ttte2e_outer_dit_layers: "last_half"
   ttte2e_second_order: false
 
 training:
   learning_rate: 1e-5
   num_epochs: 1
-  trainable_models: "physical_adapter_bank"
+  trainable_models: "dit,physical_adapter_bank"
   find_unused_parameters: false
   weight_decay: 0.01
   task: "sft"
@@ -100,7 +101,7 @@ output:
   checkpoint_save_minutes: 20
   checkpoint_keep_last: 0
   log_steps: 10
-  ckpt_path: "STAGE1_GA4_FINAL_CKPT_PLACEHOLDER"
+  ckpt_path: "STAGE1_ADAPTER_WARMUP_FINAL_CKPT_PLACEHOLDER"
   resume_from: null
 
 lora:
