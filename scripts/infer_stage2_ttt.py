@@ -347,6 +347,43 @@ def _context_reg(pipe, context: torch.Tensor) -> torch.Tensor:
     return torch.mean((context.float() - target.float()) ** 2)
 
 
+def _parse_inner_lr_schedule(args) -> list[float]:
+    raw = str(getattr(args, "stage2_inner_lr_schedule", "") or "").strip()
+    if not raw:
+        return [float(args.stage2_inner_lr)] * int(args.stage2_inner_steps)
+    schedule = []
+    for item in raw.split(","):
+        item = item.strip()
+        if not item:
+            continue
+        if ":" in item:
+            lr_text, count_text = item.split(":", 1)
+        elif "x" in item:
+            lr_text, count_text = item.split("x", 1)
+        elif "*" in item:
+            lr_text, count_text = item.split("*", 1)
+        else:
+            lr_text, count_text = item, "1"
+        lr = float(lr_text.strip())
+        count = int(count_text.strip())
+        if count <= 0:
+            raise ValueError(f"Invalid non-positive inner LR schedule count in {item!r}.")
+        schedule.extend([lr] * count)
+    if not schedule:
+        raise ValueError(f"Empty stage2_inner_lr_schedule={raw!r}.")
+    return schedule
+
+
+def _clamp_context(context: torch.Tensor, args) -> torch.Tensor:
+    clamp_min = getattr(args, "stage2_context_clamp_min", None)
+    clamp_max = getattr(args, "stage2_context_clamp_max", None)
+    if clamp_min is None and clamp_max is None:
+        return context
+    clamp_min = None if clamp_min is None else float(clamp_min)
+    clamp_max = None if clamp_max is None else float(clamp_max)
+    return torch.clamp(context, min=clamp_min, max=clamp_max)
+
+
 def _adapt_ttt_state(
     pipe,
     support_items: list[dict],
@@ -361,9 +398,10 @@ def _adapt_ttt_state(
     scope = str(args.ttt_adapt_scope)
     use_context = _uses_context_adaptation(scope)
     use_adapter = bool(adapter_named_params)
+    inner_lrs = _parse_inner_lr_schedule(args)
     pipe.scheduler.set_timesteps(1000, training=True)
-    context = pipe.physical_context_encoder.default_context.detach().clone()
-    context = context.to(dtype=pipe.torch_dtype, device=pipe.device)
+    context0 = pipe.physical_context_encoder.default_context.detach().clone().to(dtype=pipe.torch_dtype, device=pipe.device)
+    context = context0.clone()
     if use_context:
         context = context.requires_grad_(True)
     if use_adapter:
@@ -373,7 +411,7 @@ def _adapt_ttt_state(
     losses = []
     adapter_reg_value = 0.0
     try:
-        for inner_idx in range(int(args.stage2_inner_steps)):
+        for inner_idx, inner_lr in enumerate(inner_lrs):
             support_losses = []
             for item in support_items:
                 inputs = _prepare_loss_inputs(pipe, item, context, args)
@@ -405,7 +443,7 @@ def _adapt_ttt_state(
                     grad_norm = context_grad.float().norm().clamp_min(1e-6)
                     scale = min(1.0, float(args.stage2_inner_grad_clip) / float(grad_norm.detach().cpu()))
                     context_grad = context_grad * scale
-                context = (context - float(args.stage2_inner_lr) * context_grad).detach().requires_grad_(True)
+                context = _clamp_context(context - float(inner_lr) * context_grad, args).detach().requires_grad_(True)
                 offset = 1
 
             if use_adapter:
@@ -419,7 +457,8 @@ def _adapt_ttt_state(
             print(
                 f"[inner] step={inner_idx + 1} scope={scope} loss={losses[-1]:.6f} "
                 f"support={float(support_loss.detach().float().cpu()):.6f} "
-                f"context_reg={context_reg_value:.6f} adapter_reg={adapter_reg_value:.6f}",
+                f"context_reg={context_reg_value:.6f} adapter_reg={adapter_reg_value:.6f} "
+                f"inner_lr={float(inner_lr):.6f} c_mean={float(context.detach().float().mean().cpu()):.6f}",
                 flush=True,
             )
     finally:
@@ -429,6 +468,10 @@ def _adapt_ttt_state(
     metrics = {
         "adapter_params": float(_count_params(adapter_named_params)),
         "adapter_reg": float(adapter_reg_value),
+        "context_initial_mean": float(context0.detach().float().mean().cpu()),
+        "context_adapted_mean": float(context.detach().float().mean().cpu()),
+        "context_delta_mean": float((context.detach().float() - context0.detach().float()).mean().cpu()),
+        "inner_steps": float(len(inner_lrs)),
     }
     return context.detach(), losses, adapted_adapter_state, metrics
 
@@ -477,6 +520,39 @@ def _write_three_way_comparison(
     return output_path
 
 
+def _write_two_way_comparison(
+    *,
+    row: dict,
+    sample_index: int,
+    dataset_base_path: Path,
+    pred_path: Path,
+    output_dir: Path,
+    width: int,
+    height: int,
+    fps: int,
+    quality: int,
+    pred_label: str,
+) -> Path:
+    num_views = len(row["video"])
+    target_width = width * num_views
+    total_frames = int(row.get("length", row["end_frame"] - row["start_frame"] + 1))
+    gt_frames = _read_gt_video(row, dataset_base_path, width, height, total_frames)
+    pred_frames = _read_pred_video(pred_path, target_width, height)
+    total = min(len(gt_frames), len(pred_frames))
+    if total <= 0:
+        raise RuntimeError(f"No frames to compare for sample_index={sample_index}.")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    name = _default_pred_name(sample_index, row).replace(".mp4", f"_gt_{pred_label.lower()}.mp4")
+    output_path = output_dir / name
+    with imageio.get_writer(str(output_path), fps=fps, codec="libx264", quality=quality) as writer:
+        for frame_id in range(total):
+            gt = _draw_label(_resize_rgb(gt_frames[frame_id], target_width, height), "GT")
+            pred = _draw_label(_resize_rgb(pred_frames[frame_id], target_width, height), pred_label)
+            writer.append_data(np.concatenate([gt, pred], axis=0))
+    return output_path
+
+
 def parse_args():
     parser = argparse.ArgumentParser("Stage2 TTT test-time inference and comparison.")
     parser = add_stage2_config(add_general_config(parser))
@@ -502,6 +578,9 @@ def parse_args():
     parser.add_argument("--sample_indices", type=str, default=None)
     parser.add_argument("--baseline_pred_dir", type=str, default=None)
     parser.add_argument("--comparison_output_path", type=str, default=None)
+    parser.add_argument("--render_support", action="store_true", default=False)
+    parser.add_argument("--support_output_path", type=str, default=None)
+    parser.add_argument("--support_comparison_output_path", type=str, default=None)
     parser.add_argument("--skip_existing", action="store_true", default=False)
     parser.add_argument("--dry_run", action="store_true", default=False)
     args = parser.parse_args()
@@ -548,6 +627,12 @@ def main() -> None:
 
     output_path = Path(args.output_path)
     comparison_path = Path(args.comparison_output_path) if args.comparison_output_path else output_path.parent / "comparison_videos"
+    support_output_path = Path(args.support_output_path) if args.support_output_path else output_path.parent / "show_raw"
+    support_comparison_path = (
+        Path(args.support_comparison_output_path)
+        if args.support_comparison_output_path
+        else output_path.parent / "show_comparison_videos"
+    )
     plan_rows = []
     for group_key, indices in sorted(support_plan.items(), key=lambda item: str(item[0])):
         plan_rows.append(
@@ -580,9 +665,13 @@ def main() -> None:
     )
 
     context_cache: dict[tuple, tuple[torch.Tensor, list[float], dict[str, torch.Tensor], dict[str, float]]] = {}
+    rendered_support = set()
     result_rows = []
     output_path.mkdir(parents=True, exist_ok=True)
     comparison_path.mkdir(parents=True, exist_ok=True)
+    if args.render_support:
+        support_output_path.mkdir(parents=True, exist_ok=True)
+        support_comparison_path.mkdir(parents=True, exist_ok=True)
 
     for sample_index in sample_indices:
         sample_index = int(sample_index)
@@ -607,6 +696,37 @@ def main() -> None:
         adapted_context, inner_losses, adapted_adapter_state, adapt_metrics = context_cache[group_key]
         if adapter_named_params:
             _restore_named_params(adapter_named_params, adapted_adapter_state)
+        if args.render_support and group_key not in rendered_support:
+            for support_index in support_plan[group_key]:
+                support_row = support_rows[int(support_index)]
+                support_pred_name = _default_pred_name(int(support_index), support_row)
+                support_pred_path = support_output_path / support_pred_name
+                if not (support_pred_path.exists() and args.skip_existing):
+                    support_sample = query_dataset[int(support_index)]
+                    support_sample = prepare_sample_for_rollout(support_sample, int(support_index), pipe, args)
+                    support_sample["physical_context"] = adapted_context
+                    support_sample["output_path"] = str(support_pred_path)
+                    print(
+                        f"[support_sample] group={group_key} support_index={support_index} "
+                        f"episode={support_sample['episode_index']} output={support_pred_path}",
+                        flush=True,
+                    )
+                    _run_autoregressive(pipe=pipe, sample=support_sample, args=args)
+                    torch.cuda.empty_cache()
+                support_comparison = _write_two_way_comparison(
+                    row=support_row,
+                    sample_index=int(support_index),
+                    dataset_base_path=Path(args.dataset_base_path),
+                    pred_path=support_pred_path,
+                    output_dir=support_comparison_path,
+                    width=int(args.width),
+                    height=int(args.height),
+                    fps=int(args.fps),
+                    quality=int(args.quality),
+                    pred_label="SHOW+TTT",
+                )
+                print(f"[support_comparison] {support_comparison}", flush=True)
+            rendered_support.add(group_key)
         if pred_path.exists() and args.skip_existing:
             print(f"[skip] existing prediction {pred_path}", flush=True)
         else:
@@ -649,12 +769,17 @@ def main() -> None:
                 "sample_id": row.get("sample_id"),
                 "episode_index": row.get("episode_index"),
                 "group_key": list(group_key),
+                "friction_mu": row.get("friction_mu"),
+                "target_c": None if row.get("friction_mu") is None else float(row.get("friction_mu")) / 0.25,
                 "support_indices": support_plan[group_key],
                 "ttt_adapt_scope": args.ttt_adapt_scope,
                 "inner_losses": inner_losses,
                 "prediction_path": str(pred_path),
                 "comparison_path": None if comparison_file is None else str(comparison_file),
                 "context_norm": float(adapted_context.float().norm().cpu()),
+                "context_initial_mean": float(adapt_metrics.get("context_initial_mean", float("nan"))),
+                "context_adapted_mean": float(adapt_metrics.get("context_adapted_mean", float("nan"))),
+                "context_delta_mean": float(adapt_metrics.get("context_delta_mean", float("nan"))),
                 "adapter_param_count": int(adapt_metrics.get("adapter_params", 0)),
                 "adapter_reg": float(adapt_metrics.get("adapter_reg", 0.0)),
             }

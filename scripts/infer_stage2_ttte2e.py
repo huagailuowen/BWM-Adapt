@@ -125,6 +125,28 @@ def _flow_match_loss(pipe, inputs, args) -> torch.Tensor:
     return loss * pipe.scheduler.training_weight(timestep)
 
 
+def _parse_ttte2e_inner_lr_schedule(args) -> list[float]:
+    raw = str(getattr(args, "ttte2e_inner_lr_schedule", "") or "").strip()
+    if not raw:
+        return [float(args.ttte2e_inner_lr)] * int(args.stage2_inner_steps)
+    values = []
+    for part in raw.split(","):
+        item = part.strip()
+        if not item:
+            continue
+        if "@" in item:
+            count_text, lr_text = item.split("@", 1)
+            values.extend([float(lr_text)] * int(count_text))
+        else:
+            values.append(float(item))
+    if len(values) != int(args.stage2_inner_steps):
+        raise ValueError(
+            f"ttte2e_inner_lr_schedule expands to {len(values)} values, "
+            f"but stage2_inner_steps={args.stage2_inner_steps}."
+        )
+    return values
+
+
 def _adapt_adapter_state(
     pipe,
     support_items: list[dict],
@@ -134,13 +156,14 @@ def _adapt_adapter_state(
     base_adapter_state: dict[str, torch.Tensor],
 ) -> tuple[list[float], dict[str, torch.Tensor], dict[str, float]]:
     pipe.scheduler.set_timesteps(1000, training=True)
+    inner_lrs = _parse_ttte2e_inner_lr_schedule(args)
     _restore_named_params(adapter_named_params, base_adapter_state)
     previous_requires_grad = _set_requires_grad(adapter_named_params, True)
 
     losses = []
     adapter_reg_value = 0.0
     try:
-        for inner_idx in range(int(args.stage2_inner_steps)):
+        for inner_idx, inner_lr in enumerate(inner_lrs):
             support_losses = []
             for item in support_items:
                 inputs = _prepare_loss_inputs(pipe, item, args)
@@ -162,12 +185,12 @@ def _adapt_adapter_state(
             with torch.no_grad():
                 for (_, param), grad in zip(adapter_named_params, grads):
                     if grad is not None:
-                        param.add_(grad, alpha=-float(args.ttte2e_inner_lr))
+                        param.add_(grad, alpha=-float(inner_lr))
             losses.append(float(loss.detach().float().cpu()))
             print(
                 f"[inner_ttte2e] step={inner_idx + 1} loss={losses[-1]:.6f} "
                 f"support={float(support_loss.detach().float().cpu()):.6f} "
-                f"adapter_reg={adapter_reg_value:.6f}",
+                f"adapter_reg={adapter_reg_value:.6f} inner_lr={float(inner_lr):.6f}",
                 flush=True,
             )
     finally:

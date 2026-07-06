@@ -180,6 +180,12 @@ class Stage2TTTTrainingModule(WanTrainingModule):
         super().__init__(*args, **kwargs)
         self.inner_steps = int(stage2_args.stage2_inner_steps)
         self.inner_lr = float(stage2_args.stage2_inner_lr)
+        self.inner_lr_schedule = self._parse_inner_lr_schedule(
+            str(getattr(stage2_args, "stage2_inner_lr_schedule", "") or ""),
+            fallback_steps=self.inner_steps,
+            fallback_lr=self.inner_lr,
+        )
+        self.inner_steps = len(self.inner_lr_schedule)
         self.inner_grad_clip = float(stage2_args.stage2_inner_grad_clip)
         self.query_weight = float(stage2_args.stage2_query_weight)
         self.show_eval_weight = float(stage2_args.stage2_show_eval_weight)
@@ -187,16 +193,64 @@ class Stage2TTTTrainingModule(WanTrainingModule):
         self.gap_margin = float(stage2_args.stage2_gap_margin)
         self.context_reg_weight = float(stage2_args.stage2_context_reg_weight)
         self.improvement_eps = float(stage2_args.stage2_improvement_eps)
+        self.context_init_mode = str(getattr(stage2_args, "stage2_context_init_mode", "default")).lower()
+        self.context_init_min = float(getattr(stage2_args, "stage2_context_init_min", 0.0))
+        self.context_init_max = float(getattr(stage2_args, "stage2_context_init_max", 1.0))
+        self.context_clamp_min = getattr(stage2_args, "stage2_context_clamp_min", None)
+        self.context_clamp_max = getattr(stage2_args, "stage2_context_clamp_max", None)
+        self.context_clamp_min = None if self.context_clamp_min is None else float(self.context_clamp_min)
+        self.context_clamp_max = None if self.context_clamp_max is None else float(self.context_clamp_max)
+        if self.context_init_mode not in {"default", "uniform"}:
+            raise ValueError(f"Unsupported stage2_context_init_mode={self.context_init_mode}.")
+        if self.context_init_mode == "uniform" and self.context_init_max <= self.context_init_min:
+            raise ValueError("stage2_context_init_max must be larger than stage2_context_init_min.")
         self.last_metrics = {}
         if getattr(self.pipe, "physical_context_encoder", None) is None:
             raise ValueError("Stage2 TTT requires physical_context_mode != 'none'.")
 
-    def _context0(self) -> torch.Tensor:
-        return self.pipe.physical_context_encoder.default_context
+    @staticmethod
+    def _parse_inner_lr_schedule(raw: str, fallback_steps: int, fallback_lr: float) -> list[float]:
+        if not raw.strip():
+            return [float(fallback_lr)] * int(fallback_steps)
+        schedule = []
+        for item in raw.split(","):
+            item = item.strip()
+            if not item:
+                continue
+            if ":" in item:
+                lr_text, count_text = item.split(":", 1)
+            elif "x" in item:
+                lr_text, count_text = item.split("x", 1)
+            elif "*" in item:
+                lr_text, count_text = item.split("*", 1)
+            else:
+                lr_text, count_text = item, "1"
+            lr = float(lr_text.strip())
+            count = int(count_text.strip())
+            if count <= 0:
+                raise ValueError(f"Invalid non-positive inner LR schedule count in {item!r}.")
+            schedule.extend([lr] * count)
+        if not schedule:
+            raise ValueError(f"Empty stage2_inner_lr_schedule={raw!r}.")
+        return schedule
 
-    def _context_reg(self, context: torch.Tensor) -> torch.Tensor:
-        target = self._context0().detach().to(dtype=context.dtype, device=context.device)
+    def _context0(self) -> torch.Tensor:
+        default_context = self.pipe.physical_context_encoder.default_context
+        if self.context_init_mode == "uniform":
+            context = torch.empty_like(default_context).uniform_(self.context_init_min, self.context_init_max)
+            return context.requires_grad_(True)
+        return default_context
+
+    def _context_reg(self, context: torch.Tensor, target_context: torch.Tensor | None = None) -> torch.Tensor:
+        if target_context is None:
+            target_context = self.pipe.physical_context_encoder.default_context
+        target = target_context.detach().to(dtype=context.dtype, device=context.device)
         return torch.mean((context.float() - target.float()) ** 2)
+
+    def _clamp_context(self, context: torch.Tensor) -> torch.Tensor:
+        if self.context_clamp_min is None and self.context_clamp_max is None:
+            return context
+        return torch.clamp(context, min=self.context_clamp_min, max=self.context_clamp_max)
 
     def _prepare_loss_inputs(self, data: dict, physical_context: torch.Tensor):
         data = data.copy()
@@ -276,17 +330,17 @@ class Stage2TTTTrainingModule(WanTrainingModule):
         return baseline_loss.detach(), adapted_loss
 
     def _adapt_context(self, support: list[dict], context0: torch.Tensor) -> torch.Tensor:
-        context = context0
-        for _ in range(self.inner_steps):
+        context = context0 if context0.requires_grad else context0.detach().clone().requires_grad_(True)
+        for inner_lr in self.inner_lr_schedule:
             support_losses = [self._sft_loss(item, context) for item in support]
             support_loss = torch.stack(support_losses).mean()
             if self.context_reg_weight > 0:
-                support_loss = support_loss + self.context_reg_weight * self._context_reg(context)
+                support_loss = support_loss + self.context_reg_weight * self._context_reg(context, context0)
             (grad,) = torch.autograd.grad(support_loss, context, create_graph=False)
             if self.inner_grad_clip > 0:
                 grad_norm = grad.float().norm().clamp_min(1e-6)
                 grad = grad * min(1.0, self.inner_grad_clip / float(grad_norm.detach().cpu()))
-            context = context - self.inner_lr * grad
+            context = self._clamp_context(context - float(inner_lr) * grad)
         return context
 
     @staticmethod
@@ -296,6 +350,10 @@ class Stage2TTTTrainingModule(WanTrainingModule):
     def forward(self, task: dict) -> torch.Tensor:
         support = task["support"]
         query = task["query"]
+        group_key = task.get("group_key", [])
+        task_friction_mu = float("nan")
+        if isinstance(group_key, (list, tuple)) and len(group_key) >= 2 and group_key[1] is not None:
+            task_friction_mu = float(group_key[1])
         context0 = self._context0()
         context_adapted = self._adapt_context(support, context0)
 
@@ -325,7 +383,7 @@ class Stage2TTTTrainingModule(WanTrainingModule):
             query_baseline_loss.abs() + self.improvement_eps
         )
         gap_loss = torch.relu(rel_show_imp.detach() - rel_query_imp - self.gap_margin) ** 2
-        context_reg = self._context_reg(context_adapted)
+        context_reg = self._context_reg(context_adapted, context0)
 
         loss = self.query_weight * query_adapted_loss
         if self.show_eval_weight > 0:
@@ -343,6 +401,10 @@ class Stage2TTTTrainingModule(WanTrainingModule):
             "rel_show_imp": float(rel_show_imp.detach().float().cpu()),
             "rel_query_imp": float(rel_query_imp.detach().float().cpu()),
             "context_reg": float(context_reg.detach().float().cpu()),
+            "friction_mu": task_friction_mu,
+            "target_c": task_friction_mu / 0.25 if task_friction_mu == task_friction_mu else float("nan"),
+            "context0_mean": float(context0.detach().float().mean().cpu()),
+            "context_adapted_mean": float(context_adapted.detach().float().mean().cpu()),
         }
         return loss
 
@@ -357,13 +419,25 @@ def add_stage2_config(parser: argparse.ArgumentParser):
     group.add_argument("--stage2_query_max", type=int, default=6)
     group.add_argument("--stage2_inner_steps", type=int, default=1)
     group.add_argument("--stage2_inner_lr", type=float, default=0.05)
+    group.add_argument(
+        "--stage2_inner_lr_schedule",
+        type=str,
+        default="",
+        help='Optional inner-loop schedule, e.g. "0.6:5,0.3:5,0.1:5,0.03:5". Overrides stage2_inner_steps/lr.',
+    )
     group.add_argument("--stage2_inner_grad_clip", type=float, default=1.0)
+    group.add_argument("--stage2_context_init_mode", type=str, default="default", choices=["default", "uniform"])
+    group.add_argument("--stage2_context_init_min", type=float, default=0.0)
+    group.add_argument("--stage2_context_init_max", type=float, default=1.0)
+    group.add_argument("--stage2_context_clamp_min", type=float, default=None)
+    group.add_argument("--stage2_context_clamp_max", type=float, default=None)
     group.add_argument("--stage2_query_weight", type=float, default=1.0)
     group.add_argument("--stage2_show_eval_weight", type=float, default=0.1)
     group.add_argument("--stage2_gap_weight", type=float, default=0.2)
     group.add_argument("--stage2_gap_margin", type=float, default=0.03)
     group.add_argument("--stage2_context_reg_weight", type=float, default=1e-3)
     group.add_argument("--stage2_improvement_eps", type=float, default=1e-4)
+    group.add_argument("--stage2_outer_warmup_steps", type=int, default=0)
     return parser
 
 
@@ -419,7 +493,14 @@ def build_dataset(args, runtime_config):
 
 def launch_stage2_training(accelerator, dataset, model, model_logger, args):
     optimizer = torch.optim.AdamW(model.trainable_modules(), lr=args.learning_rate, weight_decay=args.weight_decay)
-    scheduler = torch.optim.lr_scheduler.ConstantLR(optimizer)
+    warmup_steps = int(getattr(args, "stage2_outer_warmup_steps", 0) or 0)
+    if warmup_steps > 0:
+        scheduler = torch.optim.lr_scheduler.LambdaLR(
+            optimizer,
+            lr_lambda=lambda step: min(1.0, float(step + 1) / float(warmup_steps)),
+        )
+    else:
+        scheduler = torch.optim.lr_scheduler.ConstantLR(optimizer, factor=1.0, total_iters=1)
     dataloader = torch.utils.data.DataLoader(
         dataset,
         shuffle=True,
@@ -443,7 +524,8 @@ def launch_stage2_training(accelerator, dataset, model, model_logger, args):
                 optimizer.zero_grad()
                 model_logger.on_step_end(accelerator, model, args.save_steps, loss=loss)
                 if accelerator.is_main_process and model_logger.log_steps > 0 and model_logger.num_steps % model_logger.log_steps == 0:
-                    metrics = accelerator.unwrap_model(model).last_metrics
+                    metrics = dict(accelerator.unwrap_model(model).last_metrics)
+                    metrics["outer_lr"] = float(scheduler.get_last_lr()[0])
                     print(
                         "[stage2] "
                         + " ".join(f"{key}={value:.6f}" for key, value in metrics.items()),

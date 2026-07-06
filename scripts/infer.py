@@ -28,6 +28,12 @@ def parse_args():
         default=None,
         help="[OPTIONAL] Comma/range list of metadata row indices to process, e.g. 2,10,20-22.",
     )
+    parser.add_argument(
+        "--physical_context_override",
+        type=str,
+        default=None,
+        help="[OPTIONAL] Comma-separated physical C override for all samples, e.g. 0.5 or 0.1,0.2.",
+    )
     args = parser.parse_args()
     if args.config is not None:
         args = merge_yaml_and_args(args.config, parser, args)
@@ -48,6 +54,12 @@ def _parse_sample_indices(value: str | None):
         else:
             indices.append(int(part))
     return indices
+
+
+def _parse_physical_context_override(value: str | None):
+    if value is None or str(value).strip() == "":
+        return None
+    return [float(part.strip()) for part in str(value).split(",") if part.strip()]
 
 
 def _build_autoregressive_history_indices(
@@ -285,6 +297,8 @@ def main():
     print("[resolved_config] cfg_scale:", args.cfg_scale)
     print("[resolved_config] num_inference_steps:", args.num_inference_steps)
     print("[resolved_config] fps:", args.fps)
+    physical_context_override = _parse_physical_context_override(getattr(args, "physical_context_override", None))
+    print("[resolved_config] physical_context_override:", physical_context_override)
 
     os.makedirs(args.output_path, exist_ok=True)
     dataset = build_infer_dataset(args)
@@ -304,6 +318,12 @@ def main():
 
         sample = dataset[sample_index]
         sample = prepare_sample_for_rollout(sample, sample_index, pipe, args)
+        if physical_context_override is not None:
+            sample["physical_context"] = torch.tensor(
+                physical_context_override,
+                dtype=pipe.torch_dtype,
+                device=pipe.device,
+            )
         print(
             f"[sample] sample_index={sample['sample_index']} episode_index={sample['episode_index']} "
             f"range=[{sample['start_frame']},{sample['end_frame']}] video_shape={tuple(sample['video'].shape)} "

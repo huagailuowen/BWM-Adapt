@@ -335,6 +335,7 @@ def build_wan_video_action_pipeline(
     physical_context_tokens: int = 1,
     physical_context_hidden_dim: Optional[int] = None,
     physical_context_init_std: float = 0.0,
+    physical_context_init_value: float = 0.0,
     physical_adapter_mode: str = "none",
     physical_adapter_rank: int = 16,
     physical_adapter_layers: str = "all",
@@ -352,6 +353,7 @@ def build_wan_video_action_pipeline(
     elif physical_context_hidden_dim is not None:
         physical_context_hidden_dim = int(physical_context_hidden_dim)
     physical_context_init_std = float(_resolve_arg(args, "physical_context_init_std", physical_context_init_std))
+    physical_context_init_value = float(_resolve_arg(args, "physical_context_init_value", physical_context_init_value))
     physical_adapter_mode = str(_resolve_arg(args, "physical_adapter_mode", physical_adapter_mode)).lower()
     physical_adapter_rank = int(_resolve_arg(args, "physical_adapter_rank", physical_adapter_rank))
     physical_adapter_layers = str(_resolve_arg(args, "physical_adapter_layers", physical_adapter_layers))
@@ -396,6 +398,7 @@ def build_wan_video_action_pipeline(
             num_tokens=physical_context_tokens,
             hidden_dim=physical_context_hidden_dim,
             init_std=physical_context_init_std,
+            init_value=physical_context_init_value,
         ).to(dtype=pipe.torch_dtype, device=pipe.device)
         pipe.physical_context_encoder.eval()
 

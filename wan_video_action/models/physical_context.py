@@ -7,6 +7,25 @@ import torch
 import torch.nn as nn
 
 
+PUSH_BOX_FRICTION_CONTEXT_MU_MIN = 0.0
+PUSH_BOX_FRICTION_CONTEXT_MU_MAX = 0.25
+
+
+def normalize_push_box_friction_mu(mu: float) -> float:
+    """
+    Fixed oracle-C normalization for push-box friction experiments.
+
+    The physical context C is one scalar. We map the expected coefficient range
+    [0, 0.25] to [0, 1], so future 0.2/0.25 friction cases stay in-distribution.
+    """
+    mu_value = float(mu)
+    if mu_value < 0:
+        raise ValueError(f"friction_mu must be non-negative, got {mu_value}.")
+    return (mu_value - PUSH_BOX_FRICTION_CONTEXT_MU_MIN) / (
+        PUSH_BOX_FRICTION_CONTEXT_MU_MAX - PUSH_BOX_FRICTION_CONTEXT_MU_MIN
+    )
+
+
 @dataclass(frozen=True)
 class PhysicalContextConfig:
     context_dim: int = 128
@@ -14,13 +33,14 @@ class PhysicalContextConfig:
     num_tokens: int = 1
     hidden_dim: Optional[int] = None
     init_std: float = 0.0
+    init_value: float = 0.0
 
 
 class BiasFreeMLP(nn.Module):
     def __init__(self, in_dim: int, hidden_dim: int, out_dim: int):
         super().__init__()
         self.net = nn.Sequential(
-            nn.LayerNorm(in_dim),
+            nn.Identity() if int(in_dim) == 1 else nn.LayerNorm(in_dim),
             nn.Linear(in_dim, hidden_dim, bias=False),
             nn.GELU(approximate="tanh"),
             nn.Linear(hidden_dim, out_dim, bias=False),
@@ -46,6 +66,7 @@ class PhysicalContextEncoder(nn.Module):
         num_tokens: int = 1,
         hidden_dim: Optional[int] = None,
         init_std: float = 0.0,
+        init_value: float = 0.0,
     ):
         super().__init__()
         if context_dim <= 0:
@@ -62,10 +83,11 @@ class PhysicalContextEncoder(nn.Module):
             num_tokens=int(num_tokens),
             hidden_dim=hidden_dim,
             init_std=float(init_std),
+            init_value=float(init_value),
         )
-        self.default_context = nn.Parameter(torch.zeros(num_tokens, context_dim))
+        self.default_context = nn.Parameter(torch.full((num_tokens, context_dim), float(init_value)))
         if init_std > 0:
-            nn.init.normal_(self.default_context, mean=0.0, std=init_std)
+            nn.init.normal_(self.default_context, mean=float(init_value), std=init_std)
 
         self.token_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim)
         self.mod_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim)
