@@ -34,6 +34,12 @@ def parse_args():
         default=None,
         help="[OPTIONAL] Comma-separated physical C override for all samples, e.g. 0.5 or 0.1,0.2.",
     )
+    parser.add_argument(
+        "--physical_context_table_path",
+        type=str,
+        default=None,
+        help="[OPTIONAL] Grouped-C context_table.json. If set, lookup C by sample friction_mu.",
+    )
     args = parser.parse_args()
     if args.config is not None:
         args = merge_yaml_and_args(args.config, parser, args)
@@ -60,6 +66,34 @@ def _parse_physical_context_override(value: str | None):
     if value is None or str(value).strip() == "":
         return None
     return [float(part.strip()) for part in str(value).split(",") if part.strip()]
+
+
+def _load_physical_context_table(path: str | None):
+    if not path:
+        return None
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    table = {}
+    for record in data.get("records", []):
+        mu = round(float(record["friction_mu"]), 10)
+        table[mu] = record["context"]
+    if not table:
+        raise ValueError(f"No records found in physical context table: {path}")
+    return table
+
+
+def _lookup_physical_context(table: dict | None, sample: Dict):
+    if table is None:
+        return None
+    if "friction_mu" not in sample:
+        raise KeyError("Sample has no friction_mu for physical_context_table lookup.")
+    mu = round(float(sample["friction_mu"]), 10)
+    if mu in table:
+        return table[mu]
+    best_mu = min(table, key=lambda key: abs(key - mu))
+    if abs(best_mu - mu) > 1e-6:
+        raise KeyError(f"No context for friction_mu={mu}; nearest={best_mu}")
+    return table[best_mu]
 
 
 def _build_autoregressive_history_indices(
@@ -298,7 +332,9 @@ def main():
     print("[resolved_config] num_inference_steps:", args.num_inference_steps)
     print("[resolved_config] fps:", args.fps)
     physical_context_override = _parse_physical_context_override(getattr(args, "physical_context_override", None))
+    physical_context_table = _load_physical_context_table(getattr(args, "physical_context_table_path", None))
     print("[resolved_config] physical_context_override:", physical_context_override)
+    print("[resolved_config] physical_context_table_path:", getattr(args, "physical_context_table_path", None))
 
     os.makedirs(args.output_path, exist_ok=True)
     dataset = build_infer_dataset(args)
@@ -321,6 +357,12 @@ def main():
         if physical_context_override is not None:
             sample["physical_context"] = torch.tensor(
                 physical_context_override,
+                dtype=pipe.torch_dtype,
+                device=pipe.device,
+            )
+        elif physical_context_table is not None:
+            sample["physical_context"] = torch.tensor(
+                _lookup_physical_context(physical_context_table, sample),
                 dtype=pipe.torch_dtype,
                 device=pipe.device,
             )

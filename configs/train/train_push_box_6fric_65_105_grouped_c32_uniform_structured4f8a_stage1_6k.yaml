@@ -1,0 +1,114 @@
+# Stage 1 grouped latent-C on 6fric hidden-straight data.
+# One shared latent C per friction group; C is a free environment latent, not an oracle friction value.
+# Training data is restricted to exactly frames 65-105 for every episode.
+
+dataset:
+  dataset_base_path: "/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox/libero_push_box_6fric_50pairs_straight_jitter_35_35_direct_lerobot_hai-machine_2026-06-29"
+  dataset_metadata_path: "data/push_box_bwm_6fric_50pairs_straight_jitter_35_35_hidden_straight_65_105_c1latent/train.jsonl"
+  dataset_repeat: 1
+  dataset_num_workers: 0
+  data_file_keys: "video,action"
+
+video:
+  height: 224
+  width: 224
+  max_pixels: 16777216
+  num_frames: 41
+  resize_mode: "fit"
+  num_history_frames: 1
+  time_division_factor: 4
+  time_division_remainder: 1
+  spatial_division_factor: 32
+  chunk_mode: "static"
+  pad_short_chunks: true
+
+model:
+  model_paths: "models/Wan2.2-TI2V-5B"
+  model_id_with_origin_paths: null
+  extra_inputs: null
+  fp8_models: null
+  offload_models: null
+  model_config_path: "configs/model/wan2_2_ti2v_5b.yaml"
+  initialize_model_on_cpu: false
+  text_mode: "none"
+  enable_text: false
+  enable_dit: true
+  enable_vae: true
+  enable_image: false
+  action_mode: "adaln"
+
+action:
+  action_type: "eef_delta"
+  action_stat_path: "data/push_box_bwm_6fric_50pairs_straight_jitter_35_35_hidden_straight_65_105_c1latent/action_stats.json"
+  action_dim: 14
+
+physical_context:
+  physical_context_mode: "both"
+  physical_context_dim: 32
+  physical_context_tokens: 1
+  physical_context_hidden_dim: 128
+  physical_context_init_std: 0.0
+  physical_context_init_value: 0.5
+  physical_adapter_mode: "none"
+  physical_adapter_rank: 16
+  physical_adapter_layers: "all"
+  physical_adapter_gate_init: 0.0
+
+grouped_context_stage1:
+  grouped_context_init_mode: "uniform"
+  grouped_context_init_value: 0.5
+  grouped_context_init_std: 0.02
+  grouped_context_init_min: 0.0
+  grouped_context_init_max: 1.0
+  grouped_context_clamp_min: 0.0
+  grouped_context_clamp_max: 1.0
+  grouped_context_lr: 0.03
+  grouped_context_lr_schedule: "warmup:500:0.03,hold:500:1000:0.03,hold:1000:2000:0.01,linear:2000:6000:0.01:0.001,after:6000:0.001"
+  grouped_context_model_lr_warmup_steps: 500
+  grouped_context_weight_decay: 0.0
+  grouped_context_structured_updates: 6000
+  grouped_context_friction_groups_per_update: 4
+  grouped_context_actions_per_update: 8
+  grouped_context_microbatches_per_update: 32
+
+training:
+  learning_rate: 1e-5
+  num_epochs: 1
+  trainable_models: "dit,action_encoder,physical_context_encoder"
+  find_unused_parameters: true
+  weight_decay: 0.01
+  task: "sft"
+  seed: 20260707
+  mixed_precision: "bf16"
+  max_timestep_boundary: 1.0
+  min_timestep_boundary: 0.0
+  batch_size: 1
+
+output:
+  output_path: "./outputs/push_box_6fric_65_105_grouped_c32_uniform_structured4f8a_stage1_6k_PENDING_JOB"
+  remove_prefix_in_ckpt: "pipe.dit."
+  save_steps: 500
+  checkpoint_save_minutes: 60
+  checkpoint_keep_last: 2
+  log_steps: 10
+  ckpt_path: "ckpt/BLM/step-12000.safetensors"
+  resume_from: null
+
+lora:
+  lora_base_model: null
+  lora_target_modules: null
+  lora_rank: 32
+  lora_checkpoint: null
+  preset_lora_path: null
+  preset_lora_model: null
+
+gradient:
+  use_gradient_checkpointing: true
+  use_gradient_checkpointing_offload: false
+  gradient_accumulation_steps: 1
+  max_grad_norm: 0.5
+
+tracking:
+  use_wandb: false
+  use_swanlab: false
+  swanlab_experiment_name: null

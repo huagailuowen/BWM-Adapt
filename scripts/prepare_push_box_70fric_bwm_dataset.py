@@ -21,6 +21,7 @@ PROMPT = (
     "no target is shown"
 )
 PHYSICAL_CONTEXT_NORMALIZATION = "C = friction_mu / 0.25"
+PUSH_ACTION_PEAK_NORMALIZATION = "peak_push_action_x_norm = max(action_x during push) / 0.5"
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -51,6 +52,12 @@ def relative_episode_path(kind: str, episode_index: int, video_key: str | None =
 def normalize_friction_mu(mu: float) -> float:
     # Fixed convention for oracle latent C: map mu in [0, 0.25] to C in [0, 1].
     return float(mu) / 0.25
+
+
+def normalize_push_action_peak_x(value: float) -> float:
+    # The event-tap A500 dataset uses commanded push amplitudes up to about 0.5.
+    # Keep this second C dimension in the same nominal [0, 1] range as friction C.
+    return float(value) / 0.5
 
 
 def friction_mu(meta: dict) -> float:
@@ -144,6 +151,8 @@ def make_chunk_row(
         "push_start": int(push_start),
         "push_end": int(push_end),
         "push_steps": int(meta.get("push_steps", push_end - push_start)),
+        "push_action_peak_x": float(meta.get("push_action_peak_x", 0.0)),
+        "push_action_peak_x_normalized": normalize_push_action_peak_x(float(meta.get("push_action_peak_x", 0.0))),
         "chunk_type": chunk_type,
         "start_frame": int(start_frame),
         "end_frame": int(start_frame) + int(num_frames) - 1,
@@ -165,6 +174,22 @@ def with_oracle_context(rows: list[dict]) -> list[dict]:
         item["physical_context"] = [normalize_friction_mu(float(row["friction_mu"]))]
         item["physical_context_source"] = "oracle_friction_mu"
         item["physical_context_normalization"] = PHYSICAL_CONTEXT_NORMALIZATION
+        out.append(item)
+    return out
+
+
+def with_oracle_context_friction_and_peak_action(rows: list[dict]) -> list[dict]:
+    out = []
+    for row in rows:
+        item = dict(row)
+        item["physical_context"] = [
+            normalize_friction_mu(float(row["friction_mu"])),
+            normalize_push_action_peak_x(float(row["push_action_peak_x"])),
+        ]
+        item["physical_context_source"] = "oracle_friction_mu_and_push_action_peak_x"
+        item["physical_context_normalization"] = (
+            f"{PHYSICAL_CONTEXT_NORMALIZATION}; {PUSH_ACTION_PEAK_NORMALIZATION}"
+        )
         out.append(item)
     return out
 
@@ -194,18 +219,105 @@ def compute_action_stats(source_root: Path, metas: list[dict]) -> dict:
     return {"action_pose": stat, "eef_delta": stat}
 
 
+def compute_push_action_peak_x(source_root: Path, meta: dict) -> float:
+    push_start, push_end = push_bounds(meta)
+    episode_index = int(meta["episode_index"])
+    parquet_path = source_root / relative_episode_path("data", episode_index)
+    action = read_actions(parquet_path)
+    lo = max(0, min(int(push_start), int(action.shape[0]) - 1))
+    hi = max(lo + 1, min(int(push_end), int(action.shape[0])))
+    return float(np.max(action[lo:hi, 0]))
+
+
+def clamp_chunk_start(start: int, *, total_frames: int, num_frames: int) -> int:
+    latest_start = max(0, int(total_frames) - int(num_frames))
+    return int(max(0, min(latest_start, int(start))))
+
+
+def push_full_start(meta: dict, *, chunk_index: int, num_frames: int, pre_offsets: list[int]) -> int:
+    total_frames = steps(meta)
+    push_start, push_end = push_bounds(meta)
+    offset = int(pre_offsets[int(chunk_index) % len(pre_offsets)])
+    start = clamp_chunk_start(int(push_start) - offset, total_frames=total_frames, num_frames=num_frames)
+    if start + int(num_frames) - 1 < int(push_end):
+        start = clamp_chunk_start(int(push_end) - int(num_frames) + 1, total_frames=total_frames, num_frames=num_frames)
+    return int(start)
+
+
+def push_mixed_start(
+    meta: dict,
+    *,
+    chunk_index: int,
+    num_frames: int,
+    prepush_chunks: int,
+    prepush_offsets: list[int],
+    push_core_offsets: list[int],
+) -> tuple[int, str]:
+    total_frames = steps(meta)
+    push_start, push_end = push_bounds(meta)
+    push_core_start = int(push_start)
+    push_core_end = int(push_end)
+
+    if int(chunk_index) < int(prepush_chunks):
+        offset = int(prepush_offsets[int(chunk_index) % len(prepush_offsets)])
+        start = clamp_chunk_start(int(push_start) - offset, total_frames=total_frames, num_frames=num_frames)
+        return start, "pre_push"
+
+    push_index = int(chunk_index) - int(prepush_chunks)
+    offset = int(push_core_offsets[push_index % len(push_core_offsets)])
+    start = clamp_chunk_start(int(push_core_start) - offset, total_frames=total_frames, num_frames=num_frames)
+    if start > push_core_start:
+        start = clamp_chunk_start(push_core_start, total_frames=total_frames, num_frames=num_frames)
+    if start + int(num_frames) - 1 < push_core_end:
+        start = clamp_chunk_start(push_core_end - int(num_frames) + 1, total_frames=total_frames, num_frames=num_frames)
+    return start, "push_core"
+
+
 def build_rows(*, source_root: Path, metas: list[dict], rng: random.Random, args: argparse.Namespace) -> list[dict]:
     rows = []
     for meta in metas:
+        meta = dict(meta)
+        meta["push_action_peak_x"] = compute_push_action_peak_x(source_root, meta)
         for chunk_idx in range(int(args.train_chunks_per_episode)):
-            start, chunk_type = sample_start(
-                rng,
-                total_frames=steps(meta),
-                min_real_frames=args.min_real_frames,
-                push_focus_ratio=float(args.push_focus_ratio),
-                push_start_min=args.push_start_min,
-                push_start_max=args.push_start_max,
-            )
+            if str(args.chunk_start_mode).lower() == "push_full":
+                pre_offsets = [int(part.strip()) for part in str(args.push_full_pre_offsets).split(",") if part.strip()]
+                if not pre_offsets:
+                    raise ValueError("push_full_pre_offsets must contain at least one integer.")
+                start = push_full_start(
+                    meta,
+                    chunk_index=chunk_idx,
+                    num_frames=args.num_frames,
+                    pre_offsets=pre_offsets,
+                )
+                chunk_type = "push_full"
+            elif str(args.chunk_start_mode).lower() == "push_mixed":
+                prepush_offsets = [
+                    int(part.strip()) for part in str(args.prepush_start_offsets).split(",") if part.strip()
+                ]
+                push_core_offsets = [
+                    int(part.strip()) for part in str(args.push_core_start_offsets).split(",") if part.strip()
+                ]
+                if not prepush_offsets:
+                    raise ValueError("prepush_start_offsets must contain at least one integer.")
+                if not push_core_offsets:
+                    raise ValueError("push_core_start_offsets must contain at least one integer.")
+                start, chunk_type = push_mixed_start(
+                    meta,
+                    chunk_index=chunk_idx,
+                    num_frames=args.num_frames,
+                    prepush_chunks=args.prepush_chunks_per_episode,
+                    prepush_offsets=prepush_offsets,
+                    push_core_offsets=push_core_offsets,
+                )
+            else:
+                start, chunk_type = sample_start(
+                    rng,
+                    total_frames=steps(meta),
+                    min_real_frames=args.min_real_frames,
+                    push_focus_ratio=float(args.push_focus_ratio),
+                    push_start_min=args.push_start_min,
+                    push_start_max=args.push_start_max,
+                )
             rows.append(
                 make_chunk_row(
                     source_root=source_root,
@@ -226,6 +338,8 @@ def summarize(metas: list[dict], rows: list[dict]) -> dict:
     episode_friction_counts = Counter(friction_mu(row) for row in metas)
     action_counts = Counter(int(row.get("action_id", 0)) for row in metas)
     context_values = [normalize_friction_mu(float(row["friction_mu"])) for row in rows]
+    peak_values = [float(row["push_action_peak_x"]) for row in rows]
+    peak_context_values = [normalize_push_action_peak_x(value) for value in peak_values]
     frame_counts = [steps(row) for row in metas]
     return {
         "source_subset": SUBSET_NAME,
@@ -241,11 +355,19 @@ def summarize(metas: list[dict], rows: list[dict]) -> dict:
         "physical_context_min": min(context_values),
         "physical_context_max": max(context_values),
         "physical_context_normalization": PHYSICAL_CONTEXT_NORMALIZATION,
+        "push_action_peak_x_min": min(peak_values),
+        "push_action_peak_x_max": max(peak_values),
+        "push_action_peak_x_normalized_min": min(peak_context_values),
+        "push_action_peak_x_normalized_max": max(peak_context_values),
+        "push_action_peak_x_normalization": PUSH_ACTION_PEAK_NORMALIZATION,
         "steps_min": min(frame_counts),
         "steps_mean": sum(frame_counts) / max(1, len(frame_counts)),
         "steps_max": max(frame_counts),
         "pad_short_chunks": sum(1 for row in rows if row["pad_short"]),
+        "pre_push_chunks": sum(1 for row in rows if row["chunk_type"] == "pre_push"),
+        "push_core_chunks": sum(1 for row in rows if row["chunk_type"] == "push_core"),
         "push_focus_chunks": sum(1 for row in rows if row["chunk_type"] == "push_focus"),
+        "push_full_chunks": sum(1 for row in rows if row["chunk_type"] == "push_full"),
         "random_chunks": sum(1 for row in rows if row["chunk_type"] == "random"),
     }
 
@@ -266,6 +388,11 @@ def main() -> None:
     parser.add_argument("--min-real-frames", type=int, default=24)
     parser.add_argument("--source-split", default="fixed_scene_hidden_straight")
     parser.add_argument("--task-name", default="libero_push_box_70fric_fixed_scene_physical_observation")
+    parser.add_argument("--chunk-start-mode", default="random", choices=["random", "push_full", "push_mixed"])
+    parser.add_argument("--push-full-pre-offsets", default="35,25,15,5")
+    parser.add_argument("--prepush-chunks-per-episode", type=int, default=5)
+    parser.add_argument("--prepush-start-offsets", default="70,55,40,25,10")
+    parser.add_argument("--push-core-start-offsets", default="10,8,5,3,0")
     args = parser.parse_args()
 
     source_root = Path(args.source_root).resolve()
@@ -273,6 +400,7 @@ def main() -> None:
     metas = read_jsonl(source_root / SUBSET_NAME / "meta" / "push_box_episode_metadata.jsonl")
     train_rows = build_rows(source_root=source_root, metas=metas, rng=rng, args=args)
     oracle_rows = with_oracle_context(train_rows)
+    oracle_peak_rows = with_oracle_context_friction_and_peak_action(train_rows)
     stats = compute_action_stats(source_root, metas)
     summary = {
         "source_root": str(source_root),
@@ -286,6 +414,7 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     write_jsonl(output_dir / "train.jsonl", train_rows)
     write_jsonl(output_dir / "train_oracle_mu025_c1.jsonl", oracle_rows)
+    write_jsonl(output_dir / "train_oracle_mu025_peakx050_c2.jsonl", oracle_peak_rows)
     write_jsonl(output_dir / "test.jsonl", [])
     with (output_dir / "action_stats.json").open("w", encoding="utf-8") as f:
         json.dump(stats, f, indent=2, sort_keys=True)

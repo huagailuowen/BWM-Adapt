@@ -34,13 +34,16 @@ class PhysicalContextConfig:
     hidden_dim: Optional[int] = None
     init_std: float = 0.0
     init_value: float = 0.0
+    input_norm: str = "layernorm"
+    temporal_position: str = "none"
 
 
 class BiasFreeMLP(nn.Module):
-    def __init__(self, in_dim: int, hidden_dim: int, out_dim: int):
+    def __init__(self, in_dim: int, hidden_dim: int, out_dim: int, input_norm: str = "layernorm"):
         super().__init__()
+        use_input_norm = str(input_norm).lower() != "none" and int(in_dim) != 1
         self.net = nn.Sequential(
-            nn.Identity() if int(in_dim) == 1 else nn.LayerNorm(in_dim),
+            nn.LayerNorm(in_dim) if use_input_norm else nn.Identity(),
             nn.Linear(in_dim, hidden_dim, bias=False),
             nn.GELU(approximate="tanh"),
             nn.Linear(hidden_dim, out_dim, bias=False),
@@ -67,6 +70,8 @@ class PhysicalContextEncoder(nn.Module):
         hidden_dim: Optional[int] = None,
         init_std: float = 0.0,
         init_value: float = 0.0,
+        input_norm: str = "layernorm",
+        temporal_position: str = "none",
     ):
         super().__init__()
         if context_dim <= 0:
@@ -75,6 +80,12 @@ class PhysicalContextEncoder(nn.Module):
             raise ValueError(f"model_dim must be positive, got {model_dim}.")
         if num_tokens <= 0:
             raise ValueError(f"num_tokens must be positive, got {num_tokens}.")
+        input_norm = str(input_norm).lower()
+        if input_norm not in {"layernorm", "none"}:
+            raise ValueError(f"input_norm must be layernorm or none, got {input_norm!r}.")
+        temporal_position = str(temporal_position).lower()
+        if temporal_position not in {"none", "learned"}:
+            raise ValueError(f"temporal_position must be none or learned, got {temporal_position!r}.")
 
         hidden_dim = int(hidden_dim or min(model_dim, max(context_dim * 4, 128)))
         self.config = PhysicalContextConfig(
@@ -84,13 +95,23 @@ class PhysicalContextEncoder(nn.Module):
             hidden_dim=hidden_dim,
             init_std=float(init_std),
             init_value=float(init_value),
+            input_norm=input_norm,
+            temporal_position=temporal_position,
         )
         self.default_context = nn.Parameter(torch.full((num_tokens, context_dim), float(init_value)))
         if init_std > 0:
             nn.init.normal_(self.default_context, mean=float(init_value), std=init_std)
 
-        self.token_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim)
-        self.mod_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim)
+        self.token_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim, input_norm=input_norm)
+        self.mod_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim, input_norm=input_norm)
+        if temporal_position == "learned" and num_tokens > 1:
+            self.token_position_embedding = nn.Parameter(torch.zeros(num_tokens, model_dim))
+            self.mod_position_embedding = nn.Parameter(torch.zeros(num_tokens, model_dim))
+            nn.init.normal_(self.token_position_embedding, mean=0.0, std=0.02)
+            nn.init.normal_(self.mod_position_embedding, mean=0.0, std=0.02)
+        else:
+            self.register_parameter("token_position_embedding", None)
+            self.register_parameter("mod_position_embedding", None)
 
     @property
     def context_dim(self) -> int:
@@ -179,8 +200,16 @@ class PhysicalContextEncoder(nn.Module):
             device=device,
         )
         token_emb = self.token_projector(context)
-        pooled_context = context.mean(dim=1)
-        mod_emb = self.mod_projector(pooled_context).unsqueeze(1).expand(-1, int(target_groups), -1)
+        if self.token_position_embedding is not None and token_emb.shape[1] == self.token_position_embedding.shape[0]:
+            token_emb = token_emb + self.token_position_embedding.to(dtype=token_emb.dtype, device=token_emb.device).unsqueeze(0)
+
+        if context.shape[1] == int(target_groups):
+            mod_emb = self.mod_projector(context)
+            if self.mod_position_embedding is not None and mod_emb.shape[1] == self.mod_position_embedding.shape[0]:
+                mod_emb = mod_emb + self.mod_position_embedding.to(dtype=mod_emb.dtype, device=mod_emb.device).unsqueeze(0)
+        else:
+            pooled_context = context.mean(dim=1)
+            mod_emb = self.mod_projector(pooled_context).unsqueeze(1).expand(-1, int(target_groups), -1)
         return token_emb, mod_emb
 
 

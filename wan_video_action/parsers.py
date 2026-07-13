@@ -159,6 +159,8 @@ def add_physical_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--physical_context_hidden_dim", type=int, default=0, help="[TUNABLE] Hidden width for C projection MLPs. 0 selects a small default.")
     group.add_argument("--physical_context_init_std", type=float, default=0.0, help="[OPTIONAL] Std for non-zero default C initialization.")
     group.add_argument("--physical_context_init_value", type=float, default=0.0, help="[OPTIONAL] Mean value for default latent C initialization.")
+    group.add_argument("--physical_context_input_norm", type=str, default="layernorm", choices=["layernorm", "none"], help="[TUNABLE] Normalization before projecting latent C.")
+    group.add_argument("--physical_context_temporal_position", type=str, default="none", choices=["none", "learned"], help="[TUNABLE] Temporal position embedding for per-time latent C tokens.")
     group.add_argument("--physical_adapter_mode", type=str, default="none", choices=["none", "residual"], help="[KEY] Lightweight residual-adapter parameter adaptation mode.")
     group.add_argument("--physical_adapter_rank", type=int, default=16, help="[TUNABLE] Low-rank width for residual physical adapters.")
     group.add_argument("--physical_adapter_layers", type=str, default="all", help='[TUNABLE] Adapter layer set: "all", "uniform:N", "last_quarter", "last:N", or comma-separated layer indices.')

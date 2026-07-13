@@ -8,8 +8,10 @@ from wan_video_action.data.data_utils import pack_paths
 from diffsynth.core import ModelConfig
 from wan_video_action.pipelines.wan_video_action import build_wan_video_action_pipeline
 from diffsynth.diffusion import *
+from diffsynth.diffusion.runner import initialize_deepspeed_gradient_checkpointing
 from wan_video_action.parsers import merge_yaml_and_args, prepare_runtime_config, add_general_config
 from wan_video_action.utils import set_global_seed
+from tqdm import tqdm
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
@@ -256,7 +258,59 @@ class WanTrainingModule(DiffusionTrainingModule):
 def wan_parser():
     parser = argparse.ArgumentParser(description="WAN Video Action training script.")
     parser = add_general_config(parser)
+    parser.add_argument(
+        "--stage1_warmup_steps",
+        type=int,
+        default=0,
+        help="Linearly warm up the outer optimizer LR for vanilla stage1 SFT training.",
+    )
     return parser
+
+
+def launch_training_task_with_optional_warmup(accelerator, dataset, model, model_logger, args):
+    if int(args.batch_size) != 1:
+        raise ValueError("The local warmup launcher currently supports batch_size=1 only.")
+
+    optimizer = torch.optim.AdamW(
+        model.trainable_modules(),
+        lr=args.learning_rate,
+        weight_decay=args.weight_decay,
+    )
+    warmup_steps = int(getattr(args, "stage1_warmup_steps", 0) or 0)
+    if warmup_steps > 0:
+        scheduler = torch.optim.lr_scheduler.LambdaLR(
+            optimizer,
+            lr_lambda=lambda step: min(1.0, float(step + 1) / float(warmup_steps)),
+        )
+    else:
+        scheduler = torch.optim.lr_scheduler.ConstantLR(optimizer, factor=1.0, total_iters=1)
+
+    dataloader = torch.utils.data.DataLoader(
+        dataset,
+        shuffle=True,
+        batch_size=1,
+        collate_fn=lambda items: items[0],
+        num_workers=args.dataset_num_workers,
+    )
+    model.to(device=accelerator.device)
+    model, optimizer, dataloader, scheduler = accelerator.prepare(model, optimizer, dataloader, scheduler)
+    initialize_deepspeed_gradient_checkpointing(accelerator)
+
+    for epoch_id in range(args.num_epochs):
+        iterator = tqdm(dataloader, disable=not accelerator.is_local_main_process)
+        for data in iterator:
+            with accelerator.accumulate(model):
+                loss = model(data)
+                accelerator.backward(loss)
+                if args.max_grad_norm is not None and args.max_grad_norm > 0:
+                    accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
+                optimizer.step()
+                scheduler.step()
+                optimizer.zero_grad()
+                model_logger.on_step_end(accelerator, model, args.save_steps, loss=loss)
+        if args.save_steps is None:
+            model_logger.on_epoch_end(accelerator, model, epoch_id)
+    model_logger.on_training_end(accelerator, model, args.save_steps)
 
 
 if __name__ == "__main__":
@@ -366,4 +420,12 @@ if __name__ == "__main__":
         "direct_distill": launch_training_task,
         "direct_distill:train": launch_training_task,
     }
-    launcher_map[args.task](accelerator, dataset, model, model_logger, args=args)
+    if int(getattr(args, "stage1_warmup_steps", 0) or 0) > 0 and args.task in {
+        "sft",
+        "sft:train",
+        "direct_distill",
+        "direct_distill:train",
+    }:
+        launch_training_task_with_optional_warmup(accelerator, dataset, model, model_logger, args=args)
+    else:
+        launcher_map[args.task](accelerator, dataset, model, model_logger, args=args)

@@ -1,0 +1,122 @@
+# Stage 2 latent-C2 TTT on event-tap segmented80 push-motion 161-frame 10-chunk mixed pre-push/push-core data.
+# Realistic setting: metadata does not provide physical_context.
+# Uses the same X5 inner-loop schedule and outer warmup as the successful 6fric run.
+
+dataset:
+  dataset_base_path: "/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine"
+  dataset_metadata_path: "data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_pushmotion41f_10chunk_20260705/train.jsonl"
+  dataset_repeat: 1
+  dataset_num_workers: 1
+  data_file_keys: "video,action"
+
+video:
+  height: 224
+  width: 224
+  max_pixels: 16777216
+  num_frames: 41
+  resize_mode: "fit"
+  num_history_frames: 1
+  time_division_factor: 4
+  time_division_remainder: 1
+  spatial_division_factor: 32
+  chunk_mode: "static"
+  pad_short_chunks: true
+
+model:
+  model_paths: "models/Wan2.2-TI2V-5B"
+  model_id_with_origin_paths: null
+  extra_inputs: null
+  fp8_models: null
+  offload_models: null
+  model_config_path: "configs/model/wan2_2_ti2v_5b.yaml"
+  initialize_model_on_cpu: false
+  text_mode: "none"
+  enable_text: false
+  enable_dit: true
+  enable_vae: true
+  enable_image: false
+  action_mode: "adaln"
+
+action:
+  action_type: "eef_delta"
+  action_stat_path: "data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_pushmotion41f_10chunk_20260705/action_stats.json"
+  action_dim: 14
+
+physical_context:
+  physical_context_mode: "both"
+  physical_context_dim: 2
+  physical_context_tokens: 1
+  physical_context_hidden_dim: 128
+  physical_context_init_std: 0.0
+  physical_context_init_value: 0.5
+  physical_adapter_mode: "none"
+  physical_adapter_rank: 16
+  physical_adapter_layers: "all"
+  physical_adapter_gate_init: 0.0
+
+stage2_ttt:
+  stage2_group_keys: "source_split,friction_mu"
+  stage2_known_context_keys: "push_action_peak_x_normalized"
+  stage2_tasks_per_epoch: 500
+  stage2_support_min: 2
+  stage2_support_max: 4
+  stage2_query_min: 6
+  stage2_query_max: 8
+  stage2_inner_steps: 20
+  stage2_inner_lr: 0.05
+  stage2_inner_lr_schedule: "3.0:5,1.5:5,0.5:5,0.15:5"
+  stage2_inner_grad_clip: 1.0
+  stage2_context_init_mode: "uniform"
+  stage2_context_init_min: 0.0
+  stage2_context_init_max: 1.0
+  stage2_context_clamp_min: 0.0
+  stage2_context_clamp_max: 1.0
+  stage2_query_weight: 1.0
+  stage2_show_eval_weight: 0.2
+  stage2_gap_weight: 0.2
+  stage2_gap_margin: 0.03
+  stage2_context_reg_weight: 0.001
+  stage2_improvement_eps: 0.0001
+  stage2_outer_warmup_steps: 50
+
+training:
+  learning_rate: 3e-5
+  num_epochs: 8
+  trainable_models: "physical_context_encoder"
+  find_unused_parameters: true
+  weight_decay: 0.01
+  task: "sft"
+  seed: 20260705
+  mixed_precision: "bf16"
+  max_timestep_boundary: 1.0
+  min_timestep_boundary: 0.0
+  batch_size: 1
+
+output:
+  output_path: "./outputs/push_box_event_tap_segmented80_pushmotion41f_10chunk_c2_mu_peakx_stage2_ttt_x5_warmup50_PENDING_JOB"
+  remove_prefix_in_ckpt: null
+  save_steps: 500
+  checkpoint_save_minutes: 60
+  checkpoint_keep_last: 4
+  log_steps: 2
+  ckpt_path: "outputs/push_box_event_tap_segmented80_pushmotion41f_10chunk_oracle_c2_mu_peakx_stage1_40k_ga8_PENDING_JOB/step-final.safetensors"
+  resume_from: null
+
+lora:
+  lora_base_model: null
+  lora_target_modules: null
+  lora_rank: 32
+  lora_checkpoint: null
+  preset_lora_path: null
+  preset_lora_model: null
+
+gradient:
+  use_gradient_checkpointing: true
+  use_gradient_checkpointing_offload: false
+  gradient_accumulation_steps: 1
+  max_grad_norm: 0.5
+
+tracking:
+  use_wandb: false
+  use_swanlab: false
+  swanlab_experiment_name: null

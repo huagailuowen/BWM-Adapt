@@ -267,6 +267,8 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_post_curriculum_cycle_steps", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_rest_init_min", type=float, default=0.4)
     group.add_argument("--grouped_context_curriculum_rest_init_max", type=float, default=0.6)
+    group.add_argument("--grouped_context_curriculum_initial_jitter", type=float, default=0.0)
+    group.add_argument("--grouped_context_curriculum_initial_refinement_steps", type=int, default=0)
     return parser
 
 
@@ -373,6 +375,9 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
     all_context_steps = int(args.grouped_context_curriculum_all_context_steps)
     model_steps = int(args.grouped_context_curriculum_model_steps)
     post_cycle_steps = int(getattr(args, "grouped_context_post_curriculum_cycle_steps", 0) or 0)
+    initial_refinement_steps = int(
+        getattr(args, "grouped_context_curriculum_initial_refinement_steps", 0) or 0
+    )
     variant = str(getattr(args, "grouped_context_curriculum_variant", "default") or "default").strip().lower()
     two_new_context = variant in ("two_new_context", "high_model_mid", "high_model_mid_new")
     total_groups = min(total_groups, len(group_order))
@@ -425,6 +430,20 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
                 ("all_context", all_context_steps, active_indices, active_indices),
                 ("model", model_steps, active_indices, []),
             ]
+        if round_id == 1 and initial_refinement_steps > 0:
+            refinement_cycle_steps = all_context_steps + model_steps
+            if refinement_cycle_steps <= 0 or initial_refinement_steps % refinement_cycle_steps != 0:
+                raise ValueError(
+                    "grouped_context_curriculum_initial_refinement_steps must be divisible by "
+                    "all_context_steps + model_steps."
+                )
+            for _ in range(initial_refinement_steps // refinement_cycle_steps):
+                phases.extend(
+                    [
+                        ("all_context", all_context_steps, active_indices, active_indices),
+                        ("model", model_steps, active_indices, []),
+                    ]
+                )
         for phase, duration, sample_indices, train_indices in phases:
             start = offset + 1
             end = offset + int(duration)
@@ -486,7 +505,9 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
 @torch.no_grad()
 def _initialize_curriculum_contexts(table, args, group_order: list[int], total_groups: int) -> None:
     mode = str(getattr(args, "grouped_context_init_mode", "")).strip().lower()
-    if mode not in ("ordered_initial_random_rest", "curriculum_ordered_initial_random_rest"):
+    ordered_mode = mode in ("ordered_initial_random_rest", "curriculum_ordered_initial_random_rest")
+    initial_jitter = float(getattr(args, "grouped_context_curriculum_initial_jitter", 0.0) or 0.0)
+    if not ordered_mode and initial_jitter <= 0:
         return
     initial_groups = min(
         int(getattr(args, "grouped_context_curriculum_initial_groups", 0) or 0),
@@ -497,6 +518,17 @@ def _initialize_curriculum_contexts(table, args, group_order: list[int], total_g
         raise ValueError("ordered_initial_random_rest requires positive grouped_context_curriculum_initial_groups.")
     generator = torch.Generator(device=table.contexts.device)
     generator.manual_seed(int(getattr(args, "seed", 0)) + 7919)
+    if initial_jitter > 0 and not ordered_mode:
+        base_context = table.contexts[int(group_order[0])].detach().clone()
+        clamp_min = getattr(args, "grouped_context_clamp_min", None)
+        clamp_max = getattr(args, "grouped_context_clamp_max", None)
+        for group_index in group_order[:initial_groups]:
+            noise = torch.empty_like(base_context)
+            noise.uniform_(-initial_jitter, initial_jitter, generator=generator)
+            initialized = base_context + noise
+            initialized.clamp_(min=clamp_min, max=clamp_max)
+            table.contexts[int(group_index)].copy_(initialized)
+        return
     rest_min = float(getattr(args, "grouped_context_curriculum_rest_init_min", 0.4))
     rest_max = float(getattr(args, "grouped_context_curriculum_rest_init_max", 0.6))
     table.contexts.uniform_(rest_min, rest_max, generator=generator)
@@ -912,6 +944,7 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
             + 2 * int(args.grouped_context_curriculum_all_context_steps)
             + 2 * int(args.grouped_context_curriculum_model_steps)
         )
+    default_updates += int(getattr(args, "grouped_context_curriculum_initial_refinement_steps", 0) or 0)
     updates = int(args.grouped_context_structured_updates) or default_updates
     actions_per_update = int(args.grouped_context_actions_per_update)
     friction_groups_per_update = int(args.grouped_context_friction_groups_per_update)

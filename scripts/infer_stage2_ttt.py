@@ -68,6 +68,203 @@ def _write_jsonl(path: Path, rows: list[dict]) -> None:
             f.write(json.dumps(row, sort_keys=True) + "\n")
 
 
+def _load_grouped_context_table(path: str | Path | None):
+    if not path:
+        return None
+    with Path(path).open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    records = data.get("records", [])
+    if not records:
+        raise ValueError(f"No context table records found in {path}.")
+    friction_values = np.asarray([float(record["friction_mu"]) for record in records], dtype=np.float32)
+    contexts = np.asarray([record["context"] for record in records], dtype=np.float32)
+    if contexts.ndim == 2:
+        contexts = contexts[:, None, :]
+    if contexts.ndim != 3:
+        raise ValueError(f"Expected context table shape (groups,tokens,dim), got {contexts.shape}.")
+    return {
+        "path": str(path),
+        "friction_values": friction_values,
+        "contexts": contexts,
+        "mean_context": contexts.mean(axis=0),
+    }
+
+
+def _context_table_mean_tensor(table, *, device, dtype):
+    if table is None:
+        return None
+    return torch.tensor(table["mean_context"], device=device, dtype=dtype)
+
+
+def _nearest_table_context(table, friction_mu, *, device, dtype):
+    if table is None or friction_mu is None:
+        return None
+    mu = float(friction_mu)
+    idx = int(np.argmin(np.abs(table["friction_values"] - mu)))
+    return torch.tensor(table["contexts"][idx], device=device, dtype=dtype)
+
+
+def _context_record(
+    *,
+    step: int,
+    context: torch.Tensor,
+    context0: torch.Tensor,
+    prev_context: torch.Tensor | None,
+    target_context: torch.Tensor | None,
+    inner_lr: float | None,
+    loss: float | None,
+    support_loss: float | None,
+    context_reg: float | None,
+    meta: dict,
+) -> dict:
+    current = context.detach().float().cpu()
+    initial = context0.detach().float().cpu()
+    previous = None if prev_context is None else prev_context.detach().float().cpu()
+    target = None if target_context is None else target_context.detach().float().cpu()
+    flat = current.reshape(-1)
+    row = {
+        **meta,
+        "inner_step": int(step),
+        "inner_lr": None if inner_lr is None else float(inner_lr),
+        "loss": None if loss is None else float(loss),
+        "support_loss": None if support_loss is None else float(support_loss),
+        "context_reg": None if context_reg is None else float(context_reg),
+        "context_mean": float(current.mean()),
+        "context_norm": float(current.norm()),
+        "context_total_delta_l2": float((current - initial).norm()),
+        "context_step_delta_l2": 0.0 if previous is None else float((current - previous).norm()),
+        "target_context_l2": None if target is None else float((current - target).norm()),
+        "context_flat": [float(value) for value in flat.tolist()],
+    }
+    return row
+
+
+def _fit_context_pca(contexts: np.ndarray):
+    flat = contexts.reshape(contexts.shape[0], -1).astype(np.float64)
+    center = flat.mean(axis=0, keepdims=True)
+    centered = flat - center
+    _, singular_values, vt = np.linalg.svd(centered, full_matrices=False)
+    if vt.shape[0] == 1:
+        components = np.concatenate([vt, np.zeros_like(vt)], axis=0)
+    else:
+        components = vt[:2]
+    total_var = float(np.sum(singular_values ** 2))
+    explained = (singular_values[:2] ** 2 / total_var) if total_var > 0 else np.zeros(2)
+    if explained.shape[0] < 2:
+        explained = np.pad(explained, (0, 2 - explained.shape[0]))
+    return center.reshape(-1), components, explained
+
+
+def _project_contexts(values: np.ndarray, center: np.ndarray, components: np.ndarray):
+    flat = values.reshape(values.shape[0], -1).astype(np.float64)
+    return (flat - center[None, :]) @ components.T
+
+
+def _write_context_pca_plot(path: Path, table, trajectory_rows: list[dict]) -> None:
+    if table is None or not trajectory_rows:
+        return
+
+    contexts = table["contexts"]
+    center, components, explained = _fit_context_pca(contexts)
+    table_xy = _project_contexts(contexts, center, components)
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    by_sample: dict[int, list[dict]] = defaultdict(list)
+    for row in trajectory_rows:
+        by_sample[int(row["sample_index"])].append(row)
+
+    trajectory_xy = []
+    projected_by_sample = {}
+    for sample_index, rows in sorted(by_sample.items()):
+        rows = sorted(rows, key=lambda item: int(item["inner_step"]))
+        values = np.asarray([row["context_flat"] for row in rows], dtype=np.float32)
+        xy = _project_contexts(values[:, None, :], center, components)
+        projected_by_sample[sample_index] = (rows, xy)
+        trajectory_xy.append(xy)
+
+    all_xy = np.concatenate([table_xy] + trajectory_xy, axis=0)
+    min_xy = all_xy.min(axis=0)
+    max_xy = all_xy.max(axis=0)
+    span = np.maximum(max_xy - min_xy, 1e-6)
+
+    width, height = 980, 760
+    margin_left, margin_right, margin_top, margin_bottom = 90, 40, 70, 90
+    plot_w = width - margin_left - margin_right
+    plot_h = height - margin_top - margin_bottom
+
+    def sx(x):
+        return margin_left + float((x - min_xy[0]) / span[0]) * plot_w
+
+    def sy(y):
+        return margin_top + (1.0 - float((y - min_xy[1]) / span[1])) * plot_h
+
+    def esc(text):
+        return (
+            str(text)
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+        )
+
+    colors = [
+        "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+        "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
+    ]
+    unique_mus = sorted({float(rows[0].get("friction_mu")) for rows, _ in projected_by_sample.values()})
+    mu_to_color = {mu: colors[idx % len(colors)] for idx, mu in enumerate(unique_mus)}
+    parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+        '<rect width="100%" height="100%" fill="white"/>',
+        '<style>text{font-family:Arial,sans-serif}.axis{stroke:#333;stroke-width:1}.grid{stroke:#ddd;stroke-width:1}.label{font-size:13px;fill:#222}.small{font-size:11px;fill:#333}.title{font-size:18px;font-weight:700;fill:#111}</style>',
+        f'<text class="title" x="{width/2:.1f}" y="32" text-anchor="middle">C32 table PCA with mean-initialized inner-loop C trajectories</text>',
+    ]
+
+    for i in range(6):
+        tx = min_xy[0] + span[0] * i / 5
+        ty = min_xy[1] + span[1] * i / 5
+        x = sx(tx)
+        y = sy(ty)
+        parts.append(f'<line class="grid" x1="{x:.2f}" y1="{margin_top}" x2="{x:.2f}" y2="{height-margin_bottom}"/>')
+        parts.append(f'<line class="grid" x1="{margin_left}" y1="{y:.2f}" x2="{width-margin_right}" y2="{y:.2f}"/>')
+        parts.append(f'<text class="small" x="{x:.2f}" y="{height-margin_bottom+22}" text-anchor="middle">{tx:.3f}</text>')
+        parts.append(f'<text class="small" x="{margin_left-10}" y="{y+4:.2f}" text-anchor="end">{ty:.3f}</text>')
+
+    parts.append(f'<line class="axis" x1="{margin_left}" y1="{height-margin_bottom}" x2="{width-margin_right}" y2="{height-margin_bottom}"/>')
+    parts.append(f'<line class="axis" x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height-margin_bottom}"/>')
+    parts.append(f'<text class="label" x="{margin_left+plot_w/2:.1f}" y="{height-32}" text-anchor="middle">PC1 ({100.0 * float(explained[0]):.1f}% table variance)</text>')
+    parts.append(f'<text class="label" transform="translate(26 {margin_top+plot_h/2:.1f}) rotate(-90)" text-anchor="middle">PC2 ({100.0 * float(explained[1]):.1f}% table variance)</text>')
+
+    for idx, (xy, mu) in enumerate(zip(table_xy, table["friction_values"])):
+        x, y = sx(xy[0]), sy(xy[1])
+        parts.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="6" fill="#111"/>')
+        parts.append(f'<text class="small" x="{x+8:.2f}" y="{y-7:.2f}">mu={float(mu):.4g}</text>')
+
+    for sample_index, (rows, xy) in sorted(projected_by_sample.items()):
+        mu = float(rows[0].get("friction_mu"))
+        color = mu_to_color[mu]
+        points = " ".join(f"{sx(point[0]):.2f},{sy(point[1]):.2f}" for point in xy)
+        parts.append(f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="2" opacity="0.88"/>')
+        x0, y0 = sx(xy[0, 0]), sy(xy[0, 1])
+        x1, y1 = sx(xy[-1, 0]), sy(xy[-1, 1])
+        parts.append(f'<line x1="{x0-5:.2f}" y1="{y0-5:.2f}" x2="{x0+5:.2f}" y2="{y0+5:.2f}" stroke="{color}" stroke-width="2"/>')
+        parts.append(f'<line x1="{x0-5:.2f}" y1="{y0+5:.2f}" x2="{x0+5:.2f}" y2="{y0-5:.2f}" stroke="{color}" stroke-width="2"/>')
+        parts.append(f'<polygon points="{x1+7:.2f},{y1:.2f} {x1-5:.2f},{y1-6:.2f} {x1-5:.2f},{y1+6:.2f}" fill="{color}"/>')
+        parts.append(f'<text class="small" x="{x1+10:.2f}" y="{y1+4:.2f}" fill="{color}">s{sample_index}/mu={mu:.4g}</text>')
+
+    legend_y = 64
+    parts.append('<text class="small" x="700" y="48">black dots: learned C table; x: init; triangle: final</text>')
+    parts.append('<text class="small" x="700" y="64">trajectory color is shared by friction group</text>')
+    for idx, mu in enumerate(unique_mus[:8]):
+        x = 700 + (idx % 4) * 70
+        y = 84 + (idx // 4) * 18
+        parts.append(f'<rect x="{x}" y="{y-10}" width="10" height="10" fill="{mu_to_color[mu]}"/>')
+        parts.append(f'<text class="small" x="{x+14}" y="{y}">mu={mu:.4g}</text>')
+    parts.append("</svg>")
+    path.write_text("\n".join(parts), encoding="utf-8")
+
+
 def _build_support_dataset(args, runtime_config):
     with open(args.action_stat_path, "r", encoding="utf-8") as f:
         stats = json.load(f)
@@ -284,6 +481,41 @@ def _video_geometry(video: torch.Tensor) -> tuple[int, int, int, int]:
     return int(video.shape[-2]) * num_views, int(video.shape[-1]), int(video.shape[2]), num_views
 
 
+def _known_context_keys(args) -> list[str]:
+    return [item.strip() for item in str(getattr(args, "stage2_known_context_keys", "") or "").split(",") if item.strip()]
+
+
+def _compose_known_physical_context(data: dict, physical_context: torch.Tensor, args) -> torch.Tensor:
+    keys = _known_context_keys(args)
+    if not keys:
+        return physical_context
+    if len(keys) > int(physical_context.shape[-1]):
+        raise ValueError(
+            f"stage2_known_context_keys has {len(keys)} keys, "
+            f"but physical_context dim is {int(physical_context.shape[-1])}."
+        )
+    values = []
+    for key in keys:
+        if key not in data:
+            raise KeyError(f"Missing known physical context key {key!r} in stage2 metadata row.")
+        value = data[key]
+        if isinstance(value, torch.Tensor):
+            tensor = value.detach().to(device=physical_context.device, dtype=physical_context.dtype).flatten()[0]
+        else:
+            tensor = torch.tensor(float(value), device=physical_context.device, dtype=physical_context.dtype)
+        values.append(tensor)
+    known = torch.stack(values)
+    start_dim = int(physical_context.shape[-1]) - len(keys)
+    context = physical_context.clone()
+    if context.ndim == 1:
+        context[start_dim:] = known
+    else:
+        view_shape = [1] * (context.ndim - 1) + [len(keys)]
+        expand_shape = list(context.shape[:-1]) + [len(keys)]
+        context[..., start_dim:] = known.view(*view_shape).expand(*expand_shape)
+    return context
+
+
 def _prepare_loss_inputs(pipe, data: dict, physical_context: torch.Tensor, args):
     height, width, num_frames, num_views = _video_geometry(data["video"])
     inputs_shared = {
@@ -297,7 +529,7 @@ def _prepare_loss_inputs(pipe, data: dict, physical_context: torch.Tensor, args)
         "cfg_scale": 1,
         "tiled": False,
         "rand_device": pipe.device,
-        "physical_context": physical_context,
+        "physical_context": _compose_known_physical_context(data, physical_context, args),
         "use_gradient_checkpointing": bool(args.use_gradient_checkpointing),
         "use_gradient_checkpointing_offload": bool(args.use_gradient_checkpointing_offload),
         "max_timestep_boundary": float(args.max_timestep_boundary),
@@ -342,8 +574,11 @@ def _flow_match_loss(pipe, inputs, args) -> torch.Tensor:
     return loss * pipe.scheduler.training_weight(timestep)
 
 
-def _context_reg(pipe, context: torch.Tensor) -> torch.Tensor:
-    target = pipe.physical_context_encoder.default_context.detach().to(dtype=context.dtype, device=context.device)
+def _context_reg(pipe, context: torch.Tensor, target_context: torch.Tensor | None = None) -> torch.Tensor:
+    if target_context is None:
+        target = pipe.physical_context_encoder.default_context.detach().to(dtype=context.dtype, device=context.device)
+    else:
+        target = target_context.detach().to(dtype=context.dtype, device=context.device)
     return torch.mean((context.float() - target.float()) ** 2)
 
 
@@ -391,7 +626,10 @@ def _adapt_ttt_state(
     *,
     adapter_named_params: list[tuple[str, torch.nn.Parameter]],
     base_adapter_state: dict[str, torch.Tensor],
-) -> tuple[torch.Tensor, list[float], dict[str, torch.Tensor], dict[str, float]]:
+    initial_context: torch.Tensor | None = None,
+    target_context: torch.Tensor | None = None,
+    trajectory_meta: dict | None = None,
+) -> tuple[torch.Tensor, list[float], dict[str, torch.Tensor], dict[str, float], list[dict]]:
     if pipe.physical_context_encoder is None:
         raise ValueError("Stage2 TTT inference requires physical_context_mode != 'none'.")
 
@@ -400,7 +638,11 @@ def _adapt_ttt_state(
     use_adapter = bool(adapter_named_params)
     inner_lrs = _parse_inner_lr_schedule(args)
     pipe.scheduler.set_timesteps(1000, training=True)
-    context0 = pipe.physical_context_encoder.default_context.detach().clone().to(dtype=pipe.torch_dtype, device=pipe.device)
+    context_dtype = torch.float32 if bool(getattr(args, "ttt_context_fp32", False)) else pipe.torch_dtype
+    if initial_context is None:
+        context0 = pipe.physical_context_encoder.default_context.detach().clone().to(dtype=context_dtype, device=pipe.device)
+    else:
+        context0 = initial_context.detach().clone().to(dtype=context_dtype, device=pipe.device)
     context = context0.clone()
     if use_context:
         context = context.requires_grad_(True)
@@ -408,10 +650,27 @@ def _adapt_ttt_state(
         _restore_named_params(adapter_named_params, base_adapter_state)
     previous_requires_grad = _set_requires_grad(adapter_named_params, True)
 
+    target_context = None if target_context is None else target_context.detach().clone().to(dtype=context_dtype, device=pipe.device)
+    meta = {} if trajectory_meta is None else dict(trajectory_meta)
     losses = []
+    trajectory_rows = [
+        _context_record(
+            step=0,
+            context=context,
+            context0=context0,
+            prev_context=None,
+            target_context=target_context,
+            inner_lr=None,
+            loss=None,
+            support_loss=None,
+            context_reg=None,
+            meta=meta,
+        )
+    ]
     adapter_reg_value = 0.0
     try:
         for inner_idx, inner_lr in enumerate(inner_lrs):
+            prev_context = context.detach()
             support_losses = []
             for item in support_items:
                 inputs = _prepare_loss_inputs(pipe, item, context, args)
@@ -420,7 +679,7 @@ def _adapt_ttt_state(
             loss = support_loss
             context_reg_value = 0.0
             if use_context and float(args.stage2_context_reg_weight) > 0:
-                context_reg = _context_reg(pipe, context)
+                context_reg = _context_reg(pipe, context, context0)
                 context_reg_value = float(context_reg.detach().float().cpu())
                 loss = loss + float(args.stage2_context_reg_weight) * context_reg
             if use_adapter and float(args.ttt_adapter_reg_weight) > 0:
@@ -454,11 +713,27 @@ def _adapt_ttt_state(
                             param.add_(grad, alpha=-float(args.ttt_adapter_lr))
 
             losses.append(float(loss.detach().float().cpu()))
+            trajectory_rows.append(
+                _context_record(
+                    step=inner_idx + 1,
+                    context=context,
+                    context0=context0,
+                    prev_context=prev_context,
+                    target_context=target_context,
+                    inner_lr=float(inner_lr),
+                    loss=losses[-1],
+                    support_loss=float(support_loss.detach().float().cpu()),
+                    context_reg=context_reg_value,
+                    meta=meta,
+                )
+            )
             print(
                 f"[inner] step={inner_idx + 1} scope={scope} loss={losses[-1]:.6f} "
                 f"support={float(support_loss.detach().float().cpu()):.6f} "
                 f"context_reg={context_reg_value:.6f} adapter_reg={adapter_reg_value:.6f} "
-                f"inner_lr={float(inner_lr):.6f} c_mean={float(context.detach().float().mean().cpu()):.6f}",
+                f"inner_lr={float(inner_lr):.6f} c_mean={float(context.detach().float().mean().cpu()):.6f} "
+                f"step_delta_l2={trajectory_rows[-1]['context_step_delta_l2']:.6f} "
+                f"target_l2={trajectory_rows[-1]['target_context_l2']}",
                 flush=True,
             )
     finally:
@@ -473,7 +748,7 @@ def _adapt_ttt_state(
         "context_delta_mean": float((context.detach().float() - context0.detach().float()).mean().cpu()),
         "inner_steps": float(len(inner_lrs)),
     }
-    return context.detach(), losses, adapted_adapter_state, metrics
+    return context.detach(), losses, adapted_adapter_state, metrics, trajectory_rows
 
 
 def _draw_label(frame: np.ndarray, label: str) -> np.ndarray:
@@ -583,6 +858,32 @@ def parse_args():
     parser.add_argument("--support_comparison_output_path", type=str, default=None)
     parser.add_argument("--skip_existing", action="store_true", default=False)
     parser.add_argument("--dry_run", action="store_true", default=False)
+    parser.add_argument(
+        "--ttt_support_same_as_query",
+        action="store_true",
+        default=False,
+        help="Use each query chunk itself as the support chunk and adapt a separate C per query sample.",
+    )
+    parser.add_argument(
+        "--ttt_initial_context_table_path",
+        type=str,
+        default=None,
+        help="If set, initialize test-time C from the mean of this grouped context_table.json.",
+    )
+    parser.add_argument(
+        "--ttt_context_table_path",
+        type=str,
+        default=None,
+        help="Grouped context_table.json used as target dictionary and PCA basis for trajectory analysis.",
+    )
+    parser.add_argument("--ttt_context_trajectory_path", type=str, default=None)
+    parser.add_argument("--ttt_context_pca_output_path", type=str, default=None)
+    parser.add_argument(
+        "--ttt_context_fp32",
+        action="store_true",
+        default=False,
+        help="Keep the test-time optimized context leaf in FP32; the encoder casts it for BF16 forward.",
+    )
     args = parser.parse_args()
     if args.config is not None:
         args = merge_yaml_and_args(args.config, parser, args)
@@ -596,6 +897,8 @@ def main() -> None:
     query_rows = _read_jsonl(args.dataset_metadata_path)
     support_rows = _read_jsonl(args.support_metadata_path)
     support_groups = _group_rows(support_rows, args.stage2_group_keys)
+    initial_context_table = _load_grouped_context_table(args.ttt_initial_context_table_path)
+    context_table = _load_grouped_context_table(args.ttt_context_table_path or args.ttt_initial_context_table_path)
 
     sample_indices = _parse_sample_indices(args.sample_indices)
     if sample_indices is None:
@@ -606,22 +909,30 @@ def main() -> None:
         sample_indices = sample_indices[: int(args.max_samples)]
 
     support_plan = {}
+    sample_cache_keys = {}
     for sample_index in sample_indices:
         row = query_rows[int(sample_index)]
         group_key = tuple(row.get(name.strip()) for name in args.stage2_group_keys.split(",") if name.strip())
-        if group_key not in support_groups:
+        if args.ttt_support_same_as_query:
+            cache_key = ("sample", int(sample_index))
+            support_plan[cache_key] = [int(sample_index)]
+        elif group_key not in support_groups:
             raise KeyError(f"No support rows for group={group_key}.")
-        if group_key not in support_plan:
-            support_plan[group_key] = _select_support_indices(
+        elif group_key not in support_plan:
+            cache_key = group_key
+            support_plan[cache_key] = _select_support_indices(
                 support_rows=support_rows,
                 support_groups=support_groups,
                 group_key=group_key,
                 support_count=int(args.support_count),
                 seed=int(args.seed),
             )
+        else:
+            cache_key = group_key
+        sample_cache_keys[int(sample_index)] = cache_key
         print(
             f"[plan] query={sample_index} group={group_key} "
-            f"support={support_plan[group_key]}",
+            f"cache_key={cache_key} support={support_plan[cache_key]}",
             flush=True,
         )
 
@@ -654,6 +965,14 @@ def main() -> None:
     pipe = build_pipeline(args)
     load_checkpoint_weights(pipe, args.stage2_ckpt_path)
     _freeze_pipe(pipe)
+    context_dtype = torch.float32 if bool(args.ttt_context_fp32) else pipe.torch_dtype
+    initial_context_tensor = _context_table_mean_tensor(initial_context_table, device=pipe.device, dtype=context_dtype)
+    if initial_context_tensor is not None:
+        print(
+            f"[initial_context] source=table_mean path={initial_context_table['path']} "
+            f"shape={tuple(initial_context_tensor.shape)} mean={float(initial_context_tensor.float().mean().cpu()):.6f}",
+            flush=True,
+        )
     adapter_named_params = _select_ttt_adapter_params(pipe, args.ttt_adapt_scope)
     base_adapter_state = _clone_named_params(adapter_named_params)
     print(
@@ -667,6 +986,9 @@ def main() -> None:
     context_cache: dict[tuple, tuple[torch.Tensor, list[float], dict[str, torch.Tensor], dict[str, float]]] = {}
     rendered_support = set()
     result_rows = []
+    trajectory_rows = []
+    trajectory_path = Path(args.ttt_context_trajectory_path) if args.ttt_context_trajectory_path else output_path.parent / "context_trajectory.jsonl"
+    pca_output_path = Path(args.ttt_context_pca_output_path) if args.ttt_context_pca_output_path else output_path.parent / "context_trajectory_pca.svg"
     output_path.mkdir(parents=True, exist_ok=True)
     comparison_path.mkdir(parents=True, exist_ok=True)
     if args.render_support:
@@ -677,34 +999,58 @@ def main() -> None:
         sample_index = int(sample_index)
         row = query_rows[sample_index]
         group_key = tuple(row.get(name.strip()) for name in args.stage2_group_keys.split(",") if name.strip())
+        cache_key = sample_cache_keys[sample_index]
         pred_name = _default_pred_name(sample_index, row)
         pred_path = output_path / pred_name
 
-        if group_key not in context_cache:
-            support_indices = support_plan[group_key]
-            print(f"[adapt] group={group_key} support={support_indices}", flush=True)
+        if cache_key not in context_cache:
+            support_indices = support_plan[cache_key]
+            print(f"[adapt] group={group_key} cache_key={cache_key} support={support_indices}", flush=True)
             support_items = [support_dataset[index] for index in support_indices]
-            context_cache[group_key] = _adapt_ttt_state(
+            target_context = _nearest_table_context(
+                context_table,
+                row.get("friction_mu"),
+                device=pipe.device,
+                dtype=context_dtype,
+            )
+            context_cache[cache_key] = _adapt_ttt_state(
                 pipe,
                 support_items,
                 args,
                 adapter_named_params=adapter_named_params,
                 base_adapter_state=base_adapter_state,
+                initial_context=initial_context_tensor,
+                target_context=target_context,
+                trajectory_meta={
+                    "sample_index": sample_index,
+                    "sample_id": row.get("sample_id"),
+                    "episode_index": row.get("episode_index"),
+                    "group_key": list(group_key),
+                    "cache_key": list(cache_key),
+                    "friction_mu": row.get("friction_mu"),
+                    "support_indices": support_indices,
+                    "initial_context_source": None if initial_context_table is None else initial_context_table["path"],
+                    "target_context_source": None if context_table is None else context_table["path"],
+                },
             )
+            trajectory_rows.extend(context_cache[cache_key][4])
+            _write_jsonl(trajectory_path, trajectory_rows)
             torch.cuda.empty_cache()
 
-        adapted_context, inner_losses, adapted_adapter_state, adapt_metrics = context_cache[group_key]
+        adapted_context, inner_losses, adapted_adapter_state, adapt_metrics, cached_trajectory = context_cache[cache_key]
         if adapter_named_params:
             _restore_named_params(adapter_named_params, adapted_adapter_state)
-        if args.render_support and group_key not in rendered_support:
-            for support_index in support_plan[group_key]:
+        if args.render_support and cache_key not in rendered_support:
+            for support_index in support_plan[cache_key]:
                 support_row = support_rows[int(support_index)]
                 support_pred_name = _default_pred_name(int(support_index), support_row)
                 support_pred_path = support_output_path / support_pred_name
                 if not (support_pred_path.exists() and args.skip_existing):
                     support_sample = query_dataset[int(support_index)]
                     support_sample = prepare_sample_for_rollout(support_sample, int(support_index), pipe, args)
-                    support_sample["physical_context"] = adapted_context
+                    support_sample["physical_context"] = _compose_known_physical_context(
+                        support_sample, adapted_context, args
+                    )
                     support_sample["output_path"] = str(support_pred_path)
                     print(
                         f"[support_sample] group={group_key} support_index={support_index} "
@@ -726,13 +1072,13 @@ def main() -> None:
                     pred_label="SHOW+TTT",
                 )
                 print(f"[support_comparison] {support_comparison}", flush=True)
-            rendered_support.add(group_key)
+            rendered_support.add(cache_key)
         if pred_path.exists() and args.skip_existing:
             print(f"[skip] existing prediction {pred_path}", flush=True)
         else:
             sample = query_dataset[sample_index]
             sample = prepare_sample_for_rollout(sample, sample_index, pipe, args)
-            sample["physical_context"] = adapted_context
+            sample["physical_context"] = _compose_known_physical_context(sample, adapted_context, args)
             print(
                 f"[sample] sample_index={sample_index} group={group_key} "
                 f"episode={sample['episode_index']} output={pred_path}",
@@ -771,7 +1117,7 @@ def main() -> None:
                 "group_key": list(group_key),
                 "friction_mu": row.get("friction_mu"),
                 "target_c": None if row.get("friction_mu") is None else float(row.get("friction_mu")) / 0.25,
-                "support_indices": support_plan[group_key],
+                "support_indices": support_plan[cache_key],
                 "ttt_adapt_scope": args.ttt_adapt_scope,
                 "inner_losses": inner_losses,
                 "prediction_path": str(pred_path),
@@ -780,12 +1126,18 @@ def main() -> None:
                 "context_initial_mean": float(adapt_metrics.get("context_initial_mean", float("nan"))),
                 "context_adapted_mean": float(adapt_metrics.get("context_adapted_mean", float("nan"))),
                 "context_delta_mean": float(adapt_metrics.get("context_delta_mean", float("nan"))),
+                "context_final_target_l2": cached_trajectory[-1].get("target_context_l2") if cached_trajectory else None,
+                "known_context_keys": _known_context_keys(args),
                 "adapter_param_count": int(adapt_metrics.get("adapter_params", 0)),
                 "adapter_reg": float(adapt_metrics.get("adapter_reg", 0.0)),
             }
         )
         _write_jsonl(output_path.parent / "results.jsonl", result_rows)
 
+    if trajectory_rows and context_table is not None:
+        _write_context_pca_plot(pca_output_path, context_table, trajectory_rows)
+        print(f"[done] context_trajectory={trajectory_path}", flush=True)
+        print(f"[done] context_pca={pca_output_path}", flush=True)
     print(f"[done] predictions={output_path}", flush=True)
     print(f"[done] comparisons={comparison_path}", flush=True)
 
