@@ -59,6 +59,7 @@ class PushBoxMetaTaskDataset(torch.utils.data.Dataset):
         support_max: int,
         query_min: int,
         query_max: int,
+        query_same_as_support: bool = False,
     ):
         self.base_path = base_path
         self.metadata_path = metadata_path
@@ -72,6 +73,7 @@ class PushBoxMetaTaskDataset(torch.utils.data.Dataset):
         self.support_max = int(support_max)
         self.query_min = int(query_min)
         self.query_max = int(query_max)
+        self.query_same_as_support = bool(query_same_as_support)
         if self.support_min <= 0 or self.query_min <= 0:
             raise ValueError("support_min and query_min must be positive.")
         if self.support_max < self.support_min or self.query_max < self.query_min:
@@ -83,7 +85,7 @@ class PushBoxMetaTaskDataset(torch.utils.data.Dataset):
             key = tuple(row.get(name) for name in self.group_keys)
             groups[key].append(row)
 
-        min_required = self.support_min + self.query_min
+        min_required = self.support_min if self.query_same_as_support else self.support_min + self.query_min
         self.groups = [
             (key, value)
             for key, value in sorted(groups.items(), key=lambda item: str(item[0]))
@@ -149,6 +151,10 @@ class PushBoxMetaTaskDataset(torch.utils.data.Dataset):
     def _sample_rows(self, rows: list[dict], rng: random.Random) -> tuple[list[dict], list[dict]]:
         rows = list(rows)
         rng.shuffle(rows)
+        if self.query_same_as_support:
+            support_count = rng.randint(self.support_min, min(self.support_max, len(rows)))
+            support = rows[:support_count]
+            return support, list(support)
         support_count = rng.randint(self.support_min, min(self.support_max, len(rows) - self.query_min))
         remaining_after_support = len(rows) - support_count
         query_count = rng.randint(self.query_min, min(self.query_max, remaining_after_support))
@@ -193,6 +199,9 @@ class Stage2TTTTrainingModule(WanTrainingModule):
         self.gap_margin = float(stage2_args.stage2_gap_margin)
         self.context_reg_weight = float(stage2_args.stage2_context_reg_weight)
         self.improvement_eps = float(stage2_args.stage2_improvement_eps)
+        self.known_context_keys = self._parse_known_context_keys(
+            getattr(stage2_args, "stage2_known_context_keys", "")
+        )
         self.context_init_mode = str(getattr(stage2_args, "stage2_context_init_mode", "default")).lower()
         self.context_init_min = float(getattr(stage2_args, "stage2_context_init_min", 0.0))
         self.context_init_max = float(getattr(stage2_args, "stage2_context_init_max", 1.0))
@@ -241,6 +250,42 @@ class Stage2TTTTrainingModule(WanTrainingModule):
             return context.requires_grad_(True)
         return default_context
 
+    @staticmethod
+    def _parse_known_context_keys(raw: str) -> list[str]:
+        return [item.strip() for item in str(raw or "").split(",") if item.strip()]
+
+    def _known_context_values(self, data: dict, *, device: torch.device, dtype: torch.dtype) -> torch.Tensor:
+        values = []
+        for key in self.known_context_keys:
+            if key not in data:
+                raise KeyError(f"Missing known physical context key {key!r} in stage2 metadata row.")
+            value = data[key]
+            if isinstance(value, torch.Tensor):
+                tensor = value.detach().to(device=device, dtype=dtype).flatten()[0]
+            else:
+                tensor = torch.tensor(float(value), device=device, dtype=dtype)
+            values.append(tensor)
+        return torch.stack(values)
+
+    def _compose_physical_context(self, data: dict, physical_context: torch.Tensor) -> torch.Tensor:
+        if not self.known_context_keys:
+            return physical_context
+        known = self._known_context_values(data, device=physical_context.device, dtype=physical_context.dtype)
+        if len(self.known_context_keys) > int(physical_context.shape[-1]):
+            raise ValueError(
+                f"stage2_known_context_keys has {len(self.known_context_keys)} keys, "
+                f"but physical_context dim is {int(physical_context.shape[-1])}."
+            )
+        start_dim = int(physical_context.shape[-1]) - len(self.known_context_keys)
+        context = physical_context.clone()
+        if context.ndim == 1:
+            context[start_dim:] = known
+        else:
+            view_shape = [1] * (context.ndim - 1) + [len(self.known_context_keys)]
+            expand_shape = list(context.shape[:-1]) + [len(self.known_context_keys)]
+            context[..., start_dim:] = known.view(*view_shape).expand(*expand_shape)
+        return context
+
     def _context_reg(self, context: torch.Tensor, target_context: torch.Tensor | None = None) -> torch.Tensor:
         if target_context is None:
             target_context = self.pipe.physical_context_encoder.default_context
@@ -254,7 +299,7 @@ class Stage2TTTTrainingModule(WanTrainingModule):
 
     def _prepare_loss_inputs(self, data: dict, physical_context: torch.Tensor):
         data = data.copy()
-        data["physical_context"] = physical_context
+        data["physical_context"] = self._compose_physical_context(data, physical_context)
         inputs = self.get_pipeline_inputs(data)
         inputs = self.transfer_data_to_device(inputs, self.pipe.device, self.pipe.torch_dtype)
         for unit in self.pipe.units:
@@ -405,7 +450,11 @@ class Stage2TTTTrainingModule(WanTrainingModule):
             "target_c": task_friction_mu / 0.25 if task_friction_mu == task_friction_mu else float("nan"),
             "context0_mean": float(context0.detach().float().mean().cpu()),
             "context_adapted_mean": float(context_adapted.detach().float().mean().cpu()),
+            "known_context_count": float(len(self.known_context_keys)),
         }
+        if self.known_context_keys and int(context_adapted.shape[-1]) > len(self.known_context_keys):
+            free_context = context_adapted[..., : int(context_adapted.shape[-1]) - len(self.known_context_keys)]
+            self.last_metrics["context_adapted_free_mean"] = float(free_context.detach().float().mean().cpu())
         return loss
 
 
@@ -417,6 +466,7 @@ def add_stage2_config(parser: argparse.ArgumentParser):
     group.add_argument("--stage2_support_max", type=int, default=3)
     group.add_argument("--stage2_query_min", type=int, default=4)
     group.add_argument("--stage2_query_max", type=int, default=6)
+    group.add_argument("--stage2_query_same_as_support", action="store_true", default=False)
     group.add_argument("--stage2_inner_steps", type=int, default=1)
     group.add_argument("--stage2_inner_lr", type=float, default=0.05)
     group.add_argument(
@@ -438,6 +488,16 @@ def add_stage2_config(parser: argparse.ArgumentParser):
     group.add_argument("--stage2_context_reg_weight", type=float, default=1e-3)
     group.add_argument("--stage2_improvement_eps", type=float, default=1e-4)
     group.add_argument("--stage2_outer_warmup_steps", type=int, default=0)
+    group.add_argument(
+        "--stage2_known_context_keys",
+        type=str,
+        default="",
+        help=(
+            "Comma-separated metadata keys that should be directly injected into the tail dimensions "
+            "of physical_context during stage2. These dimensions are per-sample oracle conditions "
+            "and are not learned as shared TTT context."
+        ),
+    )
     return parser
 
 
@@ -488,6 +548,7 @@ def build_dataset(args, runtime_config):
         support_max=args.stage2_support_max,
         query_min=args.stage2_query_min,
         query_max=args.stage2_query_max,
+        query_same_as_support=args.stage2_query_same_as_support,
     )
 
 
