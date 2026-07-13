@@ -1,0 +1,136 @@
+# Stage2 sequential episode TTTe2e on event-tap segmented80 data.
+# The task no longer splits show/query. It samples up to 10 episodes from one
+# friction group, duplicates 5, shuffles the 15-entry sequence, applies weighted
+# diffusion outer losses with two random timesteps per entry, then unrolls
+# differentiable rank-64 adapter TTT updates through the whole sequence.
+
+dataset:
+  dataset_base_path: "/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine"
+  dataset_metadata_path: "data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_20260705/train.jsonl"
+  dataset_repeat: 1
+  dataset_num_workers: 1
+  data_file_keys: "video,action"
+
+video:
+  height: 224
+  width: 224
+  max_pixels: 16777216
+  num_frames: 81
+  resize_mode: "fit"
+  num_history_frames: 1
+  time_division_factor: 4
+  time_division_remainder: 1
+  spatial_division_factor: 32
+  chunk_mode: "static"
+  pad_short_chunks: true
+
+model:
+  model_paths: "models/Wan2.2-TI2V-5B"
+  model_id_with_origin_paths: null
+  extra_inputs: null
+  fp8_models: null
+  offload_models: null
+  model_config_path: "configs/model/wan2_2_ti2v_5b.yaml"
+  initialize_model_on_cpu: false
+  text_mode: "none"
+  enable_text: false
+  enable_dit: true
+  enable_vae: true
+  enable_image: false
+  action_mode: "adaln"
+
+action:
+  action_type: "eef_delta"
+  action_stat_path: "data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_20260705/action_stats.json"
+  action_dim: 14
+
+physical_context:
+  physical_context_mode: "none"
+  physical_context_dim: 128
+  physical_context_tokens: 1
+  physical_context_hidden_dim: 0
+  physical_context_init_std: 0.0
+  physical_adapter_mode: "residual"
+  physical_adapter_rank: 64
+  physical_adapter_layers: "all"
+  physical_adapter_gate_init: 0.07
+
+stage2_ttt:
+  stage2_group_keys: "source_split,friction_mu"
+  stage2_tasks_per_epoch: 1000
+  stage2_support_min: 1
+  stage2_support_max: 1
+  stage2_query_min: 1
+  stage2_query_max: 1
+  stage2_inner_steps: 2
+  stage2_query_weight: 1.0
+  stage2_show_eval_weight: 0.0
+  stage2_gap_weight: 0.0
+  stage2_gap_margin: 0.0
+  stage2_improvement_eps: 0.0001
+  stage2_outer_warmup_steps: 30
+
+stage2_ttte2e:
+  ttte2e_task_mode: "episode_sequence"
+  ttte2e_inner_param_scope: "lowrank"
+  ttte2e_inner_lr: 0.3
+  ttte2e_inner_lr_schedule: "0.30,0.10"
+  ttte2e_inner_optimizer: "sgd"
+  ttte2e_inner_grad_clip: 1.0
+  ttte2e_inner_reg_weight: 0.0
+  ttte2e_outer_reg_weight: 0.0
+  ttte2e_outer_objective: "adapted_loss"
+  ttte2e_relative_improve_weight: 0.0
+  ttte2e_second_order: false
+  ttte2e_outer_dit_layers: "none"
+  ttte2e_sequence_unique_episodes: 10
+  ttte2e_sequence_duplicate_episodes: 5
+  ttte2e_sequence_episode_chunk_mode: "random_chunk"
+  ttte2e_sequence_outer_timesteps: 2
+  ttte2e_sequence_low_weight_count: 3
+  ttte2e_sequence_weight_start: 0.4
+  ttte2e_sequence_weight_end: 1.0
+  ttte2e_sequence_save_on_cpu: false
+  ttte2e_sequence_streaming_backward: true
+
+training:
+  learning_rate: 1e-5
+  num_epochs: 1
+  trainable_models: "physical_adapter_bank"
+  find_unused_parameters: true
+  weight_decay: 0.01
+  task: "sft"
+  seed: 20260706
+  mixed_precision: "bf16"
+  max_timestep_boundary: 1.0
+  min_timestep_boundary: 0.0
+  batch_size: 1
+
+output:
+  output_path: "./outputs/push_box_event_tap_segmented80_rank64_sequence_ttte2e_stage2_500step_warmup30_PENDING_JOB"
+  remove_prefix_in_ckpt: null
+  save_steps: 100
+  checkpoint_save_minutes: 60
+  checkpoint_keep_last: 4
+  log_steps: 2
+  ckpt_path: "STAGE1_RANK64_ADAPTER_CKPT_PLACEHOLDER"
+  resume_from: null
+
+lora:
+  lora_base_model: null
+  lora_target_modules: null
+  lora_rank: 32
+  lora_checkpoint: null
+  preset_lora_path: null
+  preset_lora_model: null
+
+gradient:
+  use_gradient_checkpointing: true
+  use_gradient_checkpointing_offload: false
+  gradient_accumulation_steps: 1
+  max_grad_norm: 0.5
+
+tracking:
+  use_wandb: false
+  use_swanlab: false
+  swanlab_experiment_name: null

@@ -4,8 +4,12 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import random
 import sys
+from collections import defaultdict
+from contextlib import nullcontext
 from pathlib import Path
+from typing import Iterable
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
@@ -19,7 +23,8 @@ from tqdm import tqdm
 
 from diffsynth.diffusion.runner import initialize_deepspeed_gradient_checkpointing
 from train import TimedRetentionModelLogger, WanTrainingModule, wan_parser
-from train_stage2_ttt import add_stage2_config, build_dataset
+from train_stage2_ttt import PushBoxMetaTaskDataset, add_stage2_config, build_dataset
+from wan_video_action.data.operators import LoadCobotAction, ResolvePromptEmbPath, create_video_operator
 from wan_video_action.parsers import merge_yaml_and_args, prepare_runtime_config
 from wan_video_action.utils import set_global_seed
 
@@ -28,6 +33,8 @@ TTTE2E_PARAM_SCOPES = ("gates", "lowrank", "all")
 TTTE2E_OUTER_DIT_LAYER_SCOPES = ("none", "all", "last_half", "last_third")
 TTTE2E_INNER_OPTIMIZERS = ("sgd", "adam")
 TTTE2E_OUTER_OBJECTIVES = ("adapted_loss", "relative_improve", "hybrid_loss_relative_improve")
+TTTE2E_TASK_MODES = ("support_query", "episode_sequence")
+TTTE2E_SEQUENCE_CHUNK_MODES = ("random_chunk", "all_chunks_mean")
 
 
 def _adapter_param_allowed(name: str, scope: str) -> bool:
@@ -130,6 +137,129 @@ class FunctionalAdapterBank(torch.nn.Module):
         )
 
 
+class SequentialEpisodeMetaTaskDataset(PushBoxMetaTaskDataset):
+    def __init__(
+        self,
+        *,
+        unique_episodes: int,
+        duplicate_episodes: int,
+        episode_chunk_mode: str,
+        **kwargs,
+    ):
+        super().__init__(support_min=1, support_max=1, query_min=1, query_max=1, **kwargs)
+        self.unique_episodes = int(unique_episodes)
+        self.duplicate_episodes = int(duplicate_episodes)
+        self.episode_chunk_mode = str(episode_chunk_mode)
+        if self.unique_episodes <= 0:
+            raise ValueError("unique_episodes must be positive.")
+        if self.duplicate_episodes < 0:
+            raise ValueError("duplicate_episodes must be non-negative.")
+        if self.episode_chunk_mode not in TTTE2E_SEQUENCE_CHUNK_MODES:
+            raise ValueError(f"Unsupported episode_chunk_mode={self.episode_chunk_mode}.")
+
+        episode_groups = []
+        for key, rows in self.groups:
+            episodes = defaultdict(list)
+            for row in rows:
+                episode_key = row.get("episode_index", row.get("sample_id"))
+                episodes[episode_key].append(row)
+            if episodes:
+                ordered = sorted(episodes.items(), key=lambda item: str(item[0]))
+                episode_groups.append((key, ordered))
+        if not episode_groups:
+            raise ValueError("No non-empty episode groups were built for sequential TTT-E2E.")
+        self.episode_groups = episode_groups
+        print(
+            "Sequential TTT-E2E episode dataset: "
+            f"groups={len(self.episode_groups)} unique={self.unique_episodes} "
+            f"duplicate={self.duplicate_episodes} chunk_mode={self.episode_chunk_mode}",
+            flush=True,
+        )
+        for key, episodes in self.episode_groups:
+            chunks = sum(len(rows) for _, rows in episodes)
+            print(f"  sequence_group={key}: episodes={len(episodes)}, chunks={chunks}", flush=True)
+
+    def __getitem__(self, data_id: int) -> dict:
+        rng = random.Random(self.seed + int(data_id))
+        key, episodes = self.episode_groups[int(data_id) % len(self.episode_groups)]
+        pool = list(episodes)
+        rng.shuffle(pool)
+        selected = pool[: min(self.unique_episodes, len(pool))]
+        duplicated = rng.sample(selected, min(self.duplicate_episodes, len(selected))) if selected else []
+        sequence = selected + duplicated
+        rng.shuffle(sequence)
+
+        entries = []
+        for episode_id, rows in sequence:
+            row_pool = list(rows)
+            rng.shuffle(row_pool)
+            chosen_rows = row_pool[:1] if self.episode_chunk_mode == "random_chunk" else row_pool
+            entries.append(
+                {
+                    "episode_index": episode_id,
+                    "sample_ids": [row.get("sample_id") for row in chosen_rows],
+                    "items": [self._process_row(row) for row in chosen_rows],
+                }
+            )
+        return {
+            "group_key": list(key),
+            "sequence_episode_ids": [entry["episode_index"] for entry in entries],
+            "sequence": entries,
+        }
+
+
+def build_ttte2e_dataset(args, runtime_config):
+    if str(getattr(args, "ttte2e_task_mode", "support_query")) != "episode_sequence":
+        return build_dataset(args, runtime_config)
+
+    special_operator_map = {}
+    if runtime_config["text_enabled"] and "prompt_emb" in runtime_config["data_file_keys"]:
+        special_operator_map["prompt_emb"] = ResolvePromptEmbPath(base_path=args.dataset_base_path)
+
+    with open(args.action_stat_path, "r", encoding="utf-8") as f:
+        stats = json.load(f)
+    stat = {args.action_type: stats[args.action_type]} if args.action_type in stats else stats
+
+    if "action" in runtime_config["data_file_keys"]:
+        special_operator_map["action"] = LoadCobotAction(
+            base_path=args.dataset_base_path,
+            action_type=args.action_type,
+            stat=stat,
+            num_frames=args.num_frames,
+            time_division_factor=args.time_division_factor,
+            time_division_remainder=args.time_division_remainder,
+            pad_short=args.pad_short_chunks,
+            output_dim=args.action_dim,
+        )
+
+    return SequentialEpisodeMetaTaskDataset(
+        base_path=args.dataset_base_path,
+        metadata_path=args.dataset_metadata_path,
+        repeat=args.dataset_repeat,
+        data_file_keys=runtime_config["data_file_keys"],
+        main_data_operator=create_video_operator(
+            base_path=args.dataset_base_path,
+            max_pixels=args.max_pixels,
+            height=args.height,
+            width=args.width,
+            height_division_factor=16,
+            width_division_factor=16,
+            num_frames=args.num_frames,
+            time_division_factor=args.time_division_factor,
+            time_division_remainder=args.time_division_remainder,
+            resize_mode=args.resize_mode,
+            pad_short=args.pad_short_chunks,
+        ),
+        special_operator_map=special_operator_map,
+        seed=args.seed,
+        group_keys=args.stage2_group_keys,
+        tasks_per_epoch=args.stage2_tasks_per_epoch,
+        unique_episodes=args.ttte2e_sequence_unique_episodes,
+        duplicate_episodes=args.ttte2e_sequence_duplicate_episodes,
+        episode_chunk_mode=args.ttte2e_sequence_episode_chunk_mode,
+    )
+
+
 class Stage2TTTE2ETrainingModule(WanTrainingModule):
     """
     Mild TTT-E2E analogue for BWM.
@@ -164,6 +294,13 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
         self.inner_adam_beta2 = float(stage2_args.ttte2e_inner_adam_beta2)
         self.inner_adam_eps = float(stage2_args.ttte2e_inner_adam_eps)
         self.second_order = bool(stage2_args.ttte2e_second_order)
+        self.task_mode = str(stage2_args.ttte2e_task_mode)
+        self.sequence_outer_timesteps = max(1, int(stage2_args.ttte2e_sequence_outer_timesteps))
+        self.sequence_weight_start = float(stage2_args.ttte2e_sequence_weight_start)
+        self.sequence_weight_end = float(stage2_args.ttte2e_sequence_weight_end)
+        self.sequence_low_weight_count = max(0, int(stage2_args.ttte2e_sequence_low_weight_count))
+        self.sequence_save_on_cpu = bool(stage2_args.ttte2e_sequence_save_on_cpu)
+        self.sequence_streaming_backward = bool(stage2_args.ttte2e_sequence_streaming_backward)
         self.query_weight = float(stage2_args.stage2_query_weight)
         self.show_eval_weight = float(stage2_args.stage2_show_eval_weight)
         self.gap_weight = float(stage2_args.stage2_gap_weight)
@@ -186,6 +323,13 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
         if getattr(self.pipe, "physical_adapter_bank", None) is None:
             raise ValueError(
                 "TTT-E2E mild branch requires physical_adapter_mode='residual'."
+            )
+        if self.task_mode == "episode_sequence" and not self.second_order:
+            print(
+                "WARNING: episode_sequence is running in first-order mode. "
+                "Later outer losses still see the fast-weight trajectory, but "
+                "gradients through inner gradients are approximated.",
+                flush=True,
             )
 
         if self.outer_dit_layers != "all":
@@ -326,6 +470,109 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
     ) -> torch.Tensor:
         return self._mean_stack([self._sft_loss(item, fast_adapter_params=fast_params) for item in support])
 
+    def _multi_timestep_loss(
+        self,
+        data: dict,
+        *,
+        fast_adapter_params: dict[str, torch.Tensor],
+        timestep_samples: int,
+    ) -> torch.Tensor:
+        inputs = self._prepare_loss_inputs(data)
+        return self._mean_stack(
+            [
+                self._flow_match_loss_from_inputs(inputs, fast_adapter_params=fast_adapter_params)
+                for _ in range(max(1, int(timestep_samples)))
+            ]
+        )
+
+    def _sequence_entry_outer_loss(
+        self,
+        items: list[dict],
+        fast_params: dict[str, torch.Tensor],
+    ) -> torch.Tensor:
+        return self._mean_stack(
+            [
+                self._multi_timestep_loss(
+                    item,
+                    fast_adapter_params=fast_params,
+                    timestep_samples=self.sequence_outer_timesteps,
+                )
+                for item in items
+            ]
+        )
+
+    def _sequence_weight(self, index: int, length: int) -> float:
+        if index < self.sequence_low_weight_count:
+            return self.sequence_weight_start
+        remaining = max(1, int(length) - self.sequence_low_weight_count - 1)
+        progress = float(index - self.sequence_low_weight_count) / float(remaining)
+        progress = min(1.0, max(0.0, progress))
+        return self.sequence_weight_start + progress * (self.sequence_weight_end - self.sequence_weight_start)
+
+    def _adapt_adapter_params_from(
+        self,
+        items: list[dict],
+        fast_params: dict[str, torch.Tensor],
+        base_params: dict[str, torch.nn.Parameter],
+    ) -> tuple[dict[str, torch.Tensor], torch.Tensor]:
+        last_inner_loss = None
+        loss_history = []
+        steps_used = 0
+        adam_m: dict[str, torch.Tensor] = {}
+        adam_v: dict[str, torch.Tensor] = {}
+        if self.inner_optimizer == "adam":
+            adam_m = {name: torch.zeros_like(param, dtype=torch.float32) for name, param in fast_params.items()}
+            adam_v = {name: torch.zeros_like(param, dtype=torch.float32) for name, param in fast_params.items()}
+
+        for step_idx in range(self.inner_steps):
+            support_loss = self._support_loss(items, fast_params)
+            inner_loss = support_loss
+            if self.inner_reg_weight > 0:
+                inner_loss = inner_loss + self.inner_reg_weight * self._adapter_reg(fast_params, base_params)
+            loss_history.append(float(inner_loss.detach().float().cpu()))
+            grads = torch.autograd.grad(
+                inner_loss,
+                tuple(fast_params.values()),
+                create_graph=self.second_order,
+                allow_unused=True,
+            )
+            grads = _clip_grad_tensors(grads, self.inner_grad_clip)
+            next_params = {}
+            lr = float(self.inner_lr_schedule[step_idx])
+            for (name, value), grad in zip(fast_params.items(), grads):
+                if grad is None:
+                    grad = torch.zeros_like(value)
+                if self.inner_optimizer == "adam":
+                    grad_f = grad.float()
+                    adam_m[name] = self.inner_adam_beta1 * adam_m[name] + (1.0 - self.inner_adam_beta1) * grad_f
+                    adam_v[name] = self.inner_adam_beta2 * adam_v[name] + (1.0 - self.inner_adam_beta2) * grad_f.pow(2)
+                    bias_correction1 = 1.0 - self.inner_adam_beta1 ** (step_idx + 1)
+                    bias_correction2 = 1.0 - self.inner_adam_beta2 ** (step_idx + 1)
+                    update = (adam_m[name] / bias_correction1) / (
+                        (adam_v[name] / bias_correction2).sqrt() + self.inner_adam_eps
+                    )
+                    next_params[name] = (value.float() - lr * update).to(dtype=value.dtype)
+                else:
+                    next_params[name] = value - lr * grad
+            fast_params = next_params
+            last_inner_loss = inner_loss
+            steps_used = step_idx + 1
+
+        if last_inner_loss is None:
+            last_inner_loss = torch.zeros((), device=self.pipe.device, dtype=torch.float32)
+        if loss_history:
+            self._last_inner_start_loss = loss_history[0]
+            self._last_inner_final_loss = loss_history[-1]
+            self._last_inner_rel_drop = (loss_history[0] - loss_history[-1]) / (abs(loss_history[0]) + 1e-8)
+        else:
+            self._last_inner_start_loss = 0.0
+            self._last_inner_final_loss = float(last_inner_loss.detach().float().cpu())
+            self._last_inner_rel_drop = 0.0
+        self._last_inner_steps_used = steps_used
+        self._last_inner_converged = False
+        self._last_inner_lr_used_last = float(self.inner_lr_schedule[max(0, min(steps_used, len(self.inner_lr_schedule)) - 1)])
+        return fast_params, last_inner_loss
+
     def _prepare_support_objective(self, support: list[dict]) -> list[tuple[object, torch.Tensor, torch.Tensor]]:
         objective = []
         with torch.no_grad():
@@ -452,7 +699,186 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
         )
         return baseline_loss.detach(), adapted_loss
 
+    def _forward_episode_sequence_impl(self, task: dict) -> torch.Tensor:
+        sequence = task["sequence"]
+        if not sequence:
+            raise ValueError("episode_sequence task is empty.")
+
+        base_params = self._adapter_params()
+        fast_params: dict[str, torch.Tensor] = {name: param for name, param in base_params.items()}
+        weighted_losses = []
+        weights = []
+        raw_losses = []
+        inner_losses = []
+
+        for index, entry in enumerate(sequence):
+            items = entry["items"]
+            outer_loss = self._sequence_entry_outer_loss(items, fast_params)
+            weight = self._sequence_weight(index, len(sequence))
+            weighted_losses.append(outer_loss * weight)
+            weights.append(weight)
+            raw_losses.append(outer_loss.detach())
+            fast_params, inner_loss = self._adapt_adapter_params_from(items, fast_params, base_params)
+            inner_losses.append(inner_loss.detach())
+
+        weight_sum = max(1e-8, float(sum(weights)))
+        sequence_loss = torch.stack(weighted_losses).sum() / weight_sum
+        adapter_reg = self._adapter_reg(fast_params, base_params)
+        adapter_delta_norm = self._adapter_delta_norm(fast_params, base_params)
+        base_param_norm = self._param_l2_norm(base_params)
+        base_gate_abs_mean, base_gate_abs_max, base_gate_mean = self._gate_stats(base_params)
+        fast_gate_abs_mean, fast_gate_abs_max, fast_gate_mean = self._gate_stats(fast_params)
+
+        loss = sequence_loss
+        if self.outer_reg_weight > 0:
+            loss = loss + self.outer_reg_weight * adapter_reg
+
+        raw_stack = torch.stack(raw_losses)
+        inner_stack = torch.stack(inner_losses) if inner_losses else torch.zeros((1,), device=self.pipe.device)
+        split = min(self.sequence_low_weight_count, raw_stack.numel())
+        first_loss = raw_stack[:split].mean() if split > 0 else raw_stack.mean()
+        later_loss = raw_stack[split:].mean() if split < raw_stack.numel() else raw_stack.mean()
+
+        self.last_metrics = {
+            "loss": float(loss.detach().float().cpu()),
+            "seq_outer": float(sequence_loss.detach().float().cpu()),
+            "seq_first": float(first_loss.detach().float().cpu()),
+            "seq_later": float(later_loss.detach().float().cpu()),
+            "seq_len": float(len(sequence)),
+            "seq_weight_first": float(weights[0]),
+            "seq_weight_last": float(weights[-1]),
+            "outer_time_samples": float(self.sequence_outer_timesteps),
+            "query": float(sequence_loss.detach().float().cpu()),
+            "query_base": 0.0,
+            "show": float(first_loss.detach().float().cpu()),
+            "show_base": 0.0,
+            "gap": 0.0,
+            "rel_show_imp": 0.0,
+            "rel_query_imp": 0.0,
+            "inner": float(inner_stack.mean().float().cpu()),
+            "inner_lr_first": float(self.inner_lr_schedule[0]),
+            "inner_lr_last": float(self.inner_lr_schedule[-1]),
+            "inner_lr_used_last": self._last_inner_lr_used_last,
+            "inner_steps_used": float(self._last_inner_steps_used),
+            "inner_converged": 0.0,
+            "relative_objective": 0.0,
+            "hybrid_objective": 0.0,
+            "relative_improve_weight": self.relative_improve_weight,
+            "inner_start": self._last_inner_start_loss,
+            "inner_final": self._last_inner_final_loss,
+            "inner_rel_drop": self._last_inner_rel_drop,
+            "adapter_reg": float(adapter_reg.detach().float().cpu()),
+            "adapter_delta_norm": float(adapter_delta_norm.detach().float().cpu()),
+            "adapter_delta_rel": float((adapter_delta_norm.detach() / base_param_norm.clamp_min(1e-12)).float().cpu()),
+            "base_gate_abs_mean": float(base_gate_abs_mean.float().cpu()),
+            "base_gate_abs_max": float(base_gate_abs_max.float().cpu()),
+            "base_gate_mean": float(base_gate_mean.float().cpu()),
+            "fast_gate_abs_mean": float(fast_gate_abs_mean.float().cpu()),
+            "fast_gate_abs_max": float(fast_gate_abs_max.float().cpu()),
+            "fast_gate_mean": float(fast_gate_mean.float().cpu()),
+        }
+        return loss
+
+    def _forward_episode_sequence(self, task: dict) -> torch.Tensor:
+        if self.sequence_save_on_cpu:
+            with torch.autograd.graph.save_on_cpu(pin_memory=True):
+                return self._forward_episode_sequence_impl(task)
+        return self._forward_episode_sequence_impl(task)
+
+    def backward_episode_sequence(self, task: dict) -> torch.Tensor:
+        sequence = task["sequence"]
+        if not sequence:
+            raise ValueError("episode_sequence task is empty.")
+
+        context = torch.autograd.graph.save_on_cpu(pin_memory=True) if self.sequence_save_on_cpu else nullcontext()
+        with context:
+            base_params = self._adapter_params()
+            fast_params: dict[str, torch.Tensor] = {name: param for name, param in base_params.items()}
+            weights = [self._sequence_weight(index, len(sequence)) for index in range(len(sequence))]
+            weight_sum = max(1e-8, float(sum(weights)))
+            raw_losses = []
+            inner_losses = []
+
+            for index, entry in enumerate(sequence):
+                items = entry["items"]
+                outer_loss = self._sequence_entry_outer_loss(items, fast_params)
+                loss_part = outer_loss * (float(weights[index]) / weight_sum)
+                loss_part.backward(retain_graph=True)
+                raw_losses.append(outer_loss.detach())
+                del loss_part, outer_loss
+                fast_params, inner_loss = self._adapt_adapter_params_from(items, fast_params, base_params)
+                inner_losses.append(inner_loss.detach())
+
+            raw_stack = torch.stack(raw_losses)
+            sequence_loss = torch.sum(
+                torch.stack(
+                    [
+                        raw_stack[index] * (float(weights[index]) / weight_sum)
+                        for index in range(raw_stack.numel())
+                    ]
+                )
+            )
+            adapter_reg = self._adapter_reg(fast_params, base_params)
+            adapter_delta_norm = self._adapter_delta_norm(fast_params, base_params)
+            base_param_norm = self._param_l2_norm(base_params)
+            base_gate_abs_mean, base_gate_abs_max, base_gate_mean = self._gate_stats(base_params)
+            fast_gate_abs_mean, fast_gate_abs_max, fast_gate_mean = self._gate_stats(fast_params)
+
+            loss_for_log = sequence_loss.detach()
+            if self.outer_reg_weight > 0:
+                reg_loss = self.outer_reg_weight * adapter_reg
+                reg_loss.backward()
+                loss_for_log = loss_for_log + reg_loss.detach()
+
+            inner_stack = torch.stack(inner_losses) if inner_losses else torch.zeros((1,), device=self.pipe.device)
+            split = min(self.sequence_low_weight_count, raw_stack.numel())
+            first_loss = raw_stack[:split].mean() if split > 0 else raw_stack.mean()
+            later_loss = raw_stack[split:].mean() if split < raw_stack.numel() else raw_stack.mean()
+
+            self.last_metrics = {
+                "loss": float(loss_for_log.float().cpu()),
+                "seq_outer": float(sequence_loss.float().cpu()),
+                "seq_first": float(first_loss.float().cpu()),
+                "seq_later": float(later_loss.float().cpu()),
+                "seq_len": float(len(sequence)),
+                "seq_weight_first": float(weights[0]),
+                "seq_weight_last": float(weights[-1]),
+                "outer_time_samples": float(self.sequence_outer_timesteps),
+                "query": float(sequence_loss.float().cpu()),
+                "query_base": 0.0,
+                "show": float(first_loss.float().cpu()),
+                "show_base": 0.0,
+                "gap": 0.0,
+                "rel_show_imp": 0.0,
+                "rel_query_imp": 0.0,
+                "inner": float(inner_stack.mean().float().cpu()),
+                "inner_lr_first": float(self.inner_lr_schedule[0]),
+                "inner_lr_last": float(self.inner_lr_schedule[-1]),
+                "inner_lr_used_last": self._last_inner_lr_used_last,
+                "inner_steps_used": float(self._last_inner_steps_used),
+                "inner_converged": 0.0,
+                "relative_objective": 0.0,
+                "hybrid_objective": 0.0,
+                "relative_improve_weight": self.relative_improve_weight,
+                "inner_start": self._last_inner_start_loss,
+                "inner_final": self._last_inner_final_loss,
+                "inner_rel_drop": self._last_inner_rel_drop,
+                "adapter_reg": float(adapter_reg.detach().float().cpu()),
+                "adapter_delta_norm": float(adapter_delta_norm.detach().float().cpu()),
+                "adapter_delta_rel": float((adapter_delta_norm.detach() / base_param_norm.clamp_min(1e-12)).float().cpu()),
+                "base_gate_abs_mean": float(base_gate_abs_mean.float().cpu()),
+                "base_gate_abs_max": float(base_gate_abs_max.float().cpu()),
+                "base_gate_mean": float(base_gate_mean.float().cpu()),
+                "fast_gate_abs_mean": float(fast_gate_abs_mean.float().cpu()),
+                "fast_gate_abs_max": float(fast_gate_abs_max.float().cpu()),
+                "fast_gate_mean": float(fast_gate_mean.float().cpu()),
+            }
+            return loss_for_log
+
     def forward(self, task: dict) -> torch.Tensor:
+        if self.task_mode == "episode_sequence":
+            return self._forward_episode_sequence(task)
+
         support = task["support"]
         query = task["query"]
         base_params = self._adapter_params()
@@ -553,6 +979,7 @@ class Stage2TTTE2ETrainingModule(WanTrainingModule):
 
 def add_ttte2e_config(parser: argparse.ArgumentParser):
     group = parser.add_argument_group("stage2_ttte2e")
+    group.add_argument("--ttte2e_task_mode", type=str, default="support_query", choices=TTTE2E_TASK_MODES)
     group.add_argument("--ttte2e_inner_param_scope", type=str, default="lowrank", choices=TTTE2E_PARAM_SCOPES)
     group.add_argument("--ttte2e_inner_lr", type=float, default=1e-3)
     group.add_argument(
@@ -585,6 +1012,25 @@ def add_ttte2e_config(parser: argparse.ArgumentParser):
     group.add_argument("--ttte2e_inner_adam_beta1", type=float, default=0.9)
     group.add_argument("--ttte2e_inner_adam_beta2", type=float, default=0.999)
     group.add_argument("--ttte2e_inner_adam_eps", type=float, default=1e-8)
+    group.add_argument("--ttte2e_sequence_unique_episodes", type=int, default=10)
+    group.add_argument("--ttte2e_sequence_duplicate_episodes", type=int, default=5)
+    group.add_argument("--ttte2e_sequence_episode_chunk_mode", type=str, default="random_chunk", choices=TTTE2E_SEQUENCE_CHUNK_MODES)
+    group.add_argument("--ttte2e_sequence_outer_timesteps", type=int, default=1)
+    group.add_argument("--ttte2e_sequence_low_weight_count", type=int, default=3)
+    group.add_argument("--ttte2e_sequence_weight_start", type=float, default=0.4)
+    group.add_argument("--ttte2e_sequence_weight_end", type=float, default=1.0)
+    group.add_argument(
+        "--ttte2e_sequence_save_on_cpu",
+        action="store_true",
+        default=False,
+        help="Offload saved autograd tensors to CPU in episode_sequence mode to keep exact second-order gradients under GPU memory limits.",
+    )
+    group.add_argument(
+        "--ttte2e_sequence_streaming_backward",
+        action="store_true",
+        default=False,
+        help="In episode_sequence mode, backward each episode outer loss immediately and keep only the fast-weight trajectory graph.",
+    )
     group.add_argument(
         "--ttte2e_outer_dit_layers",
         type=str,
@@ -602,8 +1048,25 @@ def add_ttte2e_config(parser: argparse.ArgumentParser):
 
 
 def launch_stage2_ttte2e_training(accelerator, dataset, model, model_logger, args):
+    streaming_backward = (
+        str(getattr(args, "ttte2e_task_mode", "support_query")) == "episode_sequence"
+        and bool(getattr(args, "ttte2e_sequence_streaming_backward", False))
+    )
+    if streaming_backward:
+        if accelerator.num_processes != 1:
+            raise ValueError("ttte2e_sequence_streaming_backward currently requires one process/GPU.")
+        if int(args.gradient_accumulation_steps) != 1:
+            raise ValueError("ttte2e_sequence_streaming_backward requires gradient_accumulation_steps=1.")
+
     optimizer = torch.optim.AdamW(model.trainable_modules(), lr=args.learning_rate, weight_decay=args.weight_decay)
-    scheduler = torch.optim.lr_scheduler.ConstantLR(optimizer)
+    warmup_steps = int(getattr(args, "stage2_outer_warmup_steps", 0) or 0)
+    if warmup_steps > 0:
+        scheduler = torch.optim.lr_scheduler.LambdaLR(
+            optimizer,
+            lr_lambda=lambda step: min(1.0, float(step + 1) / float(warmup_steps)),
+        )
+    else:
+        scheduler = torch.optim.lr_scheduler.ConstantLR(optimizer, factor=1.0, total_iters=1)
     dataloader = torch.utils.data.DataLoader(
         dataset,
         shuffle=True,
@@ -618,8 +1081,11 @@ def launch_stage2_ttte2e_training(accelerator, dataset, model, model_logger, arg
         iterator = tqdm(dataloader, disable=not accelerator.is_local_main_process)
         for task in iterator:
             with accelerator.accumulate(model):
-                loss = model(task)
-                accelerator.backward(loss)
+                if streaming_backward:
+                    loss = accelerator.unwrap_model(model).backward_episode_sequence(task)
+                else:
+                    loss = model(task)
+                    accelerator.backward(loss)
                 if args.max_grad_norm is not None and args.max_grad_norm > 0:
                     accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
                 optimizer.step()
@@ -654,7 +1120,7 @@ def main() -> None:
         kwargs_handlers=[accelerate.DistributedDataParallelKwargs(find_unused_parameters=args.find_unused_parameters)],
     )
 
-    dataset = build_dataset(args, runtime_config)
+    dataset = build_ttte2e_dataset(args, runtime_config)
     model = Stage2TTTE2ETrainingModule(
         model_paths=json.dumps(runtime_config["model_paths_list"]),
         model_id_with_origin_paths=args.model_id_with_origin_paths,
