@@ -184,10 +184,10 @@ The strongest qualitative Stage 1, Stage 2, and same-friction cross-action
 transfer results currently come from the original random-C32 curriculum run
 `curc32r65ib2-nc015_88823`. That run uses the earlier 1000-update insertion
 cycle and initializes each environment's C32 entry independently from the full
-uniform range:
+configured uniform range:
 
 ```text
-C_i[d] ~ Uniform(-1, 1)
+C_i[d] ~ Uniform(0, 1)
 ```
 
 The random value is an opaque environment code; it is not derived from or
@@ -196,13 +196,24 @@ with strongly separated condition vectors, which breaks the symmetry faced by
 shared initialization and gives the DiT distinguishable context tokens from
 the start.
 
-A later small-random experiment also performs reasonably well when its initial
-C values or offsets are sampled from `[-0.05, 0.05]`. It does not create as
-much initial separation as the full `[-1, 1]` run, but it is substantially more
-promising than making every environment start from exactly the same vector.
-The fact that both random scales work supports random symmetry breaking as the
-important initialization property; the full-range random run remains the best
+A later small-random experiment also performs reasonably well. It samples one
+shared center from `[0, 1]`, then gives each of the initial five environments an
+independent additive jitter from `[-0.05, 0.05]` before clamping to `[0, 1]`.
+It does not create as much initial separation as independent full-range
+`Uniform(0, 1)` entries, but it is substantially more promising than making
+every environment start from exactly the same vector. The fact that both
+random scales work supports random symmetry breaking as the important
+initialization property; independent full-range random remains the best
 current result.
+
+The exact experiment-to-artifact mapping is:
+
+| Role | Canonical config | Actual run/output | Last paired checkpoint | Initialization |
+| --- | --- | --- | --- | --- |
+| Best current reference | [`train_push_box_event_tap_segmented80_pushmotion41f_10chunk_curriculum_c32_random_stage1_15300.yaml`](configs/train/train_push_box_event_tap_segmented80_pushmotion41f_10chunk_curriculum_c32_random_stage1_15300.yaml) | `curc32r65ib2-nc015_88823` | `step-7272.safetensors` + `step-7272.context_table.json` | every C32 entry independently `Uniform(0, 1)` |
+| Competitive small-random ablation | [`train_push_box_event_tap_segmented80_pushmotion41f_10chunk_curriculum_c32_initial5_jitter005_stage1_20groups_twonew_16300.yaml`](configs/train/train_push_box_event_tap_segmented80_pushmotion41f_10chunk_curriculum_c32_initial5_jitter005_stage1_20groups_twonew_16300.yaml) | `curc32jit5twonew_89030` | `step-7000.safetensors` + `step-7000.context_table.json` | shared `Uniform(0, 1)` center plus independent initial-five jitter `Uniform(-0.05, 0.05)` |
+| Exact-shared 1400-cycle control | [`train_push_box_event_tap_segmented80_pushmotion41f_10chunk_curriculum_c32_shared_stage1_20groups_twonew_16300.yaml`](configs/train/train_push_box_event_tap_segmented80_pushmotion41f_10chunk_curriculum_c32_shared_stage1_20groups_twonew_16300.yaml) | `curc32s20twonew_88930` | `step-5766.safetensors` + `step-5766.context_table.json` | one shared `Uniform(0, 1)` vector |
+| Shared plus initial refinement control | [`train_push_box_event_tap_segmented80_pushmotion41f_10chunk_curriculum_c32_shared_initial5_refine2000_stage1_20groups_twonew_18300.yaml`](configs/train/train_push_box_event_tap_segmented80_pushmotion41f_10chunk_curriculum_c32_shared_initial5_refine2000_stage1_20groups_twonew_18300.yaml) | `curc32sref2ktwonew_89029` | `step-6815.safetensors` + `step-6815.context_table.json` | one shared `Uniform(0, 1)` vector followed by extra initial-five refinement |
 
 This result should not be summarized as "1000 updates are better than 1400
 updates." The later 1400-update experiments changed both the insertion schedule
