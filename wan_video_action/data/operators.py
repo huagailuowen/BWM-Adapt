@@ -78,12 +78,14 @@ class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
         frame_processor=lambda x: x,
         frame_rate=24,
         fix_frame_rate=False,
+        frame_stride=1,
         pad_short=False,
     ):
         FrameSamplerByRateMixin.__init__(self, num_frames, time_division_factor, time_division_remainder, frame_rate, fix_frame_rate)
         self.base_path = base_path
         # frame_processor is build in the video loader for high efficiency.
         self.frame_processor = frame_processor
+        self.frame_stride = max(1, int(frame_stride))
         self.pad_short = bool(pad_short)
 
     def __call__(self, data, start_frame=None, end_frame=None):
@@ -107,7 +109,11 @@ class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
             raise ValueError(f"No frames available in {path} for start={start_frame}, end={end_frame}.")
 
         # x / clip_frames = self.frame_rate / raw_frame_rate
-        available_frames = int(clip_frames * self.frame_rate / raw_frame_rate) if self.fix_frame_rate else clip_frames
+        available_frames = (
+            int(clip_frames * self.frame_rate / raw_frame_rate)
+            if self.fix_frame_rate
+            else (clip_frames - 1) // self.frame_stride + 1
+        )
         num_frames = self.num_frames
         if available_frames < num_frames and not self.pad_short:
             num_frames = align_num_frames(
@@ -118,7 +124,10 @@ class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
         
         frames = []
         for frame_id in range(num_frames):
-            frame_id = self.map_single_frame_id(frame_id, raw_frame_rate, clip_frames)
+            if self.fix_frame_rate:
+                frame_id = self.map_single_frame_id(frame_id, raw_frame_rate, clip_frames)
+            else:
+                frame_id *= self.frame_stride
             frame_id = min(frame_id, clip_frames - 1)
             frame = reader.get_data(start + frame_id)
             frame = Image.fromarray(frame)
@@ -377,6 +386,7 @@ class LoadCobotAction(DataProcessingOperator):
         time_division_remainder=1,
         pad_short=False,
         output_dim=None,
+        frame_stride=1,
     ):
         self.num_frames = num_frames
         self.align_num_frames = bool(align_num_frames)
@@ -384,6 +394,7 @@ class LoadCobotAction(DataProcessingOperator):
         self.time_division_remainder = time_division_remainder
         self.pad_short = bool(pad_short)
         self.output_dim = None if output_dim is None else int(output_dim)
+        self.frame_stride = max(1, int(frame_stride))
         """
             joint_abs (原 state_joint：关节绝对位置)
             eef_abs (原 state_pose：末端绝对位姿)
@@ -485,6 +496,11 @@ class LoadCobotAction(DataProcessingOperator):
             # BWM's 14-D EEF convention is [left_eef(7), right_eef(7)].
             padded[:, 7:] = arr
             return padded
+        if self.output_dim == 14 and arr.shape[1] == 8:
+            padded = np.zeros((arr.shape[0], 14), dtype=arr.dtype)
+            # Single-arm Panda action followed by six neutral padding channels.
+            padded[:, :8] = arr
+            return padded
         raise ValueError(
             f"Cannot adapt action width {arr.shape[1]} to output_dim={self.output_dim} "
             f"for action type {self.action_type}"
@@ -531,13 +547,33 @@ class LoadCobotAction(DataProcessingOperator):
         parquet_path, start_frame, end_frame = self._resolve_parquet_info(
             data, start_frame, end_frame
         )
-        num_frames = self.get_num_frames(end_frame - start_frame + 1)
+        clip_frames = end_frame - start_frame + 1
+        available_frames = (clip_frames - 1) // self.frame_stride + 1
+        num_frames = self.get_num_frames(available_frames)
         column = "observation.state" if self.use_state else "action"
-        arr = self._read_slice(parquet_path, column, start_frame, num_frames)
+        raw_num_frames = min(clip_frames, max(1, (num_frames - 1) * self.frame_stride + 1))
+        arr = self._read_slice(parquet_path, column, start_frame, raw_num_frames)
+        if self.frame_stride > 1:
+            arr = arr[::self.frame_stride]
+        if arr.shape[0] < num_frames:
+            if not self.pad_short:
+                raise ValueError(
+                    f"Not enough strided action rows in {parquet_path}: "
+                    f"available={arr.shape[0]}, requested={num_frames}, stride={self.frame_stride}"
+                )
+            arr = np.concatenate(
+                [arr, np.repeat(arr[-1:], num_frames - arr.shape[0], axis=0)],
+                axis=0,
+            )
+        arr = arr[:num_frames]
         if arr.ndim != 2:
             raise ValueError(f"Unexpected action shape {arr.shape} in {parquet_path}")
         if arr.shape[1] == len(JOINT_AND_EEF_NAMES):
             arr = arr[:, self.indices]
+        elif self.output_dim is not None and arr.shape[1] <= self.output_dim:
+            # Generic single-arm LeRobot datasets can expose native action widths
+            # other than the legacy 7-D EEF or 14-D bimanual conventions.
+            pass
         elif self.use_joint and arr.shape[1] == len(JOINT_NAMES):
             pass
         elif (not self.use_joint) and arr.shape[1] == len(EEF_NAMES):
@@ -559,7 +595,7 @@ def create_video_operator(
     max_pixels=1920*1080, height=None, width=None,
     height_division_factor=16, width_division_factor=16,
     num_frames=81, time_division_factor=4, time_division_remainder=1,
-    resize_mode="fit", default_key="data", pad_short=False,
+    resize_mode="fit", default_key="data", pad_short=False, frame_stride=1,
 ):
     image_processor = ImageCropAndResize(height, width, max_pixels, height_division_factor, width_division_factor, resize_mode=resize_mode)
     
@@ -579,6 +615,7 @@ def create_video_operator(
         time_division_factor=time_division_factor,
         time_division_remainder=time_division_remainder,
         frame_processor=image_processor,
+        frame_stride=frame_stride,
         pad_short=pad_short,
     )
     

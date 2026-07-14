@@ -249,6 +249,7 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_model_lr_warmup_steps", type=int, default=0)
     group.add_argument("--grouped_context_alternating_interval", type=int, default=0)
     group.add_argument("--grouped_context_alternating_start", type=str, default="model")
+    group.add_argument("--grouped_context_alternating_warmup_steps", type=int, default=0)
     group.add_argument("--grouped_context_weight_decay", type=float, default=0.0)
     group.add_argument("--grouped_context_structured_updates", type=int, default=0)
     group.add_argument("--grouped_context_friction_groups_per_update", type=int, default=4)
@@ -269,6 +270,7 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_curriculum_rest_init_max", type=float, default=0.6)
     group.add_argument("--grouped_context_curriculum_initial_jitter", type=float, default=0.0)
     group.add_argument("--grouped_context_curriculum_initial_refinement_steps", type=int, default=0)
+    group.add_argument("--frame_stride", type=int, default=1)
     return parser
 
 
@@ -462,7 +464,7 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
         selected_count = new_end
 
     active = group_order[:total_groups]
-    if two_new_context and post_cycle_steps > 0:
+    if post_cycle_steps > 0:
         post_context_steps = post_cycle_steps
         post_model_steps = model_steps
         cycle_duration = post_context_steps + post_model_steps
@@ -634,17 +636,11 @@ def _apply_scheduled_lrs(optimizer, args, step: int):
     warmup_steps = int(getattr(args, "grouped_context_model_lr_warmup_steps", 0) or 0)
     if warmup_steps > 0:
         model_lr = model_lr * min(float(step) / float(warmup_steps), 1.0)
-    interval = int(getattr(args, "grouped_context_alternating_interval", 0) or 0)
-    if interval > 0:
-        phase_index = (max(1, int(step)) - 1) // interval
-        start = str(getattr(args, "grouped_context_alternating_start", "model")).strip().lower()
-        if start not in ("model", "context"):
-            raise ValueError(f"grouped_context_alternating_start must be 'model' or 'context', got {start!r}.")
-        model_phase = (phase_index % 2 == 0) if start == "model" else (phase_index % 2 == 1)
-        if model_phase:
-            context_lr = 0.0
-        else:
-            model_lr = 0.0
+    phase = _alternating_phase(args, step)
+    if phase == "model":
+        context_lr = 0.0
+    elif phase == "context":
+        model_lr = 0.0
     for group in optimizer.param_groups:
         if group.get("name") == "context":
             group["lr"] = context_lr
@@ -657,7 +653,10 @@ def _alternating_phase(args, step: int) -> str | None:
     interval = int(getattr(args, "grouped_context_alternating_interval", 0) or 0)
     if interval <= 0:
         return None
-    phase_index = (max(1, int(step)) - 1) // interval
+    warmup_steps = int(getattr(args, "grouped_context_alternating_warmup_steps", 0) or 0)
+    if int(step) <= warmup_steps:
+        return "model"
+    phase_index = (max(1, int(step) - warmup_steps) - 1) // interval
     start = str(getattr(args, "grouped_context_alternating_start", "model")).strip().lower()
     if start not in ("model", "context"):
         raise ValueError(f"grouped_context_alternating_start must be 'model' or 'context', got {start!r}.")
@@ -778,7 +777,8 @@ def build_dataset(args, runtime_config):
             num_frames=args.num_frames,
             time_division_factor=args.time_division_factor,
             time_division_remainder=args.time_division_remainder,
-            resize_mode=args.resize_mode,
+        resize_mode=args.resize_mode,
+            frame_stride=args.frame_stride,
             pad_short=args.pad_short_chunks,
         ),
         special_operator_map=special_operator_map,
@@ -798,6 +798,7 @@ def build_dataset(args, runtime_config):
             time_division_remainder=args.time_division_remainder,
             pad_short=args.pad_short_chunks,
             output_dim=args.action_dim,
+            frame_stride=args.frame_stride,
         )
     return dataset
 
@@ -901,7 +902,11 @@ def launch_structured_grouped_stage1(accelerator, dataset, model, model_logger, 
         )
         phase = _alternating_phase(args, step)
         interval = int(getattr(args, "grouped_context_alternating_interval", 0) or 0)
-        if interval > 0 and step % interval == 0:
+        warmup_steps = int(getattr(args, "grouped_context_alternating_warmup_steps", 0) or 0)
+        phase_end = step == warmup_steps or (
+            step > warmup_steps and interval > 0 and (step - warmup_steps) % interval == 0
+        )
+        if interval > 0 and phase_end:
             _log_context_table(accelerator, model, step, phase, "phase_end")
             _save_phase_context_table(accelerator, model, model_logger, step, phase, "phase_end")
         mean_loss = torch.stack([loss.float() for loss in detached_losses]).mean()
