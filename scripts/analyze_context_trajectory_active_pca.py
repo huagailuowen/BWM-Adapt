@@ -51,8 +51,9 @@ def write_svg(
     parameter_label: str,
 ) -> None:
     width, height = 1680, 1040
-    overview = (70, 140, 720, 750)
     detail_panels = [(840, 140), (1260, 140), (840, 520), (1260, 520)]
+    show_detail_panels = len(trajectories) <= len(detail_panels)
+    overview = (70, 140, 720, 750) if show_detail_panels else (70, 140, 1540, 750)
     detail_width, detail_height = 380, 330
     shown_steps = (0, 2, 5, 8, 10, 15, 20, 30, 40)
     phase_colors = ("#dc2626", "#f59e0b", "#168a80", "#2563eb")
@@ -172,7 +173,8 @@ def write_svg(
         f'<text x="{ox+17}" y="{oy+oh/2}" transform="rotate(-90 {ox+17} {oy+oh/2})" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#25313a">PC2 ({explained[1]*100:.1f}% active variance)</text>',
     ])
 
-    for panel_index, (item, indices, selected_scores) in enumerate(sampled):
+    panel_items = sampled if show_detail_panels else []
+    for panel_index, (item, indices, selected_scores) in enumerate(panel_items):
         panel_x, panel_y = detail_panels[panel_index]
         border_dash = "" if item["split"] == "ID" else ' stroke-dasharray="8 5"'
         friction = friction_color(float(item["mu"]), mu_low, mu_high)
