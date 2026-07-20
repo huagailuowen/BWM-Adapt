@@ -60,19 +60,52 @@ def _latest_contexts_by_source(trajectory_path: str | Path) -> dict[int, dict]:
     return latest
 
 
-def _select_transfer_targets(rows: list[dict], source_index: int, count: int) -> list[int]:
+def _select_transfer_targets(
+    rows: list[dict],
+    source_index: int,
+    count: int,
+    selection: str = "first",
+    min_covered_events: int = 0,
+) -> list[int]:
     source = rows[int(source_index)]
     source_mu = float(source["friction_mu"])
     candidates = [
         idx
         for idx, row in enumerate(rows)
         if idx != int(source_index) and abs(float(row["friction_mu"]) - source_mu) <= 1e-8
+        and int(row.get("covered_event_count", 0)) >= int(min_covered_events)
     ]
     if len(candidates) < int(count):
         raise ValueError(
             f"Need {count} transfer targets for source={source_index}, mu={source_mu}; got {len(candidates)}."
         )
-    return candidates[: int(count)]
+    if selection == "first":
+        return candidates[: int(count)]
+    if selection != "distinct_episodes":
+        raise ValueError(f"Unknown target selection: {selection}")
+
+    source_episode = source.get("episode_index")
+    selected = []
+    seen_episodes = set()
+    for idx in candidates:
+        episode = rows[idx].get("episode_index")
+        if episode == source_episode or episode in seen_episodes:
+            continue
+        selected.append(idx)
+        seen_episodes.add(episode)
+        if len(selected) == int(count):
+            return selected
+    for idx in candidates:
+        if idx not in selected and rows[idx].get("episode_index") != source_episode:
+            selected.append(idx)
+            if len(selected) == int(count):
+                return selected
+    for idx in candidates:
+        if idx not in selected:
+            selected.append(idx)
+            if len(selected) == int(count):
+                return selected
+    return selected
 
 
 def _draw_label(frame: np.ndarray, label: str) -> np.ndarray:
@@ -96,6 +129,8 @@ def _write_2x5_grid_video(
     height: int,
     fps: int,
     quality: int,
+    parameter_label: str,
+    condition_fields: tuple[str, ...],
 ) -> Path:
     gt_videos = []
     pred_videos = []
@@ -122,9 +157,28 @@ def _write_2x5_grid_video(
                 num_views = len(row["video"])
                 target_width = int(width) * num_views
                 mu = float(row["friction_mu"])
+                causal_class = row.get("causal_class")
+                if condition_fields:
+                    aliases = {
+                        "target_mass_kg": "m",
+                        "target_table_friction_mu": "fric",
+                    }
+                    parts = []
+                    for field in condition_fields:
+                        value = row.get(field)
+                        label = aliases.get(field, field)
+                        suffix = "kg" if field == "target_mass_kg" else ""
+                        parts.append(f"{label}={float(value):g}{suffix}")
+                    condition = " ".join(parts)
+                else:
+                    condition = (
+                        f"class={causal_class} {parameter_label}={mu:g}"
+                        if causal_class
+                        else f"{parameter_label}={mu:g}"
+                    )
                 gt = _resize_rgb(gt_frames[frame_id], target_width, int(height))
                 pred = _resize_rgb(pred_frames[frame_id], target_width, int(height))
-                top.append(_draw_label(gt, f"GT s{target_index} mu={mu:g}"))
+                top.append(_draw_label(gt, f"GT s{target_index} {condition}"))
                 bottom.append(_draw_label(pred, f"C from s{source_index} -> s{target_index}"))
             writer.append_data(np.concatenate([np.concatenate(top, axis=1), np.concatenate(bottom, axis=1)], axis=0))
     return output_path
@@ -133,13 +187,18 @@ def _write_2x5_grid_video(
 def parse_args():
     parser = argparse.ArgumentParser("Transfer a learned latent C to other same-friction chunks and write 2x5 videos.")
     parser = add_general_config(parser)
+    parser.add_argument("--frame_stride", type=int, default=1)
     parser.add_argument("--trajectory_path", required=True)
     parser.add_argument("--source_indices", required=True)
     parser.add_argument("--targets_per_source", type=int, default=5)
+    parser.add_argument("--target_selection", choices=("first", "distinct_episodes"), default="first")
+    parser.add_argument("--target_min_covered_events", type=int, default=0)
     parser.add_argument("--grid_output_path", required=True)
     parser.add_argument("--raw_output_path", required=True)
     parser.add_argument("--plan_output_path", default=None)
     parser.add_argument("--skip_existing", action="store_true", default=False)
+    parser.add_argument("--parameter_label", default="mu")
+    parser.add_argument("--condition_fields", default="")
     args = parser.parse_args()
     if args.config is not None:
         args = merge_yaml_and_args(args.config, parser, args)
@@ -160,7 +219,13 @@ def main() -> None:
         source_index = int(source_index)
         if source_index not in latest_contexts:
             raise KeyError(f"No learned final C found for source_index={source_index} in {args.trajectory_path}.")
-        targets = _select_transfer_targets(metadata_rows, source_index, int(args.targets_per_source))
+        targets = _select_transfer_targets(
+            metadata_rows,
+            source_index,
+            int(args.targets_per_source),
+            selection=str(args.target_selection),
+            min_covered_events=int(args.target_min_covered_events),
+        )
         plan.append(
             {
                 "source_index": source_index,
@@ -220,9 +285,13 @@ def main() -> None:
             output_path=grid_path,
             width=int(args.width),
             height=int(args.height),
-            fps=int(args.fps),
-            quality=int(args.quality),
-        )
+              fps=int(args.fps),
+              quality=int(args.quality),
+              parameter_label=str(args.parameter_label),
+              condition_fields=tuple(
+                  field.strip() for field in str(args.condition_fields).split(",") if field.strip()
+              ),
+          )
         print(f"[grid] {grid_path}", flush=True)
 
     print(f"[done] raw={raw_root} grids={grid_root} plan={plan_path}", flush=True)

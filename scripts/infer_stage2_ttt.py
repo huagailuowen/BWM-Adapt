@@ -12,6 +12,7 @@ from pathlib import Path
 
 import imageio.v2 as imageio
 import numpy as np
+import pyarrow.parquet as pq
 import torch
 from PIL import Image, ImageDraw
 
@@ -160,11 +161,29 @@ def _project_contexts(values: np.ndarray, center: np.ndarray, components: np.nda
     return (flat - center[None, :]) @ components.T
 
 
-def _write_context_pca_plot(path: Path, table, trajectory_rows: list[dict]) -> None:
+def _write_context_pca_plot(
+    path: Path,
+    table,
+    trajectory_rows: list[dict],
+    active_values: list[float] | None = None,
+) -> None:
     if table is None or not trajectory_rows:
         return
 
     contexts = table["contexts"]
+    table_values = np.asarray(table["friction_values"], dtype=np.float64)
+    if active_values:
+        requested = np.asarray(active_values, dtype=np.float64)
+        active_mask = np.any(
+            np.isclose(table_values[:, None], requested[None, :], atol=1e-6, rtol=0.0),
+            axis=1,
+        )
+        if int(active_mask.sum()) < 2:
+            raise ValueError(
+                f"Need at least two active C-table entries for PCA, found {int(active_mask.sum())}."
+            )
+        contexts = contexts[active_mask]
+        table_values = table_values[active_mask]
     center, components, explained = _fit_context_pca(contexts)
     table_xy = _project_contexts(contexts, center, components)
 
@@ -218,7 +237,7 @@ def _write_context_pca_plot(path: Path, table, trajectory_rows: list[dict]) -> N
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         '<rect width="100%" height="100%" fill="white"/>',
         '<style>text{font-family:Arial,sans-serif}.axis{stroke:#333;stroke-width:1}.grid{stroke:#ddd;stroke-width:1}.label{font-size:13px;fill:#222}.small{font-size:11px;fill:#333}.title{font-size:18px;font-weight:700;fill:#111}</style>',
-        f'<text class="title" x="{width/2:.1f}" y="32" text-anchor="middle">C32 table PCA with mean-initialized inner-loop C trajectories</text>',
+        f'<text class="title" x="{width/2:.1f}" y="32" text-anchor="middle">Active C32 table PCA with mean-initialized inner-loop C trajectories</text>',
     ]
 
     for i in range(6):
@@ -233,10 +252,10 @@ def _write_context_pca_plot(path: Path, table, trajectory_rows: list[dict]) -> N
 
     parts.append(f'<line class="axis" x1="{margin_left}" y1="{height-margin_bottom}" x2="{width-margin_right}" y2="{height-margin_bottom}"/>')
     parts.append(f'<line class="axis" x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height-margin_bottom}"/>')
-    parts.append(f'<text class="label" x="{margin_left+plot_w/2:.1f}" y="{height-32}" text-anchor="middle">PC1 ({100.0 * float(explained[0]):.1f}% table variance)</text>')
-    parts.append(f'<text class="label" transform="translate(26 {margin_top+plot_h/2:.1f}) rotate(-90)" text-anchor="middle">PC2 ({100.0 * float(explained[1]):.1f}% table variance)</text>')
+    parts.append(f'<text class="label" x="{margin_left+plot_w/2:.1f}" y="{height-32}" text-anchor="middle">PC1 ({100.0 * float(explained[0]):.1f}% active-table variance)</text>')
+    parts.append(f'<text class="label" transform="translate(26 {margin_top+plot_h/2:.1f}) rotate(-90)" text-anchor="middle">PC2 ({100.0 * float(explained[1]):.1f}% active-table variance)</text>')
 
-    for idx, (xy, mu) in enumerate(zip(table_xy, table["friction_values"])):
+    for idx, (xy, mu) in enumerate(zip(table_xy, table_values)):
         x, y = sx(xy[0]), sy(xy[1])
         parts.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="6" fill="#111"/>')
         parts.append(f'<text class="small" x="{x+8:.2f}" y="{y-7:.2f}">mu={float(mu):.4g}</text>')
@@ -254,7 +273,7 @@ def _write_context_pca_plot(path: Path, table, trajectory_rows: list[dict]) -> N
         parts.append(f'<text class="small" x="{x1+10:.2f}" y="{y1+4:.2f}" fill="{color}">s{sample_index}/mu={mu:.4g}</text>')
 
     legend_y = 64
-    parts.append('<text class="small" x="700" y="48">black dots: learned C table; x: init; triangle: final</text>')
+    parts.append('<text class="small" x="700" y="48">black dots: active learned C table; x: init; triangle: final</text>')
     parts.append('<text class="small" x="700" y="64">trajectory color is shared by friction group</text>')
     for idx, mu in enumerate(unique_mus[:8]):
         x = 700 + (idx % 4) * 70
@@ -281,6 +300,7 @@ def _build_support_dataset(args, runtime_config):
             time_division_remainder=args.time_division_remainder,
             pad_short=args.pad_short_chunks,
             output_dim=args.action_dim,
+            frame_stride=int(getattr(args, "frame_stride", 1)),
         )
 
     return RoboTwinUnifiedDataset(
@@ -300,6 +320,7 @@ def _build_support_dataset(args, runtime_config):
             time_division_remainder=args.time_division_remainder,
             resize_mode=args.resize_mode,
             pad_short=args.pad_short_chunks,
+            frame_stride=int(getattr(args, "frame_stride", 1)),
         ),
         special_operator_map=special_operator_map,
     )
@@ -353,6 +374,142 @@ def _select_support_indices(
     rng.shuffle(remaining)
     selected.extend(remaining[: max(0, support_count - len(selected))])
     return selected
+
+
+def _select_support_episode_batch(
+    *,
+    support_rows: list[dict],
+    support_groups: dict[tuple, list[int]],
+    group_key: tuple,
+    episode_count: int,
+    excluded_episode: int,
+    seed: int,
+) -> tuple[list[int], list[int]]:
+    if group_key not in support_groups:
+        raise KeyError(f"No support rows for group={group_key}.")
+    by_episode: dict[int, list[int]] = defaultdict(list)
+    for index in support_groups[group_key]:
+        episode_index = int(support_rows[index]["episode_index"])
+        if episode_index == int(excluded_episode):
+            continue
+        by_episode[episode_index].append(index)
+    episode_indices = sorted(by_episode)
+    stable_group_id = int(hashlib.sha1(str(group_key).encode("utf-8")).hexdigest()[:8], 16)
+    rng = random.Random(int(seed) + stable_group_id)
+    rng.shuffle(episode_indices)
+    selected_episodes = episode_indices[: int(episode_count)]
+    if len(selected_episodes) < int(episode_count):
+        raise ValueError(
+            f"Requested {episode_count} support episodes for group={group_key} after excluding "
+            f"episode={excluded_episode}, but only found {len(selected_episodes)}."
+        )
+    selected_indices = []
+    for episode_index in selected_episodes:
+        selected_indices.extend(
+            sorted(
+                by_episode[episode_index],
+                key=lambda index: (
+                    int(support_rows[index].get("start_frame", 0)),
+                    int(support_rows[index].get("window_index", 0)),
+                ),
+            )
+        )
+    return selected_indices, selected_episodes
+
+
+def _select_lightswitch_balanced_support(
+    *,
+    support_rows: list[dict],
+    support_groups: dict[tuple, list[int]],
+    group_key: tuple,
+    per_condition: int,
+    excluded_episode: int,
+    dataset_base_path: str,
+    seed: int,
+) -> tuple[list[int], dict[str, int]]:
+    if group_key not in support_groups:
+        raise KeyError(f"No support rows for group={group_key}.")
+    candidates = list(support_groups[group_key])
+    stable_group_id = int(hashlib.sha1(str(group_key).encode("utf-8")).hexdigest()[:8], 16)
+    rng = random.Random(int(seed) + stable_group_id)
+    rng.shuffle(candidates)
+
+    lamp_cache: dict[Path, list] = {}
+    candidate_records = []
+    for index in candidates:
+        row = support_rows[index]
+        episode_index = int(row["episode_index"])
+        if episode_index == int(excluded_episode):
+            continue
+        colors = list(row.get("covered_button_colors") or [])
+        if len(colors) != 1 or colors[0] not in ("red", "blue"):
+            continue
+        parquet_path = Path(dataset_base_path) / str(row["action"])
+        if parquet_path not in lamp_cache:
+            lamp_cache[parquet_path] = pq.read_table(
+                parquet_path,
+                columns=["observation.button_lamp_state"],
+            ).column(0).to_pylist()
+        state = lamp_cache[parquet_path][int(row.get("start_frame", 0))]
+        initial_lamp_on = bool(float(state[-1]) >= 0.5)
+        candidate_records.append((index, episode_index, colors[0], initial_lamp_on))
+
+    bucket_order = (("blue", False), ("blue", True), ("red", False), ("red", True))
+    selected = []
+    used_indices = set()
+    used_episodes = set()
+    counts = {bucket: 0 for bucket in bucket_order}
+
+    def select_matching(predicate, limit: int, *, allow_reused_episodes: bool = False) -> None:
+        for index, episode_index, color, initial_lamp_on in candidate_records:
+            if limit <= 0:
+                return
+            if index in used_indices:
+                continue
+            if not allow_reused_episodes and episode_index in used_episodes:
+                continue
+            if not predicate(color, initial_lamp_on):
+                continue
+            selected.append(index)
+            used_indices.add(index)
+            used_episodes.add(episode_index)
+            counts[(color, initial_lamp_on)] += 1
+            limit -= 1
+
+    for bucket in bucket_order:
+        select_matching(
+            lambda color, initial_lamp_on, bucket=bucket: (color, initial_lamp_on) == bucket,
+            int(per_condition),
+        )
+
+    target_per_button = int(per_condition) * 2
+    for color in ("blue", "red"):
+        current = sum(count for (bucket_color, _), count in counts.items() if bucket_color == color)
+        select_matching(lambda candidate_color, _lamp, color=color: candidate_color == color, target_per_button - current)
+        current = sum(count for (bucket_color, _), count in counts.items() if bucket_color == color)
+        select_matching(
+            lambda candidate_color, _lamp, color=color: candidate_color == color,
+            target_per_button - current,
+            allow_reused_episodes=True,
+        )
+
+    select_matching(lambda _color, _lamp: True, int(per_condition) * 4 - len(selected))
+    select_matching(
+        lambda _color, _lamp: True,
+        int(per_condition) * 4 - len(selected),
+        allow_reused_episodes=True,
+    )
+    expected = int(per_condition) * 4
+    if len(selected) != expected:
+        raise ValueError(
+            f"Could not build an {expected}-chunk balanced LightSwitch support batch for "
+            f"group={group_key}; selected={len(selected)} counts={counts}."
+        )
+    summary = {
+        f"{color}_{'on' if initial_lamp_on else 'off'}": counts[(color, initial_lamp_on)]
+        for color, initial_lamp_on in bucket_order
+    }
+    return selected, summary
 
 
 def _freeze_pipe(pipe) -> None:
@@ -552,7 +709,17 @@ def _sample_timestep(pipe, inputs: dict, args) -> torch.Tensor:
     max_idx = int(float(args.max_timestep_boundary) * len(pipe.scheduler.timesteps))
     min_idx = int(float(args.min_timestep_boundary) * len(pipe.scheduler.timesteps))
     max_idx = max(min_idx + 1, max_idx)
-    timestep_id = torch.randint(min_idx, max_idx, (1,))
+    fixed_index = getattr(args, "stage2_fixed_timestep_index", None)
+    if fixed_index is None:
+        timestep_id = torch.randint(min_idx, max_idx, (1,))
+    else:
+        fixed_index = int(fixed_index)
+        if not min_idx <= fixed_index < max_idx:
+            raise ValueError(
+                f"stage2_fixed_timestep_index={fixed_index} is outside the active scheduler "
+                f"index range [{min_idx}, {max_idx})."
+            )
+        timestep_id = torch.tensor([fixed_index], dtype=torch.long)
     return pipe.scheduler.timesteps[timestep_id].to(dtype=pipe.torch_dtype, device=pipe.device)
 
 
@@ -671,27 +838,88 @@ def _adapt_ttt_state(
     try:
         for inner_idx, inner_lr in enumerate(inner_lrs):
             prev_context = context.detach()
-            support_losses = []
-            for item in support_items:
-                inputs = _prepare_loss_inputs(pipe, item, context, args)
-                support_losses.append(_flow_match_loss(pipe, inputs, args))
-            support_loss = torch.stack(support_losses).mean()
-            loss = support_loss
-            context_reg_value = 0.0
-            if use_context and float(args.stage2_context_reg_weight) > 0:
-                context_reg = _context_reg(pipe, context, context0)
-                context_reg_value = float(context_reg.detach().float().cpu())
-                loss = loss + float(args.stage2_context_reg_weight) * context_reg
-            if use_adapter and float(args.ttt_adapter_reg_weight) > 0:
-                adapter_reg = _adapter_reg_loss(adapter_named_params, base_adapter_state)
-                adapter_reg_value = float(adapter_reg.detach().float().cpu())
-                loss = loss + float(args.ttt_adapter_reg_weight) * adapter_reg
-
             grad_targets: list[torch.Tensor] = []
             if use_context:
                 grad_targets.append(context)
             grad_targets.extend(param for _, param in adapter_named_params)
-            grads = torch.autograd.grad(loss, grad_targets, create_graph=False, allow_unused=True)
+            if not support_items:
+                raise ValueError("Stage2 TTT received an empty support batch.")
+
+            context_reg_value = 0.0
+            if bool(getattr(args, "ttt_support_gradient_accumulation", False)):
+                grads: list[torch.Tensor | None] = [None] * len(grad_targets)
+                support_loss_value = 0.0
+                support_scale = 1.0 / float(len(support_items))
+                for item in support_items:
+                    inputs = _prepare_loss_inputs(pipe, item, context, args)
+                    item_loss = _flow_match_loss(pipe, inputs, args)
+                    support_loss_value += float(item_loss.detach().float().cpu()) * support_scale
+                    item_grads = torch.autograd.grad(
+                        item_loss,
+                        grad_targets,
+                        create_graph=False,
+                        allow_unused=True,
+                    )
+                    for grad_index, item_grad in enumerate(item_grads):
+                        if item_grad is None:
+                            continue
+                        scaled_grad = item_grad * support_scale
+                        if grads[grad_index] is None:
+                            grads[grad_index] = scaled_grad
+                        else:
+                            grads[grad_index] = grads[grad_index] + scaled_grad
+
+                regularization_loss = None
+                regularization_value = 0.0
+                if use_context and float(args.stage2_context_reg_weight) > 0:
+                    context_reg = _context_reg(pipe, context, context0)
+                    context_reg_value = float(context_reg.detach().float().cpu())
+                    weighted_context_reg = float(args.stage2_context_reg_weight) * context_reg
+                    regularization_loss = weighted_context_reg
+                    regularization_value += float(weighted_context_reg.detach().float().cpu())
+                if use_adapter and float(args.ttt_adapter_reg_weight) > 0:
+                    adapter_reg = _adapter_reg_loss(adapter_named_params, base_adapter_state)
+                    adapter_reg_value = float(adapter_reg.detach().float().cpu())
+                    weighted_adapter_reg = float(args.ttt_adapter_reg_weight) * adapter_reg
+                    regularization_loss = (
+                        weighted_adapter_reg
+                        if regularization_loss is None
+                        else regularization_loss + weighted_adapter_reg
+                    )
+                    regularization_value += float(weighted_adapter_reg.detach().float().cpu())
+                if regularization_loss is not None:
+                    regularization_grads = torch.autograd.grad(
+                        regularization_loss,
+                        grad_targets,
+                        create_graph=False,
+                        allow_unused=True,
+                    )
+                    for grad_index, regularization_grad in enumerate(regularization_grads):
+                        if regularization_grad is None:
+                            continue
+                        if grads[grad_index] is None:
+                            grads[grad_index] = regularization_grad
+                        else:
+                            grads[grad_index] = grads[grad_index] + regularization_grad
+                loss_value = support_loss_value + regularization_value
+            else:
+                support_losses = []
+                for item in support_items:
+                    inputs = _prepare_loss_inputs(pipe, item, context, args)
+                    support_losses.append(_flow_match_loss(pipe, inputs, args))
+                support_loss = torch.stack(support_losses).mean()
+                support_loss_value = float(support_loss.detach().float().cpu())
+                loss = support_loss
+                if use_context and float(args.stage2_context_reg_weight) > 0:
+                    context_reg = _context_reg(pipe, context, context0)
+                    context_reg_value = float(context_reg.detach().float().cpu())
+                    loss = loss + float(args.stage2_context_reg_weight) * context_reg
+                if use_adapter and float(args.ttt_adapter_reg_weight) > 0:
+                    adapter_reg = _adapter_reg_loss(adapter_named_params, base_adapter_state)
+                    adapter_reg_value = float(adapter_reg.detach().float().cpu())
+                    loss = loss + float(args.ttt_adapter_reg_weight) * adapter_reg
+                grads = list(torch.autograd.grad(loss, grad_targets, create_graph=False, allow_unused=True))
+                loss_value = float(loss.detach().float().cpu())
 
             offset = 0
             if use_context:
@@ -712,7 +940,7 @@ def _adapt_ttt_state(
                         if grad is not None:
                             param.add_(grad, alpha=-float(args.ttt_adapter_lr))
 
-            losses.append(float(loss.detach().float().cpu()))
+            losses.append(loss_value)
             trajectory_rows.append(
                 _context_record(
                     step=inner_idx + 1,
@@ -722,20 +950,21 @@ def _adapt_ttt_state(
                     target_context=target_context,
                     inner_lr=float(inner_lr),
                     loss=losses[-1],
-                    support_loss=float(support_loss.detach().float().cpu()),
+                    support_loss=support_loss_value,
                     context_reg=context_reg_value,
                     meta=meta,
                 )
             )
-            print(
-                f"[inner] step={inner_idx + 1} scope={scope} loss={losses[-1]:.6f} "
-                f"support={float(support_loss.detach().float().cpu()):.6f} "
-                f"context_reg={context_reg_value:.6f} adapter_reg={adapter_reg_value:.6f} "
-                f"inner_lr={float(inner_lr):.6f} c_mean={float(context.detach().float().mean().cpu()):.6f} "
-                f"step_delta_l2={trajectory_rows[-1]['context_step_delta_l2']:.6f} "
-                f"target_l2={trajectory_rows[-1]['target_context_l2']}",
-                flush=True,
-            )
+            if not bool(getattr(args, "ttt_quiet_inner", False)):
+                print(
+                    f"[inner] step={inner_idx + 1} scope={scope} loss={losses[-1]:.6f} "
+                    f"support={support_loss_value:.6f} support_count={len(support_items)} "
+                    f"context_reg={context_reg_value:.6f} adapter_reg={adapter_reg_value:.6f} "
+                    f"inner_lr={float(inner_lr):.6f} c_mean={float(context.detach().float().mean().cpu()):.6f} "
+                    f"step_delta_l2={trajectory_rows[-1]['context_step_delta_l2']:.6f} "
+                    f"target_l2={trajectory_rows[-1]['target_context_l2']}",
+                    flush=True,
+                )
     finally:
         _restore_requires_grad(previous_requires_grad)
 
@@ -831,6 +1060,7 @@ def _write_two_way_comparison(
 def parse_args():
     parser = argparse.ArgumentParser("Stage2 TTT test-time inference and comparison.")
     parser = add_stage2_config(add_general_config(parser))
+    parser.add_argument("--frame_stride", type=int, default=1)
     parser.add_argument("--stage2_ckpt_path", type=str, required=True)
     parser.add_argument("--support_metadata_path", type=str, default="data/push_box_bwm_calibrated_v2_100pairs/train.jsonl")
     parser.add_argument("--support_count", type=int, default=2)
@@ -865,6 +1095,43 @@ def parse_args():
         help="Use each query chunk itself as the support chunk and adapt a separate C per query sample.",
     )
     parser.add_argument(
+        "--ttt_support_same_episode",
+        action="store_true",
+        default=False,
+        help=(
+            "Adapt one C per query episode using every metadata chunk from that episode as the "
+            "joint support batch. Queries from the same episode share the adapted C."
+        ),
+    )
+    parser.add_argument(
+        "--ttt_support_episodes_per_group",
+        type=int,
+        default=0,
+        help=(
+            "Select this many episodes from the query's environment group, excluding the query "
+            "episode, and use every metadata chunk from the selected episodes as one support batch."
+        ),
+    )
+    parser.add_argument(
+        "--ttt_support_lightswitch_per_condition",
+        type=int,
+        default=0,
+        help=(
+            "Build a LightSwitch support batch with this many chunks for each button-color and "
+            "initial-lamp-state condition. Missing lamp-state buckets are redistributed within "
+            "the same button color without crossing environment groups."
+        ),
+    )
+    parser.add_argument(
+        "--ttt_support_gradient_accumulation",
+        action="store_true",
+        default=False,
+        help=(
+            "Compute the support-batch mean gradient one chunk at a time, then apply one update. "
+            "This is mathematically a mean support loss without retaining every DiT graph at once."
+        ),
+    )
+    parser.add_argument(
         "--ttt_initial_context_table_path",
         type=str,
         default=None,
@@ -876,6 +1143,12 @@ def parse_args():
         default=None,
         help="Grouped context_table.json used as target dictionary and PCA basis for trajectory analysis.",
     )
+    parser.add_argument(
+        "--ttt_context_active_values",
+        type=str,
+        default=None,
+        help="Comma-separated active table values used exclusively for PCA fitting and display.",
+    )
     parser.add_argument("--ttt_context_trajectory_path", type=str, default=None)
     parser.add_argument("--ttt_context_pca_output_path", type=str, default=None)
     parser.add_argument(
@@ -884,6 +1157,33 @@ def parse_args():
         default=False,
         help="Keep the test-time optimized context leaf in FP32; the encoder casts it for BF16 forward.",
     )
+    parser.add_argument(
+        "--ttt_initial_context_random_uniform",
+        action="store_true",
+        default=False,
+        help="Initialize a deterministic independent Uniform(0,1) context for every sample.",
+    )
+    parser.add_argument(
+        "--ttt_initial_context_random_shared",
+        action="store_true",
+        default=False,
+        help="Initialize every sample from one shared deterministic Uniform(0,1) context.",
+    )
+    parser.add_argument(
+        "--ttt_initial_context_random_seed",
+        type=int,
+        default=None,
+        help="Optional seed dedicated to random context initialization.",
+    )
+    parser.add_argument(
+        "--stage2_fixed_timestep_index",
+        type=int,
+        default=None,
+        help="Use one fixed training scheduler index for every support chunk and inner step.",
+    )
+    parser.add_argument("--ttt_quiet_inner", action="store_true", default=False)
+    parser.add_argument("--adapt_only", action="store_true", default=False)
+    parser.add_argument("--resume_context_trajectory", action="store_true", default=False)
     args = parser.parse_args()
     if args.config is not None:
         args = merge_yaml_and_args(args.config, parser, args)
@@ -892,11 +1192,32 @@ def parse_args():
 
 def main() -> None:
     args = parse_args()
+    if args.ttt_initial_context_random_uniform and args.ttt_initial_context_random_shared:
+        raise ValueError(
+            "Choose only one of --ttt_initial_context_random_uniform and "
+            "--ttt_initial_context_random_shared."
+        )
     set_global_seed(int(args.seed))
 
     query_rows = _read_jsonl(args.dataset_metadata_path)
     support_rows = _read_jsonl(args.support_metadata_path)
+    support_mode_count = sum(
+        (
+            bool(args.ttt_support_same_as_query),
+            bool(args.ttt_support_same_episode),
+            int(args.ttt_support_episodes_per_group) > 0,
+            int(args.ttt_support_lightswitch_per_condition) > 0,
+        )
+    )
+    if support_mode_count > 1:
+        raise ValueError(
+            "Choose only one of --ttt_support_same_as_query, --ttt_support_same_episode, "
+            "--ttt_support_episodes_per_group, or --ttt_support_lightswitch_per_condition."
+        )
     support_groups = _group_rows(support_rows, args.stage2_group_keys)
+    support_episodes: dict[int, list[int]] = defaultdict(list)
+    for support_index, support_row in enumerate(support_rows):
+        support_episodes[int(support_row["episode_index"])].append(support_index)
     initial_context_table = _load_grouped_context_table(args.ttt_initial_context_table_path)
     context_table = _load_grouped_context_table(args.ttt_context_table_path or args.ttt_initial_context_table_path)
 
@@ -916,6 +1237,59 @@ def main() -> None:
         if args.ttt_support_same_as_query:
             cache_key = ("sample", int(sample_index))
             support_plan[cache_key] = [int(sample_index)]
+        elif args.ttt_support_same_episode:
+            episode_index = int(row["episode_index"])
+            cache_key = ("episode", episode_index)
+            if cache_key not in support_plan:
+                episode_indices = support_episodes.get(episode_index, [])
+                if not episode_indices:
+                    raise KeyError(f"No support chunks for episode={episode_index}.")
+                support_plan[cache_key] = sorted(
+                    episode_indices,
+                    key=lambda index: (
+                        int(support_rows[index].get("start_frame", 0)),
+                        int(support_rows[index].get("window_index", 0)),
+                    ),
+                )
+        elif int(args.ttt_support_episodes_per_group) > 0:
+            episode_index = int(row["episode_index"])
+            cache_key = ("group_episode_batch",) + tuple(group_key) + ("exclude", episode_index)
+            if cache_key not in support_plan:
+                selected_indices, selected_episodes = _select_support_episode_batch(
+                    support_rows=support_rows,
+                    support_groups=support_groups,
+                    group_key=group_key,
+                    episode_count=int(args.ttt_support_episodes_per_group),
+                    excluded_episode=episode_index,
+                    seed=int(args.seed),
+                )
+                support_plan[cache_key] = selected_indices
+                print(
+                    f"[support_episodes] query={sample_index} group={group_key} "
+                    f"excluded_episode={episode_index} selected_episodes={selected_episodes} "
+                    f"support_count={len(selected_indices)}",
+                    flush=True,
+                )
+        elif int(args.ttt_support_lightswitch_per_condition) > 0:
+            episode_index = int(row["episode_index"])
+            cache_key = ("lightswitch_balanced",) + tuple(group_key) + ("exclude", episode_index)
+            if cache_key not in support_plan:
+                selected_indices, condition_counts = _select_lightswitch_balanced_support(
+                    support_rows=support_rows,
+                    support_groups=support_groups,
+                    group_key=group_key,
+                    per_condition=int(args.ttt_support_lightswitch_per_condition),
+                    excluded_episode=episode_index,
+                    dataset_base_path=args.dataset_base_path,
+                    seed=int(args.seed),
+                )
+                support_plan[cache_key] = selected_indices
+                print(
+                    f"[lightswitch_balanced_support] query={sample_index} group={group_key} "
+                    f"excluded_episode={episode_index} support={selected_indices} "
+                    f"condition_counts={condition_counts}",
+                    flush=True,
+                )
         elif group_key not in support_groups:
             raise KeyError(f"No support rows for group={group_key}.")
         elif group_key not in support_plan:
@@ -960,7 +1334,7 @@ def main() -> None:
 
     runtime_config = prepare_runtime_config(args)
     support_dataset = _build_support_dataset(args, runtime_config)
-    query_dataset = build_infer_dataset(args)
+    query_dataset = None if args.adapt_only else build_infer_dataset(args)
 
     pipe = build_pipeline(args)
     load_checkpoint_weights(pipe, args.stage2_ckpt_path)
@@ -971,6 +1345,33 @@ def main() -> None:
         print(
             f"[initial_context] source=table_mean path={initial_context_table['path']} "
             f"shape={tuple(initial_context_tensor.shape)} mean={float(initial_context_tensor.float().mean().cpu()):.6f}",
+            flush=True,
+        )
+    shared_random_context = None
+    shared_random_context_seed = None
+    if args.ttt_initial_context_random_shared:
+        template = initial_context_tensor
+        if template is None:
+            template = pipe.physical_context_encoder.default_context.detach().to(
+                device=pipe.device, dtype=context_dtype
+            )
+        shared_random_context_seed = (
+            int(args.ttt_initial_context_random_seed)
+            if args.ttt_initial_context_random_seed is not None
+            else int(args.seed)
+        )
+        generator = torch.Generator(device=pipe.device)
+        generator.manual_seed(shared_random_context_seed)
+        shared_random_context = torch.rand(
+            template.shape,
+            generator=generator,
+            device=pipe.device,
+            dtype=context_dtype,
+        )
+        print(
+            f"[initial_context] source=shared_random seed={shared_random_context_seed} "
+            f"shape={tuple(shared_random_context.shape)} "
+            f"mean={float(shared_random_context.float().mean().cpu()):.6f}",
             flush=True,
         )
     adapter_named_params = _select_ttt_adapter_params(pipe, args.ttt_adapt_scope)
@@ -989,6 +1390,20 @@ def main() -> None:
     trajectory_rows = []
     trajectory_path = Path(args.ttt_context_trajectory_path) if args.ttt_context_trajectory_path else output_path.parent / "context_trajectory.jsonl"
     pca_output_path = Path(args.ttt_context_pca_output_path) if args.ttt_context_pca_output_path else output_path.parent / "context_trajectory_pca.svg"
+    completed_context_samples = set()
+    if args.resume_context_trajectory and trajectory_path.exists():
+        trajectory_rows = _read_jsonl(trajectory_path)
+        expected_steps = len(_parse_inner_lr_schedule(args))
+        completed_context_samples = {
+            int(row["sample_index"])
+            for row in trajectory_rows
+            if row.get("sample_index") is not None and int(row.get("inner_step", -1)) >= expected_steps
+        }
+        print(
+            f"[resume_context] path={trajectory_path} rows={len(trajectory_rows)} "
+            f"completed_samples={len(completed_context_samples)}",
+            flush=True,
+        )
     output_path.mkdir(parents=True, exist_ok=True)
     comparison_path.mkdir(parents=True, exist_ok=True)
     if args.render_support:
@@ -997,6 +1412,9 @@ def main() -> None:
 
     for sample_index in sample_indices:
         sample_index = int(sample_index)
+        if sample_index in completed_context_samples:
+            print(f"[resume_context_skip] sample_index={sample_index}", flush=True)
+            continue
         row = query_rows[sample_index]
         group_key = tuple(row.get(name.strip()) for name in args.stage2_group_keys.split(",") if name.strip())
         cache_key = sample_cache_keys[sample_index]
@@ -1013,13 +1431,32 @@ def main() -> None:
                 device=pipe.device,
                 dtype=context_dtype,
             )
+            sample_initial_context = (
+                shared_random_context if shared_random_context is not None else initial_context_tensor
+            )
+            initial_context_seed = shared_random_context_seed
+            if args.ttt_initial_context_random_uniform:
+                template = initial_context_tensor
+                if template is None:
+                    template = pipe.physical_context_encoder.default_context.detach().to(
+                        device=pipe.device, dtype=context_dtype
+                    )
+                initial_context_seed = int(args.seed) + sample_index * 1_000_003
+                generator = torch.Generator(device=pipe.device)
+                generator.manual_seed(initial_context_seed)
+                sample_initial_context = torch.rand(
+                    template.shape,
+                    generator=generator,
+                    device=pipe.device,
+                    dtype=context_dtype,
+                )
             context_cache[cache_key] = _adapt_ttt_state(
                 pipe,
                 support_items,
                 args,
                 adapter_named_params=adapter_named_params,
                 base_adapter_state=base_adapter_state,
-                initial_context=initial_context_tensor,
+                initial_context=sample_initial_context,
                 target_context=target_context,
                 trajectory_meta={
                     "sample_index": sample_index,
@@ -1028,6 +1465,10 @@ def main() -> None:
                     "group_key": list(group_key),
                     "cache_key": list(cache_key),
                     "friction_mu": row.get("friction_mu"),
+                    "pool_target_mu": row.get("pool_target_mu"),
+                    "pool_index": row.get("pool_index"),
+                    "support_displacement_m": row.get("support_displacement_m"),
+                    "initial_context_seed": initial_context_seed,
                     "support_indices": support_indices,
                     "initial_context_source": None if initial_context_table is None else initial_context_table["path"],
                     "target_context_source": None if context_table is None else context_table["path"],
@@ -1038,6 +1479,22 @@ def main() -> None:
             torch.cuda.empty_cache()
 
         adapted_context, inner_losses, adapted_adapter_state, adapt_metrics, cached_trajectory = context_cache[cache_key]
+        if args.adapt_only:
+            result_rows.append(
+                {
+                    "sample_index": sample_index,
+                    "sample_id": row.get("sample_id"),
+                    "episode_index": row.get("episode_index"),
+                    "friction_mu": row.get("friction_mu"),
+                    "pool_target_mu": row.get("pool_target_mu"),
+                    "pool_index": row.get("pool_index"),
+                    "inner_losses": inner_losses,
+                    "context_flat": [float(value) for value in adapted_context.float().cpu().reshape(-1).tolist()],
+                }
+            )
+            _write_jsonl(output_path.parent / "results.jsonl", result_rows)
+            torch.cuda.empty_cache()
+            continue
         if adapter_named_params:
             _restore_named_params(adapter_named_params, adapted_adapter_state)
         if args.render_support and cache_key not in rendered_support:
@@ -1135,7 +1592,19 @@ def main() -> None:
         _write_jsonl(output_path.parent / "results.jsonl", result_rows)
 
     if trajectory_rows and context_table is not None:
-        _write_context_pca_plot(pca_output_path, context_table, trajectory_rows)
+        active_values = None
+        if args.ttt_context_active_values:
+            active_values = [
+                float(value.strip())
+                for value in args.ttt_context_active_values.split(",")
+                if value.strip()
+            ]
+        _write_context_pca_plot(
+            pca_output_path,
+            context_table,
+            trajectory_rows,
+            active_values=active_values,
+        )
         print(f"[done] context_trajectory={trajectory_path}", flush=True)
         print(f"[done] context_pca={pca_output_path}", flush=True)
     print(f"[done] predictions={output_path}", flush=True)
