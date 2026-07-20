@@ -496,6 +496,11 @@ class LoadCobotAction(DataProcessingOperator):
             # BWM's 14-D EEF convention is [left_eef(7), right_eef(7)].
             padded[:, 7:] = arr
             return padded
+        if self.output_dim == 14 and self.use_joint and arr.shape[1] == 7:
+            padded = np.zeros((arr.shape[0], 14), dtype=arr.dtype)
+            # Preserve the native channels for a single-arm 7-D LeRobot action.
+            padded[:, :7] = arr
+            return padded
         if self.output_dim == 14 and arr.shape[1] == 8:
             padded = np.zeros((arr.shape[0], 14), dtype=arr.dtype)
             # Single-arm Panda action followed by six neutral padding channels.

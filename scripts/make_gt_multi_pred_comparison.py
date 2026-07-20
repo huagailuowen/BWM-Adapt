@@ -31,13 +31,14 @@ def _resize_rgb(frame, width: int, height: int):
 
 def _read_gt_video(row, dataset_base: Path, width: int, height: int, total_frames: int):
     start_frame = int(row["start_frame"])
+    frame_stride = int(row.get("frame_stride", 1))
     valid_frames = int(row.get("valid_frames", row.get("length", total_frames)))
     readers = [imageio.get_reader(str(dataset_base / rel_path)) for rel_path in row["video"]]
     frames = []
     try:
         for offset in range(total_frames):
             source_offset = min(offset, max(valid_frames - 1, 0))
-            frame_idx = start_frame + source_offset
+            frame_idx = start_frame + source_offset * frame_stride
             view_frames = [_resize_rgb(reader.get_data(frame_idx), width, height) for reader in readers]
             frames.append(np.concatenate(view_frames, axis=1))
     finally:
@@ -97,6 +98,7 @@ def main():
     parser.add_argument("--height", type=int, default=224)
     parser.add_argument("--fps", type=int, default=20)
     parser.add_argument("--quality", type=int, default=6)
+    parser.add_argument("--output-suffix", default="_gt_c_sweep")
     parser.add_argument("--no-labels", action="store_true")
     args = parser.parse_args()
 
@@ -143,7 +145,7 @@ def main():
                 rows_to_stack.append(frame)
             output_frames.append(np.concatenate(rows_to_stack, axis=0))
 
-        output_path = output_dir / pred_name.replace(".mp4", "_gt_c_sweep.mp4")
+        output_path = output_dir / pred_name.replace(".mp4", f"{args.output_suffix}.mp4")
         with imageio.get_writer(str(output_path), fps=args.fps, codec="libx264", quality=args.quality) as writer:
             for frame in output_frames:
                 writer.append_data(frame)

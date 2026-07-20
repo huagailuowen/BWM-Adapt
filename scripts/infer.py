@@ -22,6 +22,7 @@ from wan_video_action.utils import align_num_frames, resolve_model_path, save_vi
 def parse_args():
     parser = argparse.ArgumentParser("RoboTwin inference entrypoint.")
     parser = add_general_config(parser)
+    parser.add_argument("--frame_stride", type=int, default=1)
     parser.add_argument(
         "--sample_indices",
         type=str,
@@ -264,6 +265,7 @@ def build_infer_dataset(args):
             time_division_factor=args.time_division_factor,
             time_division_remainder=args.time_division_remainder,
             resize_mode=args.resize_mode,
+            frame_stride=int(getattr(args, "frame_stride", 1)),
         ),
         special_operator_map={
             "action": LoadCobotAction(
@@ -276,6 +278,7 @@ def build_infer_dataset(args):
                 time_division_remainder=args.time_division_remainder,
                 pad_short=True,
                 output_dim=args.action_dim,
+                frame_stride=int(getattr(args, "frame_stride", 1)),
             )
         },
     )
@@ -296,6 +299,13 @@ def prepare_sample_for_rollout(sample: Dict, sample_index: int, pipe, args) -> D
     raw_action = sample["action"]
     raw_action_shape = tuple(raw_action.shape) if torch.is_tensor(raw_action) else tuple(np.asarray(raw_action).shape)
     action = torch.as_tensor(raw_action, dtype=pipe.torch_dtype, device=pipe.device)
+    action_frames = int(action.shape[-2])
+    if action_frames != raw_total_frames:
+        raise ValueError(
+            "Action/video temporal mismatch after loading: "
+            f"sample={sample_index}, action_frames={action_frames}, metadata_frames={raw_total_frames}, "
+            f"frame_stride={int(getattr(args, 'frame_stride', 1))}, raw_action_shape={raw_action_shape}."
+        )
 
     sample["sample_index"] = sample_index
     sample["raw_total_frames"] = raw_total_frames
@@ -324,6 +334,7 @@ def main():
     print("[resolved_config] height:", args.height)
     print("[resolved_config] width:", args.width)
     print("[resolved_config] num_frames:", args.num_frames)
+    print("[resolved_config] frame_stride:", int(getattr(args, "frame_stride", 1)))
     print("[resolved_config] num_history_frames:", args.num_history_frames)
     print("[resolved_config] time_division_factor:", args.time_division_factor)
     print("[resolved_config] time_division_remainder:", args.time_division_remainder)

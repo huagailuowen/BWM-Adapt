@@ -1,5 +1,6 @@
 import glob
 import time
+from contextlib import nullcontext
 import torch, os, argparse, accelerate, warnings, json
 from accelerate.utils import broadcast
 from wan_video_action.data import RoboTwinUnifiedDataset
@@ -268,8 +269,14 @@ def wan_parser():
 
 
 def launch_training_task_with_optional_warmup(accelerator, dataset, model, model_logger, args):
-    if int(args.batch_size) != 1:
-        raise ValueError("The local warmup launcher currently supports batch_size=1 only.")
+    local_batch_size = int(args.batch_size)
+    if local_batch_size < 1:
+        raise ValueError(f"batch_size must be positive, got {local_batch_size}.")
+    if int(args.gradient_accumulation_steps) != 1:
+        raise ValueError(
+            "Sequential local batching already performs gradient accumulation; "
+            "set gradient_accumulation_steps=1."
+        )
 
     optimizer = torch.optim.AdamW(
         model.trainable_modules(),
@@ -288,26 +295,48 @@ def launch_training_task_with_optional_warmup(accelerator, dataset, model, model
     dataloader = torch.utils.data.DataLoader(
         dataset,
         shuffle=True,
-        batch_size=1,
-        collate_fn=lambda items: items[0],
+        batch_size=local_batch_size,
+        collate_fn=lambda items: items,
         num_workers=args.dataset_num_workers,
     )
     model.to(device=accelerator.device)
     model, optimizer, dataloader, scheduler = accelerator.prepare(model, optimizer, dataloader, scheduler)
     initialize_deepspeed_gradient_checkpointing(accelerator)
 
+    if accelerator.is_main_process:
+        print(
+            f"[sequential_batch] local_batch_size={local_batch_size} "
+            f"updates_per_epoch={len(dataloader)} epochs={args.num_epochs}",
+            flush=True,
+        )
+
     for epoch_id in range(args.num_epochs):
         iterator = tqdm(dataloader, disable=not accelerator.is_local_main_process)
-        for data in iterator:
-            with accelerator.accumulate(model):
-                loss = model(data)
-                accelerator.backward(loss)
-                if args.max_grad_norm is not None and args.max_grad_norm > 0:
-                    accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
-                optimizer.step()
-                scheduler.step()
-                optimizer.zero_grad()
-                model_logger.on_step_end(accelerator, model, args.save_steps, loss=loss)
+        for data_batch in iterator:
+            optimizer.zero_grad()
+            batch_loss = None
+            microbatch_count = len(data_batch)
+            for microbatch_id, data in enumerate(data_batch):
+                sync_context = (
+                    accelerator.no_sync(model)
+                    if microbatch_id + 1 < microbatch_count
+                    else nullcontext()
+                )
+                with sync_context:
+                    loss = model(data)
+                    accelerator.backward(loss / float(microbatch_count))
+                detached_loss = loss.detach().to(dtype=torch.float32)
+                batch_loss = detached_loss if batch_loss is None else batch_loss + detached_loss
+            if args.max_grad_norm is not None and args.max_grad_norm > 0:
+                accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
+            optimizer.step()
+            scheduler.step()
+            model_logger.on_step_end(
+                accelerator,
+                model,
+                args.save_steps,
+                loss=batch_loss / float(microbatch_count),
+            )
         if args.save_steps is None:
             model_logger.on_epoch_end(accelerator, model, epoch_id)
     model_logger.on_training_end(accelerator, model, args.save_steps)
@@ -315,6 +344,12 @@ def launch_training_task_with_optional_warmup(accelerator, dataset, model, model
 
 if __name__ == "__main__":
     parser = wan_parser()
+    parser.add_argument(
+        "--frame_stride",
+        type=int,
+        default=1,
+        help="Temporal stride applied identically to video frames and actions.",
+    )
     args = parser.parse_args()
 
     if args.config is not None:
@@ -356,6 +391,7 @@ if __name__ == "__main__":
             time_division_remainder=args.time_division_remainder,
             resize_mode=args.resize_mode,
             pad_short=args.pad_short_chunks,
+            frame_stride=args.frame_stride,
         ),
         special_operator_map=special_operator_map,
     )
@@ -376,6 +412,7 @@ if __name__ == "__main__":
             time_division_remainder=args.time_division_remainder,
             pad_short=args.pad_short_chunks,
             output_dim=args.action_dim,
+            frame_stride=args.frame_stride,
         )
 
     model = WanTrainingModule(
@@ -420,7 +457,10 @@ if __name__ == "__main__":
         "direct_distill": launch_training_task,
         "direct_distill:train": launch_training_task,
     }
-    if int(getattr(args, "stage1_warmup_steps", 0) or 0) > 0 and args.task in {
+    if (
+        int(getattr(args, "stage1_warmup_steps", 0) or 0) > 0
+        or int(args.batch_size) > 1
+    ) and args.task in {
         "sft",
         "sft:train",
         "direct_distill",
