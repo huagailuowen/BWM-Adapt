@@ -40,6 +40,37 @@ def _read_jsonl(path: str) -> list[dict]:
     return rows
 
 
+@torch.no_grad()
+def _load_grouped_context_table(model, path: str) -> None:
+    with open(path, "r", encoding="utf-8") as handle:
+        payload = json.load(handle)
+    table = model.friction_context_table
+    seen: set[int] = set()
+    for record in payload.get("records", []):
+        value = float(record["friction_mu"])
+        distances = torch.abs(table.friction_values - value)
+        index = int(torch.argmin(distances).item())
+        if float(distances[index]) > 1e-5:
+            raise ValueError(f"Context-table value {value} is absent from the current model table.")
+        context = torch.tensor(
+            record["context"],
+            dtype=table.contexts.dtype,
+            device=table.contexts.device,
+        )
+        if tuple(context.shape) != tuple(table.contexts[index].shape):
+            raise ValueError(
+                f"Context shape mismatch for group {value}: "
+                f"checkpoint={tuple(context.shape)} model={tuple(table.contexts[index].shape)}"
+            )
+        table.contexts[index].copy_(context)
+        seen.add(index)
+    if len(seen) != int(table.friction_values.numel()):
+        raise ValueError(
+            f"Context table {path} restored {len(seen)} groups, "
+            f"expected {int(table.friction_values.numel())}."
+        )
+
+
 def _unique_friction_values(metadata_path: str) -> list[float]:
     values = sorted({float(row["friction_mu"]) for row in _read_jsonl(metadata_path)})
     if not values:
@@ -208,14 +239,26 @@ class GroupedContextModelLogger(TimedRetentionModelLogger):
         table = getattr(accelerator.unwrap_model(model), "friction_context_table", None)
         if table is None:
             return
+        destination = Path(path)
+        destination.parent.mkdir(parents=True, exist_ok=True)
         payload = {
             "num_groups": int(table.friction_values.numel()),
             "context_shape": list(table.contexts.shape),
             "records": table.to_records(),
         }
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(payload, f, indent=2, sort_keys=True)
-        print(f"[checkpoint] saved {path}", flush=True)
+        temporary = destination.with_name(f".{destination.name}.tmp-{os.getpid()}")
+        try:
+            with temporary.open("w", encoding="utf-8") as f:
+                json.dump(payload, f, indent=2, sort_keys=True)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(temporary, destination)
+        finally:
+            try:
+                temporary.unlink()
+            except FileNotFoundError:
+                pass
+        print(f"[checkpoint] saved {destination}", flush=True)
 
     def _prune_context_tables_without_checkpoints(self):
         checkpoint_stems = {
@@ -255,6 +298,8 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_friction_groups_per_update", type=int, default=4)
     group.add_argument("--grouped_context_actions_per_update", type=int, default=4)
     group.add_argument("--grouped_context_microbatches_per_update", type=int, default=0)
+    group.add_argument("--grouped_context_sampling_mode", type=str, default="common_actions")
+    group.add_argument("--grouped_context_stratify_field", type=str, default=None)
     group.add_argument("--grouped_context_curriculum_initial_groups", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_add_groups", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_total_groups", type=int, default=0)
@@ -270,6 +315,8 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_curriculum_rest_init_max", type=float, default=0.6)
     group.add_argument("--grouped_context_curriculum_initial_jitter", type=float, default=0.0)
     group.add_argument("--grouped_context_curriculum_initial_refinement_steps", type=int, default=0)
+    group.add_argument("--grouped_context_resume_context_table", type=str, default=None)
+    group.add_argument("--grouped_context_resume_step", type=int, default=0)
     group.add_argument("--frame_stride", type=int, default=1)
     return parser
 
@@ -328,6 +375,130 @@ def _sample_structured_indices(
             indices.append(rng.choice(candidates))
     rng.shuffle(indices)
     return indices
+
+
+def _sample_independent_window_indices(
+    *,
+    grouped_indices: dict[float, dict[int, list[int]]],
+    rows: list[dict],
+    rng: random.Random,
+    friction_groups: int,
+    chunks_per_group: int,
+    allowed_friction_values: list[float] | None = None,
+    stratify_field: str | None = None,
+) -> list[int]:
+    allowed_values = None
+    if allowed_friction_values is not None:
+        allowed_values = [float(value) for value in allowed_friction_values]
+
+    def is_allowed(value: float) -> bool:
+        if allowed_values is None:
+            return True
+        return any(abs(float(value) - allowed) <= 1e-5 for allowed in allowed_values)
+
+    candidates_by_group = {
+        float(value): [
+            index
+            for action_candidates in by_action.values()
+            for index in action_candidates
+        ]
+        for value, by_action in grouped_indices.items()
+        if is_allowed(float(value))
+    }
+    candidates_by_group = {
+        value: indices
+        for value, indices in candidates_by_group.items()
+        if len(indices) >= chunks_per_group
+    }
+    values = sorted(candidates_by_group)
+    if len(values) < friction_groups:
+        raise ValueError(
+            f"Need {friction_groups} eligible groups for independent-window sampling, "
+            f"got {len(values)}."
+        )
+
+    selected_values: list[float] = []
+    field = str(stratify_field or "").strip()
+    if field:
+        values_by_stratum: dict[str, list[float]] = {}
+        for value in values:
+            sample_index = candidates_by_group[value][0]
+            if field not in rows[sample_index]:
+                raise KeyError(f"Metadata row is missing stratification field {field!r}.")
+            stratum = str(rows[sample_index][field])
+            values_by_stratum.setdefault(stratum, []).append(value)
+        strata = sorted(values_by_stratum)
+        if len(strata) >= friction_groups:
+            selected_strata = rng.sample(strata, friction_groups)
+        else:
+            selected_strata = strata
+        selected_values.extend(rng.choice(values_by_stratum[stratum]) for stratum in selected_strata)
+
+    remaining_values = [value for value in values if value not in selected_values]
+    if len(selected_values) < friction_groups:
+        selected_values.extend(
+            rng.sample(remaining_values, friction_groups - len(selected_values))
+        )
+
+    indices: list[int] = []
+    for value in selected_values:
+        indices.extend(rng.sample(candidates_by_group[value], chunks_per_group))
+    rng.shuffle(indices)
+    return indices
+
+
+def _sample_update_indices(
+    *,
+    grouped_indices: dict[float, dict[int, list[int]]],
+    rows: list[dict],
+    accelerator,
+    args,
+    update_idx: int,
+    friction_groups: int,
+    actions_per_update: int,
+    microbatches_per_update: int,
+    allowed_friction_values: list[float] | None = None,
+) -> list[int]:
+    mode = str(getattr(args, "grouped_context_sampling_mode", "common_actions") or "common_actions").strip().lower()
+    if mode in ("independent_windows", "all_windows", "random_windows"):
+        # Every GPU independently constructs a complete logical batch:
+        # 4 causal-environment groups x 4 arbitrary windows = 16 samples/rank.
+        rng = random.Random(
+            int(args.seed)
+            + int(update_idx) * max(1, int(accelerator.num_processes))
+            + int(accelerator.process_index)
+        )
+        sample_indices = _sample_independent_window_indices(
+            grouped_indices=grouped_indices,
+            rows=rows,
+            rng=rng,
+            friction_groups=friction_groups,
+            chunks_per_group=actions_per_update,
+            allowed_friction_values=allowed_friction_values,
+            stratify_field=getattr(args, "grouped_context_stratify_field", None),
+        )
+        if microbatches_per_update > 0:
+            sample_indices = sample_indices[:microbatches_per_update]
+        return sample_indices
+
+    if mode not in ("common_actions", "aligned_actions", "legacy"):
+        raise ValueError(f"Unsupported grouped_context_sampling_mode={mode!r}.")
+    rng = random.Random(
+        int(args.seed)
+        + int(update_idx) * max(1, int(accelerator.num_processes))
+        + int(accelerator.process_index)
+    )
+    sample_indices = _sample_structured_indices(
+        grouped_indices=grouped_indices,
+        rows=rows,
+        rng=rng,
+        friction_groups=friction_groups,
+        actions_per_update=actions_per_update,
+        allowed_friction_values=allowed_friction_values,
+    )
+    if len(sample_indices) > microbatches_per_update:
+        sample_indices = sample_indices[:microbatches_per_update]
+    return sample_indices
 
 
 def _nested_uniform_group_order(num_groups: int, initial_groups: int, total_groups: int) -> list[int]:
@@ -866,21 +1037,22 @@ def launch_structured_grouped_stage1(accelerator, dataset, model, model_logger, 
             flush=True,
         )
 
-    iterator = tqdm(range(updates), disable=not accelerator.is_local_main_process)
+    resume_step = int(getattr(args, "grouped_context_resume_step", 0) or 0)
+    iterator = tqdm(range(resume_step, updates), disable=not accelerator.is_local_main_process)
     for update_idx in iterator:
-        rng = random.Random(int(args.seed) + update_idx * max(1, accelerator.num_processes) + accelerator.process_index)
         step = update_idx + 1
         _apply_scheduled_lrs(optimizer, args, step)
         _set_alternating_requires_grad(model, args, step)
-        sample_indices = _sample_structured_indices(
+        sample_indices = _sample_update_indices(
             grouped_indices=grouped_indices,
             rows=metadata_rows,
-            rng=rng,
+            accelerator=accelerator,
+            args=args,
+            update_idx=update_idx,
             friction_groups=friction_groups,
             actions_per_update=actions_per_update,
+            microbatches_per_update=microbatches_per_update,
         )
-        if len(sample_indices) > microbatches_per_update:
-            sample_indices = sample_indices[:microbatches_per_update]
         optimizer.zero_grad(set_to_none=True)
         detached_losses = []
         for micro_idx, sample_index in enumerate(sample_indices):
@@ -973,7 +1145,8 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
             flush=True,
         )
 
-    iterator = tqdm(range(updates), disable=not accelerator.is_local_main_process)
+    resume_step = int(getattr(args, "grouped_context_resume_step", 0) or 0)
+    iterator = tqdm(range(resume_step, updates), disable=not accelerator.is_local_main_process)
     last_phase_key = None
     for update_idx in iterator:
         step = update_idx + 1
@@ -994,19 +1167,19 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
 
         _set_curriculum_requires_grad(model, phase)
         _apply_curriculum_lrs(optimizer, args, step, phase)
-        rng = random.Random(int(args.seed) + update_idx * max(1, accelerator.num_processes) + accelerator.process_index)
         sample_values = [friction_values[index] for index in phase_info["sample_group_indices"]]
         sample_friction_groups = min(friction_groups_per_update, len(sample_values))
-        sample_indices = _sample_structured_indices(
+        sample_indices = _sample_update_indices(
             grouped_indices=grouped_indices,
             rows=metadata_rows,
-            rng=rng,
+            accelerator=accelerator,
+            args=args,
+            update_idx=update_idx,
             friction_groups=sample_friction_groups,
             actions_per_update=actions_per_update,
+            microbatches_per_update=microbatches_per_update,
             allowed_friction_values=sample_values,
         )
-        if len(sample_indices) > microbatches_per_update:
-            sample_indices = sample_indices[:microbatches_per_update]
         optimizer.zero_grad(set_to_none=True)
         detached_losses = []
         for micro_idx, sample_index in enumerate(sample_indices):
@@ -1083,6 +1256,14 @@ def main() -> None:
         grouped_args=args,
         friction_values=friction_values,
     )
+    if getattr(args, "grouped_context_resume_context_table", None):
+        _load_grouped_context_table(model, args.grouped_context_resume_context_table)
+        if accelerator.is_main_process:
+            print(
+                f"[resume] restored context table from {args.grouped_context_resume_context_table} "
+                f"at step={int(args.grouped_context_resume_step)}",
+                flush=True,
+            )
     if accelerator.is_main_process:
         print(
             f"Grouped-C Stage1: groups={len(friction_values)} "
@@ -1097,6 +1278,7 @@ def main() -> None:
         keep_last=args.checkpoint_keep_last,
         log_steps=args.log_steps,
     )
+    model_logger.num_steps = int(getattr(args, "grouped_context_resume_step", 0) or 0)
     if int(getattr(args, "grouped_context_curriculum_initial_groups", 0) or 0) > 0:
         launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, args)
     elif int(getattr(args, "grouped_context_structured_updates", 0) or 0) > 0:
