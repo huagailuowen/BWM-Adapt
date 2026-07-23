@@ -108,6 +108,31 @@ def _select_transfer_targets(
     return selected
 
 
+def _parse_targets_by_source(raw: str | None) -> dict[int, list[int]]:
+    """Parse SOURCE:TARGET,TARGET;SOURCE:TARGET,TARGET mappings."""
+    mappings: dict[int, list[int]] = {}
+    if not raw:
+        return mappings
+    for entry in raw.split(";"):
+        entry = entry.strip()
+        if not entry:
+            continue
+        if ":" not in entry:
+            raise ValueError(
+                "--target_indices_by_source entries must use "
+                f"SOURCE:TARGET,TARGET syntax, got {entry!r}."
+            )
+        source_raw, targets_raw = entry.split(":", 1)
+        source_index = int(source_raw.strip())
+        targets = _parse_sample_indices(targets_raw)
+        if not targets:
+            raise ValueError(f"No targets supplied for source={source_index}.")
+        if source_index in mappings:
+            raise ValueError(f"Duplicate explicit target mapping for source={source_index}.")
+        mappings[source_index] = [int(index) for index in targets]
+    return mappings
+
+
 def _draw_label(frame: np.ndarray, label: str) -> np.ndarray:
     image = Image.fromarray(frame).convert("RGB")
     draw = ImageDraw.Draw(image)
@@ -191,6 +216,15 @@ def parse_args():
     parser.add_argument("--trajectory_path", required=True)
     parser.add_argument("--source_indices", required=True)
     parser.add_argument("--targets_per_source", type=int, default=5)
+    parser.add_argument(
+        "--target_indices_by_source",
+        default=None,
+        help=(
+            "Optional explicit transfer targets using "
+            "SOURCE:TARGET,TARGET;SOURCE:TARGET,TARGET syntax. "
+            "Mapped sources bypass automatic target selection."
+        ),
+    )
     parser.add_argument("--target_selection", choices=("first", "distinct_episodes"), default="first")
     parser.add_argument("--target_min_covered_events", type=int, default=0)
     parser.add_argument("--grid_output_path", required=True)
@@ -211,6 +245,7 @@ def main() -> None:
     metadata_rows = _read_jsonl(args.dataset_metadata_path)
     latest_contexts = _latest_contexts_by_source(args.trajectory_path)
     source_indices = _parse_sample_indices(args.source_indices)
+    explicit_targets = _parse_targets_by_source(args.target_indices_by_source)
     if not source_indices:
         raise ValueError("--source_indices is empty.")
 
@@ -219,13 +254,28 @@ def main() -> None:
         source_index = int(source_index)
         if source_index not in latest_contexts:
             raise KeyError(f"No learned final C found for source_index={source_index} in {args.trajectory_path}.")
-        targets = _select_transfer_targets(
-            metadata_rows,
-            source_index,
-            int(args.targets_per_source),
-            selection=str(args.target_selection),
-            min_covered_events=int(args.target_min_covered_events),
-        )
+        if source_index in explicit_targets:
+            targets = explicit_targets[source_index]
+            source_mu = float(metadata_rows[source_index]["friction_mu"])
+            for target_index in targets:
+                if not 0 <= target_index < len(metadata_rows):
+                    raise IndexError(
+                        f"Explicit target={target_index} for source={source_index} is out of range."
+                    )
+                target_mu = float(metadata_rows[target_index]["friction_mu"])
+                if abs(target_mu - source_mu) > 1e-8:
+                    raise ValueError(
+                        f"Explicit target={target_index} has mu={target_mu}, "
+                        f"but source={source_index} has mu={source_mu}."
+                    )
+        else:
+            targets = _select_transfer_targets(
+                metadata_rows,
+                source_index,
+                int(args.targets_per_source),
+                selection=str(args.target_selection),
+                min_covered_events=int(args.target_min_covered_events),
+            )
         plan.append(
             {
                 "source_index": source_index,
@@ -275,7 +325,10 @@ def main() -> None:
             _run_autoregressive(pipe=pipe, sample=sample, args=args)
             torch.cuda.empty_cache()
 
-        grid_path = grid_root / f"source{source_index:04d}_mu{float(item['source_friction_mu']):.6f}_2x5_gt_transfer.mp4"
+        grid_path = grid_root / (
+            f"source{source_index:04d}_mu{float(item['source_friction_mu']):.6f}_"
+            f"2x{len(item['target_indices'])}_gt_transfer.mp4"
+        )
         _write_2x5_grid_video(
             metadata_rows=metadata_rows,
             dataset_base_path=Path(args.dataset_base_path),

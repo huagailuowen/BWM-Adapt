@@ -18,6 +18,7 @@ if str(REPO_ROOT / "scripts") not in sys.path:
 import accelerate
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from tqdm import tqdm
 
 from diffsynth.diffusion.runner import initialize_deepspeed_gradient_checkpointing
@@ -41,7 +42,7 @@ def _read_jsonl(path: str) -> list[dict]:
 
 
 @torch.no_grad()
-def _load_grouped_context_table(model, path: str) -> None:
+def _load_grouped_context_table(model, path: str) -> bool:
     with open(path, "r", encoding="utf-8") as handle:
         payload = json.load(handle)
     table = model.friction_context_table
@@ -69,6 +70,22 @@ def _load_grouped_context_table(model, path: str) -> None:
             f"Context table {path} restored {len(seen)} groups, "
             f"expected {int(table.friction_values.numel())}."
         )
+    global_context = getattr(table, "global_context", None)
+    saved_global_context = payload.get("global_context")
+    if global_context is None or saved_global_context is None:
+        return False
+    restored_global = torch.tensor(
+        saved_global_context,
+        dtype=global_context.dtype,
+        device=global_context.device,
+    )
+    if tuple(restored_global.shape) != tuple(global_context.shape):
+        raise ValueError(
+            f"Global context shape mismatch: checkpoint={tuple(restored_global.shape)} "
+            f"model={tuple(global_context.shape)}"
+        )
+    global_context.copy_(restored_global)
+    return True
 
 
 def _unique_friction_values(metadata_path: str) -> list[float]:
@@ -98,6 +115,7 @@ class FrictionContextTable(nn.Module):
         init_std: float,
         init_min: float,
         init_max: float,
+        enable_global_context: bool = False,
     ):
         super().__init__()
         if context_dim <= 0:
@@ -136,6 +154,10 @@ class FrictionContextTable(nn.Module):
         else:
             raise ValueError(f"Unsupported grouped_context_init_mode={init_mode!r}.")
         self.contexts = nn.Parameter(contexts)
+        if enable_global_context:
+            self.global_context = nn.Parameter(contexts.detach().mean(dim=0).clone())
+        else:
+            self.register_parameter("global_context", None)
 
     def lookup(self, friction_mu, *, dtype: torch.dtype, device: torch.device | str) -> torch.Tensor:
         query = _as_float_tensor(friction_mu, device=self.friction_values.device)
@@ -167,6 +189,20 @@ class GroupedContextStage1Module(WanTrainingModule):
         super().__init__(*args, **kwargs)
         if getattr(self.pipe, "physical_context_encoder", None) is None:
             raise ValueError("Grouped-C stage1 requires physical_context_mode != 'none'.")
+        self.bridge_enabled = bool(getattr(grouped_args, "grouped_context_bridge_enabled", False))
+        self.self_correction_enabled = bool(
+            getattr(grouped_args, "grouped_context_self_correction_enabled", False)
+        )
+        self.self_correction_sigma_min = float(
+            getattr(grouped_args, "grouped_context_self_correction_sigma_min", 0.45)
+        )
+        self.self_correction_sigma_max = float(
+            getattr(grouped_args, "grouped_context_self_correction_sigma_max", 0.85)
+        )
+        self.self_correction_source_mix = float(
+            getattr(grouped_args, "grouped_context_self_correction_source_mix", 0.5)
+        )
+        self.last_self_correction_metrics: dict | None = None
         self.friction_context_table = FrictionContextTable(
             friction_values=friction_values,
             context_dim=int(grouped_args.physical_context_dim),
@@ -176,16 +212,154 @@ class GroupedContextStage1Module(WanTrainingModule):
             init_std=float(grouped_args.grouped_context_init_std),
             init_min=float(grouped_args.grouped_context_init_min),
             init_max=float(grouped_args.grouped_context_init_max),
+            enable_global_context=self.bridge_enabled,
         )
 
     def get_pipeline_inputs(self, data):
         data = data.copy()
-        data["physical_context"] = self.friction_context_table.lookup(
-            data["friction_mu"],
+        bridge_alpha = data.pop("_bridge_alpha", None)
+        bridge_target_mu = data.pop("_bridge_target_mu", None)
+        if bridge_alpha is None:
+            physical_context = self.friction_context_table.lookup(
+                data["friction_mu"],
+                dtype=self.pipe.torch_dtype,
+                device=self.pipe.device,
+            )
+        else:
+            if self.friction_context_table.global_context is None:
+                raise RuntimeError("Bridge context requested without a global context parameter.")
+            endpoint_context = self.friction_context_table.lookup(
+                bridge_target_mu,
+                dtype=self.pipe.torch_dtype,
+                device=self.pipe.device,
+            )
+            global_context = self.friction_context_table.global_context.to(
+                dtype=self.pipe.torch_dtype,
+                device=self.pipe.device,
+            ).unsqueeze(0)
+            alpha = float(bridge_alpha)
+            physical_context = (1.0 - alpha) * global_context + alpha * endpoint_context
+        data["physical_context"] = physical_context
+        return super().get_pipeline_inputs(data)
+
+    def _prepare_pipeline_inputs(self, data):
+        inputs = self.get_pipeline_inputs(data)
+        inputs = self.transfer_data_to_device(inputs, self.pipe.device, self.pipe.torch_dtype)
+        for unit in self.pipe.units:
+            inputs = self.pipe.unit_runner(unit, self.pipe, *inputs)
+        return inputs
+
+    def _flow_match_loss_at_timestep(self, target_inputs, timestep_index: int):
+        inputs_shared, inputs_posi, _ = target_inputs
+        inputs_shared = inputs_shared.copy()
+        timestep = self.pipe.scheduler.timesteps[timestep_index:timestep_index + 1].to(
             dtype=self.pipe.torch_dtype,
             device=self.pipe.device,
         )
-        return super().get_pipeline_inputs(data)
+        noise = torch.randn_like(inputs_shared["input_latents"])
+        inputs_shared["latents"] = self.pipe.scheduler.add_noise(
+            inputs_shared["input_latents"],
+            noise,
+            timestep,
+        )
+        training_target = self.pipe.scheduler.training_target(
+            inputs_shared["input_latents"],
+            noise,
+            timestep,
+        )
+        if "first_frame_latents" in inputs_shared:
+            inputs_shared["latents"][:, :, 0:1] = inputs_shared["first_frame_latents"]
+        models = {name: getattr(self.pipe, name) for name in self.pipe.in_iteration_models}
+        noise_pred = self.pipe.model_fn(
+            **models,
+            **inputs_shared,
+            **inputs_posi,
+            timestep=timestep,
+        )
+        if "first_frame_latents" in inputs_shared:
+            noise_pred = noise_pred[:, :, 1:]
+            training_target = training_target[:, :, 1:]
+        loss = F.mse_loss(noise_pred.float(), training_target.float())
+        return loss * self.pipe.scheduler.training_weight(timestep)
+
+    def _self_correction_flow_loss(self, target_inputs, donor_inputs, timestep_index: int):
+        inputs_shared, inputs_posi, _ = target_inputs
+        donor_shared, _, _ = donor_inputs
+        inputs_shared = inputs_shared.copy()
+        target_latents = inputs_shared["input_latents"]
+        donor_latents = donor_shared["input_latents"].detach()
+        if tuple(target_latents.shape) != tuple(donor_latents.shape):
+            raise ValueError(
+                f"Self-correction target/donor latent shape mismatch: "
+                f"target={tuple(target_latents.shape)} donor={tuple(donor_latents.shape)}"
+            )
+
+        sigma_value = float(self.pipe.scheduler.sigmas[int(timestep_index)])
+        if not self.self_correction_sigma_min <= sigma_value <= self.self_correction_sigma_max:
+            raise ValueError(
+                f"Shared self-correction sigma {sigma_value} lies outside "
+                f"[{self.self_correction_sigma_min}, {self.self_correction_sigma_max}]."
+            )
+        timestep = self.pipe.scheduler.timesteps[timestep_index:timestep_index + 1].to(
+            dtype=self.pipe.torch_dtype,
+            device=self.pipe.device,
+        )
+        sigma = self.pipe.scheduler.sigmas[timestep_index].to(
+            dtype=target_latents.dtype,
+            device=target_latents.device,
+        )
+        gaussian_noise = torch.randn_like(target_latents)
+        source_mix = float(self.self_correction_source_mix)
+        structured_source = (1.0 - source_mix) * gaussian_noise + source_mix * donor_latents
+        inputs_shared["latents"] = (
+            (1.0 - sigma) * target_latents + sigma * structured_source
+        )
+        training_target = structured_source - target_latents
+
+        if "first_frame_latents" in inputs_shared:
+            inputs_shared["latents"][:, :, 0:1] = inputs_shared["first_frame_latents"]
+        models = {name: getattr(self.pipe, name) for name in self.pipe.in_iteration_models}
+        noise_pred = self.pipe.model_fn(
+            **models,
+            **inputs_shared,
+            **inputs_posi,
+            timestep=timestep,
+        )
+        if "first_frame_latents" in inputs_shared:
+            noise_pred = noise_pred[:, :, 1:]
+            training_target = training_target[:, :, 1:]
+        loss = F.mse_loss(noise_pred.float(), training_target.float())
+        loss = loss * self.pipe.scheduler.training_weight(timestep)
+        self.last_self_correction_metrics = {
+            "sigma": float(sigma.detach().float().cpu()),
+            "timestep": float(timestep.detach().float().cpu().item()),
+            "source_mix": source_mix,
+        }
+        return loss
+
+    def forward(self, data, inputs=None):
+        donor_data = data.get("_self_correction_donor_data")
+        timestep_index = data.get("_flow_timestep_index")
+        if donor_data is None and timestep_index is None:
+            self.last_self_correction_metrics = None
+            return super().forward(data, inputs=inputs)
+        if donor_data is not None and not self.self_correction_enabled:
+            raise RuntimeError("Self-correction donor was supplied while the feature is disabled.")
+        if inputs is not None:
+            raise ValueError("Precomputed inputs are unsupported for shared-timestep training.")
+        target_data = data.copy()
+        target_data.pop("_self_correction_donor_data", None)
+        target_data.pop("_flow_timestep_index", None)
+        target_inputs = self._prepare_pipeline_inputs(target_data)
+        if donor_data is None:
+            self.last_self_correction_metrics = None
+            return self._flow_match_loss_at_timestep(target_inputs, int(timestep_index))
+        donor_inputs = self._prepare_pipeline_inputs(donor_data)
+        return self._self_correction_flow_loss(
+            target_inputs,
+            donor_inputs,
+            int(timestep_index),
+        )
 
     def export_trainable_state_dict(self, state_dict, remove_prefix=None):
         trainable_names = {name for name, param in self.named_parameters() if param.requires_grad}
@@ -211,7 +385,10 @@ class GroupedContextModelLogger(TimedRetentionModelLogger):
         has_non_context_trainable = any(
             param.requires_grad
             for name, param in unwrapped.named_parameters()
-            if name != "friction_context_table.contexts"
+            if name not in (
+                "friction_context_table.contexts",
+                "friction_context_table.global_context",
+            )
         )
         if has_non_context_trainable:
             super().save_model(accelerator, model, file_name)
@@ -246,6 +423,8 @@ class GroupedContextModelLogger(TimedRetentionModelLogger):
             "context_shape": list(table.contexts.shape),
             "records": table.to_records(),
         }
+        if getattr(table, "global_context", None) is not None:
+            payload["global_context"] = table.global_context.detach().float().cpu().tolist()
         temporary = destination.with_name(f".{destination.name}.tmp-{os.getpid()}")
         try:
             with temporary.open("w", encoding="utf-8") as f:
@@ -317,6 +496,23 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_curriculum_initial_refinement_steps", type=int, default=0)
     group.add_argument("--grouped_context_resume_context_table", type=str, default=None)
     group.add_argument("--grouped_context_resume_step", type=int, default=0)
+    group.add_argument("--grouped_context_bridge_enabled", action="store_true", default=False)
+    group.add_argument("--grouped_context_bridge_global_warmup_steps", type=int, default=300)
+    group.add_argument("--grouped_context_bridge_training_steps", type=int, default=4000)
+    group.add_argument("--grouped_context_bridge_replay_ratio", type=float, default=0.5)
+    group.add_argument("--grouped_context_bridge_alpha_levels", type=str, default="0.2,0.4,0.6,0.8")
+    group.add_argument("--grouped_context_bridge_global_condition_repeats", type=int, default=4)
+    group.add_argument("--grouped_context_bridge_chunks_per_env_per_rank", type=int, default=4)
+    group.add_argument("--grouped_context_bridge_expected_world_size", type=int, default=4)
+    group.add_argument("--grouped_context_bridge_global_warmup_lr", type=float, default=0.03)
+    group.add_argument("--grouped_context_bridge_global_lr", type=float, default=0.01)
+    group.add_argument("--grouped_context_bridge_center_reg_weight", type=float, default=0.01)
+    group.add_argument("--grouped_context_bridge_metrics_log_steps", type=int, default=2)
+    group.add_argument("--grouped_context_self_correction_enabled", action="store_true", default=False)
+    group.add_argument("--grouped_context_self_correction_probability", type=float, default=0.1)
+    group.add_argument("--grouped_context_self_correction_sigma_min", type=float, default=0.45)
+    group.add_argument("--grouped_context_self_correction_sigma_max", type=float, default=0.85)
+    group.add_argument("--grouped_context_self_correction_source_mix", type=float, default=0.5)
     group.add_argument("--frame_stride", type=int, default=1)
     return parser
 
@@ -442,7 +638,70 @@ def _sample_independent_window_indices(
 
     indices: list[int] = []
     for value in selected_values:
-        indices.extend(rng.sample(candidates_by_group[value], chunks_per_group))
+        group_candidates = candidates_by_group[value]
+        required_count = max(
+            (
+                int(rows[index].get("sampling_required_count", 0))
+                for index in group_candidates
+            ),
+            default=0,
+        )
+        if required_count <= 0:
+            indices.extend(rng.sample(group_candidates, chunks_per_group))
+            continue
+        if required_count > chunks_per_group:
+            raise ValueError(
+                f"sampling_required_count={required_count} exceeds "
+                f"chunks_per_group={chunks_per_group} for group {value!r}."
+            )
+
+        required_candidates = [
+            index
+            for index in group_candidates
+            if bool(rows[index].get("sampling_required_pool", False))
+        ]
+
+        def sample_distinct_episodes(
+            candidates: list[int],
+            count: int,
+            used_episodes: set,
+        ) -> list[int]:
+            if count <= 0:
+                return []
+            shuffled = list(candidates)
+            rng.shuffle(shuffled)
+            selected: list[int] = []
+            for index in shuffled:
+                episode_key = rows[index].get("episode_index", index)
+                if episode_key in used_episodes:
+                    continue
+                selected.append(index)
+                used_episodes.add(episode_key)
+                if len(selected) == count:
+                    return selected
+            raise ValueError(
+                f"Cannot sample {count} distinct episodes for group {value!r}; "
+                f"only found {len(selected)}."
+            )
+
+        used_episodes: set = set()
+        selected = sample_distinct_episodes(
+            required_candidates,
+            required_count,
+            used_episodes,
+        )
+        selected_set = set(selected)
+        remaining_candidates = [
+            index for index in group_candidates if index not in selected_set
+        ]
+        selected.extend(
+            sample_distinct_episodes(
+                remaining_candidates,
+                chunks_per_group - required_count,
+                used_episodes,
+            )
+        )
+        indices.extend(selected)
     rng.shuffle(indices)
     return indices
 
@@ -499,6 +758,122 @@ def _sample_update_indices(
     if len(sample_indices) > microbatches_per_update:
         sample_indices = sample_indices[:microbatches_per_update]
     return sample_indices
+
+
+def _covered_button_colors(row: dict) -> set[str]:
+    value = row.get("covered_button_colors", [])
+    if isinstance(value, str):
+        value = [value]
+    return {str(color).strip().lower() for color in value}
+
+
+def _sample_bridge_rank_indices(
+    *,
+    grouped_indices: dict[float, dict[int, list[int]]],
+    rows: list[dict],
+    seed: int,
+    update_idx: int,
+    process_index: int,
+    num_processes: int,
+    chunks_per_env_per_rank: int,
+) -> list[int]:
+    if chunks_per_env_per_rank < 2:
+        raise ValueError("Bridge sampling needs at least two chunks per environment and rank.")
+    rng = random.Random(int(seed) + int(update_idx) * 104729)
+    selected_for_rank: list[int] = []
+    global_count = int(chunks_per_env_per_rank) * int(num_processes)
+    extra_per_rank = int(chunks_per_env_per_rank) - 2
+
+    for mu in sorted(grouped_indices):
+        candidates = sorted({
+            index
+            for action_candidates in grouped_indices[mu].values()
+            for index in action_candidates
+        })
+        red_only = [index for index in candidates if _covered_button_colors(rows[index]) == {"red"}]
+        blue_only = [index for index in candidates if _covered_button_colors(rows[index]) == {"blue"}]
+        both = [
+            index
+            for index in candidates
+            if {"red", "blue"}.issubset(_covered_button_colors(rows[index]))
+        ]
+        used_indices: set[int] = set()
+        used_episodes: set[int] = set()
+
+        def take(pool: list[int], count: int) -> list[int]:
+            shuffled = list(pool)
+            rng.shuffle(shuffled)
+            chosen: list[int] = []
+            for require_new_episode in (True, False):
+                for index in shuffled:
+                    if index in used_indices:
+                        continue
+                    episode = int(rows[index].get("episode_index", index))
+                    if require_new_episode and episode in used_episodes:
+                        continue
+                    chosen.append(index)
+                    used_indices.add(index)
+                    used_episodes.add(episode)
+                    if len(chosen) == count:
+                        return chosen
+            raise ValueError(
+                f"Cannot draw {count} unique bridge chunks for environment {mu}; "
+                f"selected={len(chosen)} pool={len(pool)}."
+            )
+
+        red = take(red_only, int(num_processes))
+        blue = take(blue_only, int(num_processes))
+        extra_count = global_count - 2 * int(num_processes)
+        extras = take(both + candidates, extra_count)
+        rank_start = int(process_index) * extra_per_rank
+        rank_indices = [
+            red[int(process_index)],
+            blue[int(process_index)],
+            *extras[rank_start:rank_start + extra_per_rank],
+        ]
+        if len(rank_indices) != int(chunks_per_env_per_rank):
+            raise RuntimeError(
+                f"Bridge rank shard has {len(rank_indices)} chunks, "
+                f"expected {chunks_per_env_per_rank}."
+            )
+        selected_for_rank.extend(rank_indices)
+
+    rng.shuffle(selected_for_rank)
+    return selected_for_rank
+
+
+def _sample_self_correction_donor_index(
+    *,
+    target_index: int,
+    grouped_indices: dict[float, dict[int, list[int]]],
+    rows: list[dict],
+    rng: random.Random,
+) -> int:
+    target_row = rows[target_index]
+    target_mu = float(target_row["friction_mu"])
+    target_action = int(target_row.get("action_id", 0))
+    target_colors = _covered_button_colors(target_row)
+    candidate_values = [
+        value for value in sorted(grouped_indices)
+        if abs(float(value) - target_mu) > 1e-5
+    ]
+    rng.shuffle(candidate_values)
+
+    fallback: list[int] = []
+    for value in candidate_values:
+        action_candidates = list(grouped_indices[value].get(target_action, []))
+        rng.shuffle(action_candidates)
+        matched = [
+            index
+            for index in action_candidates
+            if _covered_button_colors(rows[index]) == target_colors
+        ]
+        if matched:
+            return matched[0]
+        fallback.extend(action_candidates)
+    if not fallback:
+        raise ValueError(f"No cross-environment donor exists for metadata index {target_index}.")
+    return rng.choice(fallback)
 
 
 def _nested_uniform_group_order(num_groups: int, initial_groups: int, total_groups: int) -> list[int]:
@@ -721,12 +1096,15 @@ def _build_optimizer(model, args):
     if context_lr is None:
         context_lr = args.learning_rate
     context_params = []
+    bridge_global_params = []
     other_params = []
     for name, param in model.named_parameters():
         if not param.requires_grad:
             continue
         if name == "friction_context_table.contexts":
             context_params.append(param)
+        elif name == "friction_context_table.global_context":
+            bridge_global_params.append(param)
         else:
             other_params.append(param)
     param_groups = []
@@ -746,6 +1124,15 @@ def _build_optimizer(model, args):
                 "params": context_params,
                 "lr": float(context_lr),
                 "weight_decay": float(getattr(args, "grouped_context_weight_decay", 0.0)),
+            }
+        )
+    if bridge_global_params:
+        param_groups.append(
+            {
+                "name": "bridge_global",
+                "params": bridge_global_params,
+                "lr": float(getattr(args, "grouped_context_bridge_global_warmup_lr", context_lr)),
+                "weight_decay": 0.0,
             }
         )
     return torch.optim.AdamW(param_groups)
@@ -910,6 +1297,16 @@ def _log_context_table(accelerator, model, step: int, phase: str | None, reason:
                 f"norm={float(torch.linalg.vector_norm(flat)):.6f} head=[{head}]"
             )
         print(f"[context_table] mu={float(mu):.6f} {summary}", flush=True)
+    global_context = getattr(table, "global_context", None)
+    if global_context is not None:
+        flat = global_context.detach().float().cpu().flatten()
+        head = ",".join(f"{float(x):.4f}" for x in flat[: min(6, flat.numel())])
+        print(
+            "[context_table] global "
+            f"mean={float(flat.mean()):.6f} std={float(flat.std(unbiased=False)):.6f} "
+            f"norm={float(torch.linalg.vector_norm(flat)):.6f} head=[{head}]",
+            flush=True,
+        )
 
 
 def _save_phase_context_table(accelerator, model, model_logger, step: int, phase: str | None, reason: str) -> None:
@@ -1087,6 +1484,399 @@ def launch_structured_grouped_stage1(accelerator, dataset, model, model_logger, 
     model_logger.on_training_end(accelerator, model, args.save_steps)
 
 
+def _parse_bridge_alpha_levels(raw: str) -> list[float]:
+    levels = [float(value.strip()) for value in str(raw).split(",") if value.strip()]
+    if not levels:
+        raise ValueError("grouped_context_bridge_alpha_levels cannot be empty.")
+    if any(not 0.0 < value < 1.0 for value in levels):
+        raise ValueError(f"Bridge alpha levels must lie strictly inside (0,1), got {levels}.")
+    return levels
+
+
+def _set_bridge_requires_grad(model, phase: str) -> None:
+    for name, param in model.named_parameters():
+        if name == "friction_context_table.contexts":
+            param.requires_grad_(False)
+        elif name == "friction_context_table.global_context":
+            param.requires_grad_(phase != "endpoint_replay")
+        else:
+            param.requires_grad_(phase != "global_warmup")
+
+
+def _apply_bridge_lrs(optimizer, args, phase: str) -> tuple[float, float]:
+    model_lr = 0.0 if phase == "global_warmup" else float(args.learning_rate)
+    if phase == "global_warmup":
+        global_lr = float(args.grouped_context_bridge_global_warmup_lr)
+    elif phase == "endpoint_replay":
+        global_lr = 0.0
+    else:
+        global_lr = float(args.grouped_context_bridge_global_lr)
+    for group in optimizer.param_groups:
+        if group.get("name") == "bridge_global":
+            group["lr"] = global_lr
+        elif group.get("name") == "context":
+            group["lr"] = 0.0
+        else:
+            group["lr"] = model_lr
+    return model_lr, global_lr
+
+
+def _append_bridge_metrics(output_path: str, row: dict) -> None:
+    destination = Path(output_path) / "bridge_metrics.jsonl"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with destination.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(row, sort_keys=True) + "\n")
+        handle.flush()
+
+
+def _sample_bridge_shared_timestep_index(
+    *,
+    scheduler,
+    args,
+    update_idx: int,
+    self_correction: bool,
+) -> int:
+    total = len(scheduler.timesteps)
+    lower = max(0, int(float(args.min_timestep_boundary) * total))
+    upper = min(total, int(float(args.max_timestep_boundary) * total))
+    candidates = list(range(lower, upper))
+    if self_correction:
+        sigma_min = float(args.grouped_context_self_correction_sigma_min)
+        sigma_max = float(args.grouped_context_self_correction_sigma_max)
+        candidates = [
+            index
+            for index in candidates
+            if sigma_min <= float(scheduler.sigmas[index]) <= sigma_max
+        ]
+    if not candidates:
+        raise ValueError(
+            f"No shared timestep candidate: boundary=[{lower},{upper}) "
+            f"self_correction={self_correction}."
+        )
+    rng = random.Random(int(args.seed) + int(update_idx) * 130363 + 29)
+    return rng.choice(candidates)
+
+
+def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args):
+    grouped_indices, metadata_rows = _metadata_index(args.dataset_metadata_path)
+    friction_values = sorted(float(value) for value in grouped_indices)
+    if len(friction_values) != 4:
+        raise ValueError(f"Global bridge training currently requires exactly four environments, got {friction_values}.")
+    expected_world_size = int(args.grouped_context_bridge_expected_world_size)
+    if int(accelerator.num_processes) != expected_world_size:
+        raise ValueError(
+            f"Bridge experiment requires world_size={expected_world_size}, "
+            f"got {accelerator.num_processes}."
+        )
+    replay_ratio = float(args.grouped_context_bridge_replay_ratio)
+    if abs(replay_ratio - 0.5) > 1e-8:
+        raise ValueError(
+            "The current deterministic bridge schedule implements exact 50% endpoint replay; "
+            f"got replay_ratio={replay_ratio}."
+        )
+
+    table = model.friction_context_table
+    if table.global_context is None:
+        raise RuntimeError("Bridge training requires friction_context_table.global_context.")
+    table.contexts.requires_grad_(False)
+    table.global_context.requires_grad_(True)
+    optimizer = _build_optimizer(model, args)
+    model.to(device=accelerator.device)
+    model, optimizer = accelerator.prepare(model, optimizer)
+    initialize_deepspeed_gradient_checkpointing(accelerator)
+
+    warmup_steps = int(args.grouped_context_bridge_global_warmup_steps)
+    bridge_steps = int(args.grouped_context_bridge_training_steps)
+    total_updates = warmup_steps + bridge_steps
+    chunks_per_env_per_rank = int(args.grouped_context_bridge_chunks_per_env_per_rank)
+    alpha_levels = _parse_bridge_alpha_levels(args.grouped_context_bridge_alpha_levels)
+    global_repeats = int(args.grouped_context_bridge_global_condition_repeats)
+    if global_repeats <= 0:
+        raise ValueError("grouped_context_bridge_global_condition_repeats must be positive.")
+    bridge_conditions: list[tuple[int | None, float]] = [(None, 0.0)] * global_repeats
+    bridge_conditions.extend(
+        (target_index, alpha)
+        for target_index in range(4)
+        for alpha in alpha_levels
+    )
+    random.Random(int(args.seed) + 911).shuffle(bridge_conditions)
+    center_reg_weight = float(args.grouped_context_bridge_center_reg_weight)
+    metrics_log_steps = max(1, int(args.grouped_context_bridge_metrics_log_steps))
+    self_correction_enabled = bool(args.grouped_context_self_correction_enabled)
+    self_correction_probability = float(args.grouped_context_self_correction_probability)
+    if not 0.0 <= self_correction_probability <= 1.0:
+        raise ValueError(
+            "grouped_context_self_correction_probability must lie in [0,1], "
+            f"got {self_correction_probability}."
+        )
+
+    if accelerator.is_main_process:
+        print(
+            "[global_bridge_stage1] "
+            f"warmup_steps={warmup_steps} bridge_steps={bridge_steps} total_updates={total_updates} "
+            f"replay_ratio={replay_ratio:.3f} world_size={accelerator.num_processes} "
+            f"chunks_per_env_per_rank={chunks_per_env_per_rank} "
+            f"global_chunks_per_update={4 * chunks_per_env_per_rank * accelerator.num_processes} "
+            f"per_env_global={chunks_per_env_per_rank * accelerator.num_processes} "
+            f"alpha_levels={alpha_levels} global_condition_repeats={global_repeats} "
+            f"shared_timestep=true self_correction_enabled={self_correction_enabled} "
+            f"self_correction_probability={self_correction_probability:g}",
+            flush=True,
+        )
+
+    iterator = tqdm(range(total_updates), disable=not accelerator.is_local_main_process)
+    for update_idx in iterator:
+        step = update_idx + 1
+        if step <= warmup_steps:
+            phase = "global_warmup"
+            target_index = None
+            target_mu = friction_values[0]
+            alpha = 0.0
+            weights = [0.25] * 4
+        else:
+            post_index = step - warmup_steps - 1
+            if post_index % 2 == 0:
+                phase = "endpoint_replay"
+                target_index = None
+                target_mu = None
+                alpha = 1.0
+                weights = [0.25] * 4
+            else:
+                phase = "bridge"
+                bridge_index = post_index // 2
+                target_index, alpha = bridge_conditions[bridge_index % len(bridge_conditions)]
+                if target_index is None:
+                    target_mu = friction_values[0]
+                    weights = [0.25] * 4
+                else:
+                    target_mu = friction_values[int(target_index)]
+                    weights = [
+                        (1.0 - float(alpha)) / 4.0
+                        + (float(alpha) if env_index == int(target_index) else 0.0)
+                        for env_index in range(4)
+                    ]
+
+        unwrapped = accelerator.unwrap_model(model)
+        _set_bridge_requires_grad(unwrapped, phase)
+        model_lr, global_lr = _apply_bridge_lrs(optimizer, args, phase)
+        correction_rng = random.Random(int(args.seed) + int(update_idx) * 15485863 + 43)
+        self_correction_update = (
+            self_correction_enabled
+            and step > warmup_steps
+            and correction_rng.random() < self_correction_probability
+        )
+        shared_timestep_index = _sample_bridge_shared_timestep_index(
+            scheduler=unwrapped.pipe.scheduler,
+            args=args,
+            update_idx=update_idx,
+            self_correction=self_correction_update,
+        )
+        shared_sigma = float(unwrapped.pipe.scheduler.sigmas[shared_timestep_index])
+        sample_indices = _sample_bridge_rank_indices(
+            grouped_indices=grouped_indices,
+            rows=metadata_rows,
+            seed=int(args.seed),
+            update_idx=update_idx,
+            process_index=int(accelerator.process_index),
+            num_processes=int(accelerator.num_processes),
+            chunks_per_env_per_rank=chunks_per_env_per_rank,
+        )
+        expected_local = 4 * chunks_per_env_per_rank
+        if len(sample_indices) != expected_local:
+            raise RuntimeError(f"Bridge local batch has {len(sample_indices)} samples, expected {expected_local}.")
+
+        optimizer.zero_grad(set_to_none=True)
+        local_loss_sums = torch.zeros(4, device=accelerator.device, dtype=torch.float32)
+        local_counts = torch.zeros(4, device=accelerator.device, dtype=torch.float32)
+        local_standard_loss_sums = torch.zeros(4, device=accelerator.device, dtype=torch.float32)
+        local_standard_counts = torch.zeros(4, device=accelerator.device, dtype=torch.float32)
+        local_correction_loss_sums = torch.zeros(4, device=accelerator.device, dtype=torch.float32)
+        local_correction_counts = torch.zeros(4, device=accelerator.device, dtype=torch.float32)
+        center_reg = torch.zeros((), device=accelerator.device, dtype=torch.float32)
+        for micro_idx, sample_index in enumerate(sample_indices):
+            row = metadata_rows[sample_index]
+            env_mu = float(row["friction_mu"])
+            env_index = min(range(4), key=lambda index: abs(friction_values[index] - env_mu))
+            data = dataset[sample_index].copy()
+            data["_flow_timestep_index"] = int(shared_timestep_index)
+            if phase != "endpoint_replay":
+                data["_bridge_alpha"] = float(alpha)
+                data["_bridge_target_mu"] = float(target_mu)
+                loss_scale = float(weights[env_index]) / float(chunks_per_env_per_rank)
+            else:
+                loss_scale = 1.0 / float(expected_local)
+            if self_correction_update:
+                donor_rng = random.Random(
+                    int(args.seed)
+                    + int(update_idx) * 32452843
+                    + int(sample_index) * 49999
+                    + int(accelerator.process_index)
+                )
+                donor_index = _sample_self_correction_donor_index(
+                    target_index=sample_index,
+                    grouped_indices=grouped_indices,
+                    rows=metadata_rows,
+                    rng=donor_rng,
+                )
+                data["_self_correction_donor_data"] = dataset[donor_index]
+
+            sync_context = (
+                accelerator.no_sync(model)
+                if micro_idx < len(sample_indices) - 1
+                else contextlib.nullcontext()
+            )
+            with sync_context:
+                loss = model(data)
+                scaled_loss = loss * loss_scale
+                if micro_idx == len(sample_indices) - 1 and phase != "endpoint_replay":
+                    current_table = accelerator.unwrap_model(model).friction_context_table
+                    center_reg = torch.mean(
+                        (
+                            current_table.global_context.float()
+                            - current_table.contexts.detach().float().mean(dim=0)
+                        )
+                        ** 2
+                    )
+                    scaled_loss = scaled_loss + center_reg_weight * center_reg
+                accelerator.backward(scaled_loss)
+            local_loss_sums[env_index] += loss.detach().float()
+            local_counts[env_index] += 1.0
+            if self_correction_update:
+                local_correction_loss_sums[env_index] += loss.detach().float()
+                local_correction_counts[env_index] += 1.0
+            else:
+                local_standard_loss_sums[env_index] += loss.detach().float()
+                local_standard_counts[env_index] += 1.0
+
+        current_table = accelerator.unwrap_model(model).friction_context_table
+        global_grad = current_table.global_context.grad
+        global_grad_norm = None
+        gradient_cosine = None
+        if global_grad is not None:
+            global_grad_flat = global_grad.detach().float().flatten()
+            global_grad_norm = float(torch.linalg.vector_norm(global_grad_flat).cpu())
+            if target_index is not None:
+                direction = (
+                    current_table.contexts[int(target_index)].detach().float()
+                    - current_table.global_context.detach().float()
+                ).flatten()
+                if float(torch.linalg.vector_norm(direction).cpu()) > 0 and global_grad_norm > 0:
+                    gradient_cosine = float(
+                        F.cosine_similarity(-global_grad_flat, direction, dim=0).cpu()
+                    )
+
+        if args.max_grad_norm is not None and args.max_grad_norm > 0:
+            accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
+        optimizer.step()
+        current_table.clamp_(
+            args.grouped_context_clamp_min,
+            args.grouped_context_clamp_max,
+        )
+        with torch.no_grad():
+            current_table.global_context.clamp_(
+                min=args.grouped_context_clamp_min,
+                max=args.grouped_context_clamp_max,
+            )
+        optimizer.zero_grad(set_to_none=True)
+
+        global_loss_sums = accelerator.reduce(local_loss_sums, reduction="sum")
+        global_counts = accelerator.reduce(local_counts, reduction="sum")
+        global_standard_loss_sums = accelerator.reduce(local_standard_loss_sums, reduction="sum")
+        global_standard_counts = accelerator.reduce(local_standard_counts, reduction="sum")
+        global_correction_loss_sums = accelerator.reduce(local_correction_loss_sums, reduction="sum")
+        global_correction_counts = accelerator.reduce(local_correction_counts, reduction="sum")
+        per_env_losses = global_loss_sums / global_counts.clamp_min(1.0)
+        per_env_standard_losses = (
+            global_standard_loss_sums / global_standard_counts.clamp_min(1.0)
+        )
+        per_env_correction_losses = (
+            global_correction_loss_sums / global_correction_counts.clamp_min(1.0)
+        )
+        if phase == "endpoint_replay":
+            weighted_flow_loss = per_env_losses.mean()
+        else:
+            weight_tensor = torch.tensor(weights, device=accelerator.device, dtype=torch.float32)
+            weighted_flow_loss = torch.sum(per_env_losses * weight_tensor)
+        reported_loss = weighted_flow_loss + (
+            center_reg_weight * center_reg.detach().float()
+            if phase != "endpoint_replay"
+            else 0.0
+        )
+
+        if accelerator.is_main_process and (
+            step == 1
+            or step % metrics_log_steps == 0
+            or step == warmup_steps
+            or step == total_updates
+        ):
+            endpoint_distances = [
+                float(
+                    torch.linalg.vector_norm(
+                        current_table.global_context.detach().float()
+                        - current_table.contexts[index].detach().float()
+                    ).cpu()
+                )
+                for index in range(4)
+            ]
+            metrics = {
+                "step": step,
+                "phase": phase,
+                "target_environment_index": target_index,
+                "target_environment_mu": target_mu,
+                "alpha": float(alpha),
+                "weights": [float(value) for value in weights],
+                "per_environment_flow_loss": [float(value.cpu()) for value in per_env_losses],
+                "per_environment_standard_flow_loss": [
+                    None if float(global_standard_counts[index].cpu()) == 0.0
+                    else float(per_env_standard_losses[index].cpu())
+                    for index in range(4)
+                ],
+                "per_environment_self_correction_loss": [
+                    None if float(global_correction_counts[index].cpu()) == 0.0
+                    else float(per_env_correction_losses[index].cpu())
+                    for index in range(4)
+                ],
+                "weighted_flow_loss": float(weighted_flow_loss.cpu()),
+                "center_reg": float(center_reg.detach().float().cpu()),
+                "center_reg_weight": center_reg_weight,
+                "reported_total_loss": float(reported_loss.cpu()),
+                "model_lr": model_lr,
+                "global_lr": global_lr,
+                "global_context_mean": float(current_table.global_context.detach().float().mean().cpu()),
+                "global_context_norm": float(
+                    torch.linalg.vector_norm(current_table.global_context.detach().float()).cpu()
+                ),
+                "global_to_endpoint_l2": endpoint_distances,
+                "global_grad_norm": global_grad_norm,
+                "negative_grad_cosine_to_target_endpoint": gradient_cosine,
+                "shared_timestep_index": int(shared_timestep_index),
+                "shared_sigma": shared_sigma,
+                "self_correction_update": self_correction_update,
+                "self_correction_probability": self_correction_probability,
+                "world_size": int(accelerator.num_processes),
+                "local_batch_size": expected_local,
+                "global_batch_size": expected_local * int(accelerator.num_processes),
+                "global_chunks_per_environment": chunks_per_env_per_rank * int(accelerator.num_processes),
+                "endpoint_replay_ratio": replay_ratio,
+            }
+            print("[bridge_metrics] " + json.dumps(metrics, sort_keys=True), flush=True)
+            _append_bridge_metrics(model_logger.output_path, metrics)
+
+        if step == warmup_steps:
+            _log_context_table(accelerator, model, step, phase, "global_warmup_end")
+            _save_phase_context_table(
+                accelerator,
+                model,
+                model_logger,
+                step,
+                phase,
+                "global_warmup_end",
+            )
+        model_logger.on_step_end(accelerator, model, args.save_steps, loss=reported_loss)
+
+    model_logger.on_training_end(accelerator, model, args.save_steps)
+
+
 def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, args):
     grouped_indices, metadata_rows = _metadata_index(args.dataset_metadata_path)
     unwrapped = model
@@ -1256,12 +2046,26 @@ def main() -> None:
         grouped_args=args,
         friction_values=friction_values,
     )
+    restored_global_context = False
     if getattr(args, "grouped_context_resume_context_table", None):
-        _load_grouped_context_table(model, args.grouped_context_resume_context_table)
+        restored_global_context = _load_grouped_context_table(
+            model,
+            args.grouped_context_resume_context_table,
+        )
         if accelerator.is_main_process:
             print(
                 f"[resume] restored context table from {args.grouped_context_resume_context_table} "
                 f"at step={int(args.grouped_context_resume_step)}",
+                flush=True,
+            )
+    if bool(getattr(args, "grouped_context_bridge_enabled", False)) and not restored_global_context:
+        with torch.no_grad():
+            model.friction_context_table.global_context.copy_(
+                model.friction_context_table.contexts.detach().mean(dim=0)
+            )
+        if accelerator.is_main_process:
+            print(
+                "[global_bridge_stage1] initialized global context from the mean of four endpoints",
                 flush=True,
             )
     if accelerator.is_main_process:
@@ -1279,7 +2083,9 @@ def main() -> None:
         log_steps=args.log_steps,
     )
     model_logger.num_steps = int(getattr(args, "grouped_context_resume_step", 0) or 0)
-    if int(getattr(args, "grouped_context_curriculum_initial_groups", 0) or 0) > 0:
+    if bool(getattr(args, "grouped_context_bridge_enabled", False)):
+        launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args)
+    elif int(getattr(args, "grouped_context_curriculum_initial_groups", 0) or 0) > 0:
         launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, args)
     elif int(getattr(args, "grouped_context_structured_updates", 0) or 0) > 0:
         launch_structured_grouped_stage1(accelerator, dataset, model, model_logger, args)

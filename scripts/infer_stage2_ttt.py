@@ -1138,6 +1138,16 @@ def parse_args():
         help="If set, initialize test-time C from the mean of this grouped context_table.json.",
     )
     parser.add_argument(
+        "--ttt_initial_context_table_index",
+        type=int,
+        default=None,
+        help=(
+            "Optional zero-based record index in --ttt_initial_context_table_path. "
+            "When set, initialize every test-time rollout from that learned context "
+            "instead of the table mean."
+        ),
+    )
+    parser.add_argument(
         "--ttt_context_table_path",
         type=str,
         default=None,
@@ -1196,6 +1206,16 @@ def main() -> None:
         raise ValueError(
             "Choose only one of --ttt_initial_context_random_uniform and "
             "--ttt_initial_context_random_shared."
+        )
+    if args.ttt_initial_context_table_index is not None and not args.ttt_initial_context_table_path:
+        raise ValueError(
+            "--ttt_initial_context_table_index requires --ttt_initial_context_table_path."
+        )
+    if args.ttt_initial_context_table_index is not None and (
+        args.ttt_initial_context_random_uniform or args.ttt_initial_context_random_shared
+    ):
+        raise ValueError(
+            "A learned table-row initialization cannot be combined with random context initialization."
         )
     set_global_seed(int(args.seed))
 
@@ -1340,10 +1360,28 @@ def main() -> None:
     load_checkpoint_weights(pipe, args.stage2_ckpt_path)
     _freeze_pipe(pipe)
     context_dtype = torch.float32 if bool(args.ttt_context_fp32) else pipe.torch_dtype
-    initial_context_tensor = _context_table_mean_tensor(initial_context_table, device=pipe.device, dtype=context_dtype)
+    initial_context_table_index = args.ttt_initial_context_table_index
+    initial_context_kind = "table_mean"
+    if initial_context_table_index is None:
+        initial_context_tensor = _context_table_mean_tensor(
+            initial_context_table, device=pipe.device, dtype=context_dtype
+        )
+    else:
+        num_initial_contexts = int(initial_context_table["contexts"].shape[0])
+        if not 0 <= int(initial_context_table_index) < num_initial_contexts:
+            raise ValueError(
+                f"--ttt_initial_context_table_index={initial_context_table_index} is outside "
+                f"[0, {num_initial_contexts})."
+            )
+        initial_context_tensor = torch.tensor(
+            initial_context_table["contexts"][int(initial_context_table_index)],
+            device=pipe.device,
+            dtype=context_dtype,
+        )
+        initial_context_kind = f"table_index_{int(initial_context_table_index)}"
     if initial_context_tensor is not None:
         print(
-            f"[initial_context] source=table_mean path={initial_context_table['path']} "
+            f"[initial_context] source={initial_context_kind} path={initial_context_table['path']} "
             f"shape={tuple(initial_context_tensor.shape)} mean={float(initial_context_tensor.float().mean().cpu()):.6f}",
             flush=True,
         )
@@ -1471,6 +1509,7 @@ def main() -> None:
                     "initial_context_seed": initial_context_seed,
                     "support_indices": support_indices,
                     "initial_context_source": None if initial_context_table is None else initial_context_table["path"],
+                    "initial_context_table_index": initial_context_table_index,
                     "target_context_source": None if context_table is None else context_table["path"],
                 },
             )
@@ -1581,6 +1620,7 @@ def main() -> None:
                 "comparison_path": None if comparison_file is None else str(comparison_file),
                 "context_norm": float(adapted_context.float().norm().cpu()),
                 "context_initial_mean": float(adapt_metrics.get("context_initial_mean", float("nan"))),
+                "context_initial_table_index": initial_context_table_index,
                 "context_adapted_mean": float(adapt_metrics.get("context_adapted_mean", float("nan"))),
                 "context_delta_mean": float(adapt_metrics.get("context_delta_mean", float("nan"))),
                 "context_final_target_l2": cached_trajectory[-1].get("target_context_l2") if cached_trajectory else None,

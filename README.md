@@ -118,6 +118,143 @@ ordinary joint training. The working recipe uses a persistent latent table,
 assigns one latent to each environment, and alternates optimization of the
 latents and the world model while gradually introducing new environments.
 
+### Motivation: The Latent Table Has Basins but No Adaptation Highway
+
+The environment-indexed latent table can produce good Stage 1 rollouts at its
+learned entries, but this alone does not make the loss landscape between those
+entries useful for Stage 2. Standard flow-matching training only supervises
+each environment at its own latent:
+
+```text
+environment A video + latent C_A -> A flow target
+environment B video + latent C_B -> B flow target
+```
+
+Nothing constrains the segment between `C_A` and `C_B`. Consequently, the
+learned entries can become isolated basins separated by low-density latent
+regions. A Stage 2 initialization placed at the table mean or at the wrong
+prior can then receive a gradient that stays inside the wrong basin rather than
+moving smoothly toward the environment supported by the observed rollouts.
+Increasing the inner-loop learning rate does not solve this geometric defect;
+it can simply make the update jump farther in an unsupported region.
+
+Two experimental mechanisms address different parts of this problem:
+
+```text
+global-to-endpoint bridge training:
+    explicitly supervise a gradual family of distributions along each latent ray
+
+cross-environment self-correction:
+    teach the flow field to remove structured errors inherited from another environment
+```
+
+Both mechanisms are opt-in. Their parser defaults are disabled, so existing
+grouped-context, curriculum, ordinary Stage 1, and Stage 2 workflows retain the
+original DiffSynth flow-matching behavior.
+
+### Global-to-Endpoint Bridge Training
+
+The four-environment LightSwitch bridge experiment retains four successful
+endpoint latents `C_0 ... C_3` and adds one trainable global latent `C_g`.
+For target environment `e` and interpolation level `alpha`, the conditioning
+latent is constructed rather than independently learned:
+
+```text
+C(e, alpha) = (1 - alpha) C_g + alpha C_e
+```
+
+The corresponding environment weights are:
+
+```text
+w_j(e, alpha) = (1 - alpha) / 4 + alpha * 1[j == e]
+```
+
+Thus `alpha=0` assigns one quarter of the loss to every environment, while
+`alpha=1` is the original endpoint condition. The initial experiment trains
+`alpha = 0.2, 0.4, 0.6, 0.8`; endpoint replay supplies `alpha=1`.
+
+The bridge phase uses exactly 50% endpoint replay. Replay samples use their
+original endpoint latent and preserve the already successful Stage 1 behavior.
+The other 50% trains global/interpolated conditions. Endpoint latents remain
+frozen; the model and global latent learn to support the connecting paths.
+
+Each DDP update uses four GPUs. Every rank draws four distinct chunks from each
+environment, including red-button-only and blue-button-only evidence. The
+global logical batch therefore contains:
+
+```text
+4 environments * 16 distinct chunks/environment = 64 chunks
+```
+
+All 64 chunks in an update share one flow-matching timestep and sigma. Gaussian
+noise remains independent per chunk. Shared timestep sampling is important:
+otherwise environment loss differences are confounded by different denoising
+difficulty, making the weighted cross-environment gradient substantially
+noisier.
+
+Detailed bridge logs record per-environment flow loss, weighted loss, replay
+phase, interpolation level, shared timestep/sigma, global-to-endpoint
+distances, global-gradient norm, and the cosine between the negative global
+gradient and the selected endpoint direction.
+
+Implementation:
+
+```text
+scripts/train_stage1_grouped_context.py
+configs/train/train_lightswitch_fixedclose_nopause_environment4_c32_global_bridge_from90299_stage1_4300.yaml
+```
+
+### Cross-Environment Self-Correction Auxiliary Flow
+
+Ordinary flow matching uses clean latent `x_A`, Gaussian source `epsilon`, and
+noise level `sigma`:
+
+```text
+x_sigma = (1 - sigma) x_A + sigma epsilon
+v_target = epsilon - x_A
+```
+
+This teaches each environment to denoise only points generated from its own
+clean video and unstructured Gaussian noise. It does not explicitly teach the
+model to correct a structured prediction that already resembles the wrong
+environment.
+
+The optional self-correction branch selects a donor video latent `x_B` from a
+different environment. Donors are matched by action/window identifier and
+covered button colors when possible. It constructs a structured source:
+
+```text
+r_B = (1 - beta) epsilon + beta x_B
+x_sigma = (1 - sigma) x_A + sigma r_B
+v_target = r_B - x_A
+```
+
+This remains a mathematically consistent linear flow from source `r_B` to the
+correct target `x_A`; it does not pair a B-derived noisy input with the old,
+incompatible A-to-Gaussian velocity target.
+
+Self-correction is intended for approximately 10% of updates and only for a
+medium-to-high noise interval, initially `sigma in [0.45, 0.85]`. Low-noise
+refinement steps remain standard flow matching because replacing their source
+with another environment would directly corrupt texture and fine-detail
+learning. A correction update still uses one shared timestep across its full
+64-chunk DDP batch, while donor environments and Gaussian noise are sampled
+independently.
+
+Configuration knobs:
+
+```yaml
+grouped_context_stage1:
+  grouped_context_self_correction_enabled: false
+  grouped_context_self_correction_probability: 0.10
+  grouped_context_self_correction_sigma_min: 0.45
+  grouped_context_self_correction_sigma_max: 0.85
+  grouped_context_self_correction_source_mix: 0.50
+```
+
+The first global-bridge run deliberately leaves this branch disabled so bridge
+geometry can be evaluated without conflating it with flow-field correction.
+
 ### Negative Result: Direct TTT-E2E LoRA Adaptation
 
 The direct TTT-E2E branch treats low-rank residual-adapter parameters as the
@@ -328,6 +465,69 @@ complete, training repeatedly alternates:
 ```
 
 No further environment labels are introduced in that run.
+
+### Preliminary Two-Factor Mass-Friction Result: 4-GPU 6x3 Batch
+
+This is a preliminary note from the approximately 2,000-update regime of the
+joint mass-friction experiment. The quantitative PCA snapshot below was saved
+at step 2751, so this observation should not be treated as a converged result.
+
+Training setting:
+
+```text
+physical factors: target object mass + table friction
+context: one random C32 entry per joint (mass, friction) environment
+GPUs: 4 x H200
+per-GPU logical batch: 6 environments x 3 common actions = 18 samples
+global DDP logical batch: 72 samples
+curriculum: 12 initial environments, then 12 new environments per round
+snapshot: step 2751, 36 active environments
+```
+
+Config:
+
+```text
+configs/train/train_mass_friction100_joint_full61_curriculum_c32_old_random_4gpu_6env3action_add12_stage1_9300.yaml
+```
+
+For visualization, friction controls fill hue from blue to red, while mass
+controls black outline width from thin to thick. PCA is fitted only on active training-time C32
+entries; inactive random entries are excluded. At step 2751, PC1 explains
+95.5% of active variance and PC2 explains 2.37%. The active contexts form two
+strongly separated families rather than one globally smooth two-dimensional
+surface:
+
+- The left family contains 19 environments, spans mass 0.033-2.0 kg, contains
+  every currently active heavy-mass environment, and has mean within-family
+  radius 0.212.
+- The right family contains 17 environments, is restricted to mass
+  0.01-0.2476 kg, and is much tighter, with mean within-family radius 0.090.
+- Within the right family, both PC1 and PC2 correlate strongly with log mass
+  (approximately -0.86). This is consistent with a compact low-mass collision
+  regime in which many trajectories have similar saturated motion.
+- The left family is broader and mixes inertia and friction effects. Its PC2
+  correlation with log mass is approximately -0.66, while its PC1 correlation
+  with friction is approximately -0.47.
+- Friction alone does not divide the two families: low- and high-friction
+  environments occur in both. Several low-mass environments also remain in
+  the left family, so the split is not a pure physical threshold.
+
+The family centroids are 1.68 apart in C32 L2 distance, approximately 11.1
+times the mean within-family radius. However, the earliest retained random-C
+table predicts the later family assignment with 72.2% agreement, whereas a
+simple mass threshold reaches at most about 69% agreement. Movement from the
+early table to this snapshot is similar for both families (approximately 1.97
+versus 2.00 in C32 L2 distance). Our current interpretation is therefore that
+the model is learning a meaningful light-object versus heavy/mixed-response
+structure, while random C32 symmetry breaking is also producing two distinct
+optimization basins.
+
+This matters for Stage 2: initializing test-time C at the global table mean may
+place it in the low-density gap between the two families, forcing the inner
+loop to cross a large distance before reaching a trained physical regime.
+Future evaluation must determine whether the two-family structure reflects a
+useful dynamical distinction or a duplicated latent code convention. This PCA
+observation alone is not evidence of rollout quality or successful TTT.
 
 ### Evidence and Evaluation Criteria
 
