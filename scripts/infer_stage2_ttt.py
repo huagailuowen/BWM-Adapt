@@ -83,11 +83,21 @@ def _load_grouped_context_table(path: str | Path | None):
         contexts = contexts[:, None, :]
     if contexts.ndim != 3:
         raise ValueError(f"Expected context table shape (groups,tokens,dim), got {contexts.shape}.")
+    global_context = data.get("global_context")
+    if global_context is not None:
+        global_context = np.asarray(global_context, dtype=np.float32)
+        if global_context.ndim == 1:
+            global_context = global_context[None, :]
+        if global_context.shape != contexts.shape[1:]:
+            raise ValueError(
+                f"Expected global context shape {contexts.shape[1:]}, got {global_context.shape}."
+            )
     return {
         "path": str(path),
         "friction_values": friction_values,
         "contexts": contexts,
         "mean_context": contexts.mean(axis=0),
+        "global_context": global_context,
     }
 
 
@@ -1148,6 +1158,15 @@ def parse_args():
         ),
     )
     parser.add_argument(
+        "--ttt_initial_context_global",
+        action="store_true",
+        default=False,
+        help=(
+            "Initialize every test-time rollout from the global_context stored in "
+            "--ttt_initial_context_table_path instead of an endpoint or endpoint mean."
+        ),
+    )
+    parser.add_argument(
         "--ttt_context_table_path",
         type=str,
         default=None,
@@ -1211,11 +1230,22 @@ def main() -> None:
         raise ValueError(
             "--ttt_initial_context_table_index requires --ttt_initial_context_table_path."
         )
-    if args.ttt_initial_context_table_index is not None and (
-        args.ttt_initial_context_random_uniform or args.ttt_initial_context_random_shared
-    ):
+    if args.ttt_initial_context_global and not args.ttt_initial_context_table_path:
         raise ValueError(
-            "A learned table-row initialization cannot be combined with random context initialization."
+            "--ttt_initial_context_global requires --ttt_initial_context_table_path."
+        )
+    explicit_initializers = sum(
+        (
+            args.ttt_initial_context_table_index is not None,
+            bool(args.ttt_initial_context_global),
+            bool(args.ttt_initial_context_random_uniform),
+            bool(args.ttt_initial_context_random_shared),
+        )
+    )
+    if explicit_initializers > 1:
+        raise ValueError(
+            "Choose only one explicit test-time context initializer: table row, global context, "
+            "independent random, or shared random."
         )
     set_global_seed(int(args.seed))
 
@@ -1362,7 +1392,19 @@ def main() -> None:
     context_dtype = torch.float32 if bool(args.ttt_context_fp32) else pipe.torch_dtype
     initial_context_table_index = args.ttt_initial_context_table_index
     initial_context_kind = "table_mean"
-    if initial_context_table_index is None:
+    if args.ttt_initial_context_global:
+        if initial_context_table is None or initial_context_table["global_context"] is None:
+            raise ValueError(
+                "--ttt_initial_context_global was requested, but the context table has no "
+                "saved global_context."
+            )
+        initial_context_tensor = torch.tensor(
+            initial_context_table["global_context"],
+            device=pipe.device,
+            dtype=context_dtype,
+        )
+        initial_context_kind = "global_context"
+    elif initial_context_table_index is None:
         initial_context_tensor = _context_table_mean_tensor(
             initial_context_table, device=pipe.device, dtype=context_dtype
         )

@@ -170,13 +170,20 @@ w_j(e, alpha) = (1 - alpha) / 4 + alpha * 1[j == e]
 ```
 
 Thus `alpha=0` assigns one quarter of the loss to every environment, while
-`alpha=1` is the original endpoint condition. The initial experiment trains
-`alpha = 0.2, 0.4, 0.6, 0.8`; endpoint replay supplies `alpha=1`.
+`alpha=1` fits one selected environment at its endpoint latent. After global
+warmup there is only one mixed bridge phase, not separate endpoint-replay and
+interpolation phases. Every update independently samples a target condition:
 
-The bridge phase uses exactly 50% endpoint replay. Replay samples use their
-original endpoint latent and preserve the already successful Stage 1 behavior.
-The other 50% trains global/interpolated conditions. Endpoint latents remain
-frozen; the model and global latent learn to support the connecting paths.
+```text
+40%: choose one environment uniformly and use alpha=1
+60%: choose a global/interpolated condition from alpha=0,0.2,0.4,0.6,0.8
+```
+
+Endpoint selection is therefore part of the same bridge distribution. All
+conditions use the same weighted cross-environment objective and optimizer
+path. At `alpha=1`, only the selected environment has nonzero loss weight and
+the flow loss has zero derivative with respect to `C_g`. Endpoint latents
+remain frozen; the model and global latent learn the supported path geometry.
 
 Each DDP update uses four GPUs. Every rank draws four distinct chunks from each
 environment, including red-button-only and blue-button-only evidence. The
@@ -192,10 +199,11 @@ otherwise environment loss differences are confounded by different denoising
 difficulty, making the weighted cross-environment gradient substantially
 noisier.
 
-Detailed bridge logs record per-environment flow loss, weighted loss, replay
-phase, interpolation level, shared timestep/sigma, global-to-endpoint
-distances, global-gradient norm, and the cosine between the negative global
-gradient and the selected endpoint direction.
+Detailed bridge logs record per-environment flow loss, weighted loss, sampled
+condition kind, interpolation level, configured and realized endpoint
+probability, shared timestep/sigma, global-to-endpoint distances,
+global-gradient norm, and the cosine between the negative global gradient and
+the selected endpoint direction.
 
 Implementation:
 

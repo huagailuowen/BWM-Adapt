@@ -499,7 +499,7 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_bridge_enabled", action="store_true", default=False)
     group.add_argument("--grouped_context_bridge_global_warmup_steps", type=int, default=300)
     group.add_argument("--grouped_context_bridge_training_steps", type=int, default=4000)
-    group.add_argument("--grouped_context_bridge_replay_ratio", type=float, default=0.5)
+    group.add_argument("--grouped_context_bridge_endpoint_probability", type=float, default=0.4)
     group.add_argument("--grouped_context_bridge_alpha_levels", type=str, default="0.2,0.4,0.6,0.8")
     group.add_argument("--grouped_context_bridge_global_condition_repeats", type=int, default=4)
     group.add_argument("--grouped_context_bridge_chunks_per_env_per_rank", type=int, default=4)
@@ -1498,7 +1498,7 @@ def _set_bridge_requires_grad(model, phase: str) -> None:
         if name == "friction_context_table.contexts":
             param.requires_grad_(False)
         elif name == "friction_context_table.global_context":
-            param.requires_grad_(phase != "endpoint_replay")
+            param.requires_grad_(True)
         else:
             param.requires_grad_(phase != "global_warmup")
 
@@ -1507,8 +1507,6 @@ def _apply_bridge_lrs(optimizer, args, phase: str) -> tuple[float, float]:
     model_lr = 0.0 if phase == "global_warmup" else float(args.learning_rate)
     if phase == "global_warmup":
         global_lr = float(args.grouped_context_bridge_global_warmup_lr)
-    elif phase == "endpoint_replay":
-        global_lr = 0.0
     else:
         global_lr = float(args.grouped_context_bridge_global_lr)
     for group in optimizer.param_groups:
@@ -1568,11 +1566,11 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
             f"Bridge experiment requires world_size={expected_world_size}, "
             f"got {accelerator.num_processes}."
         )
-    replay_ratio = float(args.grouped_context_bridge_replay_ratio)
-    if abs(replay_ratio - 0.5) > 1e-8:
+    endpoint_probability = float(args.grouped_context_bridge_endpoint_probability)
+    if not 0.0 <= endpoint_probability <= 1.0:
         raise ValueError(
-            "The current deterministic bridge schedule implements exact 50% endpoint replay; "
-            f"got replay_ratio={replay_ratio}."
+            "grouped_context_bridge_endpoint_probability must lie in [0,1], "
+            f"got {endpoint_probability}."
         )
 
     table = model.friction_context_table
@@ -1599,7 +1597,6 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
         for target_index in range(4)
         for alpha in alpha_levels
     )
-    random.Random(int(args.seed) + 911).shuffle(bridge_conditions)
     center_reg_weight = float(args.grouped_context_bridge_center_reg_weight)
     metrics_log_steps = max(1, int(args.grouped_context_bridge_metrics_log_steps))
     self_correction_enabled = bool(args.grouped_context_self_correction_enabled)
@@ -1614,7 +1611,7 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
         print(
             "[global_bridge_stage1] "
             f"warmup_steps={warmup_steps} bridge_steps={bridge_steps} total_updates={total_updates} "
-            f"replay_ratio={replay_ratio:.3f} world_size={accelerator.num_processes} "
+            f"endpoint_probability={endpoint_probability:.3f} world_size={accelerator.num_processes} "
             f"chunks_per_env_per_rank={chunks_per_env_per_rank} "
             f"global_chunks_per_update={4 * chunks_per_env_per_rank * accelerator.num_processes} "
             f"per_env_global={chunks_per_env_per_rank * accelerator.num_processes} "
@@ -1624,37 +1621,47 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
             flush=True,
         )
 
+    endpoint_updates = 0
+    bridge_updates = 0
     iterator = tqdm(range(total_updates), disable=not accelerator.is_local_main_process)
     for update_idx in iterator:
         step = update_idx + 1
         if step <= warmup_steps:
             phase = "global_warmup"
+            condition_kind = "global"
             target_index = None
             target_mu = friction_values[0]
             alpha = 0.0
             weights = [0.25] * 4
         else:
+            phase = "mixed_bridge"
             post_index = step - warmup_steps - 1
-            if post_index % 2 == 0:
-                phase = "endpoint_replay"
-                target_index = None
-                target_mu = None
+            condition_rng = random.Random(int(args.seed) + int(post_index) * 179424673 + 97)
+            if condition_rng.random() < endpoint_probability:
+                condition_kind = "endpoint"
+                target_index = condition_rng.randrange(4)
+                target_mu = friction_values[int(target_index)]
                 alpha = 1.0
-                weights = [0.25] * 4
+                weights = [
+                    1.0 if env_index == int(target_index) else 0.0
+                    for env_index in range(4)
+                ]
+                endpoint_updates += 1
             else:
-                phase = "bridge"
-                bridge_index = post_index // 2
-                target_index, alpha = bridge_conditions[bridge_index % len(bridge_conditions)]
+                target_index, alpha = condition_rng.choice(bridge_conditions)
                 if target_index is None:
+                    condition_kind = "global"
                     target_mu = friction_values[0]
                     weights = [0.25] * 4
                 else:
+                    condition_kind = "interpolation"
                     target_mu = friction_values[int(target_index)]
                     weights = [
                         (1.0 - float(alpha)) / 4.0
                         + (float(alpha) if env_index == int(target_index) else 0.0)
                         for env_index in range(4)
                     ]
+                bridge_updates += 1
 
         unwrapped = accelerator.unwrap_model(model)
         _set_bridge_requires_grad(unwrapped, phase)
@@ -1699,12 +1706,9 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
             env_index = min(range(4), key=lambda index: abs(friction_values[index] - env_mu))
             data = dataset[sample_index].copy()
             data["_flow_timestep_index"] = int(shared_timestep_index)
-            if phase != "endpoint_replay":
-                data["_bridge_alpha"] = float(alpha)
-                data["_bridge_target_mu"] = float(target_mu)
-                loss_scale = float(weights[env_index]) / float(chunks_per_env_per_rank)
-            else:
-                loss_scale = 1.0 / float(expected_local)
+            data["_bridge_alpha"] = float(alpha)
+            data["_bridge_target_mu"] = float(target_mu)
+            loss_scale = float(weights[env_index]) / float(chunks_per_env_per_rank)
             if self_correction_update:
                 donor_rng = random.Random(
                     int(args.seed)
@@ -1728,7 +1732,7 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
             with sync_context:
                 loss = model(data)
                 scaled_loss = loss * loss_scale
-                if micro_idx == len(sample_indices) - 1 and phase != "endpoint_replay":
+                if micro_idx == len(sample_indices) - 1 and float(alpha) < 1.0:
                     current_table = accelerator.unwrap_model(model).friction_context_table
                     center_reg = torch.mean(
                         (
@@ -1792,14 +1796,11 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
         per_env_correction_losses = (
             global_correction_loss_sums / global_correction_counts.clamp_min(1.0)
         )
-        if phase == "endpoint_replay":
-            weighted_flow_loss = per_env_losses.mean()
-        else:
-            weight_tensor = torch.tensor(weights, device=accelerator.device, dtype=torch.float32)
-            weighted_flow_loss = torch.sum(per_env_losses * weight_tensor)
+        weight_tensor = torch.tensor(weights, device=accelerator.device, dtype=torch.float32)
+        weighted_flow_loss = torch.sum(per_env_losses * weight_tensor)
         reported_loss = weighted_flow_loss + (
             center_reg_weight * center_reg.detach().float()
-            if phase != "endpoint_replay"
+            if float(alpha) < 1.0
             else 0.0
         )
 
@@ -1821,6 +1822,7 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
             metrics = {
                 "step": step,
                 "phase": phase,
+                "condition_kind": condition_kind,
                 "target_environment_index": target_index,
                 "target_environment_mu": target_mu,
                 "alpha": float(alpha),
@@ -1857,7 +1859,12 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
                 "local_batch_size": expected_local,
                 "global_batch_size": expected_local * int(accelerator.num_processes),
                 "global_chunks_per_environment": chunks_per_env_per_rank * int(accelerator.num_processes),
-                "endpoint_replay_ratio": replay_ratio,
+                "endpoint_probability": endpoint_probability,
+                "realized_endpoint_fraction": (
+                    float(endpoint_updates) / float(endpoint_updates + bridge_updates)
+                    if endpoint_updates + bridge_updates > 0
+                    else None
+                ),
             }
             print("[bridge_metrics] " + json.dumps(metrics, sort_keys=True), flush=True)
             _append_bridge_metrics(model_logger.output_path, metrics)

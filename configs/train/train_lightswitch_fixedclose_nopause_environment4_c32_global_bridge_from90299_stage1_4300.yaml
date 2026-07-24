@@ -1,6 +1,7 @@
 # LightSwitch four-endpoint bridge fine-tuning from the successful 90299 Stage1.
 # Global warmup: 300 context-only updates.
-# Bridge phase: 4000 updates with exact 50% endpoint replay.
+# Mixed bridge phase: 4000 updates. Each update independently samples an endpoint
+# with probability 0.4 or a global/interpolated bridge condition with probability 0.6.
 # Four GPUs each process 4 chunks/environment, giving 16/environment and 64/update globally.
 
 dataset:
@@ -71,7 +72,7 @@ grouped_context_stage1:
   grouped_context_bridge_enabled: true
   grouped_context_bridge_global_warmup_steps: 300
   grouped_context_bridge_training_steps: 4000
-  grouped_context_bridge_replay_ratio: 0.5
+  grouped_context_bridge_endpoint_probability: 0.4
   grouped_context_bridge_alpha_levels: "0.2,0.4,0.6,0.8"
   grouped_context_bridge_global_condition_repeats: 4
   grouped_context_bridge_chunks_per_env_per_rank: 4
