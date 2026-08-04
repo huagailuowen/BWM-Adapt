@@ -29,7 +29,29 @@ def _resize_rgb(frame, width: int, height: int):
     return np.asarray(image, dtype=np.uint8)
 
 
-def _read_gt_video(row, dataset_base: Path, width: int, height: int, total_frames: int):
+def _letterbox_rgb(frame, width: int, height: int):
+    image = Image.fromarray(frame).convert("RGB")
+    source_width, source_height = image.size
+    scale = min(width / source_width, height / source_height)
+    resized_width = min(width, max(1, round(source_width * scale)))
+    resized_height = min(height, max(1, round(source_height * scale)))
+    image = image.resize((resized_width, resized_height), Image.BILINEAR)
+    canvas = Image.new("RGB", (width, height), color=(0, 0, 0))
+    canvas.paste(
+        image,
+        ((width - resized_width) // 2, (height - resized_height) // 2),
+    )
+    return np.asarray(canvas, dtype=np.uint8)
+
+
+def _read_gt_video(
+    row,
+    dataset_base: Path,
+    width: int,
+    height: int,
+    total_frames: int,
+    resize_mode: str,
+):
     start_frame = int(row["start_frame"])
     frame_stride = int(row.get("frame_stride", 1))
     valid_frames = int(row.get("valid_frames", row.get("length", total_frames)))
@@ -39,7 +61,8 @@ def _read_gt_video(row, dataset_base: Path, width: int, height: int, total_frame
         for offset in range(total_frames):
             source_offset = min(offset, max(valid_frames - 1, 0))
             frame_idx = start_frame + source_offset * frame_stride
-            view_frames = [_resize_rgb(reader.get_data(frame_idx), width, height) for reader in readers]
+            resize = _letterbox_rgb if resize_mode == "letterbox" else _resize_rgb
+            view_frames = [resize(reader.get_data(frame_idx), width, height) for reader in readers]
             frames.append(np.concatenate(view_frames, axis=1))
     finally:
         for reader in readers:
@@ -99,6 +122,7 @@ def main():
     parser.add_argument("--fps", type=int, default=20)
     parser.add_argument("--quality", type=int, default=6)
     parser.add_argument("--output-suffix", default="_gt_c_sweep")
+    parser.add_argument("--gt-resize-mode", choices=("stretch", "letterbox"), default="stretch")
     parser.add_argument("--no-labels", action="store_true")
     args = parser.parse_args()
 
@@ -130,7 +154,19 @@ def main():
         num_views = len(row["video"])
         target_width = args.width * num_views
         total_frames = int(row.get("length", row["end_frame"] - row["start_frame"] + 1))
-        videos = [("GT", _read_gt_video(row, dataset_base, args.width, args.height, total_frames))]
+        videos = [
+            (
+                "GT",
+                _read_gt_video(
+                    row,
+                    dataset_base,
+                    args.width,
+                    args.height,
+                    total_frames,
+                    args.gt_resize_mode,
+                ),
+            )
+        ]
         for label, pred_dir in pred_dirs:
             videos.append((label, _read_pred_video(pred_dir / pred_name, target_width, args.height)))
 
