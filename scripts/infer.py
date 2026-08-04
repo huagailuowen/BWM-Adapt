@@ -14,6 +14,7 @@ import torch
 
 from diffsynth.core import ModelConfig
 from wan_video_action.data import LoadCobotAction, RoboTwinUnifiedDataset, create_video_operator
+from wan_video_action.data.data_utils import pack_paths
 from wan_video_action.parsers import add_general_config, merge_yaml_and_args, prepare_runtime_config
 from wan_video_action.pipelines.wan_video_action import build_wan_video_action_pipeline
 from wan_video_action.utils import align_num_frames, resolve_model_path, save_video
@@ -246,10 +247,10 @@ def build_pipeline(args):
 
 def build_infer_dataset(args):
     with open(args.action_stat_path, "r") as f:
-        stat = json.load(f)
-    action_stat = stat
+        stats = json.load(f)
+    stat = {args.action_type: stats[args.action_type]} if args.action_type in stats else stats
 
-    return RoboTwinUnifiedDataset(
+    dataset = RoboTwinUnifiedDataset(
         base_path=args.dataset_base_path,
         metadata_path=args.dataset_metadata_path,
         repeat=1,
@@ -259,29 +260,34 @@ def build_infer_dataset(args):
             max_pixels=args.max_pixels,
             height=args.height,
             width=args.width,
-            height_division_factor=args.spatial_division_factor,
-            width_division_factor=args.spatial_division_factor,
-            num_frames=1,
+            height_division_factor=16,
+            width_division_factor=16,
+            num_frames=args.num_frames,
             time_division_factor=args.time_division_factor,
             time_division_remainder=args.time_division_remainder,
             resize_mode=args.resize_mode,
+            pad_short=args.pad_short_chunks,
             frame_stride=int(getattr(args, "frame_stride", 1)),
         ),
-        special_operator_map={
-            "action": LoadCobotAction(
-                base_path=args.dataset_base_path,
-                action_type=args.action_type,
-                stat=action_stat,
-                num_frames=None,
-                align_num_frames=False,
-                time_division_factor=args.time_division_factor,
-                time_division_remainder=args.time_division_remainder,
-                pad_short=True,
-                output_dim=args.action_dim,
-                frame_stride=int(getattr(args, "frame_stride", 1)),
-            )
-        },
+        special_operator_map={},
     )
+    pack_paths(
+        dataset.data,
+        ("video", "start_frame", "end_frame"),
+        ("action", "start_frame", "end_frame"),
+    )
+    dataset.special_operator_map["action"] = LoadCobotAction(
+        base_path=args.dataset_base_path,
+        action_type=args.action_type,
+        stat=stat,
+        num_frames=args.num_frames,
+        time_division_factor=args.time_division_factor,
+        time_division_remainder=args.time_division_remainder,
+        pad_short=args.pad_short_chunks,
+        output_dim=args.action_dim,
+        frame_stride=int(getattr(args, "frame_stride", 1)),
+    )
+    return dataset
 
 
 def prepare_sample_for_rollout(sample: Dict, sample_index: int, pipe, args) -> Dict:

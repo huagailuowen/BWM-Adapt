@@ -85,8 +85,8 @@ class RoboTwinUnifiedDataset(UnifiedDataset):
                 return {"data": item, "start_frame": start_frame, "end_frame": end_frame}
             if isinstance(item, dict):
                 wrapped = item.copy()
-                wrapped["start_frame"] = start_frame
-                wrapped["end_frame"] = end_frame
+                wrapped.setdefault("start_frame", start_frame)
+                wrapped.setdefault("end_frame", end_frame)
                 return wrapped
             return item
 

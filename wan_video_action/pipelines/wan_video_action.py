@@ -124,6 +124,8 @@ def _build_wan2_action_units(pipe: WanVideoPipeline):
     selected.append(WanVideoUnit_ActionEmbedder())
     if getattr(pipe, "physical_context_encoder", None) is not None:
         selected.append(WanVideoUnit_PhysicalContextEmbedder())
+    if getattr(pipe, "background_context_encoder", None) is not None:
+        selected.append(WanVideoUnit_BackgroundContextEmbedder())
     return selected
 
 
@@ -141,6 +143,7 @@ def _install_wan_video_action_call(pipeline: WanVideoPipeline) -> None:
         num_history_frames: int = 1,
         action: Optional[torch.Tensor] = None,
         physical_context: Optional[torch.Tensor] = None,
+        background_context: Optional[torch.Tensor] = None,
         cfg_scale: float = 1.0,
         num_inference_steps: int = 50,
         sigma_shift: float = 5.0,
@@ -169,6 +172,7 @@ def _install_wan_video_action_call(pipeline: WanVideoPipeline) -> None:
             "num_history_frames": num_history_frames,
             "action": action,
             "physical_context": physical_context,
+            "background_context": background_context,
             "cfg_scale": cfg_scale,
             "tiled": tiled,
             "tile_size": tile_size,
@@ -265,10 +269,12 @@ def load_checkpoint_weights(pipe, ckpt_path: str):
     dit = pipe.dit
     action_encoder = pipe.action_encoder
     physical_context_encoder = getattr(pipe, "physical_context_encoder", None)
+    background_context_encoder = getattr(pipe, "background_context_encoder", None)
     physical_adapter_bank = getattr(pipe, "physical_adapter_bank", None)
 
     action_prefix = "pipe.action_encoder."
     physical_prefix = "pipe.physical_context_encoder."
+    background_prefix = "pipe.background_context_encoder."
     adapter_prefix = "pipe.physical_adapter_bank."
     action_state = {
         key[len(action_prefix):]: value
@@ -279,6 +285,11 @@ def load_checkpoint_weights(pipe, ckpt_path: str):
         key[len(physical_prefix):]: value
         for key, value in state_dict.items()
         if key.startswith(physical_prefix)
+    }
+    background_state = {
+        key[len(background_prefix):]: value
+        for key, value in state_dict.items()
+        if key.startswith(background_prefix)
     }
     adapter_state = {
         key[len(adapter_prefix):]: value
@@ -291,6 +302,7 @@ def load_checkpoint_weights(pipe, ckpt_path: str):
         if (
             not key.startswith(action_prefix)
             and not key.startswith(physical_prefix)
+            and not key.startswith(background_prefix)
             and not key.startswith(adapter_prefix)
         )
     }
@@ -311,6 +323,12 @@ def load_checkpoint_weights(pipe, ckpt_path: str):
         print(
             f"  - Loaded physical_context_encoder keys: {len(physical_state)} "
             f"(missing={len(physical_result.missing_keys)}, unexpected={len(physical_result.unexpected_keys)})"
+        )
+    if background_context_encoder is not None and background_state:
+        background_result = background_context_encoder.load_state_dict(background_state, strict=False)
+        print(
+            f"  - Loaded background_context_encoder keys: {len(background_state)} "
+            f"(missing={len(background_result.missing_keys)}, unexpected={len(background_result.unexpected_keys)})"
         )
     if physical_adapter_bank is not None and adapter_state:
         adapter_result = physical_adapter_bank.load_state_dict(adapter_state, strict=False)
@@ -338,6 +356,14 @@ def build_wan_video_action_pipeline(
     physical_context_init_value: float = 0.0,
     physical_context_input_norm: str = "layernorm",
     physical_context_temporal_position: str = "none",
+    background_context_enabled: bool = False,
+    background_context_dim: int = 32,
+    background_context_tokens: int = 1,
+    background_context_hidden_dim: Optional[int] = None,
+    background_context_init_std: float = 0.0,
+    background_context_init_value: float = 0.0,
+    background_context_input_norm: str = "layernorm",
+    background_context_temporal_position: str = "none",
     physical_adapter_mode: str = "none",
     physical_adapter_rank: int = 16,
     physical_adapter_layers: str = "all",
@@ -358,6 +384,18 @@ def build_wan_video_action_pipeline(
     physical_context_init_value = float(_resolve_arg(args, "physical_context_init_value", physical_context_init_value))
     physical_context_input_norm = str(_resolve_arg(args, "physical_context_input_norm", physical_context_input_norm)).lower()
     physical_context_temporal_position = str(_resolve_arg(args, "physical_context_temporal_position", physical_context_temporal_position)).lower()
+    background_context_enabled = bool(_resolve_arg(args, "background_context_enabled", background_context_enabled))
+    background_context_dim = int(_resolve_arg(args, "background_context_dim", background_context_dim))
+    background_context_tokens = int(_resolve_arg(args, "background_context_tokens", background_context_tokens))
+    background_context_hidden_dim = _resolve_arg(args, "background_context_hidden_dim", background_context_hidden_dim)
+    if background_context_hidden_dim in (0, "0"):
+        background_context_hidden_dim = None
+    elif background_context_hidden_dim is not None:
+        background_context_hidden_dim = int(background_context_hidden_dim)
+    background_context_init_std = float(_resolve_arg(args, "background_context_init_std", background_context_init_std))
+    background_context_init_value = float(_resolve_arg(args, "background_context_init_value", background_context_init_value))
+    background_context_input_norm = str(_resolve_arg(args, "background_context_input_norm", background_context_input_norm)).lower()
+    background_context_temporal_position = str(_resolve_arg(args, "background_context_temporal_position", background_context_temporal_position)).lower()
     physical_adapter_mode = str(_resolve_arg(args, "physical_adapter_mode", physical_adapter_mode)).lower()
     physical_adapter_rank = int(_resolve_arg(args, "physical_adapter_rank", physical_adapter_rank))
     physical_adapter_layers = str(_resolve_arg(args, "physical_adapter_layers", physical_adapter_layers))
@@ -407,6 +445,21 @@ def build_wan_video_action_pipeline(
             temporal_position=physical_context_temporal_position,
         ).to(dtype=pipe.torch_dtype, device=pipe.device)
         pipe.physical_context_encoder.eval()
+
+    pipe.background_context_enabled = background_context_enabled
+    pipe.background_context_encoder = None
+    if background_context_enabled:
+        pipe.background_context_encoder = PhysicalContextEncoder(
+            context_dim=background_context_dim,
+            model_dim=pipe.dit.dim,
+            num_tokens=background_context_tokens,
+            hidden_dim=background_context_hidden_dim,
+            init_std=background_context_init_std,
+            init_value=background_context_init_value,
+            input_norm=background_context_input_norm,
+            temporal_position=background_context_temporal_position,
+        ).to(dtype=pipe.torch_dtype, device=pipe.device)
+        pipe.background_context_encoder.eval()
 
     pipe.physical_adapter_mode = physical_adapter_mode
     pipe.physical_adapter_bank = None
@@ -508,6 +561,47 @@ class WanVideoUnit_PhysicalContextEmbedder(PipelineUnit):
         return outputs
 
 
+class WanVideoUnit_BackgroundContextEmbedder(PipelineUnit):
+    def __init__(self):
+        super().__init__(
+            input_params=("background_context", "action", "num_frames"),
+            output_params=("background_context_emb", "background_mod_emb"),
+            onload_model_names=("background_context_encoder",),
+        )
+
+    def process(self, pipe, background_context=None, action=None, num_frames=None):
+        if not getattr(pipe, "background_context_enabled", False):
+            return {}
+        if pipe.background_context_encoder is None:
+            raise ValueError("background_context is enabled, but background_context_encoder is not available.")
+        if any(param.device != pipe.device for param in pipe.background_context_encoder.parameters()):
+            pipe.background_context_encoder = pipe.background_context_encoder.to(
+                device=pipe.device, dtype=pipe.torch_dtype
+            )
+
+        pipe.load_models_to_device(self.onload_model_names)
+        if action is not None:
+            batch_size = int(torch.as_tensor(action).shape[0])
+        elif background_context is not None:
+            context_tensor = torch.as_tensor(background_context)
+            batch_size = 1 if context_tensor.ndim <= 2 else int(context_tensor.shape[0])
+        else:
+            batch_size = 1
+
+        target_groups = (int(num_frames) - 1) // 4 + 1
+        token_emb, mod_emb = pipe.background_context_encoder(
+            background_context,
+            batch_size=batch_size,
+            target_groups=target_groups,
+            dtype=pipe.torch_dtype,
+            device=pipe.device,
+        )
+        return {
+            "background_context_emb": token_emb,
+            "background_mod_emb": mod_emb,
+        }
+
+
 class WanVideoUnit_InputVideoEmbedder(PipelineUnit):
     """
     Input frame embedder aligned to target history-conditioning behavior:
@@ -577,6 +671,8 @@ def model_fn_wan_video_action(
     action_injection_mode: str = "none",
     physical_context_emb: Optional[torch.Tensor] = None,
     physical_mod_emb: Optional[torch.Tensor] = None,
+    background_context_emb: Optional[torch.Tensor] = None,
+    background_mod_emb: Optional[torch.Tensor] = None,
     physical_context_mode: str = "none",
     physical_adapter_bank: Optional[PhysicalResidualAdapterBank] = None,
     clip_feature: Optional[torch.Tensor] = None,
@@ -616,6 +712,7 @@ def model_fn_wan_video_action(
     if action_emb is None or action_mod_emb is None:
         raise ValueError("`action:adaln` requires both `action_emb` and `action_mod_emb`.")
     context = _append_context_tokens(context, physical_context_emb)
+    context = _append_context_tokens(context, background_context_emb)
     context = _append_context_tokens(context, action_emb)
     text_token_count = context.shape[1]
     if t.shape[1] % action_mod_emb.shape[1] != 0:
@@ -628,15 +725,29 @@ def model_fn_wan_video_action(
     action_mod_emb = action_mod_emb.unsqueeze(2).repeat(1, 1, num_spatial_tokens, 1).flatten(1, 2)
     t = t + action_mod_emb
     physical_adapter_condition = None
-    if physical_mod_emb is not None:
-        if physical_mod_emb.shape[1] != target_mod_groups:
+    combined_physical_mod_emb = None
+    for mod_name, mod_emb in (
+        ("physical_mod_emb", physical_mod_emb),
+        ("background_mod_emb", background_mod_emb),
+    ):
+        if mod_emb is None:
+            continue
+        if mod_emb.shape[1] != target_mod_groups:
             raise RuntimeError(
-                f"Physical temporal group mismatch: physical_mod_emb.shape={tuple(physical_mod_emb.shape)}, "
+                f"Physical temporal group mismatch: {mod_name}.shape={tuple(mod_emb.shape)}, "
                 f"expected_groups={target_mod_groups}."
             )
-        physical_adapter_condition = physical_mod_emb.mean(dim=1)
-        physical_mod_emb = physical_mod_emb.unsqueeze(2).repeat(1, 1, num_spatial_tokens, 1).flatten(1, 2)
-        t = t + physical_mod_emb
+        combined_physical_mod_emb = (
+            mod_emb if combined_physical_mod_emb is None else combined_physical_mod_emb + mod_emb
+        )
+    if combined_physical_mod_emb is not None:
+        physical_adapter_condition = combined_physical_mod_emb.mean(dim=1)
+        combined_physical_mod_emb = (
+            combined_physical_mod_emb.unsqueeze(2)
+            .repeat(1, 1, num_spatial_tokens, 1)
+            .flatten(1, 2)
+        )
+        t = t + combined_physical_mod_emb
 
     if t.ndim == 3:
         t_mod = dit.time_projection(t).unflatten(2, (6, dit.dim))

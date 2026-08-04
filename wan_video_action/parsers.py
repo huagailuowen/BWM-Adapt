@@ -109,7 +109,7 @@ def add_video_size_config(parser: argparse.ArgumentParser):
     group.add_argument("--width", type=int, default=None, help="[KEY] Width of images. Leave `height` and `width` empty to enable dynamic resolution.")
     group.add_argument("--max_pixels", type=int, default=1048576, help="[OPTIONAL] Maximum number of pixels per frame, used for dynamic resolution.")
     group.add_argument("--num_frames", type=int, default=81, help="[KEY] Number of frames per video. Frames are sampled from the video prefix.")
-    group.add_argument("--resize_mode", type=str, default="fit", choices=["crop", "fit"], help="[OPTIONAL] Resize behavior: crop (center crop), fit (no crop).")
+    group.add_argument("--resize_mode", type=str, default="fit", choices=["crop", "fit", "letterbox"], help="[OPTIONAL] Resize behavior: crop (center crop), fit (dynamic aspect ratio), letterbox (fixed size with padding).")
     group.add_argument("--num_history_frames", type=int, default=1, help="[KEY] Number of conditioning history frames. Must satisfy 1 <= num_history_frames < num_frames.")
     group.add_argument("--time_division_factor", type=int, default=4, help="[OPTIONAL] Temporal frame divisor used to align video/action frame counts.")
     group.add_argument("--time_division_remainder", type=int, default=1, help="[OPTIONAL] Temporal frame remainder used with time_division_factor.")
@@ -139,7 +139,7 @@ def add_model_config(parser: argparse.ArgumentParser):
 
 def add_action_config(parser: argparse.ArgumentParser):
     group = parser.add_argument_group("action")
-    group.add_argument("--action_type", type=str, choices=["joint_abs", "eef_abs", "joint_delta", "eef_delta"], default="eef_delta", help='[KEY] Action/state representation: joint/eef × abs/delta. (choices: "joint_abs", "eef_abs", "joint_delta", "eef_delta")')
+    group.add_argument("--action_type", type=str, choices=["joint_abs", "eef_abs", "joint_delta", "eef_delta", "joint_state_action"], default="eef_delta", help='[KEY] Action/state representation, including joint_state_action=[state[:7], action[:7]].')
     group.add_argument("--action_stat_path", type=str, default=None, help="[OPTIONAL] Path to robot normalization stats (stat.json).")
     group.add_argument("--action_dim", type=int, default=14, help="[OPTIONAL] Action dimension.")
     return parser
@@ -161,6 +161,14 @@ def add_physical_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--physical_context_init_value", type=float, default=0.0, help="[OPTIONAL] Mean value for default latent C initialization.")
     group.add_argument("--physical_context_input_norm", type=str, default="layernorm", choices=["layernorm", "none"], help="[TUNABLE] Normalization before projecting latent C.")
     group.add_argument("--physical_context_temporal_position", type=str, default="none", choices=["none", "learned"], help="[TUNABLE] Temporal position embedding for per-time latent C tokens.")
+    group.add_argument("--background_context_enabled", action="store_true", default=False, help="[KEY] Add a separately encoded context shared by all friction groups in one visual background.")
+    group.add_argument("--background_context_dim", type=int, default=32, help="[TUNABLE] Latent background-context dimension.")
+    group.add_argument("--background_context_tokens", type=int, default=1, help="[TUNABLE] Number of background-context cross-attention tokens.")
+    group.add_argument("--background_context_hidden_dim", type=int, default=0, help="[TUNABLE] Hidden width for the independent background-context projection MLPs.")
+    group.add_argument("--background_context_init_std", type=float, default=0.0, help="[OPTIONAL] Std for non-zero default background-context initialization.")
+    group.add_argument("--background_context_init_value", type=float, default=0.0, help="[OPTIONAL] Mean value for default background-context initialization.")
+    group.add_argument("--background_context_input_norm", type=str, default="layernorm", choices=["layernorm", "none"], help="[TUNABLE] Normalization before projecting background context.")
+    group.add_argument("--background_context_temporal_position", type=str, default="none", choices=["none", "learned"], help="[TUNABLE] Temporal position embedding for per-time background-context tokens.")
     group.add_argument("--physical_adapter_mode", type=str, default="none", choices=["none", "residual"], help="[KEY] Lightweight residual-adapter parameter adaptation mode.")
     group.add_argument("--physical_adapter_rank", type=int, default=16, help="[TUNABLE] Low-rank width for residual physical adapters.")
     group.add_argument("--physical_adapter_layers", type=str, default="all", help='[TUNABLE] Adapter layer set: "all", "uniform:N", "last_quarter", "last:N", or comma-separated layer indices.')

@@ -6,7 +6,9 @@ import contextlib
 import json
 import os
 import random
+import time
 import sys
+from datetime import datetime
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +25,12 @@ from tqdm import tqdm
 
 from diffsynth.diffusion.runner import initialize_deepspeed_gradient_checkpointing
 from wan_video_action.data import RoboTwinUnifiedDataset
+from wan_video_action.counterfactual_bridge import (
+    CounterfactualSourceBank,
+    parse_noise_bands,
+    sample_noise_fraction,
+    sample_nonlinear_bridge_condition,
+)
 from wan_video_action.data.data_utils import pack_paths
 from wan_video_action.data.operators import LoadCobotAction, ResolvePromptEmbPath, create_video_operator
 from wan_video_action.parsers import merge_yaml_and_args, prepare_runtime_config
@@ -88,10 +96,50 @@ def _load_grouped_context_table(model, path: str) -> bool:
     return True
 
 
+@torch.no_grad()
+def _load_background_context_table(model, path: str) -> bool:
+    table = getattr(model, "background_context_table", None)
+    if table is None:
+        return False
+    with open(path, "r", encoding="utf-8") as handle:
+        payload = json.load(handle)
+    section = payload.get("background_context_table")
+    if not section:
+        raise ValueError(f"Context table {path} does not contain background_context_table.")
+    seen: set[int] = set()
+    for record in section.get("records", []):
+        value = float(record["background_index"])
+        distances = torch.abs(table.friction_values - value)
+        index = int(torch.argmin(distances).item())
+        if float(distances[index]) > 1e-5:
+            raise ValueError(f"Background-table value {value} is absent from the current model table.")
+        context = torch.tensor(record["context"], dtype=table.contexts.dtype, device=table.contexts.device)
+        if tuple(context.shape) != tuple(table.contexts[index].shape):
+            raise ValueError(
+                f"Background context shape mismatch for index {value}: "
+                f"checkpoint={tuple(context.shape)} model={tuple(table.contexts[index].shape)}"
+            )
+        table.contexts[index].copy_(context)
+        seen.add(index)
+    if len(seen) != int(table.friction_values.numel()):
+        raise ValueError(
+            f"Background context table {path} restored {len(seen)} groups, "
+            f"expected {int(table.friction_values.numel())}."
+        )
+    return True
+
+
 def _unique_friction_values(metadata_path: str) -> list[float]:
     values = sorted({float(row["friction_mu"]) for row in _read_jsonl(metadata_path)})
     if not values:
         raise ValueError(f"No friction_mu values found in {metadata_path}.")
+    return values
+
+
+def _unique_background_values(metadata_path: str) -> list[float]:
+    values = sorted({float(row["environment_index"]) for row in _read_jsonl(metadata_path)})
+    if not values:
+        raise ValueError(f"No environment_index values found in {metadata_path}.")
     return values
 
 
@@ -185,7 +233,14 @@ class FrictionContextTable(nn.Module):
 
 
 class GroupedContextStage1Module(WanTrainingModule):
-    def __init__(self, *args, grouped_args: argparse.Namespace, friction_values: list[float], **kwargs):
+    def __init__(
+        self,
+        *args,
+        grouped_args: argparse.Namespace,
+        friction_values: list[float],
+        background_values: list[float] | None = None,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
         if getattr(self.pipe, "physical_context_encoder", None) is None:
             raise ValueError("Grouped-C stage1 requires physical_context_mode != 'none'.")
@@ -214,6 +269,20 @@ class GroupedContextStage1Module(WanTrainingModule):
             init_max=float(grouped_args.grouped_context_init_max),
             enable_global_context=self.bridge_enabled,
         )
+        self.background_context_table = None
+        if getattr(self.pipe, "background_context_encoder", None) is not None:
+            if not background_values:
+                raise ValueError("Background context is enabled, but no environment_index values were provided.")
+            self.background_context_table = FrictionContextTable(
+                friction_values=background_values,
+                context_dim=int(grouped_args.background_context_dim),
+                num_tokens=int(grouped_args.background_context_tokens),
+                init_mode=str(grouped_args.grouped_context_init_mode),
+                init_value=float(grouped_args.grouped_context_init_value),
+                init_std=float(grouped_args.grouped_context_init_std),
+                init_min=float(grouped_args.grouped_context_init_min),
+                init_max=float(grouped_args.grouped_context_init_max),
+            )
 
     def get_pipeline_inputs(self, data):
         data = data.copy()
@@ -240,6 +309,12 @@ class GroupedContextStage1Module(WanTrainingModule):
             alpha = float(bridge_alpha)
             physical_context = (1.0 - alpha) * global_context + alpha * endpoint_context
         data["physical_context"] = physical_context
+        if self.background_context_table is not None:
+            data["background_context"] = self.background_context_table.lookup(
+                data["environment_index"],
+                dtype=self.pipe.torch_dtype,
+                device=self.pipe.device,
+            )
         return super().get_pipeline_inputs(data)
 
     def _prepare_pipeline_inputs(self, data):
@@ -282,7 +357,13 @@ class GroupedContextStage1Module(WanTrainingModule):
         loss = F.mse_loss(noise_pred.float(), training_target.float())
         return loss * self.pipe.scheduler.training_weight(timestep)
 
-    def _self_correction_flow_loss(self, target_inputs, donor_inputs, timestep_index: int):
+    def _self_correction_flow_loss(
+        self,
+        target_inputs,
+        donor_inputs,
+        timestep_index: int,
+        teacher_counterfactual: bool = False,
+    ):
         inputs_shared, inputs_posi, _ = target_inputs
         donor_shared, _, _ = donor_inputs
         inputs_shared = inputs_shared.copy()
@@ -310,11 +391,19 @@ class GroupedContextStage1Module(WanTrainingModule):
         )
         gaussian_noise = torch.randn_like(target_latents)
         source_mix = float(self.self_correction_source_mix)
-        structured_source = (1.0 - source_mix) * gaussian_noise + source_mix * donor_latents
-        inputs_shared["latents"] = (
-            (1.0 - sigma) * target_latents + sigma * structured_source
-        )
-        training_target = structured_source - target_latents
+        if teacher_counterfactual:
+            inputs_shared["latents"] = (
+                (1.0 - sigma) * donor_latents + sigma * gaussian_noise
+            )
+            training_target = (
+                inputs_shared["latents"] - target_latents
+            ) / sigma.clamp_min(1e-6)
+        else:
+            structured_source = (1.0 - source_mix) * gaussian_noise + source_mix * donor_latents
+            inputs_shared["latents"] = (
+                (1.0 - sigma) * target_latents + sigma * structured_source
+            )
+            training_target = structured_source - target_latents
 
         if "first_frame_latents" in inputs_shared:
             inputs_shared["latents"][:, :, 0:1] = inputs_shared["first_frame_latents"]
@@ -334,6 +423,7 @@ class GroupedContextStage1Module(WanTrainingModule):
             "sigma": float(sigma.detach().float().cpu()),
             "timestep": float(timestep.detach().float().cpu().item()),
             "source_mix": source_mix,
+            "teacher_counterfactual": bool(teacher_counterfactual),
         }
         return loss
 
@@ -354,17 +444,30 @@ class GroupedContextStage1Module(WanTrainingModule):
         if donor_data is None:
             self.last_self_correction_metrics = None
             return self._flow_match_loss_at_timestep(target_inputs, int(timestep_index))
+        donor_data = donor_data.copy()
+        teacher_counterfactual = bool(
+            donor_data.pop("_teacher_counterfactual_source", False)
+        )
+        donor_data.pop("_teacher_source_environment", None)
+        donor_data.pop("_teacher_source_path", None)
         donor_inputs = self._prepare_pipeline_inputs(donor_data)
         return self._self_correction_flow_loss(
             target_inputs,
             donor_inputs,
             int(timestep_index),
+            teacher_counterfactual=teacher_counterfactual,
         )
 
     def export_trainable_state_dict(self, state_dict, remove_prefix=None):
         trainable_names = {name for name, param in self.named_parameters() if param.requires_grad}
         keep_names = set(trainable_names)
         keep_names.add("friction_context_table.friction_values")
+        keep_names.add("background_context_table.friction_values")
+        keep_names.update(
+            name
+            for name in state_dict
+            if name.startswith("pipe.background_context_encoder.")
+        )
         exported = {
             key: value
             for key, value in state_dict.items()
@@ -388,34 +491,64 @@ class GroupedContextModelLogger(TimedRetentionModelLogger):
             if name not in (
                 "friction_context_table.contexts",
                 "friction_context_table.global_context",
+                "background_context_table.contexts",
             )
         )
+        completion_marker = Path(self.output_path) / f".{file_name}.complete"
+        if accelerator.is_main_process:
+            try:
+                completion_marker.unlink()
+            except FileNotFoundError:
+                pass
+        accelerator.wait_for_everyone()
+
         if has_non_context_trainable:
             super().save_model(accelerator, model, file_name)
         else:
-            accelerator.wait_for_everyone()
             if accelerator.is_main_process:
                 print(
                     "[checkpoint] skipped model checkpoint during context-only phase; "
                     "saving context table only",
                     flush=True,
                 )
-        if not accelerator.is_main_process:
-            return
-        table = getattr(unwrapped, "friction_context_table", None)
-        if table is None:
-            return
-        path = os.path.join(self.output_path, file_name.replace(".safetensors", ".context_table.json"))
-        self.save_context_table(accelerator, model, path)
-        if has_non_context_trainable:
-            self._prune_context_tables_without_checkpoints()
+
+        if accelerator.is_main_process:
+            table = getattr(unwrapped, "friction_context_table", None)
+            if table is None:
+                raise RuntimeError("Grouped-context checkpoint is missing its context table.")
+            path = os.path.join(
+                self.output_path,
+                file_name.replace(".safetensors", ".context_table.json"),
+            )
+            self.save_context_table(accelerator, model, path)
+            if has_non_context_trainable:
+                self._prune_context_tables_without_checkpoints()
+            temporary = completion_marker.with_name(
+                f".{completion_marker.name}.tmp-{os.getpid()}"
+            )
+            with temporary.open("w", encoding="utf-8") as handle:
+                handle.write(f"{file_name}\n")
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, completion_marker)
+        else:
+            deadline = time.monotonic() + 7200.0
+            while not completion_marker.is_file():
+                if time.monotonic() >= deadline:
+                    raise TimeoutError(
+                        f"Timed out waiting for rank 0 to finish checkpoint {file_name}."
+                    )
+                time.sleep(2.0)
+        accelerator.wait_for_everyone()
 
     def save_context_table(self, accelerator, model, path: str) -> None:
         if not accelerator.is_main_process:
             return
-        table = getattr(accelerator.unwrap_model(model), "friction_context_table", None)
+        unwrapped = accelerator.unwrap_model(model)
+        table = getattr(unwrapped, "friction_context_table", None)
         if table is None:
             return
+        background_table = getattr(unwrapped, "background_context_table", None)
         destination = Path(path)
         destination.parent.mkdir(parents=True, exist_ok=True)
         payload = {
@@ -425,6 +558,18 @@ class GroupedContextModelLogger(TimedRetentionModelLogger):
         }
         if getattr(table, "global_context", None) is not None:
             payload["global_context"] = table.global_context.detach().float().cpu().tolist()
+        if background_table is not None:
+            payload["background_context_table"] = {
+                "num_groups": int(background_table.friction_values.numel()),
+                "context_shape": list(background_table.contexts.shape),
+                "records": [
+                    {
+                        "background_index": float(record["friction_mu"]),
+                        "context": record["context"],
+                    }
+                    for record in background_table.to_records()
+                ],
+            }
         temporary = destination.with_name(f".{destination.name}.tmp-{os.getpid()}")
         try:
             with temporary.open("w", encoding="utf-8") as f:
@@ -466,6 +611,8 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_clamp_min", type=float, default=0.0)
     group.add_argument("--grouped_context_clamp_max", type=float, default=1.0)
     group.add_argument("--grouped_context_lr", type=float, default=None)
+    group.add_argument("--grouped_background_context_lr", type=float, default=None)
+    group.add_argument("--grouped_background_freeze_after_steps", type=int, default=0)
     group.add_argument("--grouped_context_new_context_lr", type=float, default=None)
     group.add_argument("--grouped_context_lr_schedule", type=str, default=None)
     group.add_argument("--grouped_context_model_lr_warmup_steps", type=int, default=0)
@@ -479,10 +626,24 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_microbatches_per_update", type=int, default=0)
     group.add_argument("--grouped_context_sampling_mode", type=str, default="common_actions")
     group.add_argument("--grouped_context_stratify_field", type=str, default=None)
+    group.add_argument("--grouped_context_sampling_strata", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_initial_groups", type=int, default=0)
+    group.add_argument("--grouped_context_curriculum_warmup_groups", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_add_groups", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_total_groups", type=int, default=0)
+    group.add_argument("--grouped_context_curriculum_strata", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_initial_model_steps", type=int, default=300)
+    group.add_argument("--grouped_context_curriculum_assignment_model_steps", type=int, default=0)
+    group.add_argument(
+        "--grouped_context_curriculum_random_context_warmup",
+        action="store_true",
+        default=False,
+    )
+    group.add_argument(
+        "--grouped_context_curriculum_shared_initial_friction",
+        action="store_true",
+        default=False,
+    )
     group.add_argument("--grouped_context_curriculum_new_context_steps", type=int, default=200)
     group.add_argument("--grouped_context_curriculum_mid_context_steps", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_all_context_steps", type=int, default=200)
@@ -513,6 +674,32 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_self_correction_sigma_min", type=float, default=0.45)
     group.add_argument("--grouped_context_self_correction_sigma_max", type=float, default=0.85)
     group.add_argument("--grouped_context_self_correction_source_mix", type=float, default=0.5)
+    group.add_argument("--grouped_context_counterfactual_enabled", action="store_true", default=False)
+    group.add_argument("--grouped_context_counterfactual_manifest_path", type=str, default=None)
+    group.add_argument("--grouped_context_counterfactual_raw_root", type=str, default=None)
+    group.add_argument("--grouped_context_counterfactual_batch_fraction", type=float, default=0.5)
+    group.add_argument(
+        "--grouped_context_counterfactual_noise_bands",
+        type=str,
+        default="0.90:1.00:0.20,0.70:0.90:0.60,0.55:0.70:0.20",
+    )
+    group.add_argument("--grouped_context_bridge_curve_power", type=float, default=1.0)
+    group.add_argument(
+        "--grouped_context_bridge_sampling_mode",
+        choices=("legacy", "nonlinear_40_30_30"),
+        default="legacy",
+    )
+    group.add_argument(
+        "--grouped_context_bridge_freeze_global_after_warmup",
+        action="store_true",
+        default=False,
+    )
+    group.add_argument("--grouped_context_bridge_timestep_buckets_per_update", type=int, default=1)
+    group.add_argument(
+        "--grouped_context_bridge_smoke_sequence",
+        action="store_true",
+        default=False,
+    )
     group.add_argument("--frame_stride", type=int, default=1)
     return parser
 
@@ -719,6 +906,126 @@ def _sample_update_indices(
     allowed_friction_values: list[float] | None = None,
 ) -> list[int]:
     mode = str(getattr(args, "grouped_context_sampling_mode", "common_actions") or "common_actions").strip().lower()
+    if mode in ("balanced_repeated_groups", "balanced_group_slots"):
+        rng = random.Random(
+            int(args.seed)
+            + int(update_idx) * max(1, int(accelerator.num_processes))
+            + int(accelerator.process_index)
+        )
+        allowed_values = None
+        if allowed_friction_values is not None:
+            allowed_values = [float(value) for value in allowed_friction_values]
+
+        def is_allowed(value: float) -> bool:
+            if allowed_values is None:
+                return True
+            return any(abs(float(value) - allowed) <= 1e-5 for allowed in allowed_values)
+
+        values = sorted(float(value) for value in grouped_indices if is_allowed(float(value)))
+        if not values:
+            raise ValueError("balanced_repeated_groups found no eligible environment groups.")
+        if friction_groups < len(values):
+            slot_values = rng.sample(values, friction_groups)
+        else:
+            slot_values = list(values)
+            extra_slots = friction_groups - len(slot_values)
+            extra_offset = (
+                int(update_idx) * max(1, int(accelerator.num_processes))
+                + int(accelerator.process_index)
+            ) % len(values)
+            slot_values.extend(
+                values[(extra_offset + index) % len(values)]
+                for index in range(extra_slots)
+            )
+
+        slot_counts: dict[float, int] = {}
+        for value in slot_values:
+            slot_counts[value] = slot_counts.get(value, 0) + 1
+        sample_indices: list[int] = []
+        for value, slot_count in slot_counts.items():
+            candidates = [
+                index
+                for action_candidates in grouped_indices[value].values()
+                for index in action_candidates
+            ]
+            requested = int(slot_count) * int(actions_per_update)
+            if len(candidates) < requested:
+                raise ValueError(
+                    f"Environment {value:g} has {len(candidates)} windows, "
+                    f"but {requested} distinct windows are required."
+                )
+            sample_indices.extend(rng.sample(candidates, requested))
+        expected = int(friction_groups) * int(actions_per_update)
+        if microbatches_per_update > 0 and int(microbatches_per_update) != expected:
+            raise ValueError(
+                f"balanced_repeated_groups requires microbatches_per_update={expected}, "
+                f"got {microbatches_per_update}."
+            )
+        rng.shuffle(sample_indices)
+        return sample_indices
+
+    if mode in ("stratified_common_actions", "stratified_aligned_actions"):
+        num_strata = int(getattr(args, "grouped_context_sampling_strata", 0) or 0)
+        if num_strata <= 1:
+            raise ValueError("stratified_common_actions requires grouped_context_sampling_strata > 1.")
+        if int(friction_groups) != num_strata:
+            raise ValueError(
+                "stratified_common_actions draws exactly one group per stratum: "
+                f"friction_groups={friction_groups}, strata={num_strata}."
+            )
+        all_values = sorted(float(value) for value in grouped_indices)
+        if len(all_values) % num_strata != 0:
+            raise ValueError(
+                f"Cannot split {len(all_values)} context groups into {num_strata} equal strata."
+            )
+        allowed = None
+        if allowed_friction_values is not None:
+            allowed = {float(value) for value in allowed_friction_values}
+        rng = random.Random(
+            int(args.seed)
+            + int(update_idx) * max(1, int(accelerator.num_processes))
+            + int(accelerator.process_index)
+        )
+        groups_per_stratum = len(all_values) // num_strata
+        selected_values: list[float] = []
+        for stratum in range(num_strata):
+            start = stratum * groups_per_stratum
+            end = start + groups_per_stratum
+            candidates = [
+                value
+                for value in all_values[start:end]
+                if allowed is None or value in allowed
+            ]
+            if not candidates:
+                raise ValueError(
+                    f"No active context group is available in stratum {stratum}; "
+                    f"active_groups={len(allowed or all_values)}."
+                )
+            selected_values.append(rng.choice(candidates))
+
+        common_actions = set(grouped_indices[selected_values[0]])
+        for value in selected_values[1:]:
+            common_actions.intersection_update(grouped_indices[value])
+        if len(common_actions) < int(actions_per_update):
+            raise ValueError(
+                f"Only {len(common_actions)} common actions exist across the selected groups; "
+                f"requested {actions_per_update}."
+            )
+        selected_actions = rng.sample(sorted(common_actions), int(actions_per_update))
+        sample_indices = [
+            rng.choice(grouped_indices[value][action_id])
+            for value in selected_values
+            for action_id in selected_actions
+        ]
+        expected = num_strata * int(actions_per_update)
+        if int(microbatches_per_update) != expected:
+            raise ValueError(
+                "stratified_common_actions requires an exact logical batch: "
+                f"microbatches_per_update={microbatches_per_update}, expected={expected}."
+            )
+        rng.shuffle(sample_indices)
+        return sample_indices
+
     if mode in ("independent_windows", "all_windows", "random_windows"):
         # Every GPU independently constructs a complete logical batch:
         # 4 causal-environment groups x 4 arbitrary windows = 16 samples/rank.
@@ -913,11 +1220,194 @@ def _nested_uniform_group_order(num_groups: int, initial_groups: int, total_grou
     return selected
 
 
+def _random_stratified_group_order(
+    *,
+    num_groups: int,
+    initial_groups: int,
+    add_groups: int,
+    total_groups: int,
+    num_strata: int,
+    shared_initial_across_strata: bool = False,
+) -> list[int]:
+    if num_strata <= 1:
+        raise ValueError(f"num_strata must exceed one, got {num_strata}.")
+    if num_groups <= 0 or num_groups % num_strata != 0:
+        raise ValueError(
+            f"num_groups={num_groups} must be positive and divisible by num_strata={num_strata}."
+        )
+    total = min(int(total_groups) if total_groups > 0 else num_groups, num_groups)
+    for name, value in (
+        ("initial_groups", initial_groups),
+        ("add_groups", add_groups),
+        ("total_groups", total),
+    ):
+        if int(value) <= 0 or int(value) % num_strata != 0:
+            raise ValueError(f"{name}={value} must be positive and divisible by {num_strata}.")
+
+    groups_per_stratum = num_groups // num_strata
+    initial_per_stratum = int(initial_groups) // num_strata
+    add_per_stratum = int(add_groups) // num_strata
+    total_per_stratum = total // num_strata
+    if initial_per_stratum > groups_per_stratum or total_per_stratum > groups_per_stratum:
+        raise ValueError("Requested more groups per stratum than the dataset contains.")
+
+    system_rng = random.SystemRandom()
+    initial_by_stratum: list[list[int]] = []
+    remaining_by_stratum: list[list[int]] = []
+    shared_anchor_offsets: list[int] | None = None
+    if shared_initial_across_strata:
+        shared_anchor_offsets = []
+        for bin_index in range(initial_per_stratum):
+            bin_start = bin_index * groups_per_stratum // initial_per_stratum
+            bin_end = (bin_index + 1) * groups_per_stratum // initial_per_stratum
+            shared_anchor_offsets.append(system_rng.choice(range(bin_start, bin_end)))
+    for stratum in range(num_strata):
+        block_start = stratum * groups_per_stratum
+        block = list(range(block_start, block_start + groups_per_stratum))
+        if shared_anchor_offsets is not None:
+            anchors = [block_start + offset for offset in shared_anchor_offsets]
+        else:
+            anchors = []
+            for bin_index in range(initial_per_stratum):
+                bin_start = bin_index * groups_per_stratum // initial_per_stratum
+                bin_end = (bin_index + 1) * groups_per_stratum // initial_per_stratum
+                anchors.append(system_rng.choice(block[bin_start:bin_end]))
+        remaining = [index for index in block if index not in set(anchors)]
+        system_rng.shuffle(remaining)
+        initial_by_stratum.append(anchors)
+        remaining_by_stratum.append(remaining)
+
+    order = [
+        index
+        for stratum_indices in initial_by_stratum
+        for index in stratum_indices
+    ]
+    selected_per_stratum = [initial_per_stratum] * num_strata
+    offsets = [0] * num_strata
+    while len(order) < total:
+        for stratum in range(num_strata):
+            remaining_needed = total_per_stratum - selected_per_stratum[stratum]
+            take = min(add_per_stratum, remaining_needed)
+            start = offsets[stratum]
+            end = start + take
+            order.extend(remaining_by_stratum[stratum][start:end])
+            offsets[stratum] = end
+            selected_per_stratum[stratum] += take
+    if len(order) != total or len(set(order)) != total:
+        raise RuntimeError(
+            f"Invalid stratified curriculum order: length={len(order)} unique={len(set(order))}."
+        )
+    return order
+
+
+def _load_or_create_curriculum_group_order(
+    *,
+    accelerator,
+    output_path: str,
+    num_groups: int,
+    initial_groups: int,
+    add_groups: int,
+    total_groups: int,
+    num_strata: int,
+    shared_initial_across_strata: bool = False,
+) -> list[int]:
+    if num_strata <= 1:
+        return _nested_uniform_group_order(num_groups, initial_groups, total_groups)
+
+    destination = Path(output_path) / "curriculum_group_order.json"
+    if accelerator.is_main_process:
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        if not destination.exists():
+            order = _random_stratified_group_order(
+                num_groups=num_groups,
+                initial_groups=initial_groups,
+                add_groups=add_groups,
+                total_groups=total_groups,
+                num_strata=num_strata,
+                shared_initial_across_strata=shared_initial_across_strata,
+            )
+            payload = {
+                "sampling": "os_random_without_replacement",
+                "num_groups": int(num_groups),
+                "initial_groups": int(initial_groups),
+                "add_groups": int(add_groups),
+                "total_groups": int(total_groups),
+                "num_strata": int(num_strata),
+                "shared_initial_across_strata": bool(shared_initial_across_strata),
+                "group_order": order,
+            }
+            temporary = destination.with_name(f".{destination.name}.tmp-{os.getpid()}")
+            with temporary.open("w", encoding="utf-8") as handle:
+                json.dump(payload, handle, indent=2, sort_keys=True)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, destination)
+            print(f"[curriculum] saved immutable random group order to {destination}", flush=True)
+    accelerator.wait_for_everyone()
+    with destination.open("r", encoding="utf-8") as handle:
+        payload = json.load(handle)
+    expected = {
+        "num_groups": int(num_groups),
+        "initial_groups": int(initial_groups),
+        "add_groups": int(add_groups),
+        "total_groups": int(total_groups),
+        "num_strata": int(num_strata),
+    }
+    for key, value in expected.items():
+        if int(payload.get(key, -1)) != value:
+            raise ValueError(
+                f"Persisted curriculum order has {key}={payload.get(key)!r}, expected {value}."
+            )
+    persisted_shared_initial = bool(payload.get("shared_initial_across_strata", False))
+    if persisted_shared_initial != bool(shared_initial_across_strata):
+        raise ValueError(
+            "Persisted curriculum order has shared_initial_across_strata="
+            f"{persisted_shared_initial}, expected {bool(shared_initial_across_strata)}."
+        )
+    order = [int(index) for index in payload["group_order"]]
+    expected_total = min(int(total_groups), int(num_groups))
+    if (
+        len(order) != expected_total
+        or len(set(order)) != expected_total
+        or any(index < 0 or index >= num_groups for index in order)
+    ):
+        raise ValueError(f"Persisted curriculum order in {destination} is invalid.")
+    return order
+
+
+@torch.no_grad()
+def _share_initial_contexts_across_strata(
+    table,
+    group_order: list[int],
+    initial_groups: int,
+    num_strata: int,
+) -> dict[int, int]:
+    if num_strata <= 1 or initial_groups <= 0 or initial_groups % num_strata != 0:
+        raise ValueError(
+            f"Cannot share initial contexts with initial_groups={initial_groups}, strata={num_strata}."
+        )
+    groups_per_stratum = initial_groups // num_strata
+    aliases: dict[int, int] = {}
+    for local_index in range(groups_per_stratum):
+        canonical_index = int(group_order[local_index])
+        for stratum in range(1, num_strata):
+            alias_index = int(group_order[stratum * groups_per_stratum + local_index])
+            table.contexts[alias_index].copy_(table.contexts[canonical_index])
+            aliases[alias_index] = canonical_index
+    return aliases
+
+
 def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
     initial_groups = int(args.grouped_context_curriculum_initial_groups)
+    warmup_groups = int(
+        getattr(args, "grouped_context_curriculum_warmup_groups", 0) or initial_groups
+    )
     add_groups = int(args.grouped_context_curriculum_add_groups)
     total_groups = int(args.grouped_context_curriculum_total_groups) or len(group_order)
     initial_steps = int(args.grouped_context_curriculum_initial_model_steps)
+    assignment_model_steps = int(
+        getattr(args, "grouped_context_curriculum_assignment_model_steps", 0) or 0
+    )
     new_context_steps = int(args.grouped_context_curriculum_new_context_steps)
     mid_context_steps = int(getattr(args, "grouped_context_curriculum_mid_context_steps", 0) or 0)
     all_context_steps = int(args.grouped_context_curriculum_all_context_steps)
@@ -933,9 +1423,10 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
     if initial_groups <= 0 or add_groups <= 0:
         raise ValueError("curriculum mode requires positive initial_groups and add_groups.")
     initial_groups = min(initial_groups, total_groups)
+    warmup_groups = min(max(warmup_groups, initial_groups), total_groups)
     current_step = int(step)
     if current_step <= initial_steps:
-        active = group_order[:initial_groups]
+        active = group_order[:warmup_groups]
         return {
             "round": 0,
             "phase": "model",
@@ -947,7 +1438,20 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
             "new_count": len(active),
         }
 
-    offset = initial_steps
+    if current_step <= initial_steps + assignment_model_steps:
+        active = group_order[:initial_groups]
+        return {
+            "round": 0,
+            "phase": "model",
+            "sample_group_indices": active,
+            "train_context_indices": [],
+            "phase_start": initial_steps + 1,
+            "phase_end": initial_steps + assignment_model_steps,
+            "active_count": len(active),
+            "new_count": 0,
+        }
+
+    offset = initial_steps + assignment_model_steps
     selected_count = 0
     round_id = 0
     while selected_count < total_groups:
@@ -1096,6 +1600,7 @@ def _build_optimizer(model, args):
     if context_lr is None:
         context_lr = args.learning_rate
     context_params = []
+    background_context_params = []
     bridge_global_params = []
     other_params = []
     for name, param in model.named_parameters():
@@ -1103,6 +1608,8 @@ def _build_optimizer(model, args):
             continue
         if name == "friction_context_table.contexts":
             context_params.append(param)
+        elif name == "background_context_table.contexts":
+            background_context_params.append(param)
         elif name == "friction_context_table.global_context":
             bridge_global_params.append(param)
         else:
@@ -1123,6 +1630,18 @@ def _build_optimizer(model, args):
                 "name": "context",
                 "params": context_params,
                 "lr": float(context_lr),
+                "weight_decay": float(getattr(args, "grouped_context_weight_decay", 0.0)),
+            }
+        )
+    if background_context_params:
+        background_context_lr = getattr(args, "grouped_background_context_lr", None)
+        if background_context_lr is None:
+            background_context_lr = context_lr
+        param_groups.append(
+            {
+                "name": "background_context",
+                "params": background_context_params,
+                "lr": float(background_context_lr),
                 "weight_decay": float(getattr(args, "grouped_context_weight_decay", 0.0)),
             }
         )
@@ -1234,14 +1753,32 @@ def _set_alternating_requires_grad(model, args, step: int) -> str | None:
     return phase
 
 
-def _set_curriculum_requires_grad(model, phase: str) -> None:
+def _set_curriculum_requires_grad(model, phase: str, freeze_background: bool = False) -> None:
     context_phase = phase in ("new_context", "new_context_mid", "all_context", "context")
     for name, param in model.named_parameters():
         is_context = name.endswith("friction_context_table.contexts") or name == "friction_context_table.contexts"
-        param.requires_grad_(is_context if context_phase else not is_context)
+        is_background_context = (
+            name.endswith("background_context_table.contexts")
+            or name == "background_context_table.contexts"
+        )
+        is_background_encoder = "background_context_encoder" in name
+        if freeze_background and (is_background_context or is_background_encoder):
+            param.requires_grad_(False)
+        elif is_context:
+            param.requires_grad_(context_phase)
+        elif is_background_context:
+            param.requires_grad_(phase in ("all_context", "context"))
+        else:
+            param.requires_grad_(not context_phase)
 
 
-def _apply_curriculum_lrs(optimizer, args, step: int, phase: str):
+def _apply_curriculum_lrs(
+    optimizer,
+    args,
+    step: int,
+    phase: str,
+    freeze_background: bool = False,
+):
     model_lr = float(args.learning_rate)
     warmup_steps = int(getattr(args, "grouped_context_model_lr_warmup_steps", 0) or 0)
     if warmup_steps > 0:
@@ -1250,6 +1787,10 @@ def _apply_curriculum_lrs(optimizer, args, step: int, phase: str):
     if context_lr is None:
         context_lr = args.learning_rate
     context_lr = float(context_lr)
+    background_context_lr = getattr(args, "grouped_background_context_lr", None)
+    if background_context_lr is None:
+        background_context_lr = context_lr
+    background_context_lr = float(background_context_lr)
     if phase == "new_context" and getattr(args, "grouped_context_new_context_lr", None) is not None:
         context_lr = float(args.grouped_context_new_context_lr)
     if phase == "new_context_mid" and getattr(args, "grouped_context_mid_context_lr", None) is not None:
@@ -1258,9 +1799,15 @@ def _apply_curriculum_lrs(optimizer, args, step: int, phase: str):
         model_lr = 0.0
     else:
         context_lr = 0.0
+    if phase not in ("all_context", "context"):
+        background_context_lr = 0.0
+    if freeze_background:
+        background_context_lr = 0.0
     for group in optimizer.param_groups:
         if group.get("name") == "context":
             group["lr"] = context_lr
+        elif group.get("name") == "background_context":
+            group["lr"] = background_context_lr
         else:
             group["lr"] = model_lr
     return model_lr, context_lr
@@ -1307,6 +1854,19 @@ def _log_context_table(accelerator, model, step: int, phase: str | None, reason:
             f"norm={float(torch.linalg.vector_norm(flat)):.6f} head=[{head}]",
             flush=True,
         )
+    background_table = getattr(accelerator.unwrap_model(model), "background_context_table", None)
+    if background_table is not None:
+        background_values = background_table.friction_values.detach().float().cpu().tolist()
+        background_contexts = background_table.contexts.detach().float().cpu()
+        for background_index, context in zip(background_values, background_contexts):
+            flat = context.flatten()
+            head = ",".join(f"{float(x):.4f}" for x in flat[: min(6, flat.numel())])
+            print(
+                f"[background_context_table] index={int(background_index)} "
+                f"mean={float(flat.mean()):.6f} std={float(flat.std(unbiased=False)):.6f} "
+                f"norm={float(torch.linalg.vector_norm(flat)):.6f} head=[{head}]",
+                flush=True,
+            )
 
 
 def _save_phase_context_table(accelerator, model, model_logger, step: int, phase: str | None, reason: str) -> None:
@@ -1314,9 +1874,10 @@ def _save_phase_context_table(accelerator, model, model_logger, step: int, phase
         return
     safe_phase = str(phase or "none").replace("/", "_")
     safe_reason = str(reason or "phase").replace("/", "_")
+    timestamp = datetime.now().strftime("%m%d-%H%M")
     path = os.path.join(
         model_logger.output_path,
-        f"phase-step-{int(step):06d}-{safe_phase}-{safe_reason}.context_table.json",
+        f"phase-{timestamp}-step-{int(step):06d}-{safe_phase}-{safe_reason}.context_table.json",
     )
     model_logger.save_context_table(accelerator, model, path)
 
@@ -1469,6 +2030,14 @@ def launch_structured_grouped_stage1(accelerator, dataset, model, model_logger, 
             args.grouped_context_clamp_min,
             args.grouped_context_clamp_max,
         )
+        background_context_table = getattr(
+            accelerator.unwrap_model(model), "background_context_table", None
+        )
+        if background_context_table is not None:
+            background_context_table.clamp_(
+                args.grouped_context_clamp_min,
+                args.grouped_context_clamp_max,
+            )
         phase = _alternating_phase(args, step)
         interval = int(getattr(args, "grouped_context_alternating_interval", 0) or 0)
         warmup_steps = int(getattr(args, "grouped_context_alternating_warmup_steps", 0) or 0)
@@ -1493,20 +2062,33 @@ def _parse_bridge_alpha_levels(raw: str) -> list[float]:
     return levels
 
 
-def _set_bridge_requires_grad(model, phase: str) -> None:
+def _set_bridge_requires_grad(
+    model,
+    phase: str,
+    freeze_global_after_warmup: bool = False,
+) -> None:
     for name, param in model.named_parameters():
         if name == "friction_context_table.contexts":
             param.requires_grad_(False)
         elif name == "friction_context_table.global_context":
-            param.requires_grad_(True)
+            param.requires_grad_(
+                phase == "global_warmup" or not freeze_global_after_warmup
+            )
         else:
             param.requires_grad_(phase != "global_warmup")
 
 
-def _apply_bridge_lrs(optimizer, args, phase: str) -> tuple[float, float]:
+def _apply_bridge_lrs(
+    optimizer,
+    args,
+    phase: str,
+    freeze_global_after_warmup: bool = False,
+) -> tuple[float, float]:
     model_lr = 0.0 if phase == "global_warmup" else float(args.learning_rate)
     if phase == "global_warmup":
         global_lr = float(args.grouped_context_bridge_global_warmup_lr)
+    elif freeze_global_after_warmup:
+        global_lr = 0.0
     else:
         global_lr = float(args.grouped_context_bridge_global_lr)
     for group in optimizer.param_groups:
@@ -1606,6 +2188,42 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
             "grouped_context_self_correction_probability must lie in [0,1], "
             f"got {self_correction_probability}."
         )
+    counterfactual_enabled = bool(args.grouped_context_counterfactual_enabled)
+    if counterfactual_enabled and not self_correction_enabled:
+        raise ValueError(
+            "Teacher counterfactual training requires grouped_context_self_correction_enabled."
+        )
+    counterfactual_batch_fraction = float(args.grouped_context_counterfactual_batch_fraction)
+    if not 0.0 < counterfactual_batch_fraction <= 1.0:
+        raise ValueError("grouped_context_counterfactual_batch_fraction must lie in (0,1].")
+    counterfactual_bank = None
+    counterfactual_noise_bands = ()
+    if counterfactual_enabled:
+        if not args.grouped_context_counterfactual_manifest_path:
+            raise ValueError("Counterfactual Teacher manifest path is required.")
+        if not args.grouped_context_counterfactual_raw_root:
+            raise ValueError("Counterfactual Teacher raw root is required.")
+        counterfactual_bank = CounterfactualSourceBank(
+            args.grouped_context_counterfactual_manifest_path,
+            args.grouped_context_counterfactual_raw_root,
+        )
+        counterfactual_noise_bands = parse_noise_bands(
+            args.grouped_context_counterfactual_noise_bands
+        )
+    sampling_mode = str(args.grouped_context_bridge_sampling_mode)
+    curve_power = float(args.grouped_context_bridge_curve_power)
+    freeze_global_after_warmup = bool(
+        args.grouped_context_bridge_freeze_global_after_warmup
+    )
+    timestep_buckets = max(
+        1,
+        int(args.grouped_context_bridge_timestep_buckets_per_update),
+    )
+    smoke_sequence = bool(args.grouped_context_bridge_smoke_sequence)
+    if smoke_sequence and (warmup_steps != 1 or bridge_steps != 5):
+        raise ValueError(
+            "Bridge smoke sequence requires exactly 1 warmup update and 5 bridge updates."
+        )
 
     if accelerator.is_main_process:
         print(
@@ -1617,7 +2235,13 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
             f"per_env_global={chunks_per_env_per_rank * accelerator.num_processes} "
             f"alpha_levels={alpha_levels} global_condition_repeats={global_repeats} "
             f"shared_timestep=true self_correction_enabled={self_correction_enabled} "
-            f"self_correction_probability={self_correction_probability:g}",
+            f"self_correction_probability={self_correction_probability:g} "
+            f"counterfactual_enabled={counterfactual_enabled} "
+            f"counterfactual_batch_fraction={counterfactual_batch_fraction:g} "
+            f"sampling_mode={sampling_mode} curve_power={curve_power:g} "
+            f"timestep_buckets={timestep_buckets} "
+            f"freeze_global_after_warmup={freeze_global_after_warmup} "
+            f"smoke_sequence={smoke_sequence}",
             flush=True,
         )
 
@@ -1631,16 +2255,45 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
             condition_kind = "global"
             target_index = None
             target_mu = friction_values[0]
+            bridge_position = 0.0
             alpha = 0.0
             weights = [0.25] * 4
         else:
             phase = "mixed_bridge"
             post_index = step - warmup_steps - 1
             condition_rng = random.Random(int(args.seed) + int(post_index) * 179424673 + 97)
-            if condition_rng.random() < endpoint_probability:
+            if sampling_mode == "nonlinear_40_30_30" or smoke_sequence:
+                forced_kind = None
+                if smoke_sequence:
+                    forced_kind = (
+                        "endpoint",
+                        "near_global",
+                        "near_global",
+                        "interior",
+                        "interior",
+                    )[post_index]
+                condition = sample_nonlinear_bridge_condition(
+                    condition_rng,
+                    endpoint_probability=endpoint_probability,
+                    curve_power=curve_power,
+                    target_count=4,
+                    forced_kind=forced_kind,
+                )
+                condition_kind = condition.kind
+                target_index = int(condition.target_index)
+                target_mu = friction_values[target_index]
+                bridge_position = float(condition.position)
+                alpha = float(condition.alpha)
+                weights = list(condition.weights)
+                if condition_kind == "endpoint":
+                    endpoint_updates += 1
+                else:
+                    bridge_updates += 1
+            elif condition_rng.random() < endpoint_probability:
                 condition_kind = "endpoint"
                 target_index = condition_rng.randrange(4)
                 target_mu = friction_values[int(target_index)]
+                bridge_position = 1.0
                 alpha = 1.0
                 weights = [
                     1.0 if env_index == int(target_index) else 0.0
@@ -1649,6 +2302,7 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
                 endpoint_updates += 1
             else:
                 target_index, alpha = condition_rng.choice(bridge_conditions)
+                bridge_position = float(alpha)
                 if target_index is None:
                     condition_kind = "global"
                     target_mu = friction_values[0]
@@ -1664,23 +2318,63 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
                 bridge_updates += 1
 
         unwrapped = accelerator.unwrap_model(model)
-        _set_bridge_requires_grad(unwrapped, phase)
-        model_lr, global_lr = _apply_bridge_lrs(optimizer, args, phase)
+        _set_bridge_requires_grad(
+            unwrapped,
+            phase,
+            freeze_global_after_warmup=freeze_global_after_warmup,
+        )
+        model_lr, global_lr = _apply_bridge_lrs(
+            optimizer,
+            args,
+            phase,
+            freeze_global_after_warmup=freeze_global_after_warmup,
+        )
         correction_rng = random.Random(int(args.seed) + int(update_idx) * 15485863 + 43)
-        self_correction_update = (
-            self_correction_enabled
-            and step > warmup_steps
-            and correction_rng.random() < self_correction_probability
-        )
-        shared_timestep_index = _sample_bridge_shared_timestep_index(
-            scheduler=unwrapped.pipe.scheduler,
-            args=args,
-            update_idx=update_idx,
-            self_correction=self_correction_update,
-        )
-        shared_sigma = float(unwrapped.pipe.scheduler.sigmas[shared_timestep_index])
+        if smoke_sequence and step > warmup_steps:
+            self_correction_update = (step - warmup_steps - 1) in {2, 4}
+        else:
+            self_correction_update = (
+                self_correction_enabled
+                and step > warmup_steps
+                and correction_rng.random() < self_correction_probability
+            )
+        shared_timestep_indices = []
+        for bucket_index in range(timestep_buckets):
+            timestep_seed_index = update_idx * timestep_buckets + bucket_index
+            if counterfactual_enabled and self_correction_update:
+                sigma_rng = random.Random(
+                    int(args.seed) + timestep_seed_index * 67867967 + 211
+                )
+                desired_sigma = sample_noise_fraction(
+                    sigma_rng,
+                    counterfactual_noise_bands,
+                )
+                scheduler_sigmas = unwrapped.pipe.scheduler.sigmas
+                timestep_index = min(
+                    range(len(scheduler_sigmas)),
+                    key=lambda index: abs(float(scheduler_sigmas[index]) - desired_sigma),
+                )
+            else:
+                timestep_index = _sample_bridge_shared_timestep_index(
+                    scheduler=unwrapped.pipe.scheduler,
+                    args=args,
+                    update_idx=timestep_seed_index,
+                    self_correction=self_correction_update,
+                )
+            shared_timestep_indices.append(int(timestep_index))
+        shared_sigmas = [
+            float(unwrapped.pipe.scheduler.sigmas[index])
+            for index in shared_timestep_indices
+        ]
+        shared_timestep_index = shared_timestep_indices[0]
+        shared_sigma = shared_sigmas[0]
+        sampling_grouped_indices = grouped_indices
+        if counterfactual_enabled and self_correction_update:
+            sampling_grouped_indices = counterfactual_bank.restrict_grouped_indices(
+                grouped_indices
+            )
         sample_indices = _sample_bridge_rank_indices(
-            grouped_indices=grouped_indices,
+            grouped_indices=sampling_grouped_indices,
             rows=metadata_rows,
             seed=int(args.seed),
             update_idx=update_idx,
@@ -1691,6 +2385,22 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
         expected_local = 4 * chunks_per_env_per_rank
         if len(sample_indices) != expected_local:
             raise RuntimeError(f"Bridge local batch has {len(sample_indices)} samples, expected {expected_local}.")
+        correction_micro_indices: set[int] = set()
+        if self_correction_update:
+            if counterfactual_enabled:
+                for env_mu in friction_values:
+                    env_positions = [
+                        position
+                        for position, sample_index in enumerate(sample_indices)
+                        if abs(float(metadata_rows[sample_index]["friction_mu"]) - env_mu) <= 1e-5
+                    ]
+                    count = max(
+                        1,
+                        int(round(len(env_positions) * counterfactual_batch_fraction)),
+                    )
+                    correction_micro_indices.update(env_positions[:count])
+            else:
+                correction_micro_indices.update(range(len(sample_indices)))
 
         optimizer.zero_grad(set_to_none=True)
         local_loss_sums = torch.zeros(4, device=accelerator.device, dtype=torch.float32)
@@ -1705,24 +2415,36 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
             env_mu = float(row["friction_mu"])
             env_index = min(range(4), key=lambda index: abs(friction_values[index] - env_mu))
             data = dataset[sample_index].copy()
-            data["_flow_timestep_index"] = int(shared_timestep_index)
+            data["_flow_timestep_index"] = int(
+                shared_timestep_indices[micro_idx % len(shared_timestep_indices)]
+            )
             data["_bridge_alpha"] = float(alpha)
             data["_bridge_target_mu"] = float(target_mu)
             loss_scale = float(weights[env_index]) / float(chunks_per_env_per_rank)
-            if self_correction_update:
+            sample_is_correction = micro_idx in correction_micro_indices
+            if sample_is_correction:
                 donor_rng = random.Random(
                     int(args.seed)
                     + int(update_idx) * 32452843
                     + int(sample_index) * 49999
                     + int(accelerator.process_index)
                 )
-                donor_index = _sample_self_correction_donor_index(
-                    target_index=sample_index,
-                    grouped_indices=grouped_indices,
-                    rows=metadata_rows,
-                    rng=donor_rng,
-                )
-                data["_self_correction_donor_data"] = dataset[donor_index]
+                if counterfactual_enabled:
+                    data["_self_correction_donor_data"] = counterfactual_bank.materialize(
+                        dataset=dataset,
+                        target_data=data,
+                        target_index=sample_index,
+                        target_row=row,
+                        rng=donor_rng,
+                    )
+                else:
+                    donor_index = _sample_self_correction_donor_index(
+                        target_index=sample_index,
+                        grouped_indices=grouped_indices,
+                        rows=metadata_rows,
+                        rng=donor_rng,
+                    )
+                    data["_self_correction_donor_data"] = dataset[donor_index]
 
             sync_context = (
                 accelerator.no_sync(model)
@@ -1745,7 +2467,7 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
                 accelerator.backward(scaled_loss)
             local_loss_sums[env_index] += loss.detach().float()
             local_counts[env_index] += 1.0
-            if self_correction_update:
+            if sample_is_correction:
                 local_correction_loss_sums[env_index] += loss.detach().float()
                 local_correction_counts[env_index] += 1.0
             else:
@@ -1825,6 +2547,7 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
                 "condition_kind": condition_kind,
                 "target_environment_index": target_index,
                 "target_environment_mu": target_mu,
+                "bridge_position": float(bridge_position),
                 "alpha": float(alpha),
                 "weights": [float(value) for value in weights],
                 "per_environment_flow_loss": [float(value.cpu()) for value in per_env_losses],
@@ -1853,8 +2576,15 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
                 "negative_grad_cosine_to_target_endpoint": gradient_cosine,
                 "shared_timestep_index": int(shared_timestep_index),
                 "shared_sigma": shared_sigma,
+                "timestep_indices": shared_timestep_indices,
+                "timestep_sigmas": shared_sigmas,
                 "self_correction_update": self_correction_update,
                 "self_correction_probability": self_correction_probability,
+                "counterfactual_enabled": counterfactual_enabled,
+                "counterfactual_examples": len(correction_micro_indices),
+                "counterfactual_batch_fraction": (
+                    float(len(correction_micro_indices)) / float(expected_local)
+                ),
                 "world_size": int(accelerator.num_processes),
                 "local_batch_size": expected_local,
                 "global_batch_size": expected_local * int(accelerator.num_processes),
@@ -1881,6 +2611,15 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
             )
         model_logger.on_step_end(accelerator, model, args.save_steps, loss=reported_loss)
 
+    if smoke_sequence:
+        accelerator.wait_for_everyone()
+        if accelerator.is_main_process:
+            print(
+                "[global_bridge_stage1] smoke sequence completed; "
+                "skipping final training checkpoint",
+                flush=True,
+            )
+        return
     model_logger.on_training_end(accelerator, model, args.save_steps)
 
 
@@ -1889,31 +2628,69 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
     unwrapped = model
     friction_values = unwrapped.friction_context_table.friction_values.detach().float().cpu().tolist()
     total_groups = int(args.grouped_context_curriculum_total_groups) or len(friction_values)
-    group_order = _nested_uniform_group_order(
-        len(friction_values),
-        int(args.grouped_context_curriculum_initial_groups),
-        total_groups,
+    group_order = _load_or_create_curriculum_group_order(
+        accelerator=accelerator,
+        output_path=model_logger.output_path,
+        num_groups=len(friction_values),
+        initial_groups=int(args.grouped_context_curriculum_initial_groups),
+        add_groups=int(args.grouped_context_curriculum_add_groups),
+        total_groups=total_groups,
+        num_strata=int(getattr(args, "grouped_context_curriculum_strata", 0) or 0),
+        shared_initial_across_strata=bool(
+            getattr(args, "grouped_context_curriculum_shared_initial_friction", False)
+        ),
     )
     _initialize_curriculum_contexts(unwrapped.friction_context_table, args, group_order, total_groups)
+    shared_initial = bool(
+        getattr(args, "grouped_context_curriculum_shared_initial_friction", False)
+    )
+    random_context_warmup = bool(
+        getattr(args, "grouped_context_curriculum_random_context_warmup", False)
+    )
+    if shared_initial and random_context_warmup:
+        raise ValueError(
+            "shared_initial_friction and random_context_warmup are mutually exclusive."
+        )
+    shared_context_indices: dict[int, int] = {}
+    if shared_initial:
+        shared_context_indices = _share_initial_contexts_across_strata(
+            unwrapped.friction_context_table,
+            group_order,
+            int(args.grouped_context_curriculum_initial_groups),
+            int(getattr(args, "grouped_context_curriculum_strata", 0) or 0),
+        )
+    metadata_group_values = sorted(float(value) for value in grouped_indices)
+    if len(metadata_group_values) != len(friction_values):
+        raise ValueError(
+            f"Metadata has {len(metadata_group_values)} groups but the context table has "
+            f"{len(friction_values)}."
+        )
+    shared_context_values = {
+        metadata_group_values[alias_index]: metadata_group_values[canonical_index]
+        for alias_index, canonical_index in shared_context_indices.items()
+    }
     optimizer = _build_optimizer(model, args)
     model.to(device=accelerator.device)
     model, optimizer = accelerator.prepare(model, optimizer)
     initialize_deepspeed_gradient_checkpointing(accelerator)
 
     initial_steps = int(args.grouped_context_curriculum_initial_model_steps)
+    assignment_model_steps = int(
+        getattr(args, "grouped_context_curriculum_assignment_model_steps", 0) or 0
+    )
     add_groups = int(args.grouped_context_curriculum_add_groups)
     groups_after_initial = max(0, min(total_groups, len(friction_values)) - int(args.grouped_context_curriculum_initial_groups))
     rounds = 1 + (groups_after_initial + max(add_groups, 1) - 1) // max(add_groups, 1)
     variant = str(getattr(args, "grouped_context_curriculum_variant", "default") or "default").strip().lower()
     if variant in ("two_new_context", "high_model_mid", "high_model_mid_new"):
-        default_updates = initial_steps + rounds * (
+        default_updates = initial_steps + assignment_model_steps + rounds * (
             int(args.grouped_context_curriculum_new_context_steps)
             + int(getattr(args, "grouped_context_curriculum_mid_context_steps", 0) or int(args.grouped_context_curriculum_new_context_steps))
             + 2 * int(args.grouped_context_curriculum_all_context_steps)
             + 3 * int(args.grouped_context_curriculum_model_steps)
         )
     else:
-        default_updates = initial_steps + rounds * (
+        default_updates = initial_steps + assignment_model_steps + rounds * (
             int(args.grouped_context_curriculum_new_context_steps)
             + 2 * int(args.grouped_context_curriculum_all_context_steps)
             + 2 * int(args.grouped_context_curriculum_model_steps)
@@ -1945,6 +2722,7 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
     resume_step = int(getattr(args, "grouped_context_resume_step", 0) or 0)
     iterator = tqdm(range(resume_step, updates), disable=not accelerator.is_local_main_process)
     last_phase_key = None
+    last_forced_model_step = None
     for update_idx in iterator:
         step = update_idx + 1
         phase_info = _curriculum_phase_for_step(args, group_order, step)
@@ -1962,8 +2740,30 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
             )
             last_phase_key = phase_key
 
-        _set_curriculum_requires_grad(model, phase)
-        _apply_curriculum_lrs(optimizer, args, step, phase)
+        background_freeze_after = int(
+            getattr(args, "grouped_background_freeze_after_steps", 0) or 0
+        )
+        freeze_background = (
+            background_freeze_after > 0 and step > background_freeze_after
+        )
+        if (
+            accelerator.is_main_process
+            and background_freeze_after > 0
+            and step == background_freeze_after + 1
+        ):
+            print(
+                "[background_context] permanently froze Background Z and "
+                f"background_context_encoder after step={background_freeze_after}",
+                flush=True,
+            )
+        _set_curriculum_requires_grad(model, phase, freeze_background=freeze_background)
+        _apply_curriculum_lrs(
+            optimizer,
+            args,
+            step,
+            phase,
+            freeze_background=freeze_background,
+        )
         sample_values = [friction_values[index] for index in phase_info["sample_group_indices"]]
         sample_friction_groups = min(friction_groups_per_update, len(sample_values))
         sample_indices = _sample_update_indices(
@@ -1986,7 +2786,28 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                 else contextlib.nullcontext()
             )
             with sync_context:
-                loss = model(dataset[sample_index])
+                sample_data = dataset[sample_index]
+                if random_context_warmup and step <= initial_steps:
+                    random_context = random.Random(
+                        int(args.seed)
+                        + int(step) * 104729
+                        + int(accelerator.process_index) * 1009
+                        + int(micro_idx)
+                    )
+                    pool_size = min(
+                        int(args.grouped_context_curriculum_initial_groups),
+                        len(group_order),
+                    )
+                    borrowed_index = group_order[random_context.randrange(pool_size)]
+                    sample_data = sample_data.copy()
+                    sample_data["friction_mu"] = float(friction_values[borrowed_index])
+                elif shared_context_values:
+                    sample_group_value = float(metadata_rows[sample_index]["friction_mu"])
+                    canonical_value = shared_context_values.get(sample_group_value)
+                    if canonical_value is not None:
+                        sample_data = sample_data.copy()
+                        sample_data["friction_mu"] = canonical_value
+                loss = model(sample_data)
                 detached_losses.append(loss.detach())
                 accelerator.backward(loss / len(sample_indices))
         if phase in ("new_context", "new_context_mid", "all_context"):
@@ -1994,17 +2815,49 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
         if args.max_grad_norm is not None and args.max_grad_norm > 0:
             accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
         optimizer.step()
+        if shared_context_indices:
+            context_table = accelerator.unwrap_model(model).friction_context_table
+            with torch.no_grad():
+                for alias_index, canonical_index in shared_context_indices.items():
+                    context_table.contexts[alias_index].copy_(
+                        context_table.contexts[canonical_index]
+                    )
         accelerator.unwrap_model(model).friction_context_table.clamp_(
             args.grouped_context_clamp_min,
             args.grouped_context_clamp_max,
         )
+        if (
+            random_context_warmup
+            and step == initial_steps
+            and accelerator.is_main_process
+        ):
+            print(
+                "[curriculum] random C borrowing ended; the initial active groups now "
+                "permanently use their distinct table entries",
+                flush=True,
+            )
         if step == int(phase_info["phase_end"]):
+            if phase == "model":
+                regular_save_due = (
+                    int(args.save_steps) > 0
+                    and step % int(args.save_steps) == 0
+                )
+                if not regular_save_due:
+                    if accelerator.is_main_process:
+                        print(
+                            "[checkpoint] forcing paired model/context save at "
+                            f"model phase end step={step}",
+                            flush=True,
+                        )
+                    model_logger.save_model(accelerator, model, f"step-{step}.safetensors")
+                last_forced_model_step = step
             _log_context_table(accelerator, model, step, phase, "curriculum_phase_end")
             _save_phase_context_table(accelerator, model, model_logger, step, phase, "curriculum_phase_end")
         mean_loss = torch.stack([loss.float() for loss in detached_losses]).mean()
         model_logger.on_step_end(accelerator, model, args.save_steps, loss=mean_loss)
 
-    model_logger.on_training_end(accelerator, model, args.save_steps)
+    if last_forced_model_step != model_logger.num_steps:
+        model_logger.on_training_end(accelerator, model, args.save_steps)
 
 
 def main() -> None:
@@ -2016,6 +2869,11 @@ def main() -> None:
     set_global_seed(args.seed)
     runtime_config = prepare_runtime_config(args)
     friction_values = _unique_friction_values(args.dataset_metadata_path)
+    background_values = (
+        _unique_background_values(args.dataset_metadata_path)
+        if bool(getattr(args, "background_context_enabled", False))
+        else []
+    )
     loggers = [name for name in ("wandb", "swanlab") if getattr(args, f"use_{name}", False)]
     accelerator = accelerate.Accelerator(
         gradient_accumulation_steps=args.gradient_accumulation_steps,
@@ -2052,6 +2910,7 @@ def main() -> None:
         args=args,
         grouped_args=args,
         friction_values=friction_values,
+        background_values=background_values,
     )
     restored_global_context = False
     if getattr(args, "grouped_context_resume_context_table", None):
@@ -2059,6 +2918,7 @@ def main() -> None:
             model,
             args.grouped_context_resume_context_table,
         )
+        _load_background_context_table(model, args.grouped_context_resume_context_table)
         if accelerator.is_main_process:
             print(
                 f"[resume] restored context table from {args.grouped_context_resume_context_table} "
@@ -2078,7 +2938,8 @@ def main() -> None:
     if accelerator.is_main_process:
         print(
             f"Grouped-C Stage1: groups={len(friction_values)} "
-            f"context_dim={args.physical_context_dim} tokens={args.physical_context_tokens}",
+            f"context_dim={args.physical_context_dim} tokens={args.physical_context_tokens} "
+            f"background_groups={len(background_values)}",
             flush=True,
         )
 

@@ -244,6 +244,8 @@ class WanTrainingModule(DiffusionTrainingModule):
         }
         if getattr(self.pipe, "physical_context_mode", "none") != "none" or "physical_context" in data:
             inputs_shared["physical_context"] = data.get("physical_context")
+        if getattr(self.pipe, "background_context_enabled", False) or "background_context" in data:
+            inputs_shared["background_context"] = data.get("background_context")
         inputs_shared = self.parse_extra_inputs(data, self.extra_inputs, inputs_shared)
         return inputs_shared, inputs_posi, inputs_nega
 

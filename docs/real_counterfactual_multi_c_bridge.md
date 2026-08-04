@@ -385,3 +385,284 @@ batch.
 
 The next implementation should treat this document as the authoritative infra,
 sampler, loss, and logging specification.
+
+## 12. Pilot Stage E0: Endpoint-Only Counterfactual Training
+
+This pilot is intentionally simpler than the complete Global-to-endpoint bridge
+design. Its purpose is to determine whether counterfactual source correction can
+strengthen endpoint control before introducing Global or any intermediate C.
+
+### 12.1 Scope
+
+Stage E0 has only the four existing environment endpoint contexts:
+
+\[
+C_A,\quad C_B,\quad C_C,\quad C_D
+\]
+
+It has:
+
+- No Global context.
+- No Global warmup.
+- No interpolation between contexts.
+- No near-Global or interior C sampling.
+- No bridge-position weights.
+- No Stage2 latent optimization.
+
+Every training example is conditioned directly on the endpoint matching its
+real environment.
+
+The pilot starts from the successful four-endpoint Stage1 checkpoint. The four
+endpoint context values remain frozen so that this experiment changes only the
+model's ability to obey and recover the endpoint condition.
+
+### 12.2 Training mixture
+
+Each optimizer update uses:
+
+\[
+L_{\mathrm{E0}}
+=
+0.6L_{\mathrm{real}}
++
+0.4L_{\mathrm{CF-endpoint}}
+\]
+
+The ratio is applied after independently normalizing the two branches.
+
+One recommended macro-update contains:
+
+- Three balanced real-data blocks.
+- Two balanced endpoint-counterfactual blocks.
+- One optimizer step after all five blocks have accumulated gradients.
+
+Each block must be balanced over the four environments. Button/action coverage
+must also be balanced so that a block does not identify an environment from an
+irrelevant sampling artifact.
+
+### 12.3 Real branch
+
+For a real chunk from environment \(e\):
+
+\[
+z_e=\operatorname{VAE}(video_e)
+\]
+
+\[
+x_\sigma=(1-\sigma)z_e+\sigma\epsilon
+\]
+
+\[
+v^*_{\mathrm{real}}=\epsilon-z_e
+\]
+
+The model is evaluated directly at endpoint \(C_e\):
+
+\[
+L_{\mathrm{real}}
+=
+\left\|
+v_\theta(x_\sigma,\sigma,a,C_e)
+-
+v^*_{\mathrm{real}}
+\right\|^2
+\]
+
+This branch uses the normal full flow-matching timestep distribution. It is the
+primary retention path for existing endpoint generation quality.
+
+### 12.4 Smallest endpoint-counterfactual unit
+
+Start with one real chunk from environment \(e\) and construct the same
+initial-state, history, and action outcome under all four endpoint conditions:
+
+\[
+Z_b=
+\left\{
+z_b^{(A)},z_b^{(B)},z_b^{(C)},z_b^{(D)}
+\right\}
+\]
+
+Exactly \(z_b^{(e)}\) is real. The other three videos are frozen-Teacher
+counterfactual generations.
+
+Select the source uniformly from all four versions:
+
+\[
+u\sim\operatorname{Uniform}(A,B,C,D)
+\]
+
+Therefore, inside the 40% counterfactual branch:
+
+- 25% of source selections use the real source.
+- 75% of source selections use a fake source.
+
+Across the complete `60% real + 40% counterfactual` update, this corresponds to:
+
+- 70% real-source forwards.
+- 30% fake-source forwards.
+
+The 40% ratio refers to the counterfactual training objective, not to the raw
+fraction of fake-source inputs.
+
+### 12.5 Endpoint correction objective
+
+Create the noised source:
+
+\[
+x_\sigma=(1-\sigma)z_b^{(u)}+\sigma\epsilon
+\]
+
+Because the condition is exactly endpoint \(C_e\), the environment weights
+collapse to:
+
+\[
+w_e=1,\qquad w_{k\neq e}=0
+\]
+
+Although four target videos exist, only the real endpoint target contributes:
+
+\[
+v^*_{\mathrm{CF-endpoint}}
+=
+\frac{x_\sigma-z_b^{(e)}}{\sigma}
+\]
+
+\[
+L_{\mathrm{CF-endpoint}}
+=
+\left\|
+v_\theta(x_\sigma,\sigma,a,C_e)
+-
+v^*_{\mathrm{CF-endpoint}}
+\right\|^2
+\]
+
+When the uniformly selected source is the real version \(u=e\), this target
+reduces to ordinary flow matching:
+
+\[
+\frac{x_\sigma-z_b^{(e)}}{\sigma}
+=
+\epsilon-z_b^{(e)}
+\]
+
+When \(u\neq e\), the model must remove the wrong endpoint outcome and move
+toward the real endpoint outcome selected by \(C_e\).
+
+### 12.6 Timestep policy
+
+The real branch uses the full normal timestep distribution.
+
+The endpoint-counterfactual branch initially uses the established high-noise
+distribution:
+
+- 20% noise fraction in `[0.90, 1.00]`.
+- 60% noise fraction in `[0.70, 0.90]`.
+- 20% noise fraction in `[0.55, 0.70]`.
+
+Multiple timestep buckets should appear in every effective update. The same
+timestep may be shared inside a balanced comparison block, while separate
+blocks independently sample their timestep.
+
+### 12.7 Offline Teacher bank
+
+Teacher generation is an offline preparation step. For every selected real
+chunk:
+
+- Preserve the real video as the diagonal endpoint result.
+- Generate the other three endpoint-conditioned videos.
+- Record real environment, generated endpoint, action, episode, frame range,
+  initial state, and Teacher checkpoint.
+- Cache all four VAE latents.
+- Keep real and synthetic provenance explicit.
+
+Training must not run the Teacher or regenerate counterfactual videos inside the
+optimizer loop.
+
+The minimum valid bank entry contains one real video and exactly three Teacher
+counterfactual videos for the same history and action.
+
+### 12.8 Freeze and train policy
+
+For the first pilot:
+
+- Freeze all four endpoint context values.
+- Do not instantiate a Global context.
+- Train the same selected model modules across both branches.
+- Do not use a separate editing branch or source-token branch.
+- Do not apply lamp-region or object-region loss weighting.
+- Keep the Teacher fully frozen and detached.
+
+Using the same trainable modules in both branches ensures that the real replay
+directly constrains any changes introduced by counterfactual correction.
+
+### 12.9 Required metrics
+
+Log at least:
+
+- Normalized real loss.
+- Normalized endpoint-counterfactual loss.
+- Combined `0.6/0.4` loss.
+- Per-environment real loss.
+- Per-environment counterfactual loss.
+- Real-source counterfactual loss.
+- Aggregate fake-source counterfactual loss.
+- Per-source-endpoint correction loss.
+- Timestep and noise-fraction band.
+- Endpoint real-rollout retention metrics.
+- Counterfactual correction rollout metrics.
+
+The logs must make the `40% counterfactual branch` and the resulting `30%
+fake-source forwards` distinguishable.
+
+### 12.10 Evaluation
+
+For every endpoint environment, evaluate:
+
+- Standard real endpoint rollout from the original real input path.
+- Correction when the source is the matching real version.
+- Correction from each of the three wrong endpoint versions.
+- Ground-truth, pre-pilot checkpoint, and post-pilot checkpoint videos.
+- Flow loss under all four source choices.
+
+The main questions are:
+
+- Does endpoint conditioning override an incorrect source outcome?
+- Does the 60% real branch preserve existing endpoint quality?
+- Is correction strongest in the high-noise region as expected?
+- Does the model improve for all four environments rather than only one button
+  outcome?
+
+### 12.11 Success and failure criteria
+
+Stage E0 succeeds if:
+
+- Fake-source inputs are corrected toward the real endpoint outcome.
+- Standard endpoint rollouts remain comparable to the starting checkpoint.
+- Improvement is balanced across all four environments.
+- The model uses endpoint C rather than simply preserving visible source state.
+
+Stage E0 fails if:
+
+- Real endpoint rollout quality degrades substantially.
+- The model preserves the fake source outcome despite endpoint conditioning.
+- Correction works only at almost-complete noise.
+- One environment improves while another endpoint collapses.
+- Loss improvement is caused only by texture matching without causal lamp-state
+  correction.
+
+### 12.12 Implementation phases
+
+Phase E0-A prepares and validates the complete four-version Teacher bank.
+
+Phase E0-B adds a default-off endpoint-counterfactual sampler and loss path. It
+must not alter legacy Stage1, bridge, curriculum, or inference behavior.
+
+Phase E0-C performs a self-terminating low-priority smoke test covering one real
+block and one counterfactual block for every environment.
+
+Phase E0-D runs a short trend experiment before any full training allocation.
+
+No full Stage E0 training should be submitted until the Teacher bank,
+source-provenance logs, real-retention evaluation, and smoke test all pass.

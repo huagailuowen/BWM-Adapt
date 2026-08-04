@@ -1,6 +1,7 @@
 import os
 
 import imageio.v3 as iio
+import time
 import numpy as np
 import pyarrow.parquet as pq
 import torch
@@ -93,14 +94,34 @@ class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
             path = data.get("data")
             start_frame = start_frame if start_frame is not None else data.get("start_frame")
             end_frame = end_frame if end_frame is not None else data.get("end_frame")
+            frame_stride = max(1, int(data.get("frame_stride", self.frame_stride)))
         else:
             raise TypeError(f"Expected 'data' to be a dict, but received {type(data).__name__}.")
             
         path = resolve_path(self.base_path, path)
             
-        reader = self.get_reader(path)
-        raw_frame_rate = reader.get_meta_data()['fps']
-        total_raw_frames = reader.count_frames()
+        reader = None
+        for attempt in range(4):
+            try:
+                reader = self.get_reader(path)
+                raw_frame_rate = reader.get_meta_data()['fps']
+                total_raw_frames = reader.count_frames()
+                break
+            except OSError as exc:
+                if reader is not None:
+                    reader.close()
+                    reader = None
+                if attempt == 3:
+                    raise OSError(
+                        f"Failed to open video after 4 attempts: {path}"
+                    ) from exc
+                delay = 2 ** attempt
+                print(
+                    f"[video-io] Failed to open {path}; retrying in {delay}s "
+                    f"({attempt + 1}/3): {exc}",
+                    flush=True,
+                )
+                time.sleep(delay)
         
         start = max(0, start_frame if start_frame is not None else 0)
         end = min(total_raw_frames, (end_frame + 1) if end_frame is not None else total_raw_frames)
@@ -112,7 +133,7 @@ class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
         available_frames = (
             int(clip_frames * self.frame_rate / raw_frame_rate)
             if self.fix_frame_rate
-            else (clip_frames - 1) // self.frame_stride + 1
+            else (clip_frames - 1) // frame_stride + 1
         )
         num_frames = self.num_frames
         if available_frames < num_frames and not self.pad_short:
@@ -123,17 +144,19 @@ class LoadVideoChunk(DataProcessingOperator, FrameSamplerByRateMixin):
             )
         
         frames = []
-        for frame_id in range(num_frames):
-            if self.fix_frame_rate:
-                frame_id = self.map_single_frame_id(frame_id, raw_frame_rate, clip_frames)
-            else:
-                frame_id *= self.frame_stride
-            frame_id = min(frame_id, clip_frames - 1)
-            frame = reader.get_data(start + frame_id)
-            frame = Image.fromarray(frame)
-            frame = self.frame_processor(frame)
-            frames.append(frame)
-        reader.close()
+        try:
+            for frame_id in range(num_frames):
+                if self.fix_frame_rate:
+                    frame_id = self.map_single_frame_id(frame_id, raw_frame_rate, clip_frames)
+                else:
+                    frame_id *= frame_stride
+                frame_id = min(frame_id, clip_frames - 1)
+                frame = reader.get_data(start + frame_id)
+                frame = Image.fromarray(frame)
+                frame = self.frame_processor(frame)
+                frames.append(frame)
+        finally:
+            reader.close()
         return frames
     
 
@@ -223,9 +246,28 @@ class ImageCropAndResize(DataProcessingOperator):
                 interpolation=torchvision.transforms.InterpolationMode.BILINEAR
             )
             return image
+
+        elif self.resize_mode == "letterbox":
+            scale = min(target_width / width, target_height / height)
+            resized_width = min(target_width, max(1, round(width * scale)))
+            resized_height = min(target_height, max(1, round(height * scale)))
+            image = torchvision.transforms.functional.resize(
+                image,
+                [resized_height, resized_width],
+                interpolation=torchvision.transforms.InterpolationMode.BILINEAR,
+            )
+            pad_width = target_width - resized_width
+            pad_height = target_height - resized_height
+            left = pad_width // 2
+            top = pad_height // 2
+            return torchvision.transforms.functional.pad(
+                image,
+                [left, top, pad_width - left, pad_height - top],
+                fill=0,
+            )
         
     def get_height_width(self, image):
-        if self.resize_mode == "crop" and self.height is not None and self.width is not None:
+        if self.resize_mode in ("crop", "letterbox") and self.height is not None and self.width is not None:
             return self.height, self.width
 
         width, height = image.size
@@ -400,6 +442,7 @@ class LoadCobotAction(DataProcessingOperator):
             eef_abs (原 state_pose：末端绝对位姿)
             joint_delta (原 action_joint：关节相对动作/增量)
             eef_delta (原 action_pose：末端相对动作/增量)
+            joint_state_action (observation.state[:7] + action[:7])
         """
         requested_action_type = action_type
         # Compatibility aliases for older script conventions.
@@ -411,7 +454,13 @@ class LoadCobotAction(DataProcessingOperator):
         }
         action_type = action_type_alias.get(action_type, action_type)
 
-        if action_type not in ("state_joint", "state_pose", "action_joint", "action_pose"):
+        if action_type not in (
+            "state_joint",
+            "state_pose",
+            "action_joint",
+            "action_pose",
+            "joint_state_action",
+        ):
             raise ValueError(f"Unsupported action type: {action_type}")
         self.base_path = base_path
         self.requested_action_type = requested_action_type
@@ -419,8 +468,9 @@ class LoadCobotAction(DataProcessingOperator):
         self.stat = stat or {}
         self.use_percentile_stats = use_percentile_stats
         # `state_*` means read observation.state and `action_*` means read action.
+        self.use_state_action = action_type == "joint_state_action"
         self.use_state = action_type.startswith("state_")
-        self.use_joint = action_type.endswith("_joint")
+        self.use_joint = action_type.endswith("_joint") or self.use_state_action
         name_to_idx = {name: idx for idx, name in enumerate(JOINT_AND_EEF_NAMES)}
         self.indices = [name_to_idx[name] for name in (JOINT_NAMES if self.use_joint else EEF_NAMES)]
         self._stat_min = None
@@ -555,25 +605,45 @@ class LoadCobotAction(DataProcessingOperator):
         clip_frames = end_frame - start_frame + 1
         available_frames = (clip_frames - 1) // self.frame_stride + 1
         num_frames = self.get_num_frames(available_frames)
-        column = "observation.state" if self.use_state else "action"
         raw_num_frames = min(clip_frames, max(1, (num_frames - 1) * self.frame_stride + 1))
-        arr = self._read_slice(parquet_path, column, start_frame, raw_num_frames)
-        if self.frame_stride > 1:
-            arr = arr[::self.frame_stride]
-        if arr.shape[0] < num_frames:
-            if not self.pad_short:
-                raise ValueError(
-                    f"Not enough strided action rows in {parquet_path}: "
-                    f"available={arr.shape[0]}, requested={num_frames}, stride={self.frame_stride}"
+
+        def read_aligned_column(column: str) -> np.ndarray:
+            values = self._read_slice(parquet_path, column, start_frame, raw_num_frames)
+            if self.frame_stride > 1:
+                values = values[::self.frame_stride]
+            if values.shape[0] < num_frames:
+                if not self.pad_short:
+                    raise ValueError(
+                        f"Not enough strided {column} rows in {parquet_path}: "
+                        f"available={values.shape[0]}, requested={num_frames}, "
+                        f"stride={self.frame_stride}"
+                    )
+                values = np.concatenate(
+                    [values, np.repeat(values[-1:], num_frames - values.shape[0], axis=0)],
+                    axis=0,
                 )
-            arr = np.concatenate(
-                [arr, np.repeat(arr[-1:], num_frames - arr.shape[0], axis=0)],
-                axis=0,
-            )
-        arr = arr[:num_frames]
+            return values[:num_frames]
+
+        if self.use_state_action:
+            state = read_aligned_column("observation.state")
+            action = read_aligned_column("action")
+            if state.ndim != 2 or action.ndim != 2 or state.shape[1] < 7 or action.shape[1] < 7:
+                raise ValueError(
+                    f"joint_state_action requires aligned state/action widths >=7, got "
+                    f"state={state.shape}, action={action.shape} in {parquet_path}"
+                )
+            arr = np.concatenate([state[:, :7], action[:, :7]], axis=1)
+        else:
+            column = "observation.state" if self.use_state else "action"
+            arr = read_aligned_column(column)
         if arr.ndim != 2:
             raise ValueError(f"Unexpected action shape {arr.shape} in {parquet_path}")
-        if arr.shape[1] == len(JOINT_AND_EEF_NAMES):
+        if self.use_state_action:
+            if arr.shape[1] != 14:
+                raise ValueError(
+                    f"joint_state_action must produce 14 channels, got {arr.shape[1]} in {parquet_path}"
+                )
+        elif arr.shape[1] == len(JOINT_AND_EEF_NAMES):
             arr = arr[:, self.indices]
         elif self.output_dim is not None and arr.shape[1] <= self.output_dim:
             # Generic single-arm LeRobot datasets can expose native action widths
