@@ -24,6 +24,7 @@ def parse_args():
     parser = argparse.ArgumentParser("RoboTwin inference entrypoint.")
     parser = add_general_config(parser)
     parser.add_argument("--frame_stride", type=int, default=1)
+    parser.add_argument("--skip_existing", action="store_true", default=False)
     parser.add_argument(
         "--sample_indices",
         type=str,
@@ -204,14 +205,21 @@ def _run_autoregressive(
         chunk_idx += 1
 
     predicted_video = torch.stack(generated_frames, dim=2)[:, :, :total_frames]
-    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
-    save_video(
-        predicted_video,
-        output_path=output_path,
-        fps=int(args.fps),
-        quality=int(args.quality),
-    )
-    return output_path
+    final_output = Path(output_path)
+    final_output.parent.mkdir(parents=True, exist_ok=True)
+    temporary_output = final_output.with_name(f".{final_output.stem}.partial{final_output.suffix}")
+    temporary_output.unlink(missing_ok=True)
+    try:
+        save_video(
+            predicted_video,
+            output_path=str(temporary_output),
+            fps=int(args.fps),
+            quality=int(args.quality),
+        )
+        temporary_output.replace(final_output)
+    finally:
+        temporary_output.unlink(missing_ok=True)
+    return str(final_output)
 
 
 def build_pipeline(args):
@@ -392,6 +400,11 @@ def main():
             f"[sample_window_target] sample_index={sample['sample_index']} episode_index={sample['episode_index']} "
             f"range=[0,{sample['total_frames'] - 1}] output={sample['output_path']}"
         )
+        if args.skip_existing and Path(sample["output_path"]).is_file():
+            print(f"[skip] existing prediction {sample['output_path']}")
+            processed += 1
+            continue
+
         predicted_path = _run_autoregressive(
             pipe=pipe,
             sample=sample,

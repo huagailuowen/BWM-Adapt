@@ -34,8 +34,17 @@ def padded_limits(values: np.ndarray, ratio: float = 0.08) -> tuple[float, float
     return low - ratio * span, high + ratio * span
 
 
-def friction_color(mu: float, low: float, high: float) -> str:
-    position = (float(mu) - low) / max(high - low, 1e-12)
+def friction_color(mu: float, low: float, high: float, scale: str = "linear") -> str:
+    value = float(mu)
+    low_value = float(low)
+    high_value = float(high)
+    if scale == "log":
+        if min(value, low_value, high_value) <= 0:
+            raise ValueError("Log color scale requires strictly positive parameter values.")
+        value = float(np.log(value))
+        low_value = float(np.log(low_value))
+        high_value = float(np.log(high_value))
+    position = (value - low_value) / max(high_value - low_value, 1e-12)
     index = round(min(1.0, max(0.0, position)) * (len(PALETTE) - 1))
     return PALETTE[index]
 
@@ -49,6 +58,7 @@ def write_svg(
     trajectories: list[dict],
     explained: np.ndarray,
     parameter_label: str,
+    color_scale: str,
 ) -> None:
     width, height = 1680, 1040
     detail_panels = [(840, 140), (1260, 140), (840, 520), (1260, 520)]
@@ -146,14 +156,14 @@ def write_svg(
     table_points = " ".join(f"{sx(active_scores[index, 0]):.2f},{sy(active_scores[index, 1]):.2f}" for index in order)
     svg.append(f'<polyline points="{table_points}" fill="none" stroke="#8b857b" stroke-width="1.05" stroke-dasharray="4 5" opacity=".42"/>')
     for index in order:
-        color = friction_color(float(active_mus[index]), mu_low, mu_high)
+        color = friction_color(float(active_mus[index]), mu_low, mu_high, color_scale)
         svg.append(
             f'<circle cx="{sx(active_scores[index,0]):.2f}" cy="{sy(active_scores[index,1]):.2f}" r="4.5" fill="{color}" stroke="#fffdf8" stroke-width="1">'
             f'<title>table {escape(parameter_label)}={active_mus[index]:.6g}</title></circle>'
         )
 
     for item, indices, scores in sampled:
-        color = friction_color(float(item["mu"]), mu_low, mu_high)
+        color = friction_color(float(item["mu"]), mu_low, mu_high, color_scale)
         dash = "" if item["split"] == "ID" else ' stroke-dasharray="7 5"'
         points = " ".join(f"{sx(row[0]):.2f},{sy(row[1]):.2f}" for row in scores)
         svg.append(f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="2.1" opacity=".62"{dash}/>')
@@ -177,7 +187,7 @@ def write_svg(
     for panel_index, (item, indices, selected_scores) in enumerate(panel_items):
         panel_x, panel_y = detail_panels[panel_index]
         border_dash = "" if item["split"] == "ID" else ' stroke-dasharray="8 5"'
-        friction = friction_color(float(item["mu"]), mu_low, mu_high)
+        friction = friction_color(float(item["mu"]), mu_low, mu_high, color_scale)
         svg.extend([
             f'<rect x="{panel_x}" y="{panel_y}" width="{detail_width}" height="{detail_height}" rx="10" fill="#fffdf8" stroke="{friction}" stroke-width="1.8"{border_dash}/>',
             f'<text x="{panel_x+18}" y="{panel_y+27}" font-family="DejaVu Sans,sans-serif" font-size="17" font-weight="650" fill="#17212b">{item["split"]} | sample {item["sample_index"]} | {escape(parameter_label)}={item["mu"]:.6g}</text>',
@@ -257,7 +267,7 @@ def write_svg(
         '<line x1="620" y1="990" x2="662" y2="990" stroke="#27323a" stroke-width="2" stroke-dasharray="7 5"/><text x="672" y="995" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#4b5359">OOD / held-out</text>',
         '<rect x="1260" y="982" width="280" height="15" rx="2" fill="url(#fric)" stroke="#8b857b" stroke-width=".6"/>',
         f'<text x="1248" y="995" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">low {escape(parameter_label)}</text>',
-        f'<text x="1550" y="995" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">high {escape(parameter_label)}</text>',
+        f'<text x="1550" y="995" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">high {escape(parameter_label)} ({escape(color_scale)} scale)</text>',
         '</svg>',
     ])
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -275,6 +285,7 @@ def main() -> None:
     parser.add_argument("--output-csv", required=True)
     parser.add_argument("--title", required=True)
     parser.add_argument("--parameter-label", default="mu")
+    parser.add_argument("--color-scale", choices=("linear", "log"), default="linear")
     args = parser.parse_args()
 
     table_records = json.loads(Path(args.table_path).read_text())["records"]
@@ -362,6 +373,7 @@ def main() -> None:
         trajectories=plot_trajectories,
         explained=explained,
         parameter_label=str(args.parameter_label),
+        color_scale=str(args.color_scale),
     )
     start_sources = sorted({item["initial_source"] for item in plot_trajectories})
     print(

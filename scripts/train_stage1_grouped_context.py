@@ -3,12 +3,15 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import csv
+from collections import defaultdict
 import json
 import os
 import random
+import shutil
 import time
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -18,6 +21,7 @@ if str(REPO_ROOT / "scripts") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 import accelerate
+from accelerate.utils import InitProcessGroupKwargs
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -286,9 +290,16 @@ class GroupedContextStage1Module(WanTrainingModule):
 
     def get_pipeline_inputs(self, data):
         data = data.copy()
+        direct_physical_context = data.pop("_direct_physical_context", None)
         bridge_alpha = data.pop("_bridge_alpha", None)
         bridge_target_mu = data.pop("_bridge_target_mu", None)
-        if bridge_alpha is None:
+        if direct_physical_context is not None:
+            physical_context = torch.as_tensor(
+                direct_physical_context,
+                dtype=self.pipe.torch_dtype,
+                device=self.pipe.device,
+            )
+        elif bridge_alpha is None:
             physical_context = self.friction_context_table.lookup(
                 data["friction_mu"],
                 dtype=self.pipe.torch_dtype,
@@ -601,6 +612,74 @@ class GroupedContextModelLogger(TimedRetentionModelLogger):
                 pass
 
 
+class StagedGroupedContextModelLogger(GroupedContextModelLogger):
+    def __init__(self, *args, local_checkpoint_root: str, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.local_checkpoint_root = str(local_checkpoint_root)
+
+    def save_model(self, accelerator, model, file_name):
+        shared_output = Path(self.output_path)
+        local_output = Path(self.local_checkpoint_root) / file_name.replace(".safetensors", "")
+        if accelerator.is_main_process:
+            shutil.rmtree(local_output, ignore_errors=True)
+            local_output.mkdir(parents=True, exist_ok=False)
+            print(
+                f"[checkpoint] staging {file_name} on node-local {local_output}",
+                flush=True,
+            )
+        accelerator.wait_for_everyone()
+
+        local_logger = GroupedContextModelLogger(
+            str(local_output),
+            remove_prefix_in_ckpt=self.remove_prefix_in_ckpt,
+            save_minutes=0,
+            keep_last=0,
+            log_steps=0,
+        )
+        local_logger.save_model(accelerator, model, file_name)
+
+        context_name = file_name.replace(".safetensors", ".context_table.json")
+        local_marker_name = f".{file_name}.complete"
+        shared_marker = shared_output / local_marker_name
+        if accelerator.is_main_process:
+            temporary = shared_output / f".{file_name}.publish-{os.getpid()}"
+            shutil.rmtree(temporary, ignore_errors=True)
+            temporary.mkdir(parents=True, exist_ok=False)
+            shutil.copy2(local_output / file_name, temporary / file_name)
+            shutil.copy2(local_output / context_name, temporary / context_name)
+            shutil.copy2(local_output / local_marker_name, temporary / local_marker_name)
+
+            for final_path in (
+                shared_output / file_name,
+                shared_output / context_name,
+                shared_marker,
+            ):
+                try:
+                    final_path.unlink()
+                except FileNotFoundError:
+                    pass
+            os.replace(temporary / file_name, shared_output / file_name)
+            os.replace(temporary / context_name, shared_output / context_name)
+            os.replace(temporary / local_marker_name, shared_marker)
+            shutil.rmtree(temporary)
+            shutil.rmtree(local_output, ignore_errors=True)
+            self._prune_old_checkpoints()
+            self._prune_context_tables_without_checkpoints()
+            print(
+                f"[checkpoint] published staged checkpoint "
+                f"{shared_output / file_name}",
+                flush=True,
+            )
+        else:
+            deadline = time.monotonic() + 20.0 * 60.0 * 60.0
+            while not shared_marker.is_file():
+                if time.monotonic() >= deadline:
+                    raise TimeoutError(
+                        f"Timed out waiting for staged checkpoint {shared_marker}."
+                    )
+                time.sleep(5.0)
+
+
 def add_grouped_context_config(parser: argparse.ArgumentParser):
     group = parser.add_argument_group("grouped_context_stage1")
     group.add_argument("--grouped_context_init_mode", type=str, default="normal")
@@ -616,6 +695,19 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_new_context_lr", type=float, default=None)
     group.add_argument("--grouped_context_lr_schedule", type=str, default=None)
     group.add_argument("--grouped_context_model_lr_warmup_steps", type=int, default=0)
+    group.add_argument("--grouped_context_model_phase_warmup_steps", type=int, default=0)
+    group.add_argument(
+        "--grouped_context_reset_model_optimizer_state_on_phase_start",
+        action="store_true",
+        default=False,
+    )
+    group.add_argument("--grouped_context_post_curriculum_lr", type=float, default=None)
+    group.add_argument("--grouped_context_post_curriculum_start_step", type=int, default=0)
+    group.add_argument("--grouped_context_phase_max_displacement", type=float, default=0.0)
+    group.add_argument("--grouped_context_phase_max_displacement_start_step", type=int, default=0)
+    group.add_argument("--grouped_context_validation_interval", type=int, default=0)
+    group.add_argument("--grouped_context_validation_seed", type=int, default=20260810)
+    group.add_argument("--grouped_context_protected_checkpoint_steps", type=str, default=None)
     group.add_argument("--grouped_context_alternating_interval", type=int, default=0)
     group.add_argument("--grouped_context_alternating_start", type=str, default="model")
     group.add_argument("--grouped_context_alternating_warmup_steps", type=int, default=0)
@@ -625,6 +717,19 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_actions_per_update", type=int, default=4)
     group.add_argument("--grouped_context_microbatches_per_update", type=int, default=0)
     group.add_argument("--grouped_context_sampling_mode", type=str, default="common_actions")
+    group.add_argument("--grouped_context_action_weight_path", type=str, default=None)
+    group.add_argument(
+        "--grouped_context_action_weight_column",
+        type=str,
+        default="primary_relative_to_uniform",
+    )
+    group.add_argument("--grouped_context_action_weight_contrast", type=float, default=1.0)
+    group.add_argument("--grouped_context_action_weight_min_relative", type=float, default=0.0)
+    group.add_argument("--grouped_context_action_weight_max_relative", type=float, default=1e9)
+    group.add_argument("--grouped_context_episode_key", type=str, default="source_episode_index")
+    group.add_argument("--grouped_context_window_kind_field", type=str, default="sampling_kind")
+    group.add_argument("--grouped_context_preferred_window_kind", type=str, default="lift")
+    group.add_argument("--grouped_context_preferred_window_probability", type=float, default=0.8)
     group.add_argument("--grouped_context_stratify_field", type=str, default=None)
     group.add_argument("--grouped_context_sampling_strata", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_initial_groups", type=int, default=0)
@@ -634,11 +739,28 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_curriculum_strata", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_initial_model_steps", type=int, default=300)
     group.add_argument("--grouped_context_curriculum_assignment_model_steps", type=int, default=0)
+    group.add_argument("--grouped_context_curriculum_initial_sample_mode", type=str, default="all")
+    group.add_argument(
+        "--grouped_context_curriculum_initial_sample_groups",
+        type=str,
+        default=None,
+    )
+    group.add_argument(
+        "--grouped_context_curriculum_initial_sample_rank_field",
+        type=str,
+        default="physical_friction_mu",
+    )
     group.add_argument(
         "--grouped_context_curriculum_random_context_warmup",
         action="store_true",
         default=False,
     )
+    group.add_argument("--grouped_context_direct_random_steps", type=int, default=0)
+    group.add_argument("--grouped_context_direct_random_min", type=float, default=0.0)
+    group.add_argument("--grouped_context_direct_random_max", type=float, default=1.0)
+    group.add_argument("--grouped_context_direct_random_pool_size", type=int, default=0)
+    group.add_argument("--grouped_context_direct_random_resume_state", type=str, default=None)
+    group.add_argument("--grouped_context_direct_random_local_checkpoint_root", type=str, default=None)
     group.add_argument(
         "--grouped_context_curriculum_shared_initial_friction",
         action="store_true",
@@ -657,6 +779,11 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_curriculum_initial_refinement_steps", type=int, default=0)
     group.add_argument("--grouped_context_resume_context_table", type=str, default=None)
     group.add_argument("--grouped_context_resume_step", type=int, default=0)
+    group.add_argument("--grouped_context_initialize_optimizer_state", type=str, default=None)
+    group.add_argument("--grouped_context_initial_context_pool_path", type=str, default=None)
+    group.add_argument("--grouped_context_stage_checkpoints_locally", action="store_true", default=False)
+    group.add_argument("--grouped_context_local_checkpoint_root", type=str, default=None)
+    group.add_argument("--grouped_context_model_phase_checkpoint_policy", type=str, default="all")
     group.add_argument("--grouped_context_bridge_enabled", action="store_true", default=False)
     group.add_argument("--grouped_context_bridge_global_warmup_steps", type=int, default=300)
     group.add_argument("--grouped_context_bridge_training_steps", type=int, default=4000)
@@ -712,6 +839,146 @@ def _metadata_index(metadata_path: str) -> tuple[dict[float, dict[int, list[int]
         action_id = int(row.get("action_id", 0))
         grouped.setdefault(mu, {}).setdefault(action_id, []).append(index)
     return grouped, rows
+
+
+_ACTION_SAMPLING_WEIGHT_CACHE: dict[
+    tuple[str, str, float, float, float],
+    dict[int, dict[int, float]],
+] = {}
+
+
+def _load_action_sampling_weights(
+    *,
+    path: str,
+    value_column: str,
+    contrast: float,
+    min_relative: float,
+    max_relative: float,
+) -> dict[int, dict[int, float]]:
+    resolved_path = str(Path(path).expanduser().resolve())
+    cache_key = (
+        resolved_path,
+        str(value_column),
+        float(contrast),
+        float(min_relative),
+        float(max_relative),
+    )
+    cached = _ACTION_SAMPLING_WEIGHT_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
+    if contrast <= 0.0:
+        raise ValueError(f"Action-weight contrast must be positive, got {contrast}.")
+    if not (0.0 <= min_relative <= 1.0):
+        raise ValueError(
+            "Action-weight minimum relative probability must be in [0, 1], "
+            f"got {min_relative}."
+        )
+    if max_relative < 1.0:
+        raise ValueError(
+            "Action-weight maximum relative probability must be at least 1, "
+            f"got {max_relative}."
+        )
+
+    baseline_by_environment: dict[int, dict[int, float]] = {}
+    with open(resolved_path, "r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required_columns = {"environment_group_id", "action_id", value_column}
+        missing_columns = required_columns.difference(reader.fieldnames or ())
+        if missing_columns:
+            raise KeyError(
+                f"Action-weight table {resolved_path} is missing columns "
+                f"{sorted(missing_columns)}."
+            )
+        for row in reader:
+            environment_id = int(round(float(row["environment_group_id"])))
+            action_id = int(row["action_id"])
+            value = float(row[value_column])
+            if value < 0.0:
+                raise ValueError(
+                    f"Negative action weight for environment={environment_id}, "
+                    f"action={action_id}: {value}."
+                )
+            by_action = baseline_by_environment.setdefault(environment_id, {})
+            if action_id in by_action:
+                raise ValueError(
+                    f"Duplicate action weight for environment={environment_id}, "
+                    f"action={action_id}."
+                )
+            by_action[action_id] = value
+    if not baseline_by_environment:
+        raise ValueError(f"Action-weight table {resolved_path} is empty.")
+
+    probabilities_by_environment: dict[int, dict[int, float]] = {}
+    relative_values: list[float] = []
+    for environment_id, baseline_by_action in baseline_by_environment.items():
+        action_ids = sorted(baseline_by_action)
+        num_actions = len(action_ids)
+        if num_actions == 0:
+            continue
+        raw_probabilities = [
+            (1.0 + contrast * (baseline_by_action[action_id] - 1.0)) / num_actions
+            for action_id in action_ids
+        ]
+        lower = min_relative / num_actions
+        upper = max_relative / num_actions
+        low_shift = min(lower - value for value in raw_probabilities) - 1.0
+        high_shift = max(upper - value for value in raw_probabilities) + 1.0
+        for _ in range(80):
+            shift = 0.5 * (low_shift + high_shift)
+            total = sum(
+                min(upper, max(lower, value + shift))
+                for value in raw_probabilities
+            )
+            if total < 1.0:
+                low_shift = shift
+            else:
+                high_shift = shift
+        shift = 0.5 * (low_shift + high_shift)
+        probabilities = [
+            min(upper, max(lower, value + shift))
+            for value in raw_probabilities
+        ]
+        probabilities_by_environment[environment_id] = dict(zip(action_ids, probabilities))
+        relative_values.extend(value * num_actions for value in probabilities)
+
+    print(
+        "[action-sampling] "
+        f"table={resolved_path} environments={len(probabilities_by_environment)} "
+        f"column={value_column} contrast={contrast:g} "
+        f"normalized_relative_range=[{min(relative_values):.6f}, "
+        f"{max(relative_values):.6f}]",
+        flush=True,
+    )
+    _ACTION_SAMPLING_WEIGHT_CACHE[cache_key] = probabilities_by_environment
+    return probabilities_by_environment
+
+
+def _weighted_sample_without_replacement(
+    *,
+    rng: random.Random,
+    values: list[int],
+    weights: list[float],
+    count: int,
+) -> list[int]:
+    if count > len(values):
+        raise ValueError(f"Cannot sample {count} distinct values from {len(values)} candidates.")
+    pool = list(zip(values, weights))
+    selected: list[int] = []
+    for _ in range(count):
+        total = sum(weight for _, weight in pool)
+        if total <= 0.0:
+            raise ValueError("Weighted action sampler has no positive probability mass.")
+        threshold = rng.random() * total
+        cumulative = 0.0
+        selected_index = len(pool) - 1
+        for index, (_, weight) in enumerate(pool):
+            cumulative += weight
+            if threshold <= cumulative:
+                selected_index = index
+                break
+        value, _ = pool.pop(selected_index)
+        selected.append(value)
+    return selected
 
 
 def _sample_structured_indices(
@@ -893,6 +1160,89 @@ def _sample_independent_window_indices(
     return indices
 
 
+def _sample_episode_then_window_indices(
+    *,
+    grouped_indices: dict[float, dict[int, list[int]]],
+    rows: list[dict],
+    rng: random.Random,
+    friction_groups: int,
+    episodes_per_group: int,
+    allowed_friction_values: list[float] | None = None,
+    episode_key_field: str = "source_episode_index",
+    window_kind_field: str = "sampling_kind",
+    preferred_window_kind: str = "lift",
+    preferred_window_probability: float = 0.8,
+) -> list[int]:
+    if not 0.0 <= float(preferred_window_probability) <= 1.0:
+        raise ValueError(
+            "grouped_context_preferred_window_probability must be in [0, 1], "
+            f"got {preferred_window_probability}."
+        )
+    allowed_values = None
+    if allowed_friction_values is not None:
+        allowed_values = [float(value) for value in allowed_friction_values]
+
+    def is_allowed(value: float) -> bool:
+        if allowed_values is None:
+            return True
+        return any(abs(float(value) - allowed) <= 1e-5 for allowed in allowed_values)
+
+    episodes_by_group: dict[float, dict[object, list[int]]] = {}
+    for value, by_action in grouped_indices.items():
+        value = float(value)
+        if not is_allowed(value):
+            continue
+        by_episode: dict[object, list[int]] = {}
+        for action_candidates in by_action.values():
+            for index in action_candidates:
+                if episode_key_field not in rows[index]:
+                    raise KeyError(
+                        f"Metadata row is missing episode key {episode_key_field!r}."
+                    )
+                episode_key = rows[index][episode_key_field]
+                by_episode.setdefault(episode_key, []).append(index)
+        if len(by_episode) >= episodes_per_group:
+            episodes_by_group[value] = by_episode
+
+    values = sorted(episodes_by_group)
+    if len(values) < friction_groups:
+        raise ValueError(
+            f"Need {friction_groups} eligible groups for episode-then-window sampling, "
+            f"got {len(values)}."
+        )
+    selected_values = rng.sample(values, friction_groups)
+
+    indices: list[int] = []
+    for value in selected_values:
+        by_episode = episodes_by_group[value]
+        episode_keys = sorted(by_episode, key=lambda item: str(item))
+        selected_episodes = rng.sample(episode_keys, episodes_per_group)
+        for episode_key in selected_episodes:
+            episode_candidates = by_episode[episode_key]
+            preferred_candidates = [
+                index
+                for index in episode_candidates
+                if str(rows[index].get(window_kind_field, "")) == preferred_window_kind
+            ]
+            other_candidates = [
+                index
+                for index in episode_candidates
+                if str(rows[index].get(window_kind_field, "")) != preferred_window_kind
+            ]
+            choose_preferred = rng.random() < float(preferred_window_probability)
+            candidate_pool = preferred_candidates if choose_preferred else other_candidates
+            if not candidate_pool:
+                candidate_pool = other_candidates if choose_preferred else preferred_candidates
+            if not candidate_pool:
+                raise ValueError(
+                    f"Group {value:g} episode {episode_key!r} has no candidate windows."
+                )
+            indices.append(rng.choice(candidate_pool))
+
+    rng.shuffle(indices)
+    return indices
+
+
 def _sample_update_indices(
     *,
     grouped_indices: dict[float, dict[int, list[int]]],
@@ -968,9 +1318,10 @@ def _sample_update_indices(
         num_strata = int(getattr(args, "grouped_context_sampling_strata", 0) or 0)
         if num_strata <= 1:
             raise ValueError("stratified_common_actions requires grouped_context_sampling_strata > 1.")
-        if int(friction_groups) != num_strata:
+        if int(friction_groups) < num_strata or int(friction_groups) % num_strata != 0:
             raise ValueError(
-                "stratified_common_actions draws exactly one group per stratum: "
+                "stratified_common_actions requires friction_groups to be a positive "
+                "multiple of the number of strata: "
                 f"friction_groups={friction_groups}, strata={num_strata}."
             )
         all_values = sorted(float(value) for value in grouped_indices)
@@ -987,6 +1338,7 @@ def _sample_update_indices(
             + int(accelerator.process_index)
         )
         groups_per_stratum = len(all_values) // num_strata
+        selected_per_stratum = int(friction_groups) // num_strata
         selected_values: list[float] = []
         for stratum in range(num_strata):
             start = stratum * groups_per_stratum
@@ -996,12 +1348,13 @@ def _sample_update_indices(
                 for value in all_values[start:end]
                 if allowed is None or value in allowed
             ]
-            if not candidates:
+            if len(candidates) < selected_per_stratum:
                 raise ValueError(
-                    f"No active context group is available in stratum {stratum}; "
+                    f"Stratum {stratum} has {len(candidates)} active context groups, "
+                    f"but {selected_per_stratum} are required; "
                     f"active_groups={len(allowed or all_values)}."
                 )
-            selected_values.append(rng.choice(candidates))
+            selected_values.extend(rng.sample(candidates, selected_per_stratum))
 
         common_actions = set(grouped_indices[selected_values[0]])
         for value in selected_values[1:]:
@@ -1017,13 +1370,119 @@ def _sample_update_indices(
             for value in selected_values
             for action_id in selected_actions
         ]
-        expected = num_strata * int(actions_per_update)
+        expected = int(friction_groups) * int(actions_per_update)
         if int(microbatches_per_update) != expected:
             raise ValueError(
                 "stratified_common_actions requires an exact logical batch: "
                 f"microbatches_per_update={microbatches_per_update}, expected={expected}."
             )
         rng.shuffle(sample_indices)
+        return sample_indices
+
+    if mode in ("weighted_environment_actions", "weighted_actions_per_environment"):
+        weight_path = str(
+            getattr(args, "grouped_context_action_weight_path", "") or ""
+        ).strip()
+        if not weight_path:
+            raise ValueError(
+                "weighted_environment_actions requires grouped_context_action_weight_path."
+            )
+        action_probabilities = _load_action_sampling_weights(
+            path=weight_path,
+            value_column=str(args.grouped_context_action_weight_column),
+            contrast=float(args.grouped_context_action_weight_contrast),
+            min_relative=float(args.grouped_context_action_weight_min_relative),
+            max_relative=float(args.grouped_context_action_weight_max_relative),
+        )
+        rng = random.Random(
+            int(args.seed)
+            + int(update_idx) * max(1, int(accelerator.num_processes))
+            + int(accelerator.process_index)
+        )
+        allowed_values = None
+        if allowed_friction_values is not None:
+            allowed_values = [float(value) for value in allowed_friction_values]
+
+        def is_allowed(value: float) -> bool:
+            if allowed_values is None:
+                return True
+            return any(abs(float(value) - allowed) <= 1e-5 for allowed in allowed_values)
+
+        valid_values: list[float] = []
+        for value, by_action in grouped_indices.items():
+            if not is_allowed(float(value)):
+                continue
+            environment_id = int(round(float(value)))
+            if abs(float(value) - environment_id) > 1e-5:
+                raise ValueError(
+                    "weighted_environment_actions expects friction_mu to contain integer "
+                    f"environment IDs, got {value}."
+                )
+            environment_weights = action_probabilities.get(environment_id, {})
+            eligible_actions = set(by_action).intersection(environment_weights)
+            if len(eligible_actions) >= int(actions_per_update):
+                valid_values.append(float(value))
+        if len(valid_values) < int(friction_groups):
+            raise ValueError(
+                f"Need {friction_groups} weighted environment groups with at least "
+                f"{actions_per_update} actions, got {len(valid_values)}."
+            )
+
+        selected_values = rng.sample(valid_values, int(friction_groups))
+        sample_indices: list[int] = []
+        for value in selected_values:
+            environment_id = int(round(value))
+            environment_weights = action_probabilities[environment_id]
+            action_ids = sorted(set(grouped_indices[value]).intersection(environment_weights))
+            selected_actions = _weighted_sample_without_replacement(
+                rng=rng,
+                values=action_ids,
+                weights=[environment_weights[action_id] for action_id in action_ids],
+                count=int(actions_per_update),
+            )
+            sample_indices.extend(
+                rng.choice(grouped_indices[value][action_id])
+                for action_id in selected_actions
+            )
+        expected = int(friction_groups) * int(actions_per_update)
+        if int(microbatches_per_update) != expected:
+            raise ValueError(
+                "weighted_environment_actions requires an exact logical batch: "
+                f"microbatches_per_update={microbatches_per_update}, expected={expected}."
+            )
+        rng.shuffle(sample_indices)
+        return sample_indices
+
+    if mode in (
+        "uniform_episode_then_window",
+        "episode_then_window",
+        "hierarchical_episode_windows",
+    ):
+        rng = random.Random(
+            int(args.seed)
+            + int(update_idx) * max(1, int(accelerator.num_processes))
+            + int(accelerator.process_index)
+        )
+        sample_indices = _sample_episode_then_window_indices(
+            grouped_indices=grouped_indices,
+            rows=rows,
+            rng=rng,
+            friction_groups=friction_groups,
+            episodes_per_group=actions_per_update,
+            allowed_friction_values=allowed_friction_values,
+            episode_key_field=str(args.grouped_context_episode_key),
+            window_kind_field=str(args.grouped_context_window_kind_field),
+            preferred_window_kind=str(args.grouped_context_preferred_window_kind),
+            preferred_window_probability=float(
+                args.grouped_context_preferred_window_probability
+            ),
+        )
+        expected = int(friction_groups) * int(actions_per_update)
+        if microbatches_per_update > 0 and int(microbatches_per_update) != expected:
+            raise ValueError(
+                "uniform_episode_then_window requires an exact logical batch: "
+                f"microbatches_per_update={microbatches_per_update}, expected={expected}."
+            )
         return sample_indices
 
     if mode in ("independent_windows", "all_windows", "random_windows"):
@@ -1657,6 +2116,64 @@ def _build_optimizer(model, args):
     return torch.optim.AdamW(param_groups)
 
 
+def _build_curriculum_optimizer(model, args, accelerator):
+    state_path = getattr(args, "grouped_context_initialize_optimizer_state", None)
+    if not state_path:
+        return _build_optimizer(model, args)
+
+    context_parameters = [model.friction_context_table.contexts]
+    if model.background_context_table is not None:
+        context_parameters.append(model.background_context_table.contexts)
+    original_requires_grad = [parameter.requires_grad for parameter in context_parameters]
+    for parameter in context_parameters:
+        parameter.requires_grad_(False)
+    optimizer = _build_optimizer(model, args)
+
+    source = Path(state_path)
+    if source.is_dir():
+        source = source / "optimizer_scheduler.pt"
+    payload = torch.load(source, map_location="cpu", weights_only=False)
+    source_optimizer = payload["optimizer"]
+    source_groups = [group.get("name") for group in source_optimizer["param_groups"]]
+    if source_groups != ["model"]:
+        raise ValueError(
+            f"Expected one model optimizer group in {source}, got {source_groups}."
+        )
+    optimizer.load_state_dict(source_optimizer)
+
+    for parameter, requires_grad in zip(context_parameters, original_requires_grad):
+        parameter.requires_grad_(requires_grad)
+    optimizer.add_param_group(
+        {
+            "name": "context",
+            "params": [model.friction_context_table.contexts],
+            "lr": float(args.grouped_context_lr),
+            "weight_decay": float(getattr(args, "grouped_context_weight_decay", 0.0)),
+        }
+    )
+    if model.background_context_table is not None:
+        optimizer.add_param_group(
+            {
+                "name": "background_context",
+                "params": [model.background_context_table.contexts],
+                "lr": float(
+                    getattr(args, "grouped_background_context_lr", None)
+                    or args.grouped_context_lr
+                ),
+                "weight_decay": float(
+                    getattr(args, "grouped_context_weight_decay", 0.0)
+                ),
+            }
+        )
+    if accelerator.is_main_process:
+        print(
+            f"[optimizer_init] restored model AdamW state from {source}; "
+            "new environment-C parameter group starts with fresh moments",
+            flush=True,
+        )
+    return optimizer
+
+
 def _segment_scheduled_lr(schedule: str | None, step: int, default_lr: float) -> float:
     if not schedule:
         return float(default_lr)
@@ -1777,6 +2294,7 @@ def _apply_curriculum_lrs(
     args,
     step: int,
     phase: str,
+    phase_start: int | None = None,
     freeze_background: bool = False,
 ):
     model_lr = float(args.learning_rate)
@@ -1795,10 +2313,27 @@ def _apply_curriculum_lrs(
         context_lr = float(args.grouped_context_new_context_lr)
     if phase == "new_context_mid" and getattr(args, "grouped_context_mid_context_lr", None) is not None:
         context_lr = float(args.grouped_context_mid_context_lr)
+    post_context_lr = getattr(args, "grouped_context_post_curriculum_lr", None)
+    post_context_start = int(
+        getattr(args, "grouped_context_post_curriculum_start_step", 0) or 0
+    )
+    if (
+        phase in ("all_context", "context")
+        and post_context_lr is not None
+        and post_context_start > 0
+        and int(step) >= post_context_start
+    ):
+        context_lr = float(post_context_lr)
     if phase in ("new_context", "new_context_mid", "all_context", "context"):
         model_lr = 0.0
     else:
         context_lr = 0.0
+        phase_warmup_steps = int(
+            getattr(args, "grouped_context_model_phase_warmup_steps", 0) or 0
+        )
+        if phase_warmup_steps > 0 and phase_start is not None and int(phase_start) > 1:
+            local_step = max(1, int(step) - int(phase_start) + 1)
+            model_lr *= min(float(local_step) / float(phase_warmup_steps), 1.0)
     if phase not in ("all_context", "context"):
         background_context_lr = 0.0
     if freeze_background:
@@ -1813,6 +2348,23 @@ def _apply_curriculum_lrs(
     return model_lr, context_lr
 
 
+def _clear_optimizer_group_state(optimizer, group_name: str) -> int:
+    base_optimizer = optimizer
+    visited = set()
+    while hasattr(base_optimizer, "optimizer") and id(base_optimizer) not in visited:
+        visited.add(id(base_optimizer))
+        base_optimizer = base_optimizer.optimizer
+    cleared = 0
+    for group in base_optimizer.param_groups:
+        if group.get("name") != group_name:
+            continue
+        for parameter in group["params"]:
+            if parameter in base_optimizer.state:
+                del base_optimizer.state[parameter]
+                cleared += 1
+    return cleared
+
+
 def _mask_context_grad(model, train_context_indices: list[int]) -> None:
     table = getattr(model, "friction_context_table", None)
     if table is None or table.contexts.grad is None:
@@ -1822,6 +2374,135 @@ def _mask_context_grad(model, train_context_indices: list[int]) -> None:
         if 0 <= int(index) < mask.numel():
             mask[int(index)] = 1
     table.contexts.grad.mul_(mask[:, None, None])
+
+
+def _context_row_mask(table, train_context_indices: list[int]) -> torch.Tensor:
+    mask = torch.zeros(table.contexts.shape[0], device=table.contexts.device, dtype=torch.bool)
+    for index in train_context_indices:
+        if 0 <= int(index) < mask.numel():
+            mask[int(index)] = True
+    return mask
+
+
+@torch.no_grad()
+def _zero_masked_context_optimizer_state(optimizer, table, train_mask: torch.Tensor) -> None:
+    raw_optimizer = getattr(optimizer, "optimizer", optimizer)
+    state = getattr(raw_optimizer, "state", {}).get(table.contexts, {})
+    broadcast_mask = train_mask[:, None, None]
+    for key in ("exp_avg", "exp_avg_sq", "max_exp_avg_sq"):
+        value = state.get(key)
+        if torch.is_tensor(value) and value.shape == table.contexts.shape:
+            value.mul_(broadcast_mask.to(device=value.device, dtype=value.dtype))
+
+
+@torch.no_grad()
+def _project_context_displacement(table, anchor: torch.Tensor, max_displacement: float) -> torch.Tensor:
+    delta = table.contexts - anchor
+    flat = delta.flatten(start_dim=1)
+    norms = torch.linalg.vector_norm(flat.float(), dim=1)
+    scale = torch.clamp(float(max_displacement) / norms.clamp_min(1e-12), max=1.0)
+    view_shape = (scale.shape[0],) + (1,) * (delta.ndim - 1)
+    table.contexts.copy_(anchor + delta * scale.to(delta.dtype).view(view_shape))
+    return torch.linalg.vector_norm((table.contexts - anchor).flatten(start_dim=1).float(), dim=1)
+
+
+def _build_fixed_validation_indices(
+    grouped_indices,
+    accelerator,
+    actions_per_group: int,
+    seed: int,
+) -> tuple[list[int], list]:
+    all_values = sorted(grouped_indices)
+    common_actions = set(grouped_indices[all_values[0]])
+    for value in all_values[1:]:
+        common_actions.intersection_update(grouped_indices[value])
+    if len(common_actions) < int(actions_per_group):
+        raise ValueError(
+            f"Fixed validation needs {actions_per_group} common actions, got {len(common_actions)}."
+        )
+    rng = random.Random(int(seed))
+    selected_actions = rng.sample(sorted(common_actions), int(actions_per_group))
+    local_values = all_values[int(accelerator.process_index) :: int(accelerator.num_processes)]
+    indices = [
+        rng.choice(grouped_indices[value][action_id])
+        for value in local_values
+        for action_id in selected_actions
+    ]
+    return indices, selected_actions
+
+
+@torch.no_grad()
+def _run_fixed_validation(
+    accelerator,
+    model,
+    dataset,
+    sample_indices: list[int],
+    seed: int,
+) -> tuple[float, int]:
+    python_state = random.getstate()
+    cpu_rng_state = torch.get_rng_state()
+    cuda_rng_states = torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None
+    was_training = model.training
+    model.eval()
+    losses = []
+    try:
+        for position, sample_index in enumerate(sample_indices):
+            sample_seed = int(seed) + int(sample_index) * 1009 + int(position)
+            random.seed(sample_seed)
+            torch.manual_seed(sample_seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed_all(sample_seed)
+            losses.append(model(dataset[sample_index]).detach().float())
+    finally:
+        random.setstate(python_state)
+        torch.set_rng_state(cpu_rng_state)
+        if cuda_rng_states is not None:
+            torch.cuda.set_rng_state_all(cuda_rng_states)
+        model.train(was_training)
+    local_sum = torch.stack(losses).sum() if losses else torch.zeros((), device=accelerator.device)
+    local_count = torch.tensor(float(len(losses)), device=accelerator.device)
+    global_sum = accelerator.reduce(local_sum, reduction="sum")
+    global_count = accelerator.reduce(local_count, reduction="sum")
+    return float((global_sum / global_count.clamp_min(1.0)).cpu()), int(global_count.item())
+
+
+def _parse_step_set(raw_steps: str | None) -> set[int]:
+    if not raw_steps:
+        return set()
+    return {int(part.strip()) for part in str(raw_steps).split(",") if part.strip()}
+
+
+def _protect_paired_checkpoint(accelerator, model_logger, step: int) -> None:
+    import os
+    import shutil
+
+    accelerator.wait_for_everyone()
+    if accelerator.is_main_process:
+        output_root = Path(model_logger.output_path)
+        protected_root = output_root / "protected_checkpoints" / f"step-{int(step)}"
+        protected_root.mkdir(parents=True, exist_ok=True)
+        sources = [
+            output_root / f"step-{int(step)}.safetensors",
+            output_root / f"step-{int(step)}.context_table.json",
+        ]
+        for source in sources:
+            if not source.is_file():
+                raise FileNotFoundError(f"Cannot protect missing checkpoint artifact: {source}")
+            destination = protected_root / source.name
+            temporary = protected_root / f".{source.name}.tmp-{os.getpid()}"
+            try:
+                temporary.unlink()
+            except FileNotFoundError:
+                pass
+            try:
+                os.link(source, temporary)
+            except OSError:
+                shutil.copy2(source, temporary)
+            os.replace(temporary, destination)
+        marker = protected_root / ".complete"
+        marker.write_text(f"protected_step={int(step)}\n", encoding="utf-8")
+        print(f"[checkpoint] permanently protected step={step} at {protected_root}", flush=True)
+    accelerator.wait_for_everyone()
 
 
 def _log_context_table(accelerator, model, step: int, phase: str | None, reason: str) -> None:
@@ -1967,6 +2648,469 @@ def launch_grouped_stage1(accelerator, dataset, model, model_logger, args):
         if args.save_steps is None:
             model_logger.on_epoch_end(accelerator, model, epoch_id)
     model_logger.on_training_end(accelerator, model, args.save_steps)
+
+
+def _save_direct_random_training_state(
+    accelerator,
+    optimizer,
+    scheduler,
+    sample_generator,
+    context_generator,
+    context_pool,
+    output_path: str,
+    step: int,
+) -> None:
+    destination = Path(output_path) / f"step-{int(step)}.training_state"
+    temporary = Path(output_path) / f".step-{int(step)}.training_state.tmp"
+    if accelerator.is_main_process:
+        if destination.exists():
+            raise FileExistsError(
+                f"Refusing to overwrite permanent training state {destination}."
+            )
+        shutil.rmtree(temporary, ignore_errors=True)
+        temporary.mkdir(parents=True, exist_ok=False)
+    accelerator.wait_for_everyone()
+
+    rank_state = {
+        "step": int(step),
+        "rank": int(accelerator.process_index),
+        "world_size": int(accelerator.num_processes),
+        "python_rng_state": random.getstate(),
+        "torch_cpu_rng_state": torch.get_rng_state(),
+        "torch_cuda_rng_state": torch.cuda.get_rng_state_all(),
+        "sample_generator_state": sample_generator.get_state(),
+        "context_generator_state": context_generator.get_state(),
+    }
+    torch.save(
+        rank_state,
+        temporary / f"rank-{int(accelerator.process_index):04d}.rng.pt",
+    )
+    accelerator.wait_for_everyone()
+
+    if accelerator.is_main_process:
+        torch.save(
+            {
+                "step": int(step),
+                "world_size": int(accelerator.num_processes),
+                "optimizer": optimizer.state_dict(),
+                "scheduler": scheduler.state_dict(),
+            },
+            temporary / "optimizer_scheduler.pt",
+        )
+        if context_pool is not None:
+            torch.save(
+                context_pool.detach().float().cpu(),
+                temporary / "context_pool.pt",
+            )
+        manifest = {
+            "format": "bwm_direct_random_context_training_state_v1",
+            "step": int(step),
+            "world_size": int(accelerator.num_processes),
+            "model_checkpoint": f"step-{int(step)}.safetensors",
+            "optimizer_state": "optimizer_scheduler.pt",
+            "rank_rng_pattern": "rank-{rank:04d}.rng.pt",
+            "context_pool": "context_pool.pt" if context_pool is not None else None,
+        }
+        manifest_path = temporary / "manifest.json"
+        with manifest_path.open("w", encoding="utf-8") as handle:
+            json.dump(manifest, handle, indent=2, sort_keys=True)
+            handle.flush()
+            os.fsync(handle.fileno())
+        complete_path = temporary / ".complete"
+        with complete_path.open("w", encoding="utf-8") as handle:
+            handle.write(f"step-{int(step)}\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+    accelerator.wait_for_everyone()
+
+    if accelerator.is_main_process:
+        os.replace(temporary, destination)
+        print(
+            f"[training_state] permanently saved {destination} "
+            "(optimizer, scheduler, and per-rank RNG)",
+            flush=True,
+        )
+    accelerator.wait_for_everyone()
+
+
+def _load_direct_random_training_state(
+    accelerator,
+    optimizer,
+    scheduler,
+    sample_generator,
+    context_generator,
+    state_path: str,
+) -> tuple[int, torch.Tensor | None]:
+    source = Path(state_path)
+    if not (source / ".complete").is_file():
+        raise FileNotFoundError(f"Incomplete direct-random training state: {source}")
+    with (source / "manifest.json").open("r", encoding="utf-8") as handle:
+        manifest = json.load(handle)
+    if int(manifest["world_size"]) != int(accelerator.num_processes):
+        raise ValueError(
+            f"Resume world size {manifest['world_size']} does not match "
+            f"current world size {accelerator.num_processes}."
+        )
+    shared_state = torch.load(
+        source / "optimizer_scheduler.pt",
+        map_location="cpu",
+        weights_only=False,
+    )
+    optimizer.load_state_dict(shared_state["optimizer"])
+    scheduler.load_state_dict(shared_state["scheduler"])
+    rank_state = torch.load(
+        source / f"rank-{int(accelerator.process_index):04d}.rng.pt",
+        map_location="cpu",
+        weights_only=False,
+    )
+    random.setstate(rank_state["python_rng_state"])
+    torch.set_rng_state(rank_state["torch_cpu_rng_state"])
+    torch.cuda.set_rng_state_all(rank_state["torch_cuda_rng_state"])
+    sample_generator.set_state(rank_state["sample_generator_state"])
+    context_generator.set_state(rank_state["context_generator_state"])
+    context_pool = None
+    if manifest.get("context_pool"):
+        context_pool = torch.load(
+            source / str(manifest["context_pool"]),
+            map_location="cpu",
+            weights_only=False,
+        ).float()
+    step = int(manifest["step"])
+    accelerator.wait_for_everyone()
+    if accelerator.is_main_process:
+        print(
+            f"[resume] restored model-paired optimizer/scheduler/RNG state "
+            f"from {source} at step={step}",
+            flush=True,
+        )
+    return step, context_pool
+
+
+def _publish_direct_random_checkpoint(
+    accelerator,
+    local_output: Path,
+    shared_output: Path,
+    step: int,
+) -> None:
+    model_name = f"step-{int(step)}.safetensors"
+    context_name = f"step-{int(step)}.context_table.json"
+    state_name = f"step-{int(step)}.training_state"
+    model_marker_name = f".{model_name}.complete"
+    pair_marker = shared_output / f".step-{int(step)}.paired.complete"
+
+    if accelerator.is_main_process:
+        if pair_marker.exists():
+            raise FileExistsError(
+                f"Refusing to overwrite permanent paired checkpoint {pair_marker}."
+            )
+        temporary = shared_output / f".step-{int(step)}.pair.tmp-{os.getpid()}"
+        shutil.rmtree(temporary, ignore_errors=True)
+        temporary.mkdir(parents=True, exist_ok=False)
+
+        shutil.copy2(local_output / model_name, temporary / model_name)
+        shutil.copy2(local_output / context_name, temporary / context_name)
+        shutil.copy2(local_output / model_marker_name, temporary / model_marker_name)
+        shutil.copytree(local_output / state_name, temporary / state_name)
+
+        final_model = shared_output / model_name
+        final_context = shared_output / context_name
+        final_model_marker = shared_output / model_marker_name
+        final_state = shared_output / state_name
+        for path in (final_model, final_context, final_model_marker):
+            try:
+                path.unlink()
+            except FileNotFoundError:
+                pass
+        if final_state.exists():
+            shutil.rmtree(final_state)
+        os.replace(temporary / model_name, final_model)
+        os.replace(temporary / context_name, final_context)
+        os.replace(temporary / model_marker_name, final_model_marker)
+        os.replace(temporary / state_name, final_state)
+        shutil.rmtree(temporary)
+
+        pair_temporary = pair_marker.with_name(
+            f".{pair_marker.name}.tmp-{os.getpid()}"
+        )
+        with pair_temporary.open("w", encoding="utf-8") as handle:
+            handle.write(f"step-{int(step)}\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(pair_temporary, pair_marker)
+        print(
+            f"[checkpoint_bundle] permanently published paired step={step} "
+            f"to {shared_output}",
+            flush=True,
+        )
+    else:
+        deadline = time.monotonic() + 20.0 * 60.0 * 60.0
+        while not pair_marker.is_file():
+            if time.monotonic() >= deadline:
+                raise TimeoutError(
+                    f"Timed out waiting for paired checkpoint {pair_marker}."
+                )
+            time.sleep(5.0)
+
+
+def _save_direct_random_permanent_checkpoint(
+    accelerator,
+    model,
+    optimizer,
+    scheduler,
+    sample_generator,
+    context_generator,
+    context_pool,
+    model_logger,
+    args,
+    step: int,
+) -> None:
+    configured_root = getattr(
+        args,
+        "grouped_context_direct_random_local_checkpoint_root",
+        None,
+    )
+    local_root = Path(
+        configured_root
+        or os.environ.get("BWM_LOCAL_CHECKPOINT_ROOT")
+        or (
+            f"/tmp/{os.environ.get('USER', 'user')}/bwm_direct_random_checkpoints/"
+            f"{os.environ.get('SLURM_JOB_ID', 'manual')}"
+        )
+    )
+    local_output = local_root / f"step-{int(step)}"
+    if accelerator.is_main_process:
+        shutil.rmtree(local_output, ignore_errors=True)
+        local_output.mkdir(parents=True, exist_ok=False)
+        print(
+            f"[checkpoint_bundle] staging step={step} on node-local {local_output}",
+            flush=True,
+        )
+    accelerator.wait_for_everyone()
+
+    local_logger = GroupedContextModelLogger(
+        str(local_output),
+        remove_prefix_in_ckpt=args.remove_prefix_in_ckpt,
+        save_minutes=0,
+        keep_last=0,
+        log_steps=0,
+    )
+    local_logger.save_model(accelerator, model, f"step-{int(step)}.safetensors")
+    _save_direct_random_training_state(
+        accelerator,
+        optimizer,
+        scheduler,
+        sample_generator,
+        context_generator,
+        context_pool,
+        str(local_output),
+        step,
+    )
+    _publish_direct_random_checkpoint(
+        accelerator,
+        local_output,
+        Path(model_logger.output_path),
+        step,
+    )
+    if accelerator.is_main_process:
+        shutil.rmtree(local_output, ignore_errors=True)
+
+
+def launch_direct_random_grouped_stage1(accelerator, dataset, model, model_logger, args):
+    total_steps = int(args.grouped_context_direct_random_steps)
+    local_batch_size = int(args.batch_size)
+    if total_steps <= 0:
+        raise ValueError("grouped_context_direct_random_steps must be positive.")
+    if local_batch_size <= 0:
+        raise ValueError("batch_size must be positive.")
+    if int(args.gradient_accumulation_steps) != 1:
+        raise ValueError("Direct-random batching requires gradient_accumulation_steps=1.")
+    if int(getattr(model_logger, "keep_last", 0)) != 0:
+        raise ValueError(
+            "Direct-random permanent checkpoints require checkpoint_keep_last=0."
+        )
+    save_steps = int(args.save_steps or 0)
+    if save_steps <= 0:
+        raise ValueError("Direct-random training requires a positive save_steps interval.")
+
+    model.friction_context_table.contexts.requires_grad_(False)
+    if model.friction_context_table.global_context is not None:
+        model.friction_context_table.global_context.requires_grad_(False)
+    optimizer = _build_optimizer(model, args)
+    warmup_steps = int(getattr(args, "grouped_context_model_lr_warmup_steps", 0) or 0)
+    scheduler = torch.optim.lr_scheduler.LambdaLR(
+        optimizer,
+        lr_lambda=(
+            (lambda current: min(1.0, float(current + 1) / float(warmup_steps)))
+            if warmup_steps > 0
+            else (lambda current: 1.0)
+        ),
+    )
+    model.to(device=accelerator.device)
+    model, optimizer = accelerator.prepare(model, optimizer)
+    initialize_deepspeed_gradient_checkpointing(accelerator)
+
+    context_min = float(args.grouped_context_direct_random_min)
+    context_max = float(args.grouped_context_direct_random_max)
+    if context_max <= context_min:
+        raise ValueError(
+            f"Invalid direct-random C range [{context_min}, {context_max}]."
+        )
+    context_shape = (
+        int(args.physical_context_tokens),
+        int(args.physical_context_dim),
+    )
+    pool_size = int(getattr(args, "grouped_context_direct_random_pool_size", 0) or 0)
+    if pool_size < 0:
+        raise ValueError("grouped_context_direct_random_pool_size cannot be negative.")
+    context_pool = None
+    if pool_size > 0:
+        pool_generator = torch.Generator(device="cpu")
+        pool_generator.manual_seed(int(args.seed) + 43)
+        context_pool = torch.rand(
+            (pool_size, *context_shape),
+            generator=pool_generator,
+            dtype=torch.float32,
+        )
+        context_pool.mul_(context_max - context_min).add_(context_min)
+
+    sample_generator = torch.Generator(device="cpu")
+    context_generator = torch.Generator(device="cpu")
+    rank_seed = int(args.seed) + int(accelerator.process_index) * 1_000_003
+    sample_generator.manual_seed(rank_seed + 17)
+    context_generator.manual_seed(rank_seed + 29)
+
+    resume_step = 0
+    resume_state = getattr(args, "grouped_context_direct_random_resume_state", None)
+    if resume_state:
+        resume_step, restored_pool = _load_direct_random_training_state(
+            accelerator,
+            optimizer,
+            scheduler,
+            sample_generator,
+            context_generator,
+            resume_state,
+        )
+        if restored_pool is not None:
+            context_pool = restored_pool
+        if pool_size > 0 and context_pool is None:
+            raise ValueError(
+                f"Resume state {resume_state} does not contain the requested context pool."
+            )
+    if context_pool is not None and int(context_pool.shape[0]) != pool_size:
+        raise ValueError(
+            f"Configured pool_size={pool_size}, restored pool has "
+            f"shape={tuple(context_pool.shape)}."
+        )
+    model_logger.num_steps = resume_step
+    if context_pool is not None and accelerator.is_main_process:
+        pool_path = Path(model_logger.output_path) / "direct_context_pool.json"
+        if not pool_path.exists():
+            temporary = pool_path.with_name(f".{pool_path.name}.tmp-{os.getpid()}")
+            with temporary.open("w", encoding="utf-8") as handle:
+                json.dump(
+                    {
+                        "pool_size": pool_size,
+                        "context_shape": list(context_shape),
+                        "range": [context_min, context_max],
+                        "contexts": context_pool.tolist(),
+                    },
+                    handle,
+                    indent=2,
+                    sort_keys=True,
+                )
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, pool_path)
+    if accelerator.is_main_process:
+        print(
+            "[direct_random_context_stage1] "
+            f"steps={total_steps} resume_step={resume_step} "
+            f"dataset_size={len(dataset)} sampling=uniform_with_replacement "
+            f"local_batch_size={local_batch_size} "
+            f"global_batch_size={local_batch_size * int(accelerator.num_processes)} "
+            f"context_shape={context_shape} context_range=[{context_min:g},{context_max:g}] "
+            f"context_sampling={'fixed_pool_' + str(pool_size) if pool_size else 'continuous'} "
+            f"save_steps={save_steps} warmup_steps={warmup_steps}",
+            flush=True,
+        )
+
+    iterator = tqdm(
+        range(resume_step, total_steps),
+        disable=not accelerator.is_local_main_process,
+    )
+    for _ in iterator:
+        sample_indices = torch.randint(
+            low=0,
+            high=len(dataset),
+            size=(local_batch_size,),
+            generator=sample_generator,
+        ).tolist()
+        optimizer.zero_grad(set_to_none=True)
+        detached_losses = []
+        for micro_idx, sample_index in enumerate(sample_indices):
+            sync_context = (
+                accelerator.no_sync(model)
+                if micro_idx + 1 < local_batch_size
+                else contextlib.nullcontext()
+            )
+            with sync_context:
+                sample_data = dataset[int(sample_index)].copy()
+                if context_pool is None:
+                    direct_context = torch.rand(
+                        context_shape,
+                        generator=context_generator,
+                        dtype=torch.float32,
+                    )
+                    direct_context.mul_(context_max - context_min).add_(context_min)
+                else:
+                    pool_index = int(
+                        torch.randint(
+                            0,
+                            pool_size,
+                            (1,),
+                            generator=context_generator,
+                        ).item()
+                    )
+                    direct_context = context_pool[pool_index].clone()
+                sample_data["_direct_physical_context"] = direct_context
+                loss = model(sample_data)
+                detached_losses.append(loss.detach().float())
+                accelerator.backward(loss / float(local_batch_size))
+        if args.max_grad_norm is not None and args.max_grad_norm > 0:
+            accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
+        optimizer.step()
+        scheduler.step()
+        mean_loss = torch.stack(detached_losses).mean()
+        model_logger.on_step_end(accelerator, model, None, loss=mean_loss)
+        step = int(model_logger.num_steps)
+        if step % save_steps == 0:
+            _save_direct_random_permanent_checkpoint(
+                accelerator,
+                model,
+                optimizer,
+                scheduler,
+                sample_generator,
+                context_generator,
+                context_pool,
+                model_logger,
+                args,
+                step,
+            )
+
+    if int(model_logger.num_steps) % save_steps != 0:
+        step = int(model_logger.num_steps)
+        _save_direct_random_permanent_checkpoint(
+            accelerator,
+            model,
+            optimizer,
+            scheduler,
+            sample_generator,
+            context_generator,
+            context_pool,
+            model_logger,
+            args,
+            step,
+        )
 
 
 def launch_structured_grouped_stage1(accelerator, dataset, model, model_logger, args):
@@ -2623,6 +3767,77 @@ def launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args
     model_logger.on_training_end(accelerator, model, args.save_steps)
 
 
+def _assign_initial_contexts_from_pool(
+    accelerator,
+    table,
+    group_order: list[int],
+    initial_groups: int,
+    pool_path: str,
+    output_path: str,
+) -> None:
+    pool = torch.load(pool_path, map_location="cpu", weights_only=False).float()
+    if pool.ndim != 3 or tuple(pool.shape[1:]) != tuple(table.contexts.shape[1:]):
+        raise ValueError(
+            f"Context pool shape {tuple(pool.shape)} is incompatible with "
+            f"table shape {tuple(table.contexts.shape)}."
+        )
+    count = min(int(initial_groups), len(group_order))
+    if count > int(pool.shape[0]):
+        raise ValueError(
+            f"Cannot assign {count} initial groups from pool_size={int(pool.shape[0])}."
+        )
+    assignment_path = Path(output_path) / "initial_context_pool_assignment.json"
+    if accelerator.is_main_process and not assignment_path.exists():
+        selected_pool_indices = random.SystemRandom().sample(
+            range(int(pool.shape[0])),
+            count,
+        )
+        records = []
+        table_values = table.friction_values.detach().float().cpu().tolist()
+        for group_index, pool_index in zip(group_order[:count], selected_pool_indices):
+            records.append(
+                {
+                    "group_index": int(group_index),
+                    "group_value": float(table_values[int(group_index)]),
+                    "pool_index": int(pool_index),
+                }
+            )
+        temporary = assignment_path.with_name(
+            f".{assignment_path.name}.tmp-{os.getpid()}"
+        )
+        with temporary.open("w", encoding="utf-8") as handle:
+            json.dump(
+                {
+                    "source_pool": str(pool_path),
+                    "pool_size": int(pool.shape[0]),
+                    "records": records,
+                },
+                handle,
+                indent=2,
+                sort_keys=True,
+            )
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, assignment_path)
+    accelerator.wait_for_everyone()
+    with assignment_path.open("r", encoding="utf-8") as handle:
+        assignment = json.load(handle)
+    with torch.no_grad():
+        for record in assignment["records"]:
+            table.contexts[int(record["group_index"])].copy_(
+                pool[int(record["pool_index"])].to(
+                    device=table.contexts.device,
+                    dtype=table.contexts.dtype,
+                )
+            )
+    if accelerator.is_main_process:
+        print(
+            f"[context_pool] assigned {len(assignment['records'])} initial groups "
+            f"from fixed pool {pool_path}; mapping={assignment_path}",
+            flush=True,
+        )
+
+
 def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, args):
     grouped_indices, metadata_rows = _metadata_index(args.dataset_metadata_path)
     unwrapped = model
@@ -2641,6 +3856,24 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
         ),
     )
     _initialize_curriculum_contexts(unwrapped.friction_context_table, args, group_order, total_groups)
+    initial_context_pool_path = getattr(
+        args,
+        "grouped_context_initial_context_pool_path",
+        None,
+    )
+    if initial_context_pool_path and not getattr(
+        args,
+        "grouped_context_resume_context_table",
+        None,
+    ):
+        _assign_initial_contexts_from_pool(
+            accelerator,
+            unwrapped.friction_context_table,
+            group_order,
+            int(args.grouped_context_curriculum_initial_groups),
+            initial_context_pool_path,
+            model_logger.output_path,
+        )
     shared_initial = bool(
         getattr(args, "grouped_context_curriculum_shared_initial_friction", False)
     )
@@ -2651,6 +3884,107 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
         raise ValueError(
             "shared_initial_friction and random_context_warmup are mutually exclusive."
         )
+    initial_sample_group_indices = None
+    initial_sample_mode = str(
+        getattr(args, "grouped_context_curriculum_initial_sample_mode", "all") or "all"
+    ).strip().lower()
+    if initial_sample_mode not in ("all", "explicit", "stratum_median"):
+        raise ValueError(
+            "grouped_context_curriculum_initial_sample_mode must be all, explicit, or "
+            "stratum_median, "
+            f"got {initial_sample_mode!r}."
+        )
+    if initial_sample_mode == "explicit":
+        raw_sample_groups = str(
+            getattr(args, "grouped_context_curriculum_initial_sample_groups", None) or ""
+        )
+        requested_group_values = [
+            float(value.strip())
+            for value in raw_sample_groups.split(",")
+            if value.strip()
+        ]
+        if not requested_group_values:
+            raise ValueError(
+                "explicit initial sampling requires "
+                "grouped_context_curriculum_initial_sample_groups."
+            )
+        initial_group_count = min(
+            int(args.grouped_context_curriculum_initial_groups),
+            len(group_order),
+        )
+        active_initial_indices = set(group_order[:initial_group_count])
+        initial_sample_group_indices = []
+        for requested_value in requested_group_values:
+            distances = [
+                abs(float(group_value) - requested_value)
+                for group_value in friction_values
+            ]
+            group_index = min(range(len(distances)), key=distances.__getitem__)
+            if distances[group_index] > 1e-5:
+                raise ValueError(
+                    f"Explicit initial sample group {requested_value:g} is absent from "
+                    "the context table."
+                )
+            if group_index not in active_initial_indices:
+                raise ValueError(
+                    f"Explicit initial sample group {requested_value:g} is not among "
+                    f"the first {initial_group_count} active curriculum groups."
+                )
+            initial_sample_group_indices.append(group_index)
+        if len(set(initial_sample_group_indices)) != len(initial_sample_group_indices):
+            raise ValueError("Explicit initial sample groups must be unique.")
+        expected_strata = int(getattr(args, "grouped_context_curriculum_strata", 0) or 0)
+        if expected_strata > 0:
+            stratify_field = str(
+                getattr(args, "grouped_context_stratify_field", None) or "environment_index"
+            )
+            row_by_group = {}
+            for row in metadata_rows:
+                row_by_group.setdefault(float(row["friction_mu"]), row)
+            selected_strata = {
+                row_by_group[float(friction_values[group_index])][stratify_field]
+                for group_index in initial_sample_group_indices
+            }
+            if len(selected_strata) != expected_strata:
+                raise ValueError(
+                    f"Explicit initial sampling covers {len(selected_strata)} strata, "
+                    f"expected {expected_strata}."
+                )
+    elif initial_sample_mode == "stratum_median":
+        initial_group_count = min(
+            int(args.grouped_context_curriculum_initial_groups),
+            len(group_order),
+        )
+        stratify_field = str(
+            getattr(args, "grouped_context_stratify_field", None) or "environment_index"
+        )
+        rank_field = str(
+            getattr(
+                args,
+                "grouped_context_curriculum_initial_sample_rank_field",
+                "physical_friction_mu",
+            )
+        )
+        row_by_group = {}
+        for row in metadata_rows:
+            row_by_group.setdefault(float(row["friction_mu"]), row)
+        groups_by_stratum = defaultdict(list)
+        for group_index in group_order[:initial_group_count]:
+            group_value = float(friction_values[int(group_index)])
+            row = row_by_group[group_value]
+            groups_by_stratum[row[stratify_field]].append(
+                (float(row[rank_field]), int(group_index))
+            )
+        initial_sample_group_indices = []
+        for stratum in sorted(groups_by_stratum, key=str):
+            ranked = sorted(groups_by_stratum[stratum])
+            initial_sample_group_indices.append(ranked[len(ranked) // 2][1])
+        expected_strata = int(getattr(args, "grouped_context_curriculum_strata", 0) or 0)
+        if expected_strata > 0 and len(initial_sample_group_indices) != expected_strata:
+            raise ValueError(
+                f"Initial median sampling selected {len(initial_sample_group_indices)} strata, "
+                f"expected {expected_strata}."
+            )
     shared_context_indices: dict[int, int] = {}
     if shared_initial:
         shared_context_indices = _share_initial_contexts_across_strata(
@@ -2669,7 +4003,7 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
         metadata_group_values[alias_index]: metadata_group_values[canonical_index]
         for alias_index, canonical_index in shared_context_indices.items()
     }
-    optimizer = _build_optimizer(model, args)
+    optimizer = _build_curriculum_optimizer(model, args, accelerator)
     model.to(device=accelerator.device)
     model, optimizer = accelerator.prepare(model, optimizer)
     initialize_deepspeed_gradient_checkpointing(accelerator)
@@ -2683,18 +4017,19 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
     rounds = 1 + (groups_after_initial + max(add_groups, 1) - 1) // max(add_groups, 1)
     variant = str(getattr(args, "grouped_context_curriculum_variant", "default") or "default").strip().lower()
     if variant in ("two_new_context", "high_model_mid", "high_model_mid_new"):
-        default_updates = initial_steps + assignment_model_steps + rounds * (
+        curriculum_cycle_steps = (
             int(args.grouped_context_curriculum_new_context_steps)
             + int(getattr(args, "grouped_context_curriculum_mid_context_steps", 0) or int(args.grouped_context_curriculum_new_context_steps))
             + 2 * int(args.grouped_context_curriculum_all_context_steps)
             + 3 * int(args.grouped_context_curriculum_model_steps)
         )
     else:
-        default_updates = initial_steps + assignment_model_steps + rounds * (
+        curriculum_cycle_steps = (
             int(args.grouped_context_curriculum_new_context_steps)
             + 2 * int(args.grouped_context_curriculum_all_context_steps)
             + 2 * int(args.grouped_context_curriculum_model_steps)
         )
+    default_updates = initial_steps + assignment_model_steps + rounds * curriculum_cycle_steps
     default_updates += int(getattr(args, "grouped_context_curriculum_initial_refinement_steps", 0) or 0)
     updates = int(args.grouped_context_structured_updates) or default_updates
     actions_per_update = int(args.grouped_context_actions_per_update)
@@ -2702,6 +4037,20 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
     microbatches_per_update = int(args.grouped_context_microbatches_per_update)
     if microbatches_per_update <= 0:
         microbatches_per_update = friction_groups_per_update * actions_per_update
+    validation_interval = int(getattr(args, "grouped_context_validation_interval", 0) or 0)
+    validation_seed = int(getattr(args, "grouped_context_validation_seed", 20260810))
+    validation_indices: list[int] = []
+    validation_actions: list = []
+    if validation_interval > 0:
+        validation_indices, validation_actions = _build_fixed_validation_indices(
+            grouped_indices,
+            accelerator,
+            actions_per_update,
+            validation_seed,
+        )
+    protected_checkpoint_steps = _parse_step_set(
+        getattr(args, "grouped_context_protected_checkpoint_steps", None)
+    )
 
     if accelerator.is_main_process:
         print(
@@ -2718,18 +4067,59 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
             + ",".join(f"{float(value):.6g}" for value in selected),
             flush=True,
         )
+        if validation_interval > 0:
+            print(
+                "[validation_setup] "
+                f"interval={validation_interval} seed={validation_seed} "
+                f"actions={','.join(str(value) for value in validation_actions)}",
+                flush=True,
+            )
+        if initial_sample_group_indices is not None:
+            initial_sample_values = [
+                friction_values[index] for index in initial_sample_group_indices
+            ]
+            print(
+                "[curriculum_grouped_stage1] initial_model_sample_mu="
+                + ",".join(f"{float(value):.6g}" for value in initial_sample_values),
+                flush=True,
+            )
 
     resume_step = int(getattr(args, "grouped_context_resume_step", 0) or 0)
     iterator = tqdm(range(resume_step, updates), disable=not accelerator.is_local_main_process)
     last_phase_key = None
     last_forced_model_step = None
+    context_phase_anchor = None
+    context_phase_limit = float(
+        getattr(args, "grouped_context_phase_max_displacement", 0.0) or 0.0
+    )
+    context_phase_limit_start = int(
+        getattr(args, "grouped_context_phase_max_displacement_start_step", 0) or 0
+    )
     for update_idx in iterator:
         step = update_idx + 1
         phase_info = _curriculum_phase_for_step(args, group_order, step)
         phase = str(phase_info["phase"])
+        phase_sample_group_indices = phase_info["sample_group_indices"]
+        if initial_sample_group_indices is not None and step <= initial_steps:
+            phase_sample_group_indices = initial_sample_group_indices
         phase_key = (phase_info["round"], phase, phase_info["phase_start"], phase_info["phase_end"])
-        if accelerator.is_main_process and phase_key != last_phase_key:
-            sample_mu = [friction_values[index] for index in phase_info["sample_group_indices"]]
+        phase_changed = phase_key != last_phase_key
+        if phase_changed:
+            context_phase = phase in ("new_context", "new_context_mid", "all_context", "context")
+            if (
+                context_phase
+                and context_phase_limit > 0.0
+                and int(phase_info["phase_start"]) >= context_phase_limit_start
+            ):
+                context_phase_anchor = (
+                    accelerator.unwrap_model(model)
+                    .friction_context_table.contexts.detach()
+                    .clone()
+                )
+            else:
+                context_phase_anchor = None
+        if accelerator.is_main_process and phase_changed:
+            sample_mu = [friction_values[index] for index in phase_sample_group_indices]
             print(
                 "[curriculum_phase] "
                 f"step={step} round={phase_info['round']} phase={phase} "
@@ -2738,7 +4128,25 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                 f"sample_mu={','.join(f'{float(value):.6g}' for value in sample_mu)}",
                 flush=True,
             )
-            last_phase_key = phase_key
+        if (
+            phase_changed
+            and phase == "model"
+            and bool(
+                getattr(
+                    args,
+                    "grouped_context_reset_model_optimizer_state_on_phase_start",
+                    False,
+                )
+            )
+        ):
+            cleared_states = _clear_optimizer_group_state(optimizer, "model")
+            if accelerator.is_main_process:
+                print(
+                    "[optimizer_reset] "
+                    f"step={step} group=model cleared_parameter_states={cleared_states}",
+                    flush=True,
+                )
+        last_phase_key = phase_key
 
         background_freeze_after = int(
             getattr(args, "grouped_background_freeze_after_steps", 0) or 0
@@ -2757,14 +4165,21 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                 flush=True,
             )
         _set_curriculum_requires_grad(model, phase, freeze_background=freeze_background)
-        _apply_curriculum_lrs(
+        current_model_lr, current_context_lr = _apply_curriculum_lrs(
             optimizer,
             args,
             step,
             phase,
+            phase_start=int(phase_info["phase_start"]),
             freeze_background=freeze_background,
         )
-        sample_values = [friction_values[index] for index in phase_info["sample_group_indices"]]
+        if accelerator.is_main_process and phase_changed:
+            print(
+                f"[phase_lr] step={step} model_lr={current_model_lr:.8g} "
+                f"context_lr={current_context_lr:.8g}",
+                flush=True,
+            )
+        sample_values = [friction_values[index] for index in phase_sample_group_indices]
         sample_friction_groups = min(friction_groups_per_update, len(sample_values))
         sample_indices = _sample_update_indices(
             grouped_indices=grouped_indices,
@@ -2810,11 +4225,26 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                 loss = model(sample_data)
                 detached_losses.append(loss.detach())
                 accelerator.backward(loss / len(sample_indices))
+        frozen_context_snapshot = None
+        frozen_context_mask = None
         if phase in ("new_context", "new_context_mid", "all_context"):
-            _mask_context_grad(accelerator.unwrap_model(model), phase_info["train_context_indices"])
+            unwrapped_model = accelerator.unwrap_model(model)
+            _mask_context_grad(unwrapped_model, phase_info["train_context_indices"])
+            context_table = unwrapped_model.friction_context_table
+            train_mask = _context_row_mask(context_table, phase_info["train_context_indices"])
+            if not bool(train_mask.all()):
+                frozen_context_snapshot = context_table.contexts.detach().clone()
+                frozen_context_mask = ~train_mask
+                _zero_masked_context_optimizer_state(optimizer, context_table, train_mask)
         if args.max_grad_norm is not None and args.max_grad_norm > 0:
             accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
         optimizer.step()
+        if frozen_context_snapshot is not None:
+            context_table = accelerator.unwrap_model(model).friction_context_table
+            with torch.no_grad():
+                context_table.contexts[frozen_context_mask].copy_(
+                    frozen_context_snapshot[frozen_context_mask]
+                )
         if shared_context_indices:
             context_table = accelerator.unwrap_model(model).friction_context_table
             with torch.no_grad():
@@ -2826,6 +4256,12 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
             args.grouped_context_clamp_min,
             args.grouped_context_clamp_max,
         )
+        if context_phase_anchor is not None:
+            _project_context_displacement(
+                accelerator.unwrap_model(model).friction_context_table,
+                context_phase_anchor,
+                context_phase_limit,
+            )
         if (
             random_context_warmup
             and step == initial_steps
@@ -2837,7 +4273,25 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                 flush=True,
             )
         if step == int(phase_info["phase_end"]):
-            if phase == "model":
+            checkpoint_policy = str(
+                getattr(args, "grouped_context_model_phase_checkpoint_policy", "all")
+                or "all"
+            ).strip().lower()
+            cycle_offset = initial_steps + assignment_model_steps
+            is_cycle_end = (
+                step > cycle_offset
+                and (step - cycle_offset) % int(curriculum_cycle_steps) == 0
+            )
+            should_checkpoint_model_phase = phase == "model" and (
+                checkpoint_policy == "all"
+                or (checkpoint_policy == "cycle_end" and is_cycle_end)
+            )
+            if checkpoint_policy not in ("all", "cycle_end", "none"):
+                raise ValueError(
+                    "grouped_context_model_phase_checkpoint_policy must be "
+                    f"all, cycle_end, or none; got {checkpoint_policy!r}."
+                )
+            if should_checkpoint_model_phase:
                 regular_save_due = (
                     int(args.save_steps) > 0
                     and step % int(args.save_steps) == 0
@@ -2853,8 +4307,38 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                 last_forced_model_step = step
             _log_context_table(accelerator, model, step, phase, "curriculum_phase_end")
             _save_phase_context_table(accelerator, model, model_logger, step, phase, "curriculum_phase_end")
+            if context_phase_anchor is not None and accelerator.is_main_process:
+                displacement = torch.linalg.vector_norm(
+                    (
+                        accelerator.unwrap_model(model).friction_context_table.contexts
+                        - context_phase_anchor
+                    ).flatten(start_dim=1).float(),
+                    dim=1,
+                )
+                print(
+                    f"[context_displacement] step={step} limit={context_phase_limit:.6f} "
+                    f"mean={float(displacement.mean().cpu()):.6f} "
+                    f"max={float(displacement.max().cpu()):.6f}",
+                    flush=True,
+                )
+            if should_checkpoint_model_phase and step in protected_checkpoint_steps:
+                _protect_paired_checkpoint(accelerator, model_logger, step)
         mean_loss = torch.stack([loss.float() for loss in detached_losses]).mean()
         model_logger.on_step_end(accelerator, model, args.save_steps, loss=mean_loss)
+        if validation_interval > 0 and step % validation_interval == 0:
+            validation_loss, validation_count = _run_fixed_validation(
+                accelerator,
+                model,
+                dataset,
+                validation_indices,
+                validation_seed,
+            )
+            if accelerator.is_main_process:
+                print(
+                    f"[validation] step={step} loss={validation_loss:.6f} "
+                    f"count={validation_count}",
+                    flush=True,
+                )
 
     if last_forced_model_step != model_logger.num_steps:
         model_logger.on_training_end(accelerator, model, args.save_steps)
@@ -2879,7 +4363,12 @@ def main() -> None:
         gradient_accumulation_steps=args.gradient_accumulation_steps,
         mixed_precision=args.mixed_precision,
         log_with=loggers or None,
-        kwargs_handlers=[accelerate.DistributedDataParallelKwargs(find_unused_parameters=args.find_unused_parameters)],
+        kwargs_handlers=[
+            accelerate.DistributedDataParallelKwargs(
+                find_unused_parameters=args.find_unused_parameters
+            ),
+            InitProcessGroupKwargs(timeout=timedelta(hours=1)),
+        ],
     )
 
     dataset = build_dataset(args, runtime_config)
@@ -2943,15 +4432,35 @@ def main() -> None:
             flush=True,
         )
 
-    model_logger = GroupedContextModelLogger(
-        args.output_path,
-        remove_prefix_in_ckpt=args.remove_prefix_in_ckpt,
-        save_minutes=args.checkpoint_save_minutes,
-        keep_last=args.checkpoint_keep_last,
-        log_steps=args.log_steps,
-    )
+    if bool(getattr(args, "grouped_context_stage_checkpoints_locally", False)):
+        local_checkpoint_root = (
+            getattr(args, "grouped_context_local_checkpoint_root", None)
+            or os.environ.get("BWM_LOCAL_CHECKPOINT_ROOT")
+        )
+        if not local_checkpoint_root:
+            raise ValueError(
+                "Local checkpoint staging is enabled but no local root was configured."
+            )
+        model_logger = StagedGroupedContextModelLogger(
+            args.output_path,
+            remove_prefix_in_ckpt=args.remove_prefix_in_ckpt,
+            save_minutes=args.checkpoint_save_minutes,
+            keep_last=args.checkpoint_keep_last,
+            log_steps=args.log_steps,
+            local_checkpoint_root=local_checkpoint_root,
+        )
+    else:
+        model_logger = GroupedContextModelLogger(
+            args.output_path,
+            remove_prefix_in_ckpt=args.remove_prefix_in_ckpt,
+            save_minutes=args.checkpoint_save_minutes,
+            keep_last=args.checkpoint_keep_last,
+            log_steps=args.log_steps,
+        )
     model_logger.num_steps = int(getattr(args, "grouped_context_resume_step", 0) or 0)
-    if bool(getattr(args, "grouped_context_bridge_enabled", False)):
+    if int(getattr(args, "grouped_context_direct_random_steps", 0) or 0) > 0:
+        launch_direct_random_grouped_stage1(accelerator, dataset, model, model_logger, args)
+    elif bool(getattr(args, "grouped_context_bridge_enabled", False)):
         launch_bridge_grouped_stage1(accelerator, dataset, model, model_logger, args)
     elif int(getattr(args, "grouped_context_curriculum_initial_groups", 0) or 0) > 0:
         launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, args)

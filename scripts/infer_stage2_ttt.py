@@ -64,9 +64,15 @@ def _read_jsonl(path: str | Path) -> list[dict]:
 
 def _write_jsonl(path: Path, rows: list[dict]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, sort_keys=True) + "\n")
+    temporary_path = path.with_name(f".{path.name}.partial")
+    temporary_path.unlink(missing_ok=True)
+    try:
+        with temporary_path.open("w", encoding="utf-8") as f:
+            for row in rows:
+                f.write(json.dumps(row, sort_keys=True) + "\n")
+        temporary_path.replace(path)
+    finally:
+        temporary_path.unlink(missing_ok=True)
 
 
 def _load_grouped_context_table(path: str | Path | None):
@@ -1474,11 +1480,23 @@ def main() -> None:
     if args.resume_context_trajectory and trajectory_path.exists():
         trajectory_rows = _read_jsonl(trajectory_path)
         expected_steps = len(_parse_inner_lr_schedule(args))
-        completed_context_samples = {
+        trajectory_complete_samples = {
             int(row["sample_index"])
             for row in trajectory_rows
             if row.get("sample_index") is not None and int(row.get("inner_step", -1)) >= expected_steps
         }
+        completed_context_samples = {
+            sample_index
+            for sample_index in trajectory_complete_samples
+            if (output_path / _default_pred_name(sample_index, query_rows[sample_index])).is_file()
+        }
+        trajectory_rows = [
+            row
+            for row in trajectory_rows
+            if row.get("sample_index") is not None
+            and int(row["sample_index"]) in completed_context_samples
+        ]
+        _write_jsonl(trajectory_path, trajectory_rows)
         print(
             f"[resume_context] path={trajectory_path} rows={len(trajectory_rows)} "
             f"completed_samples={len(completed_context_samples)}",
