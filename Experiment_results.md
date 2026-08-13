@@ -30,15 +30,22 @@ Last updated: 2026-08-04
 | Mass balance，fixed pose | `91441/step4300` | `92059` | 与 random 版相同训练机制，但固定 pose | 减少无关视觉变化后，质量比例与 latent geometry 更容易分析 | 完成，主结果 |
 | Joint mass-friction，失败版 | `90527`、`90748 -> 90917` | 无正式主评测 | `4 env x 4 action` 或 `6 env x 3 action/rank`；有效 batch 64/72 | 未形成清晰、可迁移的多因素 latent 结构 | 失败对照 |
 | Joint mass-friction，成功版 | `90971 -> 91267/step7172` | `91479` | `4 env x 6 action/rank`；有效 batch 96；new-Z lr `0.09` | Z 在无 factor supervision 下自发组织 mass 与 friction 两个因素 | 完成，主结果 |
+| Multi-background PushBox | 原始 random-C9 curriculum `step6000` -> `97909/step8200` | `98506` | 3 backgrounds x 40 frictions；固定前三个 waves 的 21 groups；每 rank `6 env x 6 common actions`；Z/model 每 200 steps 交替 | 每个背景内部出现 friction-related structure，但三个背景仍形成各自 cluster，说明 Z 同时编码了物理与视觉 domain | 当前最佳多背景结果 |
 | LightSwitch causal dynamics | `95498`；评测状态为 model 4100 + Z 4300 | `95707` | 4 causal env；event-centered 约 30-frame core，Wan 输入 33 帧；每 wave 加 4 groups | 短而关键的 interaction chunk 明显优于此前长窗口设置，说明 chunk information density 很重要 | 最新成功版；待严格 120-frame 对照 |
 
-### 3. 尚未形成主结果的方向
+### 3. 真机实验
+
+| 实验 | 代表训练/状态 | 环境与输入 | 方法 | 当前获得的信息 | 结论边界 |
+|---|---|---|---|---|---|
+| Slope-friction toy | Stage1 `95512`；评测使用 model `step1859` + Z `phase-step2100`；eval `95718` | 两个真实砂纸环境 `grit120`、`grit240`；raw 80 frames，经 stride 2 得到 41-frame 输入；14D joint-state-action | 只训练一个共享 world model；每个摩擦力环境维护一个独立 Z32；Stage1 交替训练模型/Z；Stage2 context-only adaptation | 已生成每环境 8 组 GT/Stage1/Stage2 对比，并记录两环境 training-time Z、inference-time Z trajectory 和联合 PCA | 目前是 two-environment feasibility check；Stage2 使用 query chunk 自身作 support，尚不能证明跨 episode、未见摩擦表面或真实在线泛化 |
+
+### 4. 尚未形成主结果的方向
 
 | 方向 | 目标 | 当前状态 | 成为主结果前必须完成的内容 |
 |---|---|---|---|
-| Multi-background / multi-visual-environment PushBox | 在外观变化下学习稳定物理 Z，并研究 single Z 与 factorized environment-Z/background-Z | Checkpoint 与训练方案仍在研究，正文不指定 run | 确定 checkpoint；完成相同 protocol 的 Stage1/Stage2、跨 action、跨背景、ID/OOD 和 latent geometry 评测 |
+| Multi-background / multi-visual-environment PushBox | 已获得 friction-related representation，但不同背景仍各自聚类 | 下一步使用共享 Z 的跨背景、光影和视觉干扰 augmentation，显式约束同一物理条件的不同视觉版本使用同一个 latent | 仿真中可重渲染同一轨迹；真实数据很难保持动作、状态、接触过程和时间严格对齐，需要先研究可控视觉合成或同步采集 |
 
-### 4. 必须补充的严格消融
+### 5. 必须补充的严格消融
 
 | 优先级 | 消融 | 固定项 | 唯一变化 | 要回答的问题 |
 |---|---|---|---|---|
@@ -269,15 +276,78 @@ Last updated: 2026-08-04
 
 ## H. Multi-background / multi-visual environment
 
-| 字段 | 当前记录 |
+### H.1 数据与表示
+
+| 字段 | 配置 |
 |---|---|
-| Canonical config | TBD |
-| Runtime config | TBD |
-| Representative checkpoint | TBD |
-| Z table | TBD |
-| Evaluation output | TBD |
-| 目标 | 在多个视觉背景中保持物理 Z 可迁移，并比较 single Z 与 factorized environment-Z/background-Z |
-| 必需评测 | 训练背景内、未见背景、未见 friction、跨 action transfer、PCA/factor separation |
+| 数据集 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox_various_env/libero_plus_push_box_event_tap_segmented40_10action_3env_hidden_lerobot_A500_offset160_stop_2026-07-27_hai-machine` |
+| Metadata | `data/push_box_bwm_various_env3x40_10action_65_105_20260727/train.jsonl` |
+| 环境 | 3 个视觉 backgrounds，每个背景 40 个 friction settings，共 120 environment groups；每组 10 actions |
+| 视频 | 固定 frames `65-105`，41 frames，224x224 |
+| Action | `eef_delta`，14 dimensions，AdaLN 注入 |
+| Z | 每个 background-friction group 使用一个 Z32；1 token，hidden dim 128；同时经 condition token 与 modulation 注入 DiT |
+| 重要限制 | 当前不是 factorized representation；同一数值 friction 在不同背景下仍使用不同 Z，因此训练目标没有强制背景不变性 |
+
+### H.2 第一阶段：原始 random-C9 curriculum
+
+| 字段 | 配置 |
+|---|---|
+| Canonical config | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/train/train_push_box_various_env3x40_10action_65_105_singlec32_from_blm_initialmedian3_randomc9_model800_assign200_add6_stage1_21000_4gpu.yaml` |
+| Base checkpoint | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/ckpt/BLM/step-12000.safetensors` |
+| 初始 active groups | 9 groups，每个背景选择 3 个；按 friction rank 做 stratum-median 选择 |
+| Z initialization | 9 个独立 `U(0,1)` Z32；random-context model warm-up 后固定分配给 9 个初始 groups |
+| Initial training | Model-only random-Z warm-up 800 steps，随后 assignment model phase 200 steps |
+| Curriculum expansion | 每 wave 新增 6 groups，每个背景 2 个；group order 使用 OS randomness、without replacement，并持久化防止 requeue 后重抽 |
+| Curriculum phase lengths | New-Z 200；all-Z 200；model 200；之后继续 all-Z/model 交替 |
+| Sampling | `stratified_common_actions`，以 `environment_index` 分 3 strata；每 rank `3 groups x 6 common actions = 18` chunks |
+| Learning rates | Z `0.3`；model `1e-5`；Z clamp `[0,1]` |
+| 第一阶段输出 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/push_box_various_env3x40_10action_65_105_singlec32_from_blm_initialmedian3_randomc9_model800_assign200_add6_stage1_21000` |
+| 交接模型 | 上述目录的 `step-6000.safetensors` |
+| 交接 Z table | 上述目录的 `step-6000.context_table.json` |
+
+### H.3 第二阶段：固定 21 groups 长期联合优化，job 97909
+
+| 字段 | 配置 |
+|---|---|
+| Canonical config | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/train/train_push_box_various_env3x40_10action_65_105_from_original_step6000_fixed_first3curr21_post_c200_m200_perrank6env6action_stage1_21000_4gpu.yaml` |
+| Runtime config | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/tmp/slurm/pb3e-s6-f21-6x6_97909_r0.yaml` |
+| 恢复方式 | 从第一阶段 `step6000` 的模型与 Z table 配对恢复；logical step 继续从 6000 计数 |
+| 固定 active set | 只保留前三个 curriculum waves：初始 9 groups + 两次新增 6 groups = 21 groups；每个背景 7 个 friction groups；不再加入其余 99 groups |
+| Active group IDs | `10,14,28,41,59,69,80,104,108,38,20,55,54,90,105,19,35,44,68,87,99`；顺序持久化于输出目录的 `curriculum_group_order.json` |
+| Post-curriculum cycle | All-Z-only 200 steps，随后 model-only 200 steps，持续交替到训练结束 |
+| Z-only phase | 模型完全冻结；更新 active Z；lr `0.3`；clamp `[0,1]` |
+| Model-only phase | 所有 Z 冻结；训练 DiT、action encoder、physical-context encoder；lr `1e-5` |
+| Batch shape | 每 rank `6 groups x 6 common actions = 36` chunks；4 GPUs，有效 144 chunks/structured update；按三个 backgrounds 分层采样 |
+| 训练预算 | Logical target `21000`；当前代表评测状态为 `step8200` |
+| 训练输出 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/push_box_various_env3x40_from_original_step6000_fixed_first3curr21_post_c200_m200_perrank6env6action_stage1_21000_97909` |
+| Lineage manifest | 上述目录的 `source_lineage.json`，明确记录第一阶段输出、模型和 Z table |
+
+### H.4 Checkpoint 与评测
+
+| 资产 | 绝对路径/说明 |
+|---|---|
+| 代表模型 backup | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/backup-push_box_various_env3x40_fixed21_step8200_from97909/step-8200.safetensors` |
+| 代表 Z table backup | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/backup-push_box_various_env3x40_fixed21_step8200_from97909/step-8200.context_table.json` |
+| Backup manifest | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/backup-push_box_various_env3x40_fixed21_step8200_from97909/backup_manifest.json` |
+| 评测 job | `98506` |
+| 评测输出 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/infer_push_box_various_env3x40_fixed21_6x6_step8200_gt_stage1_stage2_x5fp32_12each_grid_pca_98506` |
+| Case selection | 每个背景 12 cases，共 36；覆盖该背景全部 7 个 active friction groups，再从这些 groups 选择不同 action repeats |
+| Stage1 | 每个 case 使用匹配的 training-time Z table entry |
+| Stage2 initialization | 使用 21 个 active training-time Z entries 的均值；评测 manifest 中遗留的“30”是旧文案，实际 active ID 列表为 21 个 |
+| Stage2 support/update | 当前评测使用 query chunk 自身作为 support；context-only FP32；40 steps：`3.0x10 + 1.5x10 + 0.5x10 + 0.15x10`；reg 0.001 |
+| Video output | 每背景一个 GT/Stage1/Stage2 `3x10` grid，并保存全部 36 个逐 case comparison videos |
+| Latent output | `combined_3background_training_inference_z_pca.csv/.svg`、每背景 context trajectory PCA，以及 training-time active21 PCA |
+
+### H.5 结果与下一步
+
+| 项目 | 记录 |
+|---|---|
+| 当前最佳结果 | Z 空间能够产生与 friction 相关的连续特征，Stage1/Stage2 生成也能表现出相应动力学差异 |
+| 主要问题 | 三个视觉 backgrounds 仍各自形成 cluster；background identity 尚未从 friction representation 中消除，说明单一 Z 同时承载物理和视觉 domain 信息 |
+| 下一步方法 | 对同一条物理轨迹生成不同背景、光照、阴影和视觉干扰版本，并强制这些 augmented chunks 共享同一个 Z；这样可以直接把“视觉变化不应改变物理 latent”写进训练约束 |
+| 仿真实现 | 固定状态、动作和 friction，仅改变 renderer/background/light；可以获得时间严格对齐的 counterfactual visual views，最适合先做 shared-Z augmentation ablation |
+| 真实数据难点 | 很难在不同背景和光照下重复完全相同的状态、动作与接触过程；普通独立重采集会把物理轨迹差异混入 augmentation。可优先尝试背景替换、颜色/光照扰动、阴影/遮挡合成，或同步多相机采集 |
+| 后续严格评测 | 增加 unseen background、unseen friction、cross-action transfer；比较无 augmentation、shared-Z augmentation、single-Z 与 factorized environment-Z/background-Z |
 
 ## I. LightSwitch event-centered causal dynamics：job 95498
 
@@ -312,7 +382,60 @@ Last updated: 2026-08-04
 | 覆盖范围 | GT、Stage1、Stage2；event-centered causal cases；使用 model4100/Z4300 状态 |
 | 待补对照 | 完全固定数据 groups、batch、curriculum、LR 和 seed，仅把约 30-frame core 改为 120-frame window |
 
-## J. 结果解读规范
+## J. Real-robot slope-friction toy：job 95512
+
+### J.1 配置与关键参数
+
+| 字段 | 配置 |
+|---|---|
+| Canonical config | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/train/train_real_friction_slope_2env_joint_state_action_stride2_c32_random_4gpu_3slot6chunk_alt200_stage1_5500.yaml` |
+| Runtime config | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/tmp/run_configs/real_friction_slope_2env_c32_random_4h200_3slot6chunk_alt200_stage1_5500_95512.yaml` |
+| Dataset preparation | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/scripts/prepare_real_friction_slope_bwm_dataset.py` |
+| 原始数据 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets_real/friction_slope` |
+| 环境 | `sandpaper-box-120_lerobot` 与 `sandpaper-box-240_lerobot`，文中简称 `grit120`、`grit240` |
+| 训练对象 | 两个环境共同训练一个 Wan2.2-TI2V-5B/BWM world model，不为两个环境分别训练模型 |
+| Base checkpoint | `ckpt/BLM/step-12000.safetensors` |
+| 视频 | 每个 raw window 80 frames；`frame_stride=2`；40 个独立采样帧 tail-pad 为 41；224x224 letterbox |
+| Action | `joint_state_action`，14 dimensions；视频和 action 使用相同 stride 对齐 |
+| Z | 每个砂纸环境共享一个 Z32；1 token，hidden dim 128；independent `U(0,1)` initialization；clamp `[0,1]`；`physical_context_mode=both` |
+| Batch shape | 每 rank 3 个 balanced repeated environment slots，每 slot 6 chunks，共 18 microbatches；两个环境始终出现，第三 slot 按 rank 交替以保持全局平衡 |
+| GPU/effective batch | 4 GPUs；有效 72 chunks/update |
+| Alternating schedule | 先 model-only warm-up 300 steps；之后从 Z-only 开始，每 200 steps 在 Z-only/model-only 间切换 |
+| Learning rates | Z `0.03`；model `1e-5`，前 100 model steps warm-up；model phase 训练 DiT、action encoder、physical-context encoder |
+| 训练预算 | 计划 5500 structured updates；BF16 model training；gradient checkpointing；max grad norm 0.5 |
+| 保存策略 | `save_steps=500`，至少每 60 分钟保存，仅保留最近两个普通 model/Z 配对 checkpoint，同时记录 phase-end Z table |
+
+### J.2 Checkpoint 与评测
+
+| 资产 | 绝对路径/说明 |
+|---|---|
+| 实际评测模型 snapshot | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/inference_snapshots/real_friction_slope_95512_step1859_table2100/step-1859.safetensors` |
+| 实际评测 Z table | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/inference_snapshots/real_friction_slope_95512_step1859_table2100/step-2100.context_table.json` |
+| Snapshot manifest | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/inference_snapshots/real_friction_slope_95512_step1859_table2100/snapshot_manifest.txt` |
+| Step 组合解释 | Model source step 为 1859；之后进入 Z-only phase并将 Z 更新到 logical step 2100，因此评测固定使用 model1859 + Z2100 |
+| 当前更晚安全配对模型 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/real_friction_slope_2env_c32_random_4h200_3slot6chunk_alt200_stage1_5500_95512/step-2292.safetensors` |
+| 当前更晚安全配对 Z table | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/real_friction_slope_2env_c32_random_4h200_3slot6chunk_alt200_stage1_5500_95512/step-2292.context_table.json` |
+| 评测 job | `95718`，2 张 H200；两个环境并行推理 |
+| 评测脚本 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/jobs/run_infer_real_friction_slope_95512_step1859_table2100_gt_stage1_stage2_8each_2h200_low.sh` |
+| 评测输出 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/infer_real_friction_slope_95512_step1859_table2100_gt_stage1_stage2_8each_95718` |
+| Case selection | `grit120` 8 chunks + `grit240` 8 chunks，共 16 组 GT/Stage1/Stage2 视频；每个 raw chunk 80 frames |
+| Stage1 context | 直接使用该砂纸环境在 Stage1 学到的 training-time Z table entry |
+| Stage2 initialization | 两个 training-time Z entries 的均值 |
+| Stage2 support | 当前 toy 评测使用 query chunk 自身作为 support，即 `ttt_support_same_as_query` |
+| Stage2 update | 只更新 Z；FP32；40 steps：`3.0x10 + 1.5x10 + 0.5x10 + 0.15x10`；grad clip 1.0；reg 0.001；clamp `[0,1]` |
+| Video inference | 25 denoising steps；CFG 1；15 FPS；固定 seed `20260803` |
+| Latent analysis | 分别保存 `grit120/grit240` 的 Z trajectory，并生成 training-time 与 Stage2 endpoints 的联合 PCA CSV/SVG |
+
+### J.3 当前结论与下一步
+
+| 项目 | 记录 |
+|---|---|
+| 已证明 | 同一个 world model 可以在两种真实摩擦表面数据上训练；environment-specific Z 能参与 Stage1 生成和 Stage2 context-only optimization；完整数据准备、训练、checkpoint、推理和 PCA 链路已跑通 |
+| 尚未证明 | 两个 Z 是否主要编码摩擦而非其他采集差异；从独立 showcase 到 query 的跨 episode adaptation；未见真实表面的插值/OOD；真实机器人闭环在线控制 |
+| 下一组最小实验 | 每个表面严格划分 support/query episode，禁止 support=query；保持模型不变，只比较 training-time Z、mean-Z、TTT-Z |
+| 后续扩展 | 增加至少 4-6 个可排序真实表面或可控坡度/摩擦环境，并保留未见表面作为 OOD；控制相机、初始位姿、动作幅度和光照，避免 Z 利用非物理 shortcut |
+
+## K. 结果解读规范
 
 | 项目 | 规范 |
 |---|---|
