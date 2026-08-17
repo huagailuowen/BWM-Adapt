@@ -1,0 +1,24 @@
+schema_version: 1
+
+manifest_path: null
+output_dir: null
+
+results:
+  root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results
+  benchmark: pushbox_friction_event80
+  evaluation_id: event80_cross_action_k1_k2_v1
+
+object_metrics:
+  mask_key: masks
+  mean_iou: true
+  final_iou: true
+  centroid_ade: true
+  centroid_fde: true
+  missing_mask_rate: true
+  centroid_units: normalized_image_diagonal
+
+aggregation:
+  hierarchy: [query, environment, seed]
+  environment_weighting: macro
+  support_sizes: [1, 2]
+  domains: [id, ood]

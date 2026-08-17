@@ -1,0 +1,27 @@
+schema_version: 1
+
+source:
+  inference_dir: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/infer_event80_randomc32_stage2_x5fp32_physics_transfer_4mu_89098
+  dataset_dir: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine
+  metadata_path: data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl
+  transfer_plan: same_friction_other_actions/transfer_plan.json
+
+output_dir: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results/pushbox_friction_event80/legacy_89098_cross_action_grid
+method: ours_randomc32_stage2_x5fp32_cross_action_transfer
+seed: 20260708
+future_start_frame: 1
+id_source_indices: [101, 494]
+
+tracker:
+  roi_y_min: 82
+  blue_minus_red: 0.035
+  blue_minus_green: 0.008
+  minimum_saturation: 0.16
+  maximum_value: 0.72
+  minimum_area: 8
+  maximum_area: 700
+  maximum_width: 45
+  maximum_height: 55
+  offscreen_min_y: 185.0
+  initial_x: 118.0
+  initial_y: 103.0

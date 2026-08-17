@@ -1,0 +1,22 @@
+schema_version: 1
+
+manifest_path: null
+output_dir: null
+
+results:
+  root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results
+  benchmark: pushbox_friction_event80
+  evaluation_id: event80_cross_action_k1_k2_v1
+
+global_metrics:
+  psnr: true
+  lpips: true
+  lpips_net: alex
+  lpips_batch_size: 8
+  device: cuda
+
+aggregation:
+  hierarchy: [query, environment, seed]
+  environment_weighting: macro
+  support_sizes: [1, 2]
+  domains: [id, ood]
