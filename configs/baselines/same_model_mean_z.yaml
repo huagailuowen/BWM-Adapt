@@ -1,0 +1,13 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: same_model_mean_z
+
+adaptation:
+  enabled: false
+  stages: []
+
+baseline:
+  checkpoint_source: ours
+  context_initialization: active_table_mean
+  optimize_context: false

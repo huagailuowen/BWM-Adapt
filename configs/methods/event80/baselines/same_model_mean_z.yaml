@@ -1,0 +1,29 @@
+extends: ../common.yaml
+
+experiment:
+  id: same_model_mean_z
+
+method:
+  slug: same_model_mean_z
+  family: baseline
+  source_checkpoint: ours_random_c32
+  environment_code: training_table_mean
+  test_time_optimization: false
+
+adaptation:
+  enabled: false
+  mode: fixed_training_table_mean
+
+execution:
+  training:
+    mode: reuse
+    ready: true
+    blocked_by: null
+  inference:
+    ready: false
+    blocked_by: ours_checkpoint_and_context_table
+  dependencies: [ours_random_c32]
+
+runtime:
+  implementation_status: dependency_configured_inference_binding_pending
+  protocol_runner: wan_video_action.methods.baselines.same_model_mean_z

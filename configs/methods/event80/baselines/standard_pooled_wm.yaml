@@ -1,0 +1,52 @@
+extends: ../common.yaml
+
+experiment:
+  id: standard_pooled_wm
+
+method:
+  slug: standard_pooled_wm
+  family: baseline
+  adaptation: none
+  environment_condition: none
+  train_wan_backbone: true
+
+source:
+  legacy_train_config: configs/train/train_push_box_event80_active35_standard_pooled_wm_2gpu_24h.yaml
+  training_environment_manifest: configs/methods/event80/manifests/ours_88823_step7272_active35.yaml
+
+training:
+  data_stream: pooled_shuffled
+  active_environment_count: 35
+  pooled_batch:
+    clips_per_rank: 16
+    gpu_count: 2
+    effective_clips_per_update: 32
+  progressive_environment_stream:
+    enabled: false
+
+protocol:
+  query_state_policy: none
+
+adaptation:
+  enabled: false
+  mode: none
+
+execution:
+  training:
+    mode: independent
+    ready: true
+    blocked_by: null
+  inference:
+    ready: false
+    blocked_by: pooled_checkpoint_and_fixed_query_manifest
+
+runtime:
+  implementation_status: standard_pooled_training_ready
+  protocol_runner: wan_video_action.methods.baselines.standard_pooled_wm
+  train:
+    entrypoint: scripts/train.py
+    extra_args:
+      - --model_paths
+      - /tmp/cyzhou05/bwm_shared/Wan2.2-TI2V-5B
+      - --ckpt_path
+      - /tmp/cyzhou05/bwm_shared/BLM-step-12000.safetensors

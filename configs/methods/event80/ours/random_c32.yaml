@@ -1,0 +1,31 @@
+extends: ../common.yaml
+
+experiment:
+  id: ours_random_c32
+
+method:
+  slug: ours
+  family: ours
+  latent_dim: 32
+  initialization: uniform_0_1
+  training: iterative_environment_group
+  alternating_cycle_steps: 1000
+  environment_code_scope: per_environment
+
+source:
+  legacy_train_config: configs/train/train_push_box_event_tap_segmented80_pushmotion41f_10chunk_curriculum_c32_random_stage1_15300.yaml
+
+execution:
+  training:
+    mode: independent
+    ready: true
+    blocked_by: null
+  inference:
+    ready: false
+    blocked_by: frozen_support_query_manifest_and_checkpoint
+
+runtime:
+  implementation_status: grouped_c_training_ready_inference_binding_pending
+  protocol_runner: wan_video_action.methods.ours.persistent_environment_memory
+  train:
+    entrypoint: scripts/train_stage1_grouped_context.py

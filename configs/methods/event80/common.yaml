@@ -1,0 +1,89 @@
+extends: ../common.yaml
+
+experiment:
+  benchmark_id: pushbox_friction_event80
+
+benchmark:
+  id: pushbox_friction_event80
+  dataset_path: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine
+  metadata_path: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl
+  action_stats_path: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/action_stats.json
+  environment_key: mu_index
+  physical_value_key: friction_mu
+  action_key: action_id
+  environment_count: 80
+  actions_per_environment: 10
+  window:
+    start: 65
+    end: 105
+    num_frames: 41
+  support_query:
+    disjoint_actions: true
+    final_query_set: fixed_multi_action
+    support_sizes: [1, 2]
+
+resources:
+  seed: 20260708
+  training:
+    protocol: fixed_hardware_time
+    hardware_block_id: event80_2xh200_24h_v1
+    gpu_count: 2
+    gpu_sku: H200
+    wall_clock_hours: 24
+    gpu_hours: 48
+    timer_boundary: training_process_start_after_staging
+    queue_time_included: false
+    staging_time_included: false
+    deadline_enforcement: scheduler
+    utilization:
+      target_percent: 90
+      sample_seconds: 30
+      equality_metric: false
+
+model:
+  architecture: Wan2.2-TI2V-5B
+  model_root: models/Wan2.2-TI2V-5B
+  model_config_path: configs/model/wan2_2_ti2v_5b.yaml
+  pretrained_checkpoint: ckpt/BLM/step-12000.safetensors
+  height: 224
+  width: 224
+  text_mode: none
+  action:
+    mode: adaln
+    type: eef_delta
+    dim: 14
+
+training:
+  reference_recipe: event80_old_random_c32
+  reference_config: configs/train/train_push_box_event_tap_segmented80_pushmotion41f_10chunk_curriculum_c32_random_stage1_15300.yaml
+  optimizer: AdamW
+  model_learning_rate: 1.0e-5
+  weight_decay: 0.01
+  warmup_steps: 100
+  gradient_clip_norm: 0.5
+  gradient_checkpointing: true
+  progressive_environment_stream:
+    enabled: true
+    initial_environments: 5
+    add_environments: 5
+    total_environments: 80
+
+checkpointing:
+  save_steps: 500
+  timed_save_minutes: 60
+  keep_last: 2
+
+evaluation:
+  evaluation_id: event80_cross_action_k1_k2_v1
+  query_actions: fixed_disjoint_set
+  primary_metrics:
+    - object_mask_mean_iou
+    - object_mask_final_iou
+    - object_centroid_ade
+    - object_centroid_fde
+    - friction_specific_stop_distance_error
+  secondary_metrics: [global_psnr, lpips]
+
+runtime:
+  artifact_root: outputs/method_benchmarks/pushbox_friction_event80
+  results_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results/pushbox_friction_event80

@@ -1,0 +1,30 @@
+extends: ../common.yaml
+
+experiment:
+  id: history_conditioned_wm
+
+method:
+  slug: history_conditioned_wm
+  family: baseline
+  history_window_frames: 41
+  support_sizes: [1, 2]
+  support_query_disjoint: true
+  extra_condition_tokens: true
+  environment_latent: false
+
+adaptation:
+  enabled: true
+  mode: history_encoding
+
+execution:
+  training:
+    mode: independent
+    ready: false
+    blocked_by: history_condition_wan_adapter
+  inference:
+    ready: false
+    blocked_by: history_condition_wan_adapter
+
+runtime:
+  implementation_status: protocol_ready_history_adapter_pending
+  protocol_runner: wan_video_action.methods.baselines.history_conditioned

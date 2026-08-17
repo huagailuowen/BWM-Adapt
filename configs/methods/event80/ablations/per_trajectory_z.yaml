@@ -1,0 +1,25 @@
+extends: ../common.yaml
+
+experiment:
+  id: per_trajectory_z
+
+method:
+  slug: per_trajectory_z
+  family: ablation
+  latent_dim: 32
+  code_scope: per_trajectory
+  shared_within_environment: false
+  initialization: uniform_0_1
+
+execution:
+  training:
+    mode: independent
+    ready: false
+    blocked_by: per_trajectory_context_table_runner
+  inference:
+    ready: false
+    blocked_by: grouped_c_support_query_adapter
+
+runtime:
+  implementation_status: protocol_ready_per_trajectory_runner_pending
+  protocol_runner: wan_video_action.methods.ablations.per_trajectory_z

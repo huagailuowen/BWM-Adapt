@@ -1,0 +1,11 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: joint_model_latent_training
+
+ablation:
+  parent: ours
+  optimization: joint
+  alternating_frozen_phases: false
+  match_total_model_gradient_updates: true
+  match_total_context_gradient_updates: true

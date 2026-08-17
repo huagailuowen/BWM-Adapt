@@ -1,0 +1,25 @@
+extends: ../common.yaml
+
+experiment:
+  id: shuffled_environment_grouping
+
+method:
+  slug: shuffled_environment_grouping
+  family: ablation
+  latent_dim: 32
+  grouping: fixed_seeded_shuffle_across_true_environments
+  initialization: uniform_0_1
+  training: iterative_environment_group
+
+execution:
+  training:
+    mode: independent
+    ready: false
+    blocked_by: shuffled_group_assignment_sampler
+  inference:
+    ready: false
+    blocked_by: grouped_c_support_query_adapter
+
+runtime:
+  implementation_status: protocol_ready_shuffled_sampler_pending
+  protocol_runner: wan_video_action.methods.ablations.shuffled_grouping

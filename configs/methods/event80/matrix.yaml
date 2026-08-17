@@ -1,0 +1,50 @@
+schema_version: 1
+benchmark: pushbox_friction_event80
+evaluation_id: event80_cross_action_k1_k2_v1
+do_not_submit: true
+
+budget:
+  protocol: fixed_hardware_time
+  hardware_block_id: event80_2xh200_24h_v1
+  gpu_count: 2
+  gpu_sku: H200
+  wall_clock_hours: 24
+  gpu_hours: 48
+  match_steps: false
+  match_clip_exposure: false
+  match_flops: false
+
+experiments:
+  ours:
+    - ours/random_c32.yaml
+  baselines:
+    - baselines/standard_pooled_wm.yaml
+    - baselines/same_model_mean_z.yaml
+    - baselines/history_conditioned_wm.yaml
+    - baselines/lora_tta.yaml
+    - baselines/ttt_kvb_k1.yaml
+    - baselines/ttt_kvb_k2.yaml
+    - baselines/dinov2_amortized_context.yaml
+    - baselines/frozen_wm_optimized_z.yaml
+  ablations:
+    - ablations/context_dim_4.yaml
+    - ablations/context_dim_128.yaml
+    - ablations/context_dim_1024.yaml
+    - ablations/shuffled_environment_grouping.yaml
+    - ablations/per_trajectory_z.yaml
+    - ablations/joint_model_latent_training.yaml
+
+evaluation:
+  global_config: ../../evaluation/event80/global.yaml
+  object_centric_config: ../../evaluation/event80/object_centric.yaml
+  fixed_query_manifest: null
+
+submission_gate:
+  - set_do_not_submit_false_only_after_manual_review
+  - lock_hardware_block_and_24h_timer_boundary
+  - stage_wan_checkpoint_before_training_timer
+  - lock_validation_only_hyperparameter_selection
+  - lock_fixed_disjoint_k1_k2_query_sets
+  - complete_all_method_specific_readiness_gates
+  - run_one_ttt_kvb_memory_and_speed_smoke_test
+  - confirm_hourly_atomic_checkpoint_retention

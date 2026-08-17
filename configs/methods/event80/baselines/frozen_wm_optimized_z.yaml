@@ -1,0 +1,25 @@
+extends: ../common.yaml
+
+experiment:
+  id: frozen_wm_optimized_z
+
+method:
+  slug: frozen_wm_optimized_z
+  family: baseline
+  wan_backbone: frozen_after_initial_stage
+  latent_dim: 32
+  latent_initialization: uniform_0_1
+  query_updates_latent: false
+
+execution:
+  training:
+    mode: independent
+    ready: false
+    blocked_by: freeze_after_initial_environment_stage_runner
+  inference:
+    ready: false
+    blocked_by: optimized_z_support_query_adapter
+
+runtime:
+  implementation_status: protocol_ready_frozen_consolidation_runner_pending
+  protocol_runner: wan_video_action.methods.baselines.frozen_wm_optimized_z

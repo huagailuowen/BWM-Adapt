@@ -1,0 +1,19 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: dinov2_amortized_context
+
+adaptation:
+  enabled: false
+  stages: []
+
+baseline:
+  visual_encoder: dinov2_b14
+  freeze_visual_encoder: true
+  support_window_matches_ours: true
+  sampled_frames: 8
+  include_window_endpoints: true
+  encode_complete_interframe_action_chunks: true
+  projection_hidden_dim: 1024
+  context_dim: 32
+  aggregate_supports: mean

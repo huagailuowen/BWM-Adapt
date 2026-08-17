@@ -1,0 +1,17 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: history_conditioned_wm
+
+adaptation:
+  enabled: false
+  stages: []
+
+baseline:
+  support_representation: raw_video_action_history
+  gradient_based_test_time_update: false
+  support_window_matches_ours: true
+
+runtime:
+  pipeline_extensions:
+    extra_condition_tokens: true

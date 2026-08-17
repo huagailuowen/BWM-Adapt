@@ -1,0 +1,59 @@
+extends: ../common.yaml
+
+experiment:
+  id: ttt_kvb_k1
+
+method:
+  slug: ttt_kqv
+  canonical_name: TTT-KVB
+  compatibility_alias: TTT-KQV
+  family: baseline
+  support_size: 1
+  query_write: false
+  reset_per_environment: true
+  outer_query_loss: flow_matching
+  support_backbone_gradient: false
+  differentiate_through_writes: true
+  insertion:
+    topology: parallel_gated_branch
+    layers: uniform:8
+    gate_init: 0.0
+    preserve_local_wan_attention: true
+  fast_weight:
+    model: two_layer_gelu_mlp
+    expansion: 4
+    qkv_views: independent_learned
+    binding_loss: mse
+    base_inner_lr: 0.1
+    optimizer: gradient_descent
+    precision: fp32
+    state_normalization: none
+  support_write:
+    token_selection: uniform_over_flattened_video_tokens
+    token_budget_per_trajectory: 512
+    inner_batch_size: 64
+    checkpointing: false
+  query_read:
+    state_frozen: true
+    checkpointing: true
+
+protocol:
+  support_sizes: [1]
+
+adaptation:
+  enabled: true
+  mode: support_write
+
+execution:
+  training:
+    mode: independent
+    ready: false
+    blocked_by: wan_outer_training_batch_binding
+  inference:
+    ready: false
+    blocked_by: wan_support_query_batch_binding
+
+runtime:
+  implementation_status: core_ready_budget_and_wan_batch_binding_pending
+  protocol_runner: wan_video_action.methods.baselines.ttt_kvb.runner.TTTKVBProtocolRunner
+  installer: wan_video_action.methods.baselines.ttt_kvb.wan_adapter.install_ttt_kvb

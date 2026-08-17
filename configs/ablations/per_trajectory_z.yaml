@@ -1,0 +1,11 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: per_trajectory_z
+
+ablation:
+  parent: ours
+  latent_scope: trajectory
+  preserve_latent_dimension: true
+  preserve_model_updates: true
+  preserve_context_updates: true

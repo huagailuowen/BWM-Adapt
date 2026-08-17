@@ -1,0 +1,52 @@
+extends: ../common.yaml
+
+experiment:
+  id: dinov2_amortized_context
+
+method:
+  slug: dinov2_amortized_context
+  family: baseline
+  encoder: dinov2_b14_frozen
+  sampled_frames: 8
+  source_window_frames: 41
+  action_conditioning: full_interframe_action_chunks
+  output_latent_dim: 32
+  train_wan_backbone: true
+
+source:
+  legacy_train_config: configs/train/train_push_box_event80_active35_dinov2_k1_2gpu_24h.yaml
+  training_environment_manifest: configs/methods/event80/manifests/ours_88823_step7272_active35.yaml
+
+protocol:
+  support_sizes: [1]
+  training_queries_per_environment: 5
+  disjoint_support_query: true
+  cross_action_query: true
+  query_state_policy: read_only
+  final_query_set: all_remaining_actions
+
+adaptation:
+  enabled: true
+  mode: amortized_single_forward
+
+execution:
+  training:
+    mode: independent
+    ready: false
+    blocked_by: gpu_smoke_test_not_run
+  inference:
+    ready: false
+    blocked_by: dinov2_action_conditioned_wan_adapter
+
+runtime:
+  implementation_status: k1_training_implemented_unvalidated
+  protocol_runner: wan_video_action.methods.baselines.dinov2_context
+  train:
+    entrypoint: scripts/methods/train_dinov2_event80.py
+    extra_args:
+      - --model_paths
+      - /tmp/cyzhou05/bwm_shared/Wan2.2-TI2V-5B
+      - --ckpt_path
+      - /tmp/cyzhou05/bwm_shared/BLM-step-12000.safetensors
+      - --dinov2_model_path
+      - /tmp/cyzhou05/bwm_shared/dinov2-base

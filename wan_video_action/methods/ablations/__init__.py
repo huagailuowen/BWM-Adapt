@@ -1,0 +1,16 @@
+from .joint_model_latent import SPEC as JOINT_MODEL_LATENT_TRAINING
+from .per_trajectory_z import SPEC as PER_TRAJECTORY_Z
+from .shuffled_grouping import SPEC as SHUFFLED_ENVIRONMENT_GROUPING
+
+SPECS = (
+    SHUFFLED_ENVIRONMENT_GROUPING,
+    PER_TRAJECTORY_Z,
+    JOINT_MODEL_LATENT_TRAINING,
+)
+
+__all__ = [
+    "JOINT_MODEL_LATENT_TRAINING",
+    "PER_TRAJECTORY_Z",
+    "SHUFFLED_ENVIRONMENT_GROUPING",
+    "SPECS",
+]

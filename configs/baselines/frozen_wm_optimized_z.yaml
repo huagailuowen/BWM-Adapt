@@ -1,0 +1,9 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: frozen_wm_optimized_z
+
+baseline:
+  freeze_wan_after_initial_stage: true
+  update_environment_codes_for_new_environments: true
+  consolidate_new_environments_into_wan: false

@@ -1,0 +1,138 @@
+schema_version: 1
+
+experiment:
+  id: null
+  benchmark_id: null
+
+method:
+  slug: null
+  family: null
+
+source:
+  legacy_train_config: null
+  legacy_infer_config: null
+  model_checkpoint: null
+  method_state_checkpoint: null
+
+protocol:
+  support_sizes: [1, 2]
+  disjoint_support_query: true
+  cross_action_query: true
+  query_state_policy: read_only
+  final_query_set: fixed_multi_action
+
+resources:
+  seed: 20260708
+  training:
+    protocol: fixed_hardware_time
+    hardware_block_id: null
+    gpu_count: 2
+    gpu_sku: null
+    wall_clock_hours: null
+    gpu_hours: null
+    timer_boundary: training_process_start_after_staging
+    queue_time_included: false
+    staging_time_included: false
+    deadline_enforcement: scheduler
+    utilization:
+      target_percent: 90
+      sample_seconds: 30
+      equality_metric: false
+  inference:
+    gpu_count: 1
+    gpu_sku: H200
+
+tuning:
+  selection_split: validation_environments_only
+  max_pilot_configurations: 3
+  final_seed_count: 3
+
+training:
+  run_until_budget: true
+  grouped_batch:
+    scope: global
+    environments_per_rank: 2
+    global_environments: 4
+    trajectories_per_environment: 6
+    gpu_count: 2
+    effective_clips_per_update: 24
+    independent_of_test_support_k: true
+  budget_matching:
+    match_optimizer_steps: false
+    match_generator_gradient_evaluations: false
+    match_clip_exposure: false
+    match_flops: false
+    match_environment_stream: false
+    match_training_environment_set: true
+  reporting:
+    record_optimizer_steps: true
+    record_generator_gradient_evaluations: true
+    record_clip_exposure: true
+    record_step_time: true
+    record_peak_vram: true
+    record_gpu_utilization: true
+
+adaptation:
+  enabled: true
+  mode: staged_optimizer
+  state_dtype: fp32
+  optimizer:
+    name: Adam
+    betas: [0.9, 0.999]
+  gradient_clip_norm: 1.0
+  regularization_weight: 0.001
+  clamp_min: null
+  clamp_max: null
+  stages:
+    - steps: 10
+      learning_rate: 3.0
+    - steps: 10
+      learning_rate: 1.5
+    - steps: 10
+      learning_rate: 0.5
+    - steps: 10
+      learning_rate: 0.15
+
+checkpointing:
+  keep_last: 2
+  save_method_state_with_model: true
+  atomic_manifest: true
+  timed_save_minutes: 60
+
+execution:
+  training:
+    mode: independent
+    ready: false
+    blocked_by: method_specific_wan_adapter
+  inference:
+    ready: false
+    blocked_by: method_specific_support_query_adapter
+  dependencies: []
+
+runtime:
+  train_factory: wan_video_action.methods.integrations.wan.factories:build_train_application
+  infer_factory: wan_video_action.methods.integrations.wan.factories:build_infer_application
+  implementation_status: protocol_only
+  artifact_root: outputs/method_benchmarks
+  pipeline_extensions:
+    extra_condition_tokens: false
+  train:
+    launcher:
+      - "{python}"
+      - -m
+      - accelerate.commands.launch
+      - --num_processes
+      - "{gpu_count}"
+      - --mixed_precision
+      - bf16
+    entrypoint: scripts/train.py
+    config_flag: --config
+    extra_args: []
+    environment: {}
+  infer:
+    launcher:
+      - "{python}"
+    entrypoint: scripts/infer.py
+    config_flag: --config
+    extra_args: []
+    environment: {}

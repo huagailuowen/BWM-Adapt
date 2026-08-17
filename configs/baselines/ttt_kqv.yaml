@@ -1,0 +1,22 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: ttt_kqv
+
+adaptation:
+  enabled: true
+  state_dtype: fp32
+  gradient_clip_norm: 1.0
+  regularization_weight: 0.0
+  stages:
+    - steps: 40
+      learning_rate: 0.1
+
+baseline:
+  fast_model: ttt_mlp
+  hidden_width_multiplier: 4
+  token_minibatch_size: 64
+  support_state_carry: true
+  reset_temporal_positions_between_trajectories: true
+  outer_query_writes_fast_state: false
+  outer_query_backpropagates_through_support_writes: true

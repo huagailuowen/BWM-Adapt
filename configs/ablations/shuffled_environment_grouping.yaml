@@ -1,0 +1,11 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: shuffled_environment_grouping
+
+ablation:
+  parent: ours
+  shuffle_once: true
+  preserve_group_sizes: true
+  preserve_clip_exposure: true
+  seed: 42

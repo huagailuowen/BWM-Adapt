@@ -1,0 +1,23 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: standard_pooled_wm
+
+protocol:
+  query_state_policy: none
+
+training:
+  grouped_batch:
+    environments_per_rank: 4
+    trajectories_per_environment: 6
+    gpu_count: 4
+
+adaptation:
+  enabled: false
+  stages: []
+
+baseline:
+  physical_context_enabled: false
+  pooled_training: true
+  data_stream: pooled_shuffled
+  test_time_adaptation: none

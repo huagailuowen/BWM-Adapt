@@ -1,0 +1,8 @@
+extends: ttt_kvb_k1.yaml
+
+experiment:
+  id: ttt_kqv_legacy_alias
+
+method:
+  canonical_method: ttt_kvb_k1
+  deprecated_name: TTT-KQV

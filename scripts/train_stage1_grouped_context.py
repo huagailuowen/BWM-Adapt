@@ -715,6 +715,7 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_structured_updates", type=int, default=0)
     group.add_argument("--grouped_context_friction_groups_per_update", type=int, default=4)
     group.add_argument("--grouped_context_actions_per_update", type=int, default=4)
+    group.add_argument("--grouped_context_backgrounds_per_action", type=int, default=1)
     group.add_argument("--grouped_context_microbatches_per_update", type=int, default=0)
     group.add_argument("--grouped_context_sampling_mode", type=str, default="common_actions")
     group.add_argument("--grouped_context_action_weight_path", type=str, default=None)
@@ -771,6 +772,17 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_curriculum_all_context_steps", type=int, default=200)
     group.add_argument("--grouped_context_curriculum_model_steps", type=int, default=200)
     group.add_argument("--grouped_context_curriculum_variant", type=str, default="default")
+    group.add_argument("--grouped_context_curriculum_joint_steps", type=int, default=0)
+    group.add_argument(
+        "--grouped_context_curriculum_joint_new_focus_steps",
+        type=int,
+        default=0,
+    )
+    group.add_argument(
+        "--grouped_context_curriculum_joint_new_fraction",
+        type=float,
+        default=0.0,
+    )
     group.add_argument("--grouped_context_mid_context_lr", type=float, default=None)
     group.add_argument("--grouped_context_post_curriculum_cycle_steps", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_rest_init_min", type=float, default=0.4)
@@ -1023,6 +1035,74 @@ def _sample_structured_indices(
         for mu in selected_mu:
             candidates = grouped_indices[mu][action_id]
             indices.append(rng.choice(candidates))
+    rng.shuffle(indices)
+    return indices
+
+
+def _sample_structured_all_background_indices(
+    *,
+    grouped_indices: dict[float, dict[int, list[int]]],
+    rows: list[dict],
+    rng: random.Random,
+    friction_groups: int,
+    actions_per_update: int,
+    backgrounds_per_action: int,
+    allowed_friction_values: list[float] | None = None,
+) -> list[int]:
+    allowed_values = None
+    if allowed_friction_values is not None:
+        allowed_values = [float(value) for value in allowed_friction_values]
+
+    def is_allowed(mu: float) -> bool:
+        if allowed_values is None:
+            return True
+        return any(abs(float(mu) - value) <= 1e-5 for value in allowed_values)
+
+    valid_friction_values = [
+        mu
+        for mu, by_action in grouped_indices.items()
+        if len(by_action) >= actions_per_update and is_allowed(float(mu))
+    ]
+    if len(valid_friction_values) < friction_groups:
+        raise ValueError(
+            f"Need at least {friction_groups} friction groups with "
+            f"{actions_per_update} actions, got {len(valid_friction_values)}."
+        )
+    selected_mu = rng.sample(valid_friction_values, friction_groups)
+    common_actions = set(grouped_indices[selected_mu[0]])
+    for mu in selected_mu[1:]:
+        common_actions &= set(grouped_indices[mu])
+    if len(common_actions) < actions_per_update:
+        raise ValueError(
+            f"Selected friction groups share only {len(common_actions)} actions; "
+            f"need {actions_per_update}. groups={selected_mu}"
+        )
+    selected_actions = rng.sample(sorted(common_actions), actions_per_update)
+
+    indices: list[int] = []
+    for action_id in selected_actions:
+        for mu in selected_mu:
+            by_background: dict[int, int] = {}
+            for index in grouped_indices[mu][action_id]:
+                row = rows[index]
+                if "environment_index" not in row:
+                    raise ValueError(
+                        "common_actions_all_backgrounds requires environment_index "
+                        "in every metadata row."
+                    )
+                background = int(row["environment_index"])
+                if background in by_background:
+                    raise ValueError(
+                        "Expected one chunk per background for "
+                        f"friction={mu}, action={action_id}; duplicate background={background}."
+                    )
+                by_background[background] = index
+            if len(by_background) != backgrounds_per_action:
+                raise ValueError(
+                    f"Expected {backgrounds_per_action} backgrounds for "
+                    f"friction={mu}, action={action_id}, got {sorted(by_background)}."
+                )
+            indices.extend(by_background[background] for background in sorted(by_background))
     rng.shuffle(indices)
     return indices
 
@@ -1312,6 +1392,30 @@ def _sample_update_indices(
                 f"got {microbatches_per_update}."
             )
         rng.shuffle(sample_indices)
+        return sample_indices
+
+    if mode in ("common_actions_all_backgrounds", "aligned_actions_all_backgrounds"):
+        rng = random.Random(
+            int(args.seed)
+            + int(update_idx) * max(1, int(accelerator.num_processes))
+            + int(accelerator.process_index)
+        )
+        backgrounds_per_action = int(args.grouped_context_backgrounds_per_action)
+        sample_indices = _sample_structured_all_background_indices(
+            grouped_indices=grouped_indices,
+            rows=rows,
+            rng=rng,
+            friction_groups=friction_groups,
+            actions_per_update=actions_per_update,
+            backgrounds_per_action=backgrounds_per_action,
+            allowed_friction_values=allowed_friction_values,
+        )
+        expected = int(friction_groups) * int(actions_per_update) * backgrounds_per_action
+        if int(microbatches_per_update) != expected:
+            raise ValueError(
+                "common_actions_all_backgrounds requires an exact logical batch: "
+                f"microbatches_per_update={microbatches_per_update}, expected={expected}."
+            )
         return sample_indices
 
     if mode in ("stratified_common_actions", "stratified_aligned_actions"):
@@ -1856,6 +1960,70 @@ def _share_initial_contexts_across_strata(
     return aliases
 
 
+def _select_joint_focus_group_indices(
+    *,
+    active_group_indices: list[int],
+    new_group_count: int,
+    groups_per_rank: int,
+    new_fraction: float,
+    accelerator,
+    update_idx: int,
+    seed: int,
+) -> tuple[list[int], int, int]:
+    active_indices = list(active_group_indices)
+    new_group_count = min(max(int(new_group_count), 0), len(active_indices))
+    groups_per_rank = int(groups_per_rank)
+    if groups_per_rank <= 0 or groups_per_rank > len(active_indices):
+        raise ValueError(
+            "Joint-focus sampling requires groups_per_rank in [1, active_count], "
+            f"got groups_per_rank={groups_per_rank}, active_count={len(active_indices)}."
+        )
+    if not 0.0 <= float(new_fraction) <= 1.0:
+        raise ValueError(
+            "grouped_context_curriculum_joint_new_fraction must lie in [0, 1], "
+            f"got {new_fraction}."
+        )
+
+    new_indices = active_indices[-new_group_count:] if new_group_count else []
+    old_indices = active_indices[:-new_group_count] if new_group_count else active_indices
+    world_size = max(1, int(accelerator.num_processes))
+    rank = int(accelerator.process_index)
+    global_slots = groups_per_rank * world_size
+    if not old_indices:
+        global_new_slots = global_slots
+        local_new_slots = groups_per_rank
+    else:
+        global_new_slots = int(round(float(new_fraction) * global_slots))
+        global_new_slots = min(max(global_new_slots, 0), global_slots)
+        base_slots, extra_slots = divmod(global_new_slots, world_size)
+        rotating_first_rank = int(update_idx) % world_size
+        rotated_rank = (rank - rotating_first_rank) % world_size
+        local_new_slots = base_slots + int(rotated_rank < extra_slots)
+        local_new_slots = min(max(local_new_slots, 0), groups_per_rank)
+    local_old_slots = groups_per_rank - local_new_slots
+    if len(new_indices) < local_new_slots:
+        raise ValueError(
+            f"Joint-focus sampling needs {local_new_slots} new groups on rank {rank}, "
+            f"but only {len(new_indices)} are active."
+        )
+    if len(old_indices) < local_old_slots:
+        raise ValueError(
+            f"Joint-focus sampling needs {local_old_slots} old groups on rank {rank}, "
+            f"but only {len(old_indices)} are active."
+        )
+
+    rng = random.Random(
+        int(seed)
+        + int(update_idx) * world_size
+        + rank
+        + 0x4A4F494E
+    )
+    selected = rng.sample(new_indices, local_new_slots)
+    selected.extend(rng.sample(old_indices, local_old_slots))
+    rng.shuffle(selected)
+    return selected, local_new_slots, global_new_slots
+
+
 def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
     initial_groups = int(args.grouped_context_curriculum_initial_groups)
     warmup_groups = int(
@@ -1877,6 +2045,10 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
     )
     variant = str(getattr(args, "grouped_context_curriculum_variant", "default") or "default").strip().lower()
     two_new_context = variant in ("two_new_context", "high_model_mid", "high_model_mid_new")
+    joint_model_context = variant in ("joint", "joint_model_context", "joint_model_latent")
+    joint_steps = int(getattr(args, "grouped_context_curriculum_joint_steps", 0) or 0)
+    if joint_model_context and joint_steps <= 0:
+        raise ValueError("joint curriculum requires grouped_context_curriculum_joint_steps > 0.")
     total_groups = min(total_groups, len(group_order))
 
     if initial_groups <= 0 or add_groups <= 0:
@@ -1923,7 +2095,11 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
             new_end = min(selected_count + add_groups, total_groups)
         new_indices = group_order[new_start:new_end]
         active_indices = group_order[:new_end]
-        if two_new_context:
+        if joint_model_context:
+            phases = [
+                ("joint", joint_steps, active_indices, active_indices),
+            ]
+        elif two_new_context:
             phases = [
                 ("new_context", new_context_steps, new_indices, new_indices),
                 ("model", model_steps, active_indices, []),
@@ -1973,6 +2149,20 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
         selected_count = new_end
 
     active = group_order[:total_groups]
+    if joint_model_context:
+        cycle_offset = max(0, current_step - offset - 1)
+        cycle_index = cycle_offset // joint_steps
+        phase_start = offset + cycle_index * joint_steps + 1
+        return {
+            "round": round_id + 1 + int(cycle_index),
+            "phase": "joint",
+            "sample_group_indices": active,
+            "train_context_indices": active,
+            "phase_start": phase_start,
+            "phase_end": phase_start + joint_steps - 1,
+            "active_count": len(active),
+            "new_count": 0,
+        }
     if post_cycle_steps > 0:
         post_context_steps = post_cycle_steps
         post_model_steps = model_steps
@@ -2272,6 +2462,7 @@ def _set_alternating_requires_grad(model, args, step: int) -> str | None:
 
 def _set_curriculum_requires_grad(model, phase: str, freeze_background: bool = False) -> None:
     context_phase = phase in ("new_context", "new_context_mid", "all_context", "context")
+    joint_phase = phase == "joint"
     for name, param in model.named_parameters():
         is_context = name.endswith("friction_context_table.contexts") or name == "friction_context_table.contexts"
         is_background_context = (
@@ -2282,11 +2473,11 @@ def _set_curriculum_requires_grad(model, phase: str, freeze_background: bool = F
         if freeze_background and (is_background_context or is_background_encoder):
             param.requires_grad_(False)
         elif is_context:
-            param.requires_grad_(context_phase)
+            param.requires_grad_(context_phase or joint_phase)
         elif is_background_context:
-            param.requires_grad_(phase in ("all_context", "context"))
+            param.requires_grad_(phase in ("all_context", "context", "joint"))
         else:
-            param.requires_grad_(not context_phase)
+            param.requires_grad_(joint_phase or not context_phase)
 
 
 def _apply_curriculum_lrs(
@@ -2318,13 +2509,15 @@ def _apply_curriculum_lrs(
         getattr(args, "grouped_context_post_curriculum_start_step", 0) or 0
     )
     if (
-        phase in ("all_context", "context")
+        phase in ("all_context", "context", "joint")
         and post_context_lr is not None
         and post_context_start > 0
         and int(step) >= post_context_start
     ):
         context_lr = float(post_context_lr)
-    if phase in ("new_context", "new_context_mid", "all_context", "context"):
+    if phase == "joint":
+        pass
+    elif phase in ("new_context", "new_context_mid", "all_context", "context"):
         model_lr = 0.0
     else:
         context_lr = 0.0
@@ -2334,7 +2527,7 @@ def _apply_curriculum_lrs(
         if phase_warmup_steps > 0 and phase_start is not None and int(phase_start) > 1:
             local_step = max(1, int(step) - int(phase_start) + 1)
             model_lr *= min(float(local_step) / float(phase_warmup_steps), 1.0)
-    if phase not in ("all_context", "context"):
+    if phase not in ("all_context", "context", "joint"):
         background_context_lr = 0.0
     if freeze_background:
         background_context_lr = 0.0
@@ -4016,7 +4209,15 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
     groups_after_initial = max(0, min(total_groups, len(friction_values)) - int(args.grouped_context_curriculum_initial_groups))
     rounds = 1 + (groups_after_initial + max(add_groups, 1) - 1) // max(add_groups, 1)
     variant = str(getattr(args, "grouped_context_curriculum_variant", "default") or "default").strip().lower()
-    if variant in ("two_new_context", "high_model_mid", "high_model_mid_new"):
+    if variant in ("joint", "joint_model_context", "joint_model_latent"):
+        curriculum_cycle_steps = int(
+            getattr(args, "grouped_context_curriculum_joint_steps", 0) or 0
+        )
+        if curriculum_cycle_steps <= 0:
+            raise ValueError(
+                "joint curriculum requires grouped_context_curriculum_joint_steps > 0."
+            )
+    elif variant in ("two_new_context", "high_model_mid", "high_model_mid_new"):
         curriculum_cycle_steps = (
             int(args.grouped_context_curriculum_new_context_steps)
             + int(getattr(args, "grouped_context_curriculum_mid_context_steps", 0) or int(args.grouped_context_curriculum_new_context_steps))
@@ -4051,6 +4252,20 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
     protected_checkpoint_steps = _parse_step_set(
         getattr(args, "grouped_context_protected_checkpoint_steps", None)
     )
+    joint_focus_steps = int(
+        getattr(args, "grouped_context_curriculum_joint_new_focus_steps", 0) or 0
+    )
+    joint_new_fraction = float(
+        getattr(args, "grouped_context_curriculum_joint_new_fraction", 0.0) or 0.0
+    )
+    if joint_focus_steps < 0:
+        raise ValueError(
+            "grouped_context_curriculum_joint_new_focus_steps must be non-negative."
+        )
+    if not 0.0 <= joint_new_fraction <= 1.0:
+        raise ValueError(
+            "grouped_context_curriculum_joint_new_fraction must lie in [0, 1]."
+        )
 
     if accelerator.is_main_process:
         print(
@@ -4100,6 +4315,30 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
         phase_info = _curriculum_phase_for_step(args, group_order, step)
         phase = str(phase_info["phase"])
         phase_sample_group_indices = phase_info["sample_group_indices"]
+        focus_sampling = False
+        focus_local_new_slots = 0
+        focus_global_new_slots = 0
+        phase_local_step = step - int(phase_info["phase_start"]) + 1
+        if (
+            phase == "joint"
+            and int(phase_info["new_count"]) > 0
+            and joint_focus_steps > 0
+            and phase_local_step <= joint_focus_steps
+        ):
+            (
+                phase_sample_group_indices,
+                focus_local_new_slots,
+                focus_global_new_slots,
+            ) = _select_joint_focus_group_indices(
+                active_group_indices=phase_sample_group_indices,
+                new_group_count=int(phase_info["new_count"]),
+                groups_per_rank=friction_groups_per_update,
+                new_fraction=joint_new_fraction,
+                accelerator=accelerator,
+                update_idx=update_idx,
+                seed=int(args.seed),
+            )
+            focus_sampling = True
         if initial_sample_group_indices is not None and step <= initial_steps:
             phase_sample_group_indices = initial_sample_group_indices
         phase_key = (phase_info["round"], phase, phase_info["phase_start"], phase_info["phase_end"])
@@ -4126,6 +4365,28 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                 f"range={phase_info['phase_start']}-{phase_info['phase_end']} "
                 f"active_count={phase_info['active_count']} new_count={phase_info['new_count']} "
                 f"sample_mu={','.join(f'{float(value):.6g}' for value in sample_mu)}",
+                flush=True,
+            )
+            if focus_sampling:
+                global_slots = friction_groups_per_update * int(accelerator.num_processes)
+                print(
+                    "[curriculum_sampling] "
+                    f"step={step} mode=new_environment_focus "
+                    f"focus_steps={joint_focus_steps} "
+                    f"global_new_slots={focus_global_new_slots}/{global_slots} "
+                    f"rank0_new_slots={focus_local_new_slots}/{friction_groups_per_update}",
+                    flush=True,
+                )
+        if (
+            accelerator.is_main_process
+            and phase == "joint"
+            and int(phase_info["new_count"]) > 0
+            and joint_focus_steps > 0
+            and phase_local_step == joint_focus_steps + 1
+        ):
+            print(
+                "[curriculum_sampling] "
+                f"step={step} mode=uniform_active active_count={phase_info['active_count']}",
                 flush=True,
             )
         if (
@@ -4227,7 +4488,7 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                 accelerator.backward(loss / len(sample_indices))
         frozen_context_snapshot = None
         frozen_context_mask = None
-        if phase in ("new_context", "new_context_mid", "all_context"):
+        if phase in ("new_context", "new_context_mid", "all_context", "joint"):
             unwrapped_model = accelerator.unwrap_model(model)
             _mask_context_grad(unwrapped_model, phase_info["train_context_indices"])
             context_table = unwrapped_model.friction_context_table
@@ -4282,7 +4543,7 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                 step > cycle_offset
                 and (step - cycle_offset) % int(curriculum_cycle_steps) == 0
             )
-            should_checkpoint_model_phase = phase == "model" and (
+            should_checkpoint_model_phase = phase in ("model", "joint") and (
                 checkpoint_policy == "all"
                 or (checkpoint_policy == "cycle_end" and is_cycle_end)
             )

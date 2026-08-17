@@ -1,0 +1,22 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: lora_tta
+
+source:
+  model_checkpoint: null
+
+adaptation:
+  enabled: true
+  state_dtype: fp32
+  gradient_clip_norm: 1.0
+  regularization_weight: 0.0
+  stages:
+    - steps: 40
+      learning_rate: 0.0001
+
+baseline:
+  checkpoint_source: standard_pooled_wm
+  rank: 8
+  target_modules: [q, k, v, o]
+  reset_per_environment: true

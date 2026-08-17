@@ -6,10 +6,10 @@ This file is the repository-local mirror of the authoritative ablation plan in t
 
 | Method | What it tests | Prior work or claim addressed |
 | --- | --- | --- |
-| Frozen Global WM | Whether standard pooled world-model training alone is sufficient. | No-adaptation pooled-model baseline |
+| Standard Pooled World Model (No Adaptation) | Whether ordinary pooled world-model training alone is sufficient. | No-adaptation pooled-model baseline |
 | Same-Model Mean-Z | Whether test-time Z optimization helps when architecture and checkpoint are held fixed. | Clean no-adaptation control for Ours |
 | History-Conditioned WM | Whether raw support trajectories alone enable in-context environment inference. | WAM-ICL, L2World, and Echo-Memory-style raw context |
-| LoRA TTA | Whether LoRA test-time adaptation is sufficient when initialized from the normally trained pooled Frozen Global WM checkpoint. | Parameter-space test-time adaptation baseline |
+| LoRA TTA | Whether LoRA test-time adaptation is sufficient when initialized from the normally trained Standard Pooled World Model checkpoint. | Parameter-space test-time adaptation baseline |
 | TTT-KQV | Whether long-history implicit fast-weight memory is sufficient. | Test-time training and fast-weight memory |
 | DINOv2 Amortized Context Encoder | Whether an explicit amortized encoder matches generator-based latent inference. | Amortized context-inference baseline |
 | Frozen WM + Optimized Environment Code | Whether new physical regularities must enter the shared model. | Optimized-context and consolidation control |
@@ -22,6 +22,7 @@ This file is the repository-local mirror of the authoritative ablation plan in t
 | Shuffled Environment Grouping | Whether correct environment grouping, rather than latent capacity alone, supplies the useful signal. | Environment grouping and sharing claim |
 | Per-Trajectory Latent | Whether environment-level sharing produces a reusable physical law. | Environment-level latent claim |
 | Joint Model-Latent Training | Whether latent-first alternating optimization is necessary. | Assimilation-consolidation claim |
+| Environment-Code Dimension (`C=4/128/1024`, reference `C=32`) | Whether performance comes from environment-level structure or merely latent capacity. | Representation-capacity and bottleneck claim |
 
 ## Evaluation
 
@@ -46,7 +47,7 @@ This is an evaluation protocol, not a model baseline. Evaluate the same held-out
 
 - Freeze the support/query split, sample IDs, query actions, initial frames, Wan VAE latents, clip length, resolution, inference sampler, denoising steps, CFG scale, and random seeds across methods.
 - All methods use the same Wan base architecture, pretrained initialization, frozen Wan VAE, action interface, data split, and evaluation protocol, except for the method-specific adaptation modules stated below.
-- All baselines that train or modify a Wan backbone follow the same progressive environment stream and are matched in generator-gradient evaluations and clip exposure, unless explicitly stated otherwise.
+- All methods that train or modify a Wan backbone use the same training-environment membership and receive the same fixed hardware-time budget. Data ordering and sampling follow each method's native protocol: the Standard Pooled World Model uses a pooled shuffled loader, while Ours uses its progressive grouped-environment stream. Generator-gradient evaluations and clip exposure are recorded outcomes rather than matching constraints.
 - All video-prediction methods use the existing flow-matching objective and sampler. Query performance is always computed on disjoint query futures.
 
 #### Batch shape
@@ -60,9 +61,9 @@ This is an evaluation protocol, not a model baseline. Evaluate the same held-out
 
 #### Latent and compute controls
 
-- Use one 32-dimensional environment code for all code-based methods unless code dimension is the variable under ablation.
-- Report both equal-step and compute-aware comparisons.
-- For every gradient-based method, report trainable parameter count, forward/backward evaluations, wall-clock adaptation time, peak GPU memory, and performance as a function of adaptation compute.
+- Use one 32-dimensional environment code for all code-based methods unless code dimension is the variable under ablation. The dimension ablation evaluates `C in {4, 32, 128, 1024}`.
+- The primary training comparison uses two H200 GPUs for 24 hours per independently trained method. It does not force equal optimizer steps, clip exposure, or FLOPs.
+- For every gradient-based method, report trainable parameter count, forward/backward evaluations, clips seen, actual GPU-hours, GPU utilization, wall-clock adaptation time, peak GPU memory, and performance as a function of adaptation compute.
 
 #### Metrics and seeds
 
@@ -71,9 +72,9 @@ This is an evaluation protocol, not a model baseline. Evaluate the same held-out
 - Separate: action, planning, and task-success evaluation.
 - Use at least three seeds for final core comparisons. Single-seed runs are screening results only.
 
-### 1. Frozen Global WM
+### 1. Standard Pooled World Model (No Adaptation)
 
-Train a pooled Wan world model with one global or null environment condition and the standard flow-matching objective. At inference, ignore the support set and directly generate the disjoint query. This tests whether environment conditioning and adaptation are needed, but it is not the cleanest test of test-time optimization because its trained architecture differs from Ours.
+Starting from the same pretrained Wan checkpoint, pool all permitted training environments and train with the ordinary shuffled loader and normal flow-matching objective. Do not add an environment code, latent-conditioning branch, grouped-environment sampler, alternating latent/model schedule, or support-time adaptation. At evaluation, freeze the trained model, ignore the support set, and generate every disjoint query directly. "No Adaptation" refers to inference; Wan is fully optimized during training.
 
 ### 2. Same-Model Mean-Z, No Adaptation
 
@@ -87,11 +88,11 @@ Train a separate Wan copy with query-only flow-matching loss using the same disj
 
 ### 4. LoRA Test-Time Adaptation
 
-First train the Frozen Global WM as a standard pooled world model on all training datasets and training environments using the normal flow-matching objective, with no environment code or latent-conditioning branch; held-out and test environments remain excluded. Use this exact normally trained pooled checkpoint as the LoRA baseline initialization, rather than loading Ours or any code-conditioned Stage 1 checkpoint.
+First train the Standard Pooled World Model (No Adaptation) on all permitted training datasets and environments using its ordinary pooled shuffled loader and normal flow-matching objective, with no environment code or latent-conditioning branch; held-out and test environments remain excluded. Use this exact normally trained checkpoint as the LoRA baseline initialization, rather than loading Ours or any code-conditioned Stage 1 checkpoint.
 
 Insert rank-8 LoRA modules into the Q, K, V, and output projections of its Wan attention blocks. For each test environment, reset LoRA to the same shared zero initialization, freeze the pooled base model, optimize only LoRA on the `K` support clips, and freeze the adapted LoRA before query generation.
 
-Use the same 40-step support-adaptation budget as Ours for the primary step-matched result. Use learning rate `1e-4` unless one validation split selects another value before opening the test set. Also report a compute-matched curve because one LoRA update changes far more parameters than one 32-dimensional `Z` update.
+Use learning rate `1e-4` unless the validation split selects another value before opening the test set. Keep `K`, support/query data, and the query set fixed, and report LoRA adaptation latency, update count, and peak memory alongside quality because one LoRA update changes far more parameters than one environment-code update.
 
 ### 5. TTT-KQV
 
@@ -111,7 +112,7 @@ u_j = ActionEncoder(a[t_j:t_{j+1}-1])
 
 The seven chunks collectively cover the complete action-transition sequence between the first and last frame. Feed the eight visual CLS features together with the seven interval action-chunk embeddings to an action-conditioned projection. Map each trajectory to a 32-dimensional code with a two-layer projection head of hidden width 1024, then average the `K` trajectory codes to form one permutation-invariant environment code.
 
-Initialize the Wan generator from the same pretrained Wan checkpoint as Ours and inject the code through the exact conditioning interface used by Ours. Follow the identical progressive environment stream and old/new environment sampler, use the same number of Wan model-gradient updates, and expose the model to the same number of clips. Train the action/projection head and Wan generator with disjoint-query flow-matching loss.
+Initialize the Wan generator from the same pretrained Wan checkpoint as Ours and inject the code through the exact conditioning interface used by Ours. Follow the identical progressive environment stream and old/new environment sampler under the same two-H200, 24-hour training envelope. Train the action/projection head and Wan generator with disjoint-query flow-matching loss, and report the resulting model-gradient updates and clip exposure.
 
 The intended core difference is only `Z = q_phi(C_E)`, inferred amortized from support context, rather than `Z` obtained by optimizing the generation-model loss. At inference, infer `Z` in one encoder forward pass with no gradient update. This is the DINOv2 Amortized Context Encoder baseline, following the video-context design of Implicit State Estimation via Video Replanning. EVF is cited only as an earlier pixel-generative precedent, not as the implementation reproduced here.
 
@@ -164,7 +165,27 @@ Keep the number of groups, trajectories per group, code dimension, data, update 
 
 Use the same architecture, codes, data stream, initialization, and flow-matching loss as Ours, but remove latent warm-up and frozen alternating blocks and update Wan and active codes jointly.
 
-The canonical cycle contains 600 `Z` gradient steps and 400 model gradient steps, so one joint run cannot simultaneously match optimizer-step counts and total backward compute. Report two controls: one matched by model-gradient evaluations and one matched by total forward/backward compute. Compare curves rather than claiming fairness from total step count alone.
+The canonical alternating cycle contains 600 `Z` gradient steps and 400 model gradient steps, while this ablation updates both jointly. Give both methods the same fixed two-H200, 24-hour training envelope and report their resulting model/code updates, forward/backward evaluations, clips seen, and throughput rather than claiming equality from nominal step counts.
+
+### 12. Environment-Code Dimension
+
+Use the full Ours implementation and vary only the environment-code dimension:
+
+| Run | Dimension |
+| --- | ---: |
+| Bottleneck | 4 |
+| Reference | 32 |
+| Medium-capacity | 128 |
+| High-capacity | 1024 |
+
+Initialize every environment code independently from `Uniform(0, 1)` in every
+dimension. Keep the Event80 data, `65-105` window, grouped batch, progressive
+environment order, 1,000-step alternating training cycle, Wan initialization,
+optimizer settings, fixed 48 H200-GPU-hour budget, checkpoint policy, and frozen
+K=1/K=2 support/query evaluation identical. Report primary object-centric and
+physical metrics together with parameter count, code-table size, peak memory,
+throughput, and actual optimization steps. This ablation distinguishes the
+benefit of environment-level sharing from gains caused only by a larger latent.
 
 ### 11. Frozen WM + Optimized Environment Code
 

@@ -1,0 +1,33 @@
+extends: ../common.yaml
+
+experiment:
+  id: lora_tta
+
+method:
+  slug: lora_tta
+  family: baseline
+  initialization: pooled_world_model_checkpoint
+  pooled_world_model_checkpoint: null
+  lora_rank: 8
+  lora_targets: [q, k, v, o, ffn.0, ffn.2]
+  support_sizes: [1, 2]
+  reset_per_environment: true
+  query_updates_lora: false
+
+adaptation:
+  enabled: true
+  mode: staged_optimizer
+
+execution:
+  training:
+    mode: reuse
+    ready: false
+    blocked_by: standard_pooled_wm_checkpoint
+  inference:
+    ready: false
+    blocked_by: lora_support_query_adapter
+  dependencies: [standard_pooled_wm]
+
+runtime:
+  implementation_status: waiting_for_pooled_checkpoint_and_lora_adapter
+  protocol_runner: wan_video_action.methods.baselines.lora_tta

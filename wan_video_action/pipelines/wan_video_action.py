@@ -144,6 +144,7 @@ def _install_wan_video_action_call(pipeline: WanVideoPipeline) -> None:
         action: Optional[torch.Tensor] = None,
         physical_context: Optional[torch.Tensor] = None,
         background_context: Optional[torch.Tensor] = None,
+        extra_condition_tokens: Optional[torch.Tensor] = None,
         cfg_scale: float = 1.0,
         num_inference_steps: int = 50,
         sigma_shift: float = 5.0,
@@ -173,6 +174,7 @@ def _install_wan_video_action_call(pipeline: WanVideoPipeline) -> None:
             "action": action,
             "physical_context": physical_context,
             "background_context": background_context,
+            "extra_condition_tokens": extra_condition_tokens,
             "cfg_scale": cfg_scale,
             "tiled": tiled,
             "tile_size": tile_size,
@@ -673,6 +675,7 @@ def model_fn_wan_video_action(
     physical_mod_emb: Optional[torch.Tensor] = None,
     background_context_emb: Optional[torch.Tensor] = None,
     background_mod_emb: Optional[torch.Tensor] = None,
+    extra_condition_tokens: Optional[torch.Tensor] = None,
     physical_context_mode: str = "none",
     physical_adapter_bank: Optional[PhysicalResidualAdapterBank] = None,
     clip_feature: Optional[torch.Tensor] = None,
@@ -713,6 +716,18 @@ def model_fn_wan_video_action(
         raise ValueError("`action:adaln` requires both `action_emb` and `action_mod_emb`.")
     context = _append_context_tokens(context, physical_context_emb)
     context = _append_context_tokens(context, background_context_emb)
+    if extra_condition_tokens is not None:
+        if extra_condition_tokens.ndim != 3:
+            raise ValueError(
+                "extra_condition_tokens must have shape [batch, tokens, dim], "
+                f"got {tuple(extra_condition_tokens.shape)}."
+            )
+        if extra_condition_tokens.shape[0] != latents.shape[0]:
+            raise ValueError(
+                "extra_condition_tokens batch size must match latent batch size, "
+                f"got tokens={extra_condition_tokens.shape[0]} and latents={latents.shape[0]}."
+            )
+        context = _append_context_tokens(context, extra_condition_tokens)
     context = _append_context_tokens(context, action_emb)
     text_token_count = context.shape[1]
     if t.shape[1] % action_mod_emb.shape[1] != 0:

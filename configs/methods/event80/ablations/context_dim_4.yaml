@@ -1,0 +1,27 @@
+extends: ../ours/random_c32.yaml
+
+experiment:
+  id: ours_context_dim_4
+  role: ablation
+  ablation_axis: environment_code_dimension
+
+method:
+  latent_dim: 4
+
+execution:
+  training:
+    mode: independent
+    ready: true
+    blocked_by: null
+  inference:
+    ready: false
+    blocked_by: completed_checkpoint_and_frozen_query_manifest
+
+runtime:
+  implementation_status: grouped_c_training_ready_inference_binding_pending
+  train:
+    extra_args:
+      - --physical_context_dim
+      - "4"
+      - --output_path
+      - outputs/method_benchmarks/pushbox_friction_event80/ours_context_dim_4/seed_20260708/checkpoints

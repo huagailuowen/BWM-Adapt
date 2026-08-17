@@ -1,0 +1,10 @@
+extends: ttt_kvb_k1.yaml
+
+experiment:
+  id: ttt_kvb_k2
+
+method:
+  support_size: 2
+
+protocol:
+  support_sizes: [2]
