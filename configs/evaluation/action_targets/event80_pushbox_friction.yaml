@@ -1,0 +1,41 @@
+schema_version: 1
+kind: scalar_interval
+task: pushbox_friction
+benchmark: pushbox_friction_event80
+dataset: libero_push_box_event_tap_segmented80_10action
+metadata:
+  path: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine/hidden_straight_lerobot/meta/push_box_episode_metadata.jsonl
+  format: jsonl
+environment_field: mu_index
+action_field: action_id
+outcome:
+  name: block_final_forward_displacement
+  field: metrics.final_forward_m
+  unit: m
+prediction_extractor:
+  kind: centroid_forward_displacement
+  object_index: 0
+  axis: x
+  physical_units_per_pixel: null
+  require_final_visible: true
+validity_rules:
+  - {field: metrics.first_contact_local, op: not_null}
+  - {field: metrics.contact_at_peak, op: equals, value: true}
+  - {field: metrics.lateral_m, op: abs_lte, value: 0.08}
+target_areas:
+  - id: short
+    low: 0.051
+    high: 0.105
+    evaluation_ready: true
+    reference_eligible_environment_count: 65
+  - id: medium
+    low: 0.162
+    high: 0.215
+    evaluation_ready: true
+    reference_eligible_environment_count: 57
+  - id: long
+    low: 0.932
+    high: 0.986
+    evaluation_ready: false
+    reference_eligible_environment_count: 34
+    pending_check: Freeze an image-space visibility/workspace rule before reporting this target.

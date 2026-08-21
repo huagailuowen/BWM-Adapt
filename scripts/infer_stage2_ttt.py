@@ -739,6 +739,54 @@ def _sample_timestep(pipe, inputs: dict, args) -> torch.Tensor:
     return pipe.scheduler.timesteps[timestep_id].to(dtype=pipe.torch_dtype, device=pipe.device)
 
 
+def _spatial_flow_mse(prediction: torch.Tensor, target: torch.Tensor, args) -> torch.Tensor:
+    mode = str(getattr(args, "spatial_loss_mode", "none") or "none").strip().lower()
+    prediction_float = prediction.float()
+    target_float = target.float()
+    if mode == "none":
+        return torch.nn.functional.mse_loss(prediction_float, target_float)
+    if mode != "fixed_polygon":
+        raise ValueError(f"Unsupported spatial_loss_mode={mode!r} in Stage2 TTT.")
+
+    roi_weight = float(getattr(args, "spatial_loss_roi_weight", 1.0))
+    if roi_weight < 1.0:
+        raise ValueError("spatial_loss_roi_weight must be >= 1 for fixed_polygon mode.")
+
+    roi_mask = getattr(args, "_stage2_spatial_loss_roi_mask", None)
+    if roi_mask is None:
+        try:
+            from scripts.train import _build_letterboxed_polygon_mask, _parse_spatial_loss_polygon
+        except ModuleNotFoundError:
+            from train import _build_letterboxed_polygon_mask, _parse_spatial_loss_polygon
+
+        polygon = _parse_spatial_loss_polygon(
+            getattr(args, "spatial_loss_roi_polygon", "")
+        )
+        roi_mask = _build_letterboxed_polygon_mask(
+            polygon,
+            int(getattr(args, "spatial_loss_roi_source_width", 640)),
+            int(getattr(args, "spatial_loss_roi_source_height", 480)),
+            int(getattr(args, "width", 0) or 0),
+            int(getattr(args, "height", 0) or 0),
+        )
+        args._stage2_spatial_loss_roi_mask = roi_mask
+        print(
+            f"[stage2_spatial_loss] mode={mode} roi_weight={roi_weight:g} "
+            f"roi_area_fraction={float(roi_mask.mean()):.6f}",
+            flush=True,
+        )
+
+    error = (prediction_float - target_float).square()
+    resized_roi_mask = torch.nn.functional.interpolate(
+        roi_mask.to(device=error.device, dtype=error.dtype),
+        size=error.shape[-2:],
+        mode="area",
+    ).unsqueeze(2)
+    spatial_weight = 1.0 + (roi_weight - 1.0) * resized_roi_mask
+    spatial_weight = spatial_weight / spatial_weight.mean().clamp_min(1e-8)
+    return (error * spatial_weight).mean()
+
+
 def _flow_match_loss(pipe, inputs, args) -> torch.Tensor:
     inputs = dict(_shared_inputs(inputs))
     timestep = _sample_timestep(pipe, inputs, args)
@@ -753,7 +801,7 @@ def _flow_match_loss(pipe, inputs, args) -> torch.Tensor:
     if "first_frame_latents" in inputs:
         pred = pred[:, :, 1:]
         target = target[:, :, 1:]
-    loss = torch.nn.functional.mse_loss(pred.float(), target.float())
+    loss = _spatial_flow_mse(pred, target, args)
     return loss * pipe.scheduler.training_weight(timestep)
 
 

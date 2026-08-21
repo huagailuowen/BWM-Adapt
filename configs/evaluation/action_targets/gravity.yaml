@@ -1,0 +1,31 @@
+schema_version: 1
+kind: scalar_interval
+task: gravity
+benchmark: gravity80
+dataset: change_gravity_lerobot_v21
+metadata:
+  path: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/gravity/change_gravity_lerobot_v21/meta/gravity_episode_metadata.jsonl
+  format: jsonl
+environment_field: gravity_index
+action_field: speed_index
+outcome:
+  name: first_table_contact_x
+  field: first_table_contact_x_m
+  unit: m
+prediction_extractor:
+  kind: centroid_final_position
+  object_index: 0
+  axis: x
+  frame_selector: last_visible
+  physical_units_per_pixel: null
+  physical_offset: null
+validity_rules:
+  - {field: quality_pass, op: equals, value: true}
+  - {field: checks.crossed_platform_edge, op: equals, value: true}
+  - {field: checks.landed_on_table, op: equals, value: true}
+  - {field: checks.landing_in_safe_bounds, op: equals, value: true}
+  - {field: checks.lateral_drift_small, op: equals, value: true}
+target_areas:
+  - {id: short, low: 0.201, high: 0.297, evaluation_ready: true, reference_eligible_environment_count: 75}
+  - {id: medium, low: 0.379, high: 0.475, evaluation_ready: true, reference_eligible_environment_count: 64}
+  - {id: long, low: 0.643, high: 0.739, evaluation_ready: true, reference_eligible_environment_count: 46}

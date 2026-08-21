@@ -1,0 +1,23 @@
+schema_version: 1
+kind: scalar_interval
+task: mass_balance
+benchmark: mass_balance_fixed_pose
+dataset: libero_mass_balance_fixed_pose_20ratio_15support
+metadata:
+  path: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass_balance/libero_mass_balance_fixed_pose_20ratio_15support_300eps_direct_approach_absolute_eef_lerobot_2026-07-22_hai-machine/meta/mass_balance_episode_metadata.jsonl
+  format: jsonl
+environment_field: ratio_index
+action_field: support_bin_index
+outcome:
+  name: hold_final_beam_tilt
+  field: metrics.hold_final_beam_tilt_deg
+  unit: deg
+prediction_extractor:
+  kind: final_angle_deg
+  object_index: 0
+  tail_frames: 5
+  reference_angle_rad: null
+validity_rules:
+  - {field: valid_physical_episode, op: equals, value: true}
+target_areas:
+  - {id: balanced, low: -0.5, high: 0.5, evaluation_ready: true, reference_eligible_environment_count: 20}

@@ -1,0 +1,6 @@
+schema_version: 1
+manifest_path: null
+output_dir: null
+results: {root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results, benchmark: lightswitch, evaluation_id: null}
+task_metrics:
+  task: lightswitch

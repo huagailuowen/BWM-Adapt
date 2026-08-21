@@ -1,0 +1,10 @@
+schema_version: 1
+manifest_path: null
+output_dir: null
+results: {root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results, benchmark: gravity, evaluation_id: null}
+task_metrics:
+  task: gravity
+  object_names: [projectile]
+  kinematic_object_index: 0
+  event_metrics: [contact]
+  missing_penalty_normalized: 1.0

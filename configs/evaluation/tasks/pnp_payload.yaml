@@ -1,0 +1,10 @@
+schema_version: 1
+manifest_path: null
+output_dir: null
+results: {root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results, benchmark: pnp_payload, evaluation_id: null}
+task_metrics:
+  task: pnp_payload
+  object_names: [payload]
+  kinematic_object_index: 0
+  event_metrics: [drop, collision]
+  missing_penalty_normalized: 1.0

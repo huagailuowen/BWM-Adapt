@@ -1,0 +1,20 @@
+schema_version: 1
+
+manifest_path: null
+output_dir: null
+
+results:
+  root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results
+  benchmark: null
+  evaluation_id: null
+
+task_metrics:
+  task: null
+  mask_key: masks
+  object_names: []
+  missing_penalty_normalized: 1.0
+  event_metrics: []
+
+aggregation:
+  hierarchy: [query, environment, seed]
+  environment_weighting: macro

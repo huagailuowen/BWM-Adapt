@@ -1,0 +1,10 @@
+schema_version: 1
+manifest_path: null
+output_dir: null
+results: {root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results, benchmark: mass_collision, evaluation_id: null}
+task_metrics:
+  task: mass_collision
+  object_names: [striker, target]
+  kinematic_object_index: 1
+  event_metrics: [collision]
+  missing_penalty_normalized: 1.0

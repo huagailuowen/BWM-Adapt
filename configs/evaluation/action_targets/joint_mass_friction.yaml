@@ -1,0 +1,28 @@
+schema_version: 1
+kind: scalar_interval
+task: joint_mass_friction
+benchmark: joint_mass_friction100
+dataset: libero_two_box_mass_friction_balanced100env_9action
+metadata:
+  path: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass-fric/libero_two_box_mass_friction_balanced100env_9action_900eps_lerobot_2026-07-18_hai-machine/meta/push_box_episode_metadata.jsonl
+  format: jsonl
+environment_field: environment_id
+action_field: action_id
+outcome:
+  name: struck_target_displacement
+  field: metrics.target_displacement_m
+  unit: m
+prediction_extractor:
+  kind: centroid_forward_displacement
+  object_index: 1
+  axis: x
+  physical_units_per_pixel: null
+  require_final_visible: true
+validity_rules:
+  - {field: metrics.clean_collision, op: equals, value: true}
+  - {field: metrics.on_table_at_frame_60, op: equals, value: true}
+  - {field: metrics.signed_postevent_lateral_offset_m, op: abs_lte, value: 0.05}
+target_areas:
+  - {id: short, low: 0.095, high: 0.125, evaluation_ready: true, reference_eligible_environment_count: 26}
+  - {id: medium, low: 0.155, high: 0.185, evaluation_ready: true, reference_eligible_environment_count: 38}
+  - {id: long, low: 0.333, high: 0.364, evaluation_ready: true, reference_eligible_environment_count: 29}

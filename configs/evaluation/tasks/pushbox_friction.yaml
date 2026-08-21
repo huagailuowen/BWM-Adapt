@@ -1,0 +1,9 @@
+schema_version: 1
+manifest_path: null
+output_dir: null
+results: {root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results, benchmark: pushbox_friction, evaluation_id: null}
+task_metrics:
+  task: pushbox_friction
+  object_names: [block]
+  kinematic_object_index: 0
+  missing_penalty_normalized: 1.0

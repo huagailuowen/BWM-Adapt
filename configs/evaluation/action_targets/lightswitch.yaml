@@ -1,0 +1,31 @@
+schema_version: 1
+kind: lightswitch_discrete
+task: lightswitch
+benchmark: lightswitch_random_initial
+dataset: robomme_light_switch_independent_controls_random_initial
+metadata:
+  path: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/robomme-lightSwitch/robomme_light_switch_independent_controls_random8_fixed_close_buttons_no_pause_random_initial_absolute_eef_200eps_hai-machine_lerobot/robomme_light_switch_independent_controls_metadata.json
+  format: json
+  records_key: episodes
+environment_field: causal_class
+episode_field: episode_index
+control_fields:
+  red: red_controls_lamp
+  blue: blue_controls_lamp
+eligible_environment_values: [red_only, blue_only]
+candidate_actions: [red, blue]
+prediction_extractor:
+  kind: final_light_probability
+  lamp_index: 0
+  tail_frames: 3
+  off_score: null
+  on_score: null
+target_areas:
+  - id: turn_on
+    initial_light_on: false
+    desired_light_on: true
+    evaluation_ready: true
+  - id: turn_off
+    initial_light_on: true
+    desired_light_on: false
+    evaluation_ready: true

@@ -25,6 +25,9 @@ class EvaluationRecord:
     num_frames: int | None = None
     gt_mask_path: str | None = None
     pred_mask_path: str | None = None
+    gt_state_path: str | None = None
+    pred_state_path: str | None = None
+    task: str | None = None
     object_index: int = 0
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -69,6 +72,8 @@ class EvaluationRecord:
             pred_video_path=resolve(self.pred_video_path) or "",
             gt_mask_path=resolve(self.gt_mask_path),
             pred_mask_path=resolve(self.pred_mask_path),
+            gt_state_path=resolve(self.gt_state_path),
+            pred_state_path=resolve(self.pred_state_path),
         )
 
 

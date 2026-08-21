@@ -32,8 +32,8 @@ def _parse_indices(raw: str) -> list[int]:
             indices.extend(range(int(start), int(end) + 1))
         else:
             indices.append(int(value))
-    if len(indices) != 10:
-        raise ValueError(f"Exactly 10 indices are required, got {len(indices)}")
+    if not indices:
+        raise ValueError("At least one index is required.")
     return indices
 
 
@@ -47,7 +47,7 @@ def _draw_label(frame: np.ndarray, label: str) -> np.ndarray:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser("Create a 3x10 GT/correct-action/swapped-action grid.")
+    parser = argparse.ArgumentParser("Create a 3xN GT/correct-action/swapped-action grid.")
     parser.add_argument("--metadata-path", required=True)
     parser.add_argument("--dataset-base-path", required=True)
     parser.add_argument("--prediction-dir-a", required=True)
@@ -116,7 +116,7 @@ def main() -> None:
                 rows.append(np.concatenate(cells, axis=1))
             writer.append_data(np.concatenate(rows, axis=0))
 
-    print(f"[grid] cases=10 frames={frame_count} output={output_path}", flush=True)
+    print(f"[grid] cases={len(indices)} frames={frame_count} output={output_path}", flush=True)
 
 
 if __name__ == "__main__":
