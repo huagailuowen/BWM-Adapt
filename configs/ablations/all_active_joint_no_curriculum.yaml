@@ -1,0 +1,17 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: all_active_joint_no_curriculum
+
+ablation:
+  parent: joint_model_latent_training
+  progressive_environment_curriculum: false
+  active_environments_at_step_1: 35
+  jointly_update_model_and_all_codes: true
+  model_learning_rate: 1.0e-5
+  environment_code_learning_rate: 0.03
+  joint_warmup_steps: 100
+  warmup_model_learning_rate: true
+  warmup_environment_code_learning_rate: true
+  iterative_frozen_phases: false
+  purpose: isolate_progressive_environment_activation

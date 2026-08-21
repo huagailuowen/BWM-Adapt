@@ -1,0 +1,51 @@
+extends: ../common.yaml
+
+experiment:
+  id: all_active_joint_no_curriculum
+
+method:
+  slug: all_active_joint_no_curriculum
+  family: ablation
+  latent_dim: 32
+  code_scope: per_environment
+  alternating_updates: false
+  jointly_update_model_and_latent: true
+  progressive_environment_curriculum: false
+  initialization: uniform_0_1
+
+source:
+  legacy_train_config: configs/train/train_push_box_event80_all_active35_joint_c32_2gpu_24h.yaml
+  training_environment_manifest: configs/methods/event80/manifests/ours_88823_step7272_active35.yaml
+
+training:
+  active_environments_at_step_1: 35
+  add_environments_per_wave: 0
+  model_learning_rate: 1.0e-5
+  environment_code_learning_rate: 0.03
+  model_learning_rate_warmup_steps: 100
+  environment_code_learning_rate_warmup_steps: 100
+  sample_all_active_environments_from_step_1: true
+  train_model_from_step_1: true
+  train_all_active_environment_codes_from_step_1: true
+  frozen_model_phases: 0
+  frozen_environment_code_phases: 0
+
+execution:
+  training:
+    mode: independent
+    ready: true
+    blocked_by: null
+  inference:
+    ready: false
+    blocked_by: grouped_c_support_query_adapter
+
+runtime:
+  implementation_status: all_active_joint_training_ready
+  protocol_runner: wan_video_action.methods.ablations.joint_model_latent
+  train:
+    entrypoint: scripts/train_stage1_grouped_context.py
+    extra_args:
+      - --model_paths
+      - /tmp/cyzhou05/bwm_shared/Wan2.2-TI2V-5B
+      - --ckpt_path
+      - /tmp/cyzhou05/bwm_shared/BLM-step-12000.safetensors

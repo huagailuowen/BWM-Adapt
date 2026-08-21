@@ -1,0 +1,14 @@
+extends: ../methods/common.yaml
+
+method:
+  slug: new_context_200_then_joint_800
+
+ablation:
+  parent: joint_model_latent_training
+  curriculum_wave_steps: 1000
+  new_environment_code_only_steps: 200
+  joint_model_active_code_steps: 800
+  freeze_model_during_new_code_phase: true
+  freeze_existing_codes_during_new_code_phase: true
+  jointly_update_model_and_all_active_codes_after_warmup: true
+  purpose: isolate_new_code_alignment_from_joint_optimization

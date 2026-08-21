@@ -1,0 +1,17 @@
+{
+  "evaluation_id": "event80_grid_id5_ood5_k1_v1",
+  "protocol": "one fixed action-5 support followed by nine read-only query actions",
+  "support_size": 1,
+  "environments": [
+    {"environment_id": "mu_index_0", "domain": "id", "support_indices": [5], "query_indices": [0, 1, 2, 3, 4, 6, 7, 8, 9]},
+    {"environment_id": "mu_index_10", "domain": "id", "support_indices": [105], "query_indices": [100, 101, 102, 103, 104, 106, 107, 108, 109]},
+    {"environment_id": "mu_index_20", "domain": "id", "support_indices": [205], "query_indices": [200, 201, 202, 203, 204, 206, 207, 208, 209]},
+    {"environment_id": "mu_index_30", "domain": "id", "support_indices": [305], "query_indices": [300, 301, 302, 303, 304, 306, 307, 308, 309]},
+    {"environment_id": "mu_index_35", "domain": "id", "support_indices": [355], "query_indices": [350, 351, 352, 353, 354, 356, 357, 358, 359]},
+    {"environment_id": "mu_index_1", "domain": "ood", "support_indices": [15], "query_indices": [10, 11, 12, 13, 14, 16, 17, 18, 19]},
+    {"environment_id": "mu_index_9", "domain": "ood", "support_indices": [95], "query_indices": [90, 91, 92, 93, 94, 96, 97, 98, 99]},
+    {"environment_id": "mu_index_17", "domain": "ood", "support_indices": [175], "query_indices": [170, 171, 172, 173, 174, 176, 177, 178, 179]},
+    {"environment_id": "mu_index_26", "domain": "ood", "support_indices": [265], "query_indices": [260, 261, 262, 263, 264, 266, 267, 268, 269]},
+    {"environment_id": "mu_index_34", "domain": "ood", "support_indices": [345], "query_indices": [340, 341, 342, 343, 344, 346, 347, 348, 349]}
+  ]
+}
