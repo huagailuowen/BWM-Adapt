@@ -22,6 +22,8 @@ This file is the repository-local mirror of the authoritative ablation plan in t
 | Shuffled Environment Grouping | Whether correct environment grouping, rather than latent capacity alone, supplies the useful signal. | Environment grouping and sharing claim |
 | Per-Trajectory Latent | Whether environment-level sharing produces a reusable physical law. | Environment-level latent claim |
 | Joint Model-Latent Training | Whether latent-first alternating optimization is necessary. | Assimilation-consolidation claim |
+| New-Code Warm-Up + Joint Training | Whether pure joint training fails because newly introduced codes receive no isolated alignment phase. Each wave uses 200 new-code-only steps followed by 800 joint steps. | New-environment code alignment claim |
+| All-Active Joint Training (No Curriculum) | Whether progressive environment activation is necessary when all 35 training environments and their codes are optimized jointly from step 1. | Curriculum-learning claim |
 | Environment-Code Dimension (`C=4/128/1024`, reference `C=32`) | Whether performance comes from environment-level structure or merely latent capacity. | Representation-capacity and bottleneck claim |
 
 ## Evaluation
@@ -237,11 +239,79 @@ Train the initial code-conditioned Wan model normally, then freeze shared Wan pa
 | Multi-background PushBox | PushBox metrics stratified by background, plus matched-friction/action performance variance across backgrounds. | Standard PushBox errors plus the cross-background invariance gap. | Run the same target-region task on seen and unseen backgrounds; report macro-average and worst-background success. |
 | Gravity | Object mask IoU and centroid trajectory ADE/FDE. | Landing-point, time-to-impact, vertical-trajectory, and terminal-velocity errors. | Choose release or launch action to land the object in a target region; report landing success and target-distance regret. |
 | Mass collision | Separate mask IoU and centroid ADE/FDE for striker and target objects. | Collision-time, post-collision velocity, target displacement, travel-distance, and stopping-time errors. | Choose impact speed and direction so the struck object stops in a target region. |
-| Mass balance | Dumbbell/bar mask IoU, endpoint/keypoint ADE/FDE, center trajectory, and orientation error. | Final angle, angular-velocity, settling-time, and tip/fall errors. | Choose support/contact position or placement action to keep the object within a frozen angle tolerance for the final five frames. |
+| Mass balance | Bar centroid ADE/FDE plus the tilt of one fixed longitudinal bar edge, measured modulo 180 degrees. | Mean/final bar-tilt error, angular-velocity error, settling-time, and tip/fall errors. | Choose support/contact position or placement action to keep the bar within a frozen angle tolerance for the final five frames. |
 | Joint mass-friction | Push/collision object metrics reported across the two-factor environment grid. | Sliding/stopping and collision/post-impact errors, stratified by mass, friction, and their interaction. | Choose a push or impact action to reach a target region on held-out mass-friction combinations; report per-cell, macro, and worst-group success. |
 | PnP payload dynamics | Payload mask/keypoint IoU, centroid/pose ADE/FDE, and gripper-payload relative pose error. | Motion lag, oscillation amplitude, settling time, drop rate, collision rate, and final pose error. | Choose an EEF speed/path profile that places the payload in a target pose without dropping it or exceeding the oscillation limit. |
-| LightSwitch causal dynamics | Switch/button and EEF keypoint trajectory ADE/FDE and final switch-state accuracy. | Contact-time, toggle-time, state-transition, and unintended-toggle errors. | Choose contact point, direction, and force/trajectory to reach the requested switch state without toggling other controls. |
+| LightSwitch causal dynamics | Lamp on/off frame accuracy and final lamp-state accuracy; EEF or button trajectories are not primary metrics. | Lamp transition-time error, exact-transition rate, and unintended lamp-state changes. | Choose the interaction action that produces the requested final lamp state without changing unrelated lights. |
 | Real slope-friction | Block/ball mask IoU and centroid ADE/FDE. | Travel-distance, stopping-time, terminal-speed, and across-surface ordering errors. | Choose release or push amplitude to stop the object in a target region; report success, target distance, overshoot, and safety failures. |
+
+### Action-selection evaluation protocol
+
+Action selection is evaluated separately from open-loop world-model prediction. For each environment and target area, every candidate action is rolled out by the evaluated model. The model selects the action whose **predicted** task outcome is closest to the target area; success and regret are then scored using the corresponding ground-truth rollout. No ground-truth physical parameter, ground-truth action validity, or query outcome may be used during action selection.
+
+Target areas are defined from the full action coverage of each dataset rather than from a small inference subset. A target area is evaluated only on environments for which at least one valid ground-truth action reaches that area. Therefore, short-, medium-, and long-range target areas may have different eligible environment sets. Results must report the number of eligible environments and actions together with both micro averages over decisions and macro averages over target areas. Light-switch and pick-and-place tasks use their direct discrete/task-success definitions and do not require this continuous target-area audit.
+
+#### Collision action task
+
+In the two-box collision dataset, `cream_cheese_1` is the projectile directly pushed by the robot and has fixed mass. `cream_cheese_2` is the struck target object whose hidden mass varies. The action controls the projectile's impact speed, while the evaluated physical outcome is the target object's forward displacement:
+
+\[
+d(a,E)=x^{\mathrm{target}}_{\mathrm{final}}-x^{\mathrm{target}}_{\mathrm{initial}}.
+\]
+
+For a target interval \(T=[l,u]\), the model selects
+
+\[
+\hat a=\arg\min_a \operatorname{dist}(\hat d(a,E),T),\qquad
+\operatorname{dist}(d,T)=\max(l-d,0,d-u).
+\]
+
+The selected action succeeds only when all of the following hold in its ground-truth rollout:
+
+- A clean projectile-target collision occurs.
+- The target-object forward displacement lies inside \([l,u]\).
+- The target object remains on the table and inside the valid workspace.
+- The target object's absolute lateral drift is below the configured tolerance.
+
+Several actions may be equally successful; the policy is not required to reproduce one designated oracle action. The oracle is the valid candidate with minimum ground-truth distance to the interval. Let \(J(a)\) be that interval distance, with invalid actions assigned a deterministic penalty larger than every valid candidate cost. Report task success and
+
+\[
+\operatorname{normalized\ regret}
+=\frac{J(\hat a)-J(a^*)}
+{\max_a J(a)-J(a^*)},
+\]
+
+using the target width as a denominator floor. Also report selected-action validity, selected and oracle target error, raw regret, whether the selected action is oracle-equivalent, the number of valid candidates, and the number of successful candidates.
+
+The current linear-theory collision dataset audit gives the following **provisional** displacement targets. Medium and long targets must retain the explicit on-table/workspace check when the final evaluation manifest is built.
+
+| Target | Target-object displacement (m) | Approx. absolute target x (m) | Status |
+|---|---:|---:|---|
+| Short | [0.401, 0.439] | [0.281, 0.319] | Candidate target |
+| Medium | [0.740, 0.777] | [0.620, 0.657] | Candidate; verify workspace validity |
+| Long | [0.778, 0.816] | [0.658, 0.696] | Candidate; verify workspace validity |
+
+The collision action evaluator consumes one JSONL row per candidate action. Rows sharing `method`, `decision_id`, `seed`, and `target_area_id` form one decision and must contain `action_id`, `predicted_target_forward_displacement_m`, `gt_target_forward_displacement_m`, `clean_collision`, and, when enabled, `target_on_table`, `target_in_workspace`, and `target_lateral_drift_m`. The evaluator writes per-decision records plus micro, per-domain, per-target, and macro-over-target summaries under the canonical `results/` tree.
+
+#### Registered action targets for the remaining tasks
+
+All continuous tasks use the same selection rule: choose the candidate action whose predicted scalar outcome has minimum distance to the requested interval, then score that selected action with its GT outcome. An environment/target pair enters the evaluation only if at least one valid GT candidate reaches the interval. The frozen definitions live under `configs/evaluation/action_targets/`; generated eligible sets and final metrics belong under `results/<benchmark>/<evaluation_id>/action/`.
+
+| Task | Scalar outcome | Target definitions | GT validity |
+|---|---|---|---|
+| Event80 push-box friction | Block final forward displacement | short [0.051, 0.105] m; medium [0.162, 0.215] m; long [0.932, 0.986] m | Contact exists, contact occurs at action peak, and absolute lateral displacement is at most 0.08 m. The long target remains provisional until a frozen visibility/workspace check is added. |
+| Joint mass-friction | Struck target-object displacement | short [0.095, 0.125] m; medium [0.155, 0.185] m; long [0.333, 0.364] m | Clean collision, target on table at the final frame, and absolute post-event lateral offset at most 0.05 m. |
+| Gravity | Projectile first table-contact x | short [0.201, 0.297] m; medium [0.379, 0.475] m; long [0.643, 0.739] m | Dataset quality pass, platform-edge crossing, safe on-table landing, and small lateral drift. |
+| Mass balance, fixed pose | Final hold-phase beam tilt | balanced [-0.5, 0.5] degrees | Valid physical episode. |
+| Mass balance, randomized workspace | Final hold-phase beam tilt | balanced [-0.5, 0.5] degrees | Valid physical episode. |
+
+LightSwitch is categorical rather than interval-valued. Only `red_only` and `blue_only` causal environments are evaluated because `neither` and `both` do not identify one uniquely correct button. For `turn_on`, the initial lamp is off and the desired final state is on; for `turn_off`, the initial lamp is on and the desired final state is off. Each candidate is one completed red or blue button press. The model selects the button whose predicted final-light probability is closest to the desired binary state, and GT success requires the selected rollout to reach that state. Both targets report button-selection success, final-state success, oracle reachability, and binary normalized regret. PnP action evaluation is explicitly excluded from the current scope.
+
+#### Leakage-safe action decision pipeline
+
+Formal action evaluation is split into two filesystem artifacts and two processes. The prediction process adapts once on the fixed support set, rolls out every candidate query action with that frozen adaptation state, extracts each predicted physical outcome, and writes a frozen action decision. Its input manifest is rejected if it contains any GT outcome, GT state/video path, or oracle action. The scorer starts only after that decision exists; it loads the separately generated GT action table, executes a lookup for the already selected action, and computes success and regret. The scorer also recomputes the prediction-only argmin and requires it to match the saved `selected_action_id`.
+
+For fixed-camera position tasks, predicted-video outcomes come from a frozen object mask/tracker followed by a pixel-to-world calibration fitted only on training/calibration data. Event80 and joint mass-friction use object forward displacement; gravity uses final/landing x. Mass Balance uses the unoriented bar axis relative to a frozen zero-angle calibration. LightSwitch uses a frozen lamp ROI and calibrated off/on luminance scores. Missing calibration values are fatal: the evaluator does not substitute GT coordinates or hand-tuned values from the test set.
 
 ### Evaluation: Retention and Compute-Matched Forward Transfer
 

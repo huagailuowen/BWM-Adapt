@@ -1,6 +1,6 @@
 # TTT-Physics Experiment Results
 
-Last updated: 2026-08-04
+Last updated: 2026-08-21
 
 代码中的 physical context / latent `C` 在论文与图中统一记作 latent `Z`。正文只保留核心发现；逐项配置、checkpoint 和评测资产见附录。
 
@@ -37,7 +37,8 @@ Last updated: 2026-08-04
 
 | 实验 | 代表训练/状态 | 环境与输入 | 方法 | 当前获得的信息 | 结论边界 |
 |---|---|---|---|---|---|
-| Slope-friction toy | Stage1 `95512`；评测使用 model `step1859` + Z `phase-step2100`；eval `95718` | 两个真实砂纸环境 `grit120`、`grit240`；raw 80 frames，经 stride 2 得到 41-frame 输入；14D joint-state-action | 只训练一个共享 world model；每个摩擦力环境维护一个独立 Z32；Stage1 交替训练模型/Z；Stage2 context-only adaptation | 已生成每环境 8 组 GT/Stage1/Stage2 对比，并记录两环境 training-time Z、inference-time Z trajectory 和联合 PCA | 目前是 two-environment feasibility check；Stage2 使用 query chunk 自身作 support，尚不能证明跨 episode、未见摩擦表面或真实在线泛化 |
+| Real Ball Friction | Stage1 `101378/step5500`；正式评测使用 model/Z `step5500` | 7 个真实 ball-friction environments；每环境抽取 6 个不同 impact/skill levels；60 个真实帧 tail-pad 为 61-frame 输入；14D joint-state-action | Independent Z32；4 GPUs；每 rank `3 env x 6 skill`；1000-step-style curriculum；trough ROI 使用归一化 6x loss weight；Stage2 context-only adaptation | 完成 42 组 GT/Stage1/Stage2 生成、7-environment x 6-level grid、Z trajectory；表明真实接触运动可由共享模型与 environment Z 联合建模 | 正式生成评测已完成；当前 Stage2 仍以 query chunk 自身作为 support，尚未证明独立 showcase 到 query 的跨 episode adaptation 或闭环控制 |
+| Real Stick Balance | Stage1 `98364/step5500`；eval `98738` | 8 个真实左右配重环境；每环境 6 个 episode；raw 120 frames、stride 3 得到 41-frame 输入；14D joint-state-action | Independent Z32；4 GPUs；每 rank `3 env x 6 action`；80% 采样关键 lift windows；Stage1 model/Z 交替训练；Stage2 context-only adaptation | 完成 48 组 GT/Stage1/Stage2、8 个 environment grids、training/inference Z 联合 PCA；不同配重环境具有可分析的 latent structure | 正式生成与 latent 评测已完成；当前 Stage2 仍为 support=query，后续需补 disjoint support/query 和横杆倾角定量指标 |
 
 ### 4. 尚未形成主结果的方向
 
@@ -382,60 +383,95 @@ Last updated: 2026-08-04
 | 覆盖范围 | GT、Stage1、Stage2；event-centered causal cases；使用 model4100/Z4300 状态 |
 | 待补对照 | 完全固定数据 groups、batch、curriculum、LR 和 seed，仅把约 30-frame core 改为 120-frame window |
 
-## J. Real-robot slope-friction toy：job 95512
+## J. Real Ball Friction：training job 101378
 
 ### J.1 配置与关键参数
 
 | 字段 | 配置 |
 |---|---|
-| Canonical config | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/train/train_real_friction_slope_2env_joint_state_action_stride2_c32_random_4gpu_3slot6chunk_alt200_stage1_5500.yaml` |
-| Runtime config | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/tmp/run_configs/real_friction_slope_2env_c32_random_4h200_3slot6chunk_alt200_stage1_5500_95512.yaml` |
-| Dataset preparation | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/scripts/prepare_real_friction_slope_bwm_dataset.py` |
-| 原始数据 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets_real/friction_slope` |
-| 环境 | `sandpaper-box-120_lerobot` 与 `sandpaper-box-240_lerobot`，文中简称 `grit120`、`grit240` |
-| 训练对象 | 两个环境共同训练一个 Wan2.2-TI2V-5B/BWM world model，不为两个环境分别训练模型 |
+| Canonical config | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/configs/train/train_real_ball_friction_align_medium_7env_60f_curriculum_c32_random_oldmethod_roi6x_4gpu_3env6skill_stage1_5500.yaml` |
+| Runtime config | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/tmp/run_configs/real_ball_friction_align_medium_7env_60f_1view_c32_random_oldmethod_roi6x_4gpu_3env6skill_stage1_5500_101378.yaml` |
+| 数据 | 7 个真实环境：`ball-0, ball-1, ball-2, ball-3, ball-4, ball-7, ball-9`；每环境包含多个 impact/skill levels |
+| 视频 | 60 个真实帧，重复末帧得到 61-frame Wan 输入；224x224 letterbox；单相机视角 |
+| Action | `joint_state_action`，14 dimensions；视频与 action 按同一时间索引对齐 |
 | Base checkpoint | `ckpt/BLM/step-12000.safetensors` |
-| 视频 | 每个 raw window 80 frames；`frame_stride=2`；40 个独立采样帧 tail-pad 为 41；224x224 letterbox |
-| Action | `joint_state_action`，14 dimensions；视频和 action 使用相同 stride 对齐 |
-| Z | 每个砂纸环境共享一个 Z32；1 token，hidden dim 128；independent `U(0,1)` initialization；clamp `[0,1]`；`physical_context_mode=both` |
-| Batch shape | 每 rank 3 个 balanced repeated environment slots，每 slot 6 chunks，共 18 microbatches；两个环境始终出现，第三 slot 按 rank 交替以保持全局平衡 |
-| GPU/effective batch | 4 GPUs；有效 72 chunks/update |
-| Alternating schedule | 先 model-only warm-up 300 steps；之后从 Z-only 开始，每 200 steps 在 Z-only/model-only 间切换 |
-| Learning rates | Z `0.03`；model `1e-5`，前 100 model steps warm-up；model phase 训练 DiT、action encoder、physical-context encoder |
-| 训练预算 | 计划 5500 structured updates；BF16 model training；gradient checkpointing；max grad norm 0.5 |
-| 保存策略 | `save_steps=500`，至少每 60 分钟保存，仅保留最近两个普通 model/Z 配对 checkpoint，同时记录 phase-end Z table |
+| Z | 每个 ball-friction environment 共享一个 Z32；1 token，hidden dim 128；independent `U(-1,1)`；clamp `[-1,1]`；`physical_context_mode=both` |
+| Batch shape | 4 GPUs；每 rank `3 environments x 6 common skills = 18 chunks`；有效 72 chunks/update |
+| Curriculum | 初始 4 environments，之后加入剩余 3；initial model-only 300；new-Z 200@0.15；all-Z 200@0.03；model phases lr `1e-5`；之后每 200 steps 交替细化 |
+| Spatial objective | 固定 trough polygon 内 loss weight 6x，并将整张 spatial weight map 归一化到 mean 1；polygon=`100,218;640,175;640,302;100,335` |
+| 训练预算 | 5500 structured updates；BF16；gradient checkpointing；max grad norm 0.5 |
+| 保存策略 | phase-end Z table；普通 checkpoint 只保留最近两个；最终存在严格配对的 model/Z `step5500` |
 
 ### J.2 Checkpoint 与评测
 
 | 资产 | 绝对路径/说明 |
 |---|---|
-| 实际评测模型 snapshot | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/inference_snapshots/real_friction_slope_95512_step1859_table2100/step-1859.safetensors` |
-| 实际评测 Z table | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/inference_snapshots/real_friction_slope_95512_step1859_table2100/step-2100.context_table.json` |
-| Snapshot manifest | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/inference_snapshots/real_friction_slope_95512_step1859_table2100/snapshot_manifest.txt` |
-| Step 组合解释 | Model source step 为 1859；之后进入 Z-only phase并将 Z 更新到 logical step 2100，因此评测固定使用 model1859 + Z2100 |
-| 当前更晚安全配对模型 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/real_friction_slope_2env_c32_random_4h200_3slot6chunk_alt200_stage1_5500_95512/step-2292.safetensors` |
-| 当前更晚安全配对 Z table | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/real_friction_slope_2env_c32_random_4h200_3slot6chunk_alt200_stage1_5500_95512/step-2292.context_table.json` |
-| 评测 job | `95718`，2 张 H200；两个环境并行推理 |
-| 评测脚本 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/jobs/run_infer_real_friction_slope_95512_step1859_table2100_gt_stage1_stage2_8each_2h200_low.sh` |
-| 评测输出 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/infer_real_friction_slope_95512_step1859_table2100_gt_stage1_stage2_8each_95718` |
-| Case selection | `grit120` 8 chunks + `grit240` 8 chunks，共 16 组 GT/Stage1/Stage2 视频；每个 raw chunk 80 frames |
-| Stage1 context | 直接使用该砂纸环境在 Stage1 学到的 training-time Z table entry |
-| Stage2 initialization | 两个 training-time Z entries 的均值 |
-| Stage2 support | 当前 toy 评测使用 query chunk 自身作为 support，即 `ttt_support_same_as_query` |
-| Stage2 update | 只更新 Z；FP32；40 steps：`3.0x10 + 1.5x10 + 0.5x10 + 0.15x10`；grad clip 1.0；reg 0.001；clamp `[0,1]` |
-| Video inference | 25 denoising steps；CFG 1；15 FPS；固定 seed `20260803` |
-| Latent analysis | 分别保存 `grit120/grit240` 的 Z trajectory，并生成 training-time 与 Stage2 endpoints 的联合 PCA CSV/SVG |
+| Stage1 model | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/real_ball_friction_align_medium_7env_60f_1view_c32_random_oldmethod_roi6x_4gpu_3env6skill_stage1_5500_101378/step-5500.safetensors` |
+| Stage1 Z table | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/real_ball_friction_align_medium_7env_60f_1view_c32_random_oldmethod_roi6x_4gpu_3env6skill_stage1_5500_101378/step-5500.context_table.json` |
+| 评测输出 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/infer_real_ball_friction_align_medium_roi6x_101378_m5500_c5500_7ball_6level_grid_resumable` |
+| Protocol manifest | 上述目录中的 `evaluation_manifest.txt`；记录 model/Z step、环境、采样、Stage2 和 ROI 设置 |
+| Case selection | 7 environments；每环境无放回抽取 6 个不同 impact/skill levels；共 42 组 GT/Stage1/Stage2 comparisons |
+| Grid | 每个环境以 6 个 action columns 展示，单列从上到下为 GT、Stage1、Stage2；`grid_videos.txt` 记录 grid 资产 |
+| Stage1 context | 使用对应环境在 training time 学到的 Z table entry |
+| Stage2 initialization | 7 个 training-time Z entries 的均值 |
+| Stage2 support | 当前评测使用 query chunk 自身作为 support |
+| Stage2 update | 只更新 Z；FP32；40 steps：`3.0x10 + 1.5x10 + 0.5x10 + 0.15x10`；reg 0.001；clamp `[-1,1]` |
+| Latent analysis | 每个 shard 保存 `context_trajectory.jsonl` 与轨迹 SVG，可分析 training-time target 和 inference-time Z 走向 |
 
-### J.3 当前结论与下一步
+### J.3 当前结论与边界
 
 | 项目 | 记录 |
 |---|---|
-| 已证明 | 同一个 world model 可以在两种真实摩擦表面数据上训练；environment-specific Z 能参与 Stage1 生成和 Stage2 context-only optimization；完整数据准备、训练、checkpoint、推理和 PCA 链路已跑通 |
-| 尚未证明 | 两个 Z 是否主要编码摩擦而非其他采集差异；从独立 showcase 到 query 的跨 episode adaptation；未见真实表面的插值/OOD；真实机器人闭环在线控制 |
-| 下一组最小实验 | 每个表面严格划分 support/query episode，禁止 support=query；保持模型不变，只比较 training-time Z、mean-Z、TTT-Z |
-| 后续扩展 | 增加至少 4-6 个可排序真实表面或可控坡度/摩擦环境，并保留未见表面作为 OOD；控制相机、初始位姿、动作幅度和光照，避免 Z 利用非物理 shortcut |
+| 已完成 | 7 个真实 ball-friction environments 的数据准备、共享 world-model/Z 训练、安全配对 checkpoint、42-case Stage1/Stage2 生成与 environment-level grid 已全部跑通 |
+| 主要观察 | ROI-weighted objective 能把监督集中在球和 trough 的接触运动区域；共享模型配合 environment Z 能生成不同真实接触条件下的运动差异 |
+| 结论边界 | 当前生成评测是正式结果，但 Stage2 使用 support=query；不能据此宣称独立 showcase 到 query 的跨 episode adaptation、未见 ball/friction OOD 泛化或真实闭环控制 |
+| 下一步 | 固定同一组 7 environments，按 episode/impact level 建立严格 disjoint support/query，并加入球重心轨迹 ADE/FDE 与落点/停止距离指标 |
 
-## K. 结果解读规范
+## K. Real Stick Balance：training job 98364，evaluation job 98738
+
+### K.1 配置与关键参数
+
+| 字段 | 配置 |
+|---|---|
+| Canonical config | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/configs/train/train_real_stick_balance_8env_120raw_stride3_80lift_curriculum_c32_random_stable_4gpu_3env6action_stage1_5500.yaml` |
+| Runtime config | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/tmp/run_configs/real_stick_balance_8env_120raw_stride3_80lift_c32_random_stable_4gpu_3env6action_stage1_5500_98364.yaml` |
+| 原始数据 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets_real/stick_balance` |
+| 环境 | 8 个左右配重环境：3 个 left-heavy、1 个 balanced、4 个 right-heavy |
+| 视频 | raw 120-frame window；`frame_stride=3`；视频/action 同步采样为 41-frame Wan 输入；224x224 letterbox |
+| Action | `joint_state_action`，14 dimensions |
+| Base checkpoint | `ckpt/BLM/step-12000.safetensors` |
+| Z | 每个配重环境共享一个 Z32；1 token，hidden dim 128；independent `U(-1,1)`；clamp `[-1,1]`；`physical_context_mode=both` |
+| Batch shape | 4 GPUs；每 rank `3 environments x 6 actions/windows = 18 chunks`；有效 72 chunks/update |
+| Chunk sampler | 先均匀抽 episode 再抽 window；80% 概率优先关键 `lift` window，20% 保留 general windows |
+| Curriculum | 初始 4 environments，再加入剩余 4；initial model-only 300；new-Z lr 0.075；all-Z lr 0.03；model lr `1e-5`；step 2301 后 post-curriculum Z lr 0.015；phase displacement cap 0.4 |
+| 训练预算 | 5500 structured updates；BF16；gradient checkpointing；max grad norm 0.5 |
+| 保存策略 | phase-end Z table；普通 checkpoint 仅保留最近两个；最终 model/Z 在 `step5500` 严格配对 |
+
+### K.2 Checkpoint 与评测
+
+| 资产 | 绝对路径/说明 |
+|---|---|
+| Stage1 model | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/real_stick_balance_8env_120raw_stride3_80lift_c32_random_stable_4gpu_3env6action_stage1_5500_98364/step-5500.safetensors` |
+| Stage1 Z table | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/real_stick_balance_8env_120raw_stride3_80lift_c32_random_stable_4gpu_3env6action_stage1_5500_98364/step-5500.context_table.json` |
+| 评测输出 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/infer_real_stick_balance_98364_step5500_8env_6ep_gt_stage1_stage2_98738` |
+| Case selection | 8 environments x 6 episodes，共 48 组 GT/Stage1/Stage2 comparisons |
+| Environment grids | `environment_grids/` 中每环境一幅 6-episode GT/Stage1/Stage2 grid，共 8 个 |
+| Stage1 context | 使用对应配重环境的 training-time Z table entry |
+| Stage2 initialization | 从 `step-5500.context_table.json` 的 learned contexts 统计量初始化 |
+| Stage2 support | 当前评测每个 query 使用自身 chunk 作为 support |
+| Stage2 update | Context only；FP32；40-step staged LR；保存每一步 inner loss、Z displacement 和 trajectory |
+| Latent analysis | `context_endpoints_combined_pca.svg`、`context_trajectory_combined_pca.svg`、`context_trajectory_stage2_only_zoomed_pca.svg` 及对应 CSV/JSONL |
+
+### K.3 当前结论与边界
+
+| 项目 | 记录 |
+|---|---|
+| 已完成 | 8 个真实配重环境的 Stage1 训练、严格配对 `step5500` checkpoint、48-case GT/Stage1/Stage2、8 个 environment grids 与联合 PCA 已全部完成 |
+| 主要观察 | 关键 lift window 的高采样比例让训练集中在横杆受力和旋转阶段；training-time 与 inference-time Z 可在统一 PCA 中分析不同左右配重环境的结构 |
+| 结论边界 | 当前结果证明生成和 latent pipeline 在真实 stick-balance 数据上可运行，但 Stage2 仍为 support=query，且尚未加入横杆倾角定量误差和 disjoint cross-episode adaptation |
+| 下一步 | 为每个环境固定独立 showcase/query episodes；报告横杆角度 mean/final error、角速度误差、平衡方向分类和全局 LPIPS/PSNR/SSIM |
+
+## L. 结果解读规范
 
 | 项目 | 规范 |
 |---|---|
