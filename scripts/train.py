@@ -16,6 +16,71 @@ from tqdm import tqdm
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
+def _parse_spatial_loss_polygon(value):
+    points = []
+    for vertex in str(value or "").split(";"):
+        vertex = vertex.strip()
+        if not vertex:
+            continue
+        x_text, y_text = vertex.split(",", 1)
+        points.append((float(x_text), float(y_text)))
+    if len(points) < 3:
+        raise ValueError(
+            "spatial_loss_roi_polygon must contain at least three x,y vertices."
+        )
+    return points
+
+
+def _parse_spatial_loss_view_indices(value):
+    text = str(value or "").strip().lower()
+    if text in ("", "all", "*"):
+        return None
+    indices = tuple(sorted({int(token.strip()) for token in text.split(",") if token.strip()}))
+    if not indices or any(index < 0 for index in indices):
+        raise ValueError(
+            "spatial_loss_roi_view_indices must be 'all' or comma-separated non-negative indices."
+        )
+    return indices
+
+
+def _build_letterboxed_polygon_mask(
+    polygon,
+    source_width,
+    source_height,
+    target_width,
+    target_height,
+):
+    if source_width <= 0 or source_height <= 0:
+        raise ValueError("Spatial-loss source dimensions must be positive.")
+    if target_width <= 0 or target_height <= 0:
+        raise ValueError("Spatial-loss target dimensions must be positive.")
+    scale = min(target_width / source_width, target_height / source_height)
+    pad_x = (target_width - source_width * scale) / 2.0
+    pad_y = (target_height - source_height * scale) / 2.0
+    points = [
+        (x * scale + pad_x, y * scale + pad_y)
+        for x, y in polygon
+    ]
+    y_grid, x_grid = torch.meshgrid(
+        torch.arange(target_height, dtype=torch.float32) + 0.5,
+        torch.arange(target_width, dtype=torch.float32) + 0.5,
+        indexing="ij",
+    )
+    inside = torch.zeros((target_height, target_width), dtype=torch.bool)
+    previous_x, previous_y = points[-1]
+    for current_x, current_y in points:
+        crosses_y = (current_y > y_grid) != (previous_y > y_grid)
+        x_intersection = (
+            (previous_x - current_x)
+            * (y_grid - current_y)
+            / (previous_y - current_y + 1e-12)
+            + current_x
+        )
+        inside ^= crosses_y & (x_grid < x_intersection)
+        previous_x, previous_y = current_x, current_y
+    return inside.to(dtype=torch.float32)[None, None]
+
+
 class TimedRetentionModelLogger(ModelLogger):
     def __init__(
         self,
@@ -175,6 +240,161 @@ class WanTrainingModule(DiffusionTrainingModule):
         self.max_timestep_boundary = max_timestep_boundary
         self.min_timestep_boundary = min_timestep_boundary
         self.num_history_frames = num_history_frames
+        self.spatial_loss_mode = str(
+            getattr(args, "spatial_loss_mode", "none") or "none"
+        ).strip().lower()
+        self.spatial_loss_roi_weight = float(
+            getattr(args, "spatial_loss_roi_weight", 1.0)
+        )
+        self.spatial_loss_roi_view_indices = _parse_spatial_loss_view_indices(
+            getattr(args, "spatial_loss_roi_view_indices", "all")
+        )
+        if self.spatial_loss_mode == "none":
+            spatial_loss_roi_mask = torch.empty((0,), dtype=torch.float32)
+        elif self.spatial_loss_mode == "fixed_polygon":
+            if self.spatial_loss_roi_weight < 1.0:
+                raise ValueError(
+                    "spatial_loss_roi_weight must be >= 1 for fixed_polygon mode."
+                )
+            polygon = _parse_spatial_loss_polygon(
+                getattr(args, "spatial_loss_roi_polygon", "")
+            )
+            spatial_loss_roi_mask = _build_letterboxed_polygon_mask(
+                polygon,
+                int(getattr(args, "spatial_loss_roi_source_width", 640)),
+                int(getattr(args, "spatial_loss_roi_source_height", 480)),
+                int(getattr(args, "width", 0) or 0),
+                int(getattr(args, "height", 0) or 0),
+            )
+        else:
+            raise ValueError(f"Unsupported spatial_loss_mode={self.spatial_loss_mode!r}.")
+        # Keep the fixed mask out of DDP module-state synchronization. The loss
+        # path explicitly moves it to the prediction device before use.
+        self.spatial_loss_roi_mask = spatial_loss_roi_mask
+        self.last_spatial_loss_metrics = None
+        if self.spatial_loss_mode != "none":
+            self.task_to_loss["sft"] = self._spatial_flow_match_sft_loss
+            self.task_to_loss["sft:train"] = self._spatial_flow_match_sft_loss
+            roi_views = (
+                "all"
+                if self.spatial_loss_roi_view_indices is None
+                else ",".join(str(index) for index in self.spatial_loss_roi_view_indices)
+            )
+            print(
+                f"[spatial_loss] mode={self.spatial_loss_mode} "
+                f"roi_weight={self.spatial_loss_roi_weight:g} "
+                f"roi_views={roi_views} "
+                f"roi_area_fraction_per_selected_view={float(self.spatial_loss_roi_mask.mean()):.6f}",
+                flush=True,
+            )
+
+    def spatial_flow_mse(self, prediction, target):
+        prediction_float = prediction.float()
+        target_float = target.float()
+        if self.spatial_loss_mode == "none":
+            self.last_spatial_loss_metrics = None
+            return torch.nn.functional.mse_loss(prediction_float, target_float)
+
+        error = (prediction_float - target_float).square()
+        roi_mask = torch.nn.functional.interpolate(
+            self.spatial_loss_roi_mask.to(device=error.device, dtype=error.dtype),
+            size=error.shape[-2:],
+            mode="area",
+        ).unsqueeze(2)
+        if self.spatial_loss_roi_view_indices is not None:
+            if error.ndim != 5:
+                raise ValueError(
+                    "View-specific spatial loss expects prediction shaped (V,C,T,H,W), "
+                    f"got {tuple(error.shape)}."
+                )
+            invalid = [
+                index
+                for index in self.spatial_loss_roi_view_indices
+                if index >= int(error.shape[0])
+            ]
+            if invalid:
+                raise IndexError(
+                    f"spatial_loss_roi_view_indices={invalid} outside num_views={error.shape[0]}."
+                )
+            per_view_mask = torch.zeros(
+                (int(error.shape[0]), 1, 1, int(error.shape[-2]), int(error.shape[-1])),
+                device=error.device,
+                dtype=error.dtype,
+            )
+            for view_index in self.spatial_loss_roi_view_indices:
+                per_view_mask[view_index:view_index + 1] = roi_mask
+            roi_mask = per_view_mask
+        spatial_weight = 1.0 + (self.spatial_loss_roi_weight - 1.0) * roi_mask
+        spatial_weight = spatial_weight / spatial_weight.mean().clamp_min(1e-8)
+        loss = (error * spatial_weight).mean()
+        with torch.no_grad():
+            metric_roi_mask = roi_mask.expand(
+                int(error.shape[0]), 1, int(error.shape[2]),
+                int(error.shape[-2]), int(error.shape[-1]),
+            )
+            roi_mass = metric_roi_mask.sum().clamp_min(1e-8)
+            background_mask = 1.0 - metric_roi_mask
+            background_mass = background_mask.sum().clamp_min(1e-8)
+            self.last_spatial_loss_metrics = {
+                "global_mse": float(error.mean().detach().cpu()),
+                "roi_mse": float((error * metric_roi_mask).sum().detach().cpu() / (roi_mass * error.shape[1])),
+                "background_mse": float((error * background_mask).sum().detach().cpu() / (background_mass * error.shape[1])),
+                "weighted_mse": float(loss.detach().cpu()),
+                "roi_area_fraction_all_views": float(roi_mask.mean().detach().cpu()),
+            }
+        return loss
+
+    def _spatial_flow_match_sft_loss(
+        self,
+        pipe,
+        inputs_shared,
+        inputs_posi,
+        inputs_nega,
+    ):
+        inputs = {**inputs_shared, **inputs_posi}
+        if "lora" in inputs:
+            pipe.clear_lora(verbose=0)
+            pipe.load_lora(
+                pipe.dit,
+                state_dict=inputs["lora"],
+                hotload=True,
+                verbose=0,
+            )
+        max_timestep_boundary = int(
+            inputs.get("max_timestep_boundary", 1) * len(pipe.scheduler.timesteps)
+        )
+        min_timestep_boundary = int(
+            inputs.get("min_timestep_boundary", 0) * len(pipe.scheduler.timesteps)
+        )
+        timestep_id = torch.randint(
+            min_timestep_boundary,
+            max_timestep_boundary,
+            (1,),
+        )
+        timestep = pipe.scheduler.timesteps[timestep_id].to(
+            dtype=pipe.torch_dtype,
+            device=pipe.device,
+        )
+        noise = torch.randn_like(inputs["input_latents"])
+        inputs["latents"] = pipe.scheduler.add_noise(
+            inputs["input_latents"],
+            noise,
+            timestep,
+        )
+        training_target = pipe.scheduler.training_target(
+            inputs["input_latents"],
+            noise,
+            timestep,
+        )
+        if "first_frame_latents" in inputs:
+            inputs["latents"][:, :, 0:1] = inputs["first_frame_latents"]
+        models = {name: getattr(pipe, name) for name in pipe.in_iteration_models}
+        noise_pred = pipe.model_fn(**models, **inputs, timestep=timestep)
+        if "first_frame_latents" in inputs:
+            noise_pred = noise_pred[:, :, 1:]
+            training_target = training_target[:, :, 1:]
+        loss = self.spatial_flow_mse(noise_pred, training_target)
+        return loss * pipe.scheduler.training_weight(timestep)
 
     def freeze_text_modules(self):  
         self.pipe.dit.text_embedding.requires_grad_(False)

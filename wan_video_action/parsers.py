@@ -192,6 +192,36 @@ def add_training_config(parser: argparse.ArgumentParser):
     group.add_argument("--max_timestep_boundary", type=float, default=1.0, help="[OPTIONAL] Max timestep boundary (for mixed models, e.g., Wan-AI/Wan2.2-I2V-A14B).")
     group.add_argument("--min_timestep_boundary", type=float, default=0.0, help="[OPTIONAL] Min timestep boundary (for mixed models, e.g., Wan-AI/Wan2.2-I2V-A14B).")
     group.add_argument("--batch_size", type=int, default=1, help="[TUNABLE] Batch size per GPU.")
+    group.add_argument(
+        "--spatial_loss_mode",
+        type=str,
+        default="none",
+        choices=["none", "fixed_polygon"],
+        help="[OPTIONAL] Spatial flow-loss weighting. 'none' preserves the original full-frame MSE.",
+    )
+    group.add_argument(
+        "--spatial_loss_roi_weight",
+        type=float,
+        default=1.0,
+        help="[TUNABLE] ROI/background weight ratio before mean-weight normalization.",
+    )
+    group.add_argument(
+        "--spatial_loss_roi_view_indices",
+        type=str,
+        default="all",
+        help=(
+            "[OPTIONAL] Comma-separated video-view indices receiving the ROI weight. "
+            "Use 'all' for the legacy behavior."
+        ),
+    )
+    group.add_argument("--spatial_loss_roi_source_width", type=int, default=640, help="[OPTIONAL] Width of the source frame used to define the ROI polygon.")
+    group.add_argument("--spatial_loss_roi_source_height", type=int, default=480, help="[OPTIONAL] Height of the source frame used to define the ROI polygon.")
+    group.add_argument(
+        "--spatial_loss_roi_polygon",
+        type=str,
+        default="",
+        help="[OPTIONAL] Semicolon-separated x,y polygon vertices in source-frame coordinates.",
+    )
     return parser
 
 

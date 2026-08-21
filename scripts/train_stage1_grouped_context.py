@@ -365,7 +365,7 @@ class GroupedContextStage1Module(WanTrainingModule):
         if "first_frame_latents" in inputs_shared:
             noise_pred = noise_pred[:, :, 1:]
             training_target = training_target[:, :, 1:]
-        loss = F.mse_loss(noise_pred.float(), training_target.float())
+        loss = self.spatial_flow_mse(noise_pred, training_target)
         return loss * self.pipe.scheduler.training_weight(timestep)
 
     def _self_correction_flow_loss(
@@ -428,7 +428,7 @@ class GroupedContextStage1Module(WanTrainingModule):
         if "first_frame_latents" in inputs_shared:
             noise_pred = noise_pred[:, :, 1:]
             training_target = training_target[:, :, 1:]
-        loss = F.mse_loss(noise_pred.float(), training_target.float())
+        loss = self.spatial_flow_mse(noise_pred, training_target)
         loss = loss * self.pipe.scheduler.training_weight(timestep)
         self.last_self_correction_metrics = {
             "sigma": float(sigma.detach().float().cpu()),
@@ -695,6 +695,7 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_new_context_lr", type=float, default=None)
     group.add_argument("--grouped_context_lr_schedule", type=str, default=None)
     group.add_argument("--grouped_context_model_lr_warmup_steps", type=int, default=0)
+    group.add_argument("--grouped_context_context_lr_warmup_steps", type=int, default=0)
     group.add_argument("--grouped_context_model_phase_warmup_steps", type=int, default=0)
     group.add_argument(
         "--grouped_context_reset_model_optimizer_state_on_phase_start",
@@ -1336,6 +1337,82 @@ def _sample_update_indices(
     allowed_friction_values: list[float] | None = None,
 ) -> list[int]:
     mode = str(getattr(args, "grouped_context_sampling_mode", "common_actions") or "common_actions").strip().lower()
+    if mode in ("two_positions_three_actions", "positions_then_actions"):
+        if int(actions_per_update) != 6:
+            raise ValueError(
+                "two_positions_three_actions requires grouped_context_actions_per_update=6."
+            )
+        expected = int(friction_groups) * 6
+        if int(microbatches_per_update) != expected:
+            raise ValueError(
+                "two_positions_three_actions requires an exact logical batch: "
+                f"microbatches_per_update={microbatches_per_update}, expected={expected}."
+            )
+        rng = random.Random(
+            int(args.seed)
+            + int(update_idx) * max(1, int(accelerator.num_processes))
+            + int(accelerator.process_index)
+        )
+        allowed_values = None
+        if allowed_friction_values is not None:
+            allowed_values = [float(value) for value in allowed_friction_values]
+
+        def is_allowed(value: float) -> bool:
+            if allowed_values is None:
+                return True
+            return any(abs(float(value) - allowed) <= 1e-5 for allowed in allowed_values)
+
+        structured_by_group = {}
+        for value, by_action in grouped_indices.items():
+            value = float(value)
+            if not is_allowed(value):
+                continue
+            by_position = {}
+            for action_candidates in by_action.values():
+                for index in action_candidates:
+                    row = rows[index]
+                    position = int(row["sampling_position_id"])
+                    action = int(row["sampling_action_id"])
+                    kind = str(row["sampling_kind"])
+                    by_position.setdefault(position, {}).setdefault(action, {}).setdefault(
+                        kind, []
+                    ).append(index)
+            eligible_positions = {
+                position: by_position_action
+                for position, by_position_action in by_position.items()
+                if sum(
+                    bool(by_kind.get("phase1")) and bool(by_kind.get("general"))
+                    for by_kind in by_position_action.values()
+                ) >= 3
+            }
+            if len(eligible_positions) >= 2:
+                structured_by_group[value] = eligible_positions
+
+        eligible_groups = sorted(structured_by_group)
+        if len(eligible_groups) < int(friction_groups):
+            raise ValueError(
+                f"Need {friction_groups} groups with at least two eligible positions; "
+                f"got {len(eligible_groups)}."
+            )
+        selected_groups = rng.sample(eligible_groups, int(friction_groups))
+        sample_indices = []
+        for value in selected_groups:
+            by_position = structured_by_group[value]
+            selected_positions = rng.sample(sorted(by_position), 2)
+            for position in selected_positions:
+                by_action = by_position[position]
+                eligible_actions = [
+                    action
+                    for action, by_kind in by_action.items()
+                    if by_kind.get("phase1") and by_kind.get("general")
+                ]
+                selected_actions = rng.sample(sorted(eligible_actions), 3)
+                focused_actions = set(rng.sample(selected_actions, 2))
+                for action in selected_actions:
+                    kind = "phase1" if action in focused_actions else "general"
+                    sample_indices.append(rng.choice(by_action[action][kind]))
+        rng.shuffle(sample_indices)
+        return sample_indices
     if mode in ("balanced_repeated_groups", "balanced_group_slots"):
         rng = random.Random(
             int(args.seed)
@@ -2045,10 +2122,25 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
     )
     variant = str(getattr(args, "grouped_context_curriculum_variant", "default") or "default").strip().lower()
     two_new_context = variant in ("two_new_context", "high_model_mid", "high_model_mid_new")
-    joint_model_context = variant in ("joint", "joint_model_context", "joint_model_latent")
+    joint_model_context = variant in (
+        "joint",
+        "joint_model_context",
+        "joint_model_latent",
+        "all_active_joint",
+        "no_curriculum_joint",
+    )
+    new_context_then_joint = variant in (
+        "new_context_then_joint",
+        "new_c_then_joint",
+        "new_context_200_joint_800",
+    )
     joint_steps = int(getattr(args, "grouped_context_curriculum_joint_steps", 0) or 0)
-    if joint_model_context and joint_steps <= 0:
+    if (joint_model_context or new_context_then_joint) and joint_steps <= 0:
         raise ValueError("joint curriculum requires grouped_context_curriculum_joint_steps > 0.")
+    if new_context_then_joint and new_context_steps <= 0:
+        raise ValueError(
+            "new_context_then_joint requires grouped_context_curriculum_new_context_steps > 0."
+        )
     total_groups = min(total_groups, len(group_order))
 
     if initial_groups <= 0 or add_groups <= 0:
@@ -2095,7 +2187,12 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
             new_end = min(selected_count + add_groups, total_groups)
         new_indices = group_order[new_start:new_end]
         active_indices = group_order[:new_end]
-        if joint_model_context:
+        if new_context_then_joint:
+            phases = [
+                ("new_context", new_context_steps, new_indices, new_indices),
+                ("joint", joint_steps, active_indices, active_indices),
+            ]
+        elif joint_model_context:
             phases = [
                 ("joint", joint_steps, active_indices, active_indices),
             ]
@@ -2149,7 +2246,7 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
         selected_count = new_end
 
     active = group_order[:total_groups]
-    if joint_model_context:
+    if joint_model_context or new_context_then_joint:
         cycle_offset = max(0, current_step - offset - 1)
         cycle_index = cycle_offset // joint_steps
         phase_start = offset + cycle_index * joint_steps + 1
@@ -2515,6 +2612,13 @@ def _apply_curriculum_lrs(
         and int(step) >= post_context_start
     ):
         context_lr = float(post_context_lr)
+    context_warmup_steps = int(
+        getattr(args, "grouped_context_context_lr_warmup_steps", 0) or 0
+    )
+    if context_warmup_steps > 0:
+        context_warmup = min(float(step) / float(context_warmup_steps), 1.0)
+        context_lr *= context_warmup
+        background_context_lr *= context_warmup
     if phase == "joint":
         pass
     elif phase in ("new_context", "new_context_mid", "all_context", "context"):
@@ -4209,7 +4313,27 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
     groups_after_initial = max(0, min(total_groups, len(friction_values)) - int(args.grouped_context_curriculum_initial_groups))
     rounds = 1 + (groups_after_initial + max(add_groups, 1) - 1) // max(add_groups, 1)
     variant = str(getattr(args, "grouped_context_curriculum_variant", "default") or "default").strip().lower()
-    if variant in ("joint", "joint_model_context", "joint_model_latent"):
+    if variant in (
+        "new_context_then_joint",
+        "new_c_then_joint",
+        "new_context_200_joint_800",
+    ):
+        joint_steps = int(
+            getattr(args, "grouped_context_curriculum_joint_steps", 0) or 0
+        )
+        new_context_steps = int(args.grouped_context_curriculum_new_context_steps)
+        if joint_steps <= 0 or new_context_steps <= 0:
+            raise ValueError(
+                "new_context_then_joint requires positive new-context and joint steps."
+            )
+        curriculum_cycle_steps = new_context_steps + joint_steps
+    elif variant in (
+        "joint",
+        "joint_model_context",
+        "joint_model_latent",
+        "all_active_joint",
+        "no_curriculum_joint",
+    ):
         curriculum_cycle_steps = int(
             getattr(args, "grouped_context_curriculum_joint_steps", 0) or 0
         )

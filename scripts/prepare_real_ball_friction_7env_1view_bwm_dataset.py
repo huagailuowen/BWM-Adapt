@@ -35,6 +35,13 @@ PREFIX_WINDOWS_PER_EPISODE = 1
 IMPACT_WINDOWS_PER_EPISODE = 9
 PRE_RIGHT_CONTEXT_FRAMES = 8
 PROMPT = "predict the robot swing, ball impact, and subsequent ball motion"
+ACCEPTED_DETECTION_STATUSES = frozenset(
+    {
+        "unique_match",
+        "model_fit_unique_match",
+        "model_fit_speed_out_of_tolerance",
+    }
+)
 
 
 def read_jsonl(path: Path) -> list[dict]:
@@ -100,10 +107,12 @@ def build_rows(source_root: Path) -> tuple[list[dict], dict[str, dict]]:
             episode_index = int(annotation["episode_index"])
             if episode_index not in episodes:
                 raise ValueError(f"{environment}: missing episode metadata {episode_index}.")
-            if annotation.get("detection_status") != "unique_match":
+            detection_status = annotation.get("detection_status")
+            if detection_status not in ACCEPTED_DETECTION_STATUSES:
                 raise ValueError(
-                    f"{environment} episode {episode_index}: non-unique skill annotation "
-                    f"{annotation.get('detection_status')!r}."
+                    f"{environment} episode {episode_index}: unsupported skill annotation "
+                    f"status {detection_status!r}; expected one of "
+                    f"{sorted(ACCEPTED_DETECTION_STATUSES)}."
                 )
 
             episode = episodes[episode_index]
