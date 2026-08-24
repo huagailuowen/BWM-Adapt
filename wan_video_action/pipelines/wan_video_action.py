@@ -357,6 +357,7 @@ def build_wan_video_action_pipeline(
     physical_context_init_std: float = 0.0,
     physical_context_init_value: float = 0.0,
     physical_context_input_norm: str = "layernorm",
+    physical_context_projection: str = "mlp",
     physical_context_temporal_position: str = "none",
     background_context_enabled: bool = False,
     background_context_dim: int = 32,
@@ -385,6 +386,7 @@ def build_wan_video_action_pipeline(
     physical_context_init_std = float(_resolve_arg(args, "physical_context_init_std", physical_context_init_std))
     physical_context_init_value = float(_resolve_arg(args, "physical_context_init_value", physical_context_init_value))
     physical_context_input_norm = str(_resolve_arg(args, "physical_context_input_norm", physical_context_input_norm)).lower()
+    physical_context_projection = str(_resolve_arg(args, "physical_context_projection", physical_context_projection)).lower()
     physical_context_temporal_position = str(_resolve_arg(args, "physical_context_temporal_position", physical_context_temporal_position)).lower()
     background_context_enabled = bool(_resolve_arg(args, "background_context_enabled", background_context_enabled))
     background_context_dim = int(_resolve_arg(args, "background_context_dim", background_context_dim))
@@ -444,6 +446,7 @@ def build_wan_video_action_pipeline(
             init_std=physical_context_init_std,
             init_value=physical_context_init_value,
             input_norm=physical_context_input_norm,
+            projection=physical_context_projection,
             temporal_position=physical_context_temporal_position,
         ).to(dtype=pipe.torch_dtype, device=pipe.device)
         pipe.physical_context_encoder.eval()

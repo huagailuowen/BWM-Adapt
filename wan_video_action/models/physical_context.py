@@ -35,6 +35,7 @@ class PhysicalContextConfig:
     init_std: float = 0.0
     init_value: float = 0.0
     input_norm: str = "layernorm"
+    projection: str = "mlp"
     temporal_position: str = "none"
 
 
@@ -71,6 +72,7 @@ class PhysicalContextEncoder(nn.Module):
         init_std: float = 0.0,
         init_value: float = 0.0,
         input_norm: str = "layernorm",
+        projection: str = "mlp",
         temporal_position: str = "none",
     ):
         super().__init__()
@@ -83,6 +85,14 @@ class PhysicalContextEncoder(nn.Module):
         input_norm = str(input_norm).lower()
         if input_norm not in {"layernorm", "none"}:
             raise ValueError(f"input_norm must be layernorm or none, got {input_norm!r}.")
+        projection = str(projection).lower()
+        if projection not in {"mlp", "direct"}:
+            raise ValueError(f"projection must be mlp or direct, got {projection!r}.")
+        if projection == "direct" and int(context_dim) != int(model_dim):
+            raise ValueError(
+                "Direct physical-context projection requires context_dim == model_dim, "
+                f"got context_dim={context_dim}, model_dim={model_dim}."
+            )
         temporal_position = str(temporal_position).lower()
         if temporal_position not in {"none", "learned"}:
             raise ValueError(f"temporal_position must be none or learned, got {temporal_position!r}.")
@@ -96,14 +106,21 @@ class PhysicalContextEncoder(nn.Module):
             init_std=float(init_std),
             init_value=float(init_value),
             input_norm=input_norm,
+            projection=projection,
             temporal_position=temporal_position,
         )
         self.default_context = nn.Parameter(torch.full((num_tokens, context_dim), float(init_value)))
         if init_std > 0:
             nn.init.normal_(self.default_context, mean=float(init_value), std=init_std)
 
-        self.token_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim, input_norm=input_norm)
-        self.mod_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim, input_norm=input_norm)
+        if projection == "direct":
+            # The table entry is already one model-width environment token.
+            # Identity paths isolate the effect of removing the shared MLP.
+            self.token_projector = nn.Identity()
+            self.mod_projector = nn.Identity()
+        else:
+            self.token_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim, input_norm=input_norm)
+            self.mod_projector = BiasFreeMLP(context_dim, hidden_dim, model_dim, input_norm=input_norm)
         if temporal_position == "learned" and num_tokens > 1:
             self.token_position_embedding = nn.Parameter(torch.zeros(num_tokens, model_dim))
             self.mod_position_embedding = nn.Parameter(torch.zeros(num_tokens, model_dim))

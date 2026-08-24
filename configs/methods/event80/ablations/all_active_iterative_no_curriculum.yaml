@@ -1,0 +1,36 @@
+schema_version: 1
+name: "Event80 all-active iterative training without curriculum"
+slug: "all_active_iterative_no_curriculum"
+family: "ablation"
+status: "ready_for_training"
+
+method:
+  runner: "wan_video_action.methods.ablations.joint_model_latent"
+  environment_code:
+    scope: "per_environment"
+    dimension: 32
+    initialization: "uniform_0_1"
+    learning_rate: 0.03
+  optimization:
+    curriculum: false
+    all_training_environments_active_at_step_1: true
+    active_environment_count: 35
+    joint_model_latent_updates: false
+    alternating_frozen_phases: true
+    phase_updates: 200
+    phase_order: ["model_only", "latent_only"]
+    repeat_until_walltime: true
+
+training:
+  train_config: "configs/train/train_push_box_event80_all_active35_iterative_c32_2gpu_24h.yaml"
+  environment_manifest: "configs/methods/event80/manifests/original_random_c32_active35.json"
+  gpus: 2
+  walltime_hours: 24
+  model_learning_rate: 1.0e-5
+  latent_learning_rate: 0.03
+  checkpoint_every_updates: 200
+  checkpoint_keep_last: 2
+
+comparison:
+  control: "all_active_joint_no_curriculum"
+  isolated_factor: "alternating frozen model/latent optimization"

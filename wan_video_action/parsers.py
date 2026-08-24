@@ -160,6 +160,7 @@ def add_physical_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--physical_context_init_std", type=float, default=0.0, help="[OPTIONAL] Std for non-zero default C initialization.")
     group.add_argument("--physical_context_init_value", type=float, default=0.0, help="[OPTIONAL] Mean value for default latent C initialization.")
     group.add_argument("--physical_context_input_norm", type=str, default="layernorm", choices=["layernorm", "none"], help="[TUNABLE] Normalization before projecting latent C.")
+    group.add_argument("--physical_context_projection", type=str, default="mlp", choices=["mlp", "direct"], help="[ABLATION] Project C with shared MLPs or use a model-width environment token directly.")
     group.add_argument("--physical_context_temporal_position", type=str, default="none", choices=["none", "learned"], help="[TUNABLE] Temporal position embedding for per-time latent C tokens.")
     group.add_argument("--background_context_enabled", action="store_true", default=False, help="[KEY] Add a separately encoded context shared by all friction groups in one visual background.")
     group.add_argument("--background_context_dim", type=int, default=32, help="[TUNABLE] Latent background-context dimension.")

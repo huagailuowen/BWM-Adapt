@@ -2122,6 +2122,11 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
     )
     variant = str(getattr(args, "grouped_context_curriculum_variant", "default") or "default").strip().lower()
     two_new_context = variant in ("two_new_context", "high_model_mid", "high_model_mid_new")
+    original_plus_tail = variant in (
+        "original_1000_plus_c_model",
+        "default_plus_tail_c_model",
+        "new_all_model_all_model_all_model",
+    )
     joint_model_context = variant in (
         "joint",
         "joint_model_context",
@@ -2174,6 +2179,40 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
             "new_count": 0,
         }
 
+    # All-active no-curriculum ablations use the existing alternating controls
+    # to switch strictly between latent-only and model-only blocks.  This branch
+    # is deliberately gated on every environment being active from step one, so
+    # legacy progressive curricula retain their original phase construction.
+    alternating_interval = int(
+        getattr(args, "grouped_context_alternating_interval", 0) or 0
+    )
+    if alternating_interval > 0 and initial_groups >= total_groups:
+        alternating_start = str(
+            getattr(args, "grouped_context_alternating_start", "model") or "model"
+        ).strip().lower()
+        if alternating_start not in ("model", "context", "all_context", "latent"):
+            raise ValueError(
+                "grouped_context_alternating_start must be model or context; "
+                f"got {alternating_start!r}."
+            )
+        alternating_offset = initial_steps + assignment_model_steps
+        phase_index = (current_step - alternating_offset - 1) // alternating_interval
+        context_first = alternating_start in ("context", "all_context", "latent")
+        context_phase = (phase_index % 2 == 0) == context_first
+        phase = "all_context" if context_phase else "model"
+        active = group_order[:total_groups]
+        phase_start = alternating_offset + phase_index * alternating_interval + 1
+        return {
+            "round": 1 + int(phase_index),
+            "phase": phase,
+            "sample_group_indices": active,
+            "train_context_indices": active if context_phase else [],
+            "phase_start": phase_start,
+            "phase_end": phase_start + alternating_interval - 1,
+            "active_count": len(active),
+            "new_count": 0,
+        }
+
     offset = initial_steps + assignment_model_steps
     selected_count = 0
     round_id = 0
@@ -2195,6 +2234,18 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
         elif joint_model_context:
             phases = [
                 ("joint", joint_steps, active_indices, active_indices),
+            ]
+        elif original_plus_tail:
+            # Preserve the original 1000-step curriculum exactly, then append
+            # one additional all-context/model refinement pair (200 + 200).
+            phases = [
+                ("new_context", new_context_steps, new_indices, new_indices),
+                ("all_context", all_context_steps, active_indices, active_indices),
+                ("model", model_steps, active_indices, []),
+                ("all_context", all_context_steps, active_indices, active_indices),
+                ("model", model_steps, active_indices, []),
+                ("all_context", all_context_steps, active_indices, active_indices),
+                ("model", model_steps, active_indices, []),
             ]
         elif two_new_context:
             phases = [
@@ -4341,6 +4392,16 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
             raise ValueError(
                 "joint curriculum requires grouped_context_curriculum_joint_steps > 0."
             )
+    elif variant in (
+        "original_1000_plus_c_model",
+        "default_plus_tail_c_model",
+        "new_all_model_all_model_all_model",
+    ):
+        curriculum_cycle_steps = (
+            int(args.grouped_context_curriculum_new_context_steps)
+            + 3 * int(args.grouped_context_curriculum_all_context_steps)
+            + 3 * int(args.grouped_context_curriculum_model_steps)
+        )
     elif variant in ("two_new_context", "high_model_mid", "high_model_mid_new"):
         curriculum_cycle_steps = (
             int(args.grouped_context_curriculum_new_context_steps)
@@ -4664,7 +4725,8 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
             ).strip().lower()
             cycle_offset = initial_steps + assignment_model_steps
             is_cycle_end = (
-                step > cycle_offset
+                int(curriculum_cycle_steps) > 0
+                and step > cycle_offset
                 and (step - cycle_offset) % int(curriculum_cycle_steps) == 0
             )
             should_checkpoint_model_phase = phase in ("model", "joint") and (

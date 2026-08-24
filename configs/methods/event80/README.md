@@ -61,13 +61,16 @@ capacity while preserving every other controlled variable:
 | `ours_context_dim_4` | 4 | independent `Uniform(0, 1)` per environment | 48 H200 GPU-hours |
 | `ours_random_c32` | 32 | independent `Uniform(0, 1)` per environment | 48 H200 GPU-hours |
 | `ours_context_dim_128` | 128 | independent `Uniform(0, 1)` per environment | 48 H200 GPU-hours |
-| `ours_context_dim_1024` | 1024 | independent `Uniform(0, 1)` per environment | 48 H200 GPU-hours |
+| `ours_direct_environment_token` | 3072 (Wan2.2-TI2V-5B width) | independent `N(0, 0.02)` per environment | 48 H200 GPU-hours |
 
 All four runs use the same Event80 windows, grouped batch, progressive stream,
 alternating schedule, Wan initialization, optimizer settings, support/query
-protocol, and evaluation manifest. Only `physical_context_dim` changes. The
-three ablation configs reuse the reference training YAML through explicit CLI
-overrides and write to separate checkpoint directories.
+protocol, and evaluation manifest. The 4-D and 128-D runs change only
+`physical_context_dim` relative to the projected 32-D reference. The direct-token
+run instead uses `physical_context_dim=3072` and
+`physical_context_projection=direct`, removing the projection MLP while keeping
+the remaining controlled variables fixed. The three ablations are planned and
+have not started training; they write to separate checkpoint directories.
 
 ## Evaluation
 

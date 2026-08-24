@@ -1,0 +1,34 @@
+name: "All-active iterative training without curriculum"
+slug: "all_active_iterative_no_curriculum"
+parent: "iterative_environment_code_training"
+status: "ready"
+
+hypothesis: >-
+  Alternating frozen model and latent phases may be beneficial even when all
+  training environments are active from the beginning and no progressive
+  environment curriculum is used.
+
+comparison:
+  primary_control: "all_active_joint_no_curriculum"
+  fixed:
+    - "Event80 training pool: the same 35 environments"
+    - "Wan initialization and trainable model modules"
+    - "32-D per-environment latent initialized from U(0, 1)"
+    - "model LR 1e-5 and latent LR 0.03"
+    - "two GPUs and a 24-hour wall-clock budget"
+  changed:
+    - "model-only 200 updates, then latent-only 200 updates, repeated"
+
+protocol:
+  curriculum: false
+  active_environments_at_step_1: 35
+  phase_order:
+    - "model_only: 200"
+    - "latent_only: 200"
+  repeat_until_walltime: true
+  walltime_hours: 24
+  checkpoint_every_updates: 200
+  checkpoint_keep_last: 2
+  save_context_table_with_checkpoint: true
+
+train_config: "configs/train/train_push_box_event80_all_active35_iterative_c32_2gpu_24h.yaml"

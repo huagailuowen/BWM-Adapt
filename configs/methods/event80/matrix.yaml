@@ -29,12 +29,13 @@ experiments:
   ablations:
     - ablations/context_dim_4.yaml
     - ablations/context_dim_128.yaml
-    - ablations/context_dim_1024.yaml
+    - ablations/direct_environment_token.yaml
     - ablations/shuffled_environment_grouping.yaml
     - ablations/per_trajectory_z.yaml
     - ablations/joint_model_latent_training.yaml
     - ablations/new_context_200_then_joint_800.yaml
     - ablations/all_active_joint_no_curriculum.yaml
+    - ablations/all_active_iterative_no_curriculum.yaml
 
 evaluation:
   global_config: ../../evaluation/event80/global.yaml

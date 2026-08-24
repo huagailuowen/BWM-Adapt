@@ -24,7 +24,7 @@ This file is the repository-local mirror of the authoritative ablation plan in t
 | Joint Model-Latent Training | Whether latent-first alternating optimization is necessary. | Assimilation-consolidation claim |
 | New-Code Warm-Up + Joint Training | Whether pure joint training fails because newly introduced codes receive no isolated alignment phase. Each wave uses 200 new-code-only steps followed by 800 joint steps. | New-environment code alignment claim |
 | All-Active Joint Training (No Curriculum) | Whether progressive environment activation is necessary when all 35 training environments and their codes are optimized jointly from step 1. | Curriculum-learning claim |
-| Environment-Code Dimension (`C=4/128/1024`, reference `C=32`) | Whether performance comes from environment-level structure or merely latent capacity. | Representation-capacity and bottleneck claim |
+| Environment-Code Representation (`C=4/128`, reference `C=32`, plus a 3072-D direct token) | Whether performance comes from a compact environment-level representation, latent capacity, or the projection MLP. | Representation-capacity, bottleneck, and projection claim |
 
 ## Evaluation
 
@@ -63,7 +63,7 @@ This is an evaluation protocol, not a model baseline. Evaluate the same held-out
 
 #### Latent and compute controls
 
-- Use one 32-dimensional environment code for all code-based methods unless code dimension is the variable under ablation. The dimension ablation evaluates `C in {4, 32, 128, 1024}`.
+- Use one 32-dimensional environment code for all code-based methods unless the environment representation is the ablation variable. The projected-code comparison evaluates `C in {4, 32, 128}`. A separate direct-token run replaces the projection MLP with one model-width 3072-D environment token.
 - The primary training comparison uses two H200 GPUs for 24 hours per independently trained method. It does not force equal optimizer steps, clip exposure, or FLOPs.
 - For every gradient-based method, report trainable parameter count, forward/backward evaluations, clips seen, actual GPU-hours, GPU utilization, wall-clock adaptation time, peak GPU memory, and performance as a function of adaptation compute.
 
@@ -320,3 +320,24 @@ Save checkpoints after 25%, 50%, 75%, and 100% of training environments have bee
 At the same checkpoints, evaluate a fixed panel of early training environments using both their saved training-time `Z` and a freshly inferred `Z`. Report average retention and the drop from each environment's historical best.
 
 Add a compute-matched repeated-small-set control that performs the same number of model updates and sees the same number of clips while repeatedly sampling only the initial environment subset. Compare it with progressive-environment training to separate gains from broader physical experience from gains caused only by longer training.
+
+## Locked Event80 latent-representation ablations
+
+These runs isolate latent capacity and parameterization while retaining the successful
+Event80 random-code curriculum, grouped sampler, iterative optimization schedule,
+Wan initialization, and 24-hour wall-clock budget. Every run uses two GPUs.
+
+| Run | Environment representation | Shared projector | Training |
+|---|---|---|---|
+| Context dimension 4 | One learned 4-D code per active environment | Existing bias-free MLPs to Wan width | Two GPUs; iterative model/code phases |
+| Context dimension 128 | One learned 128-D code per active environment | Existing bias-free MLPs to Wan width | Two GPUs; iterative model/code phases |
+| Direct environment token | One learned 3072-D Wan2.2-TI2V-5B-width token per active environment | None; identity token and modulation paths | Two GPUs; iterative model/code phases |
+
+These three ablations are planned and have not started training. Earlier queued
+jobs were cancelled before allocation and do not count as experimental runs.
+
+The direct-token run is initialized with N(0, 0.02) in token space and uses the
+same curriculum and optimizer-phase ordering as the MLP variants. It changes only
+the environment representation: the table entry is injected directly into both
+existing physical-context conditioning paths. The established 32-D random-code run
+remains the control and is not replaced.

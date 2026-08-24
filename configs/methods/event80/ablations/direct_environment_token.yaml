@@ -1,0 +1,34 @@
+extends: ../ours/random_c32.yaml
+
+experiment:
+  id: ours_direct_environment_token
+  role: ablation
+  ablation_axis: environment_code_parameterization
+
+method:
+  latent_dim: 3072
+  initialization: normal_0_0p02
+  projection: direct
+
+source:
+  legacy_train_config: configs/train/train_push_box_event80_iterative_direct_token3072_2gpu_24h.yaml
+
+execution:
+  training:
+    mode: independent
+    ready: true
+    blocked_by: null
+  inference:
+    ready: false
+    blocked_by: completed_checkpoint_and_frozen_query_manifest
+
+runtime:
+  implementation_status: grouped_c_training_ready_inference_binding_pending
+  train:
+    extra_args:
+      - --physical_context_dim
+      - "3072"
+      - --physical_context_projection
+      - direct
+      - --output_path
+      - outputs/method_benchmarks/pushbox_friction_event80/ours_direct_environment_token/seed_20260708/checkpoints
