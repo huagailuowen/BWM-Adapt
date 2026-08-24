@@ -37,9 +37,10 @@ execution:
     ready: true
     runner: scripts/methods/train_history_conditioned_event80.py
   inference:
-    ready: false
-    blocked_by: flamingo_history_inference_runner
+    ready: true
+    runner: scripts/methods/infer_history_flamingo_event80.py
+    blocked_by: null
 
 runtime:
-  implementation_status: training_ready
+  implementation_status: training_and_inference_ready
   protocol_runner: wan_video_action.methods.baselines.history_conditioned

@@ -752,13 +752,23 @@ def _spatial_flow_mse(prediction: torch.Tensor, target: torch.Tensor, args) -> t
     if roi_weight < 1.0:
         raise ValueError("spatial_loss_roi_weight must be >= 1 for fixed_polygon mode.")
 
+    try:
+        from scripts.train import (
+            _build_letterboxed_polygon_mask,
+            _parse_spatial_loss_polygon,
+            _parse_spatial_loss_view_indices,
+        )
+    except ModuleNotFoundError:
+        from train import (
+            _build_letterboxed_polygon_mask,
+            _parse_spatial_loss_polygon,
+            _parse_spatial_loss_view_indices,
+        )
+    roi_view_indices = _parse_spatial_loss_view_indices(
+        getattr(args, "spatial_loss_roi_view_indices", "all")
+    )
     roi_mask = getattr(args, "_stage2_spatial_loss_roi_mask", None)
     if roi_mask is None:
-        try:
-            from scripts.train import _build_letterboxed_polygon_mask, _parse_spatial_loss_polygon
-        except ModuleNotFoundError:
-            from train import _build_letterboxed_polygon_mask, _parse_spatial_loss_polygon
-
         polygon = _parse_spatial_loss_polygon(
             getattr(args, "spatial_loss_roi_polygon", "")
         )
@@ -770,9 +780,15 @@ def _spatial_flow_mse(prediction: torch.Tensor, target: torch.Tensor, args) -> t
             int(getattr(args, "height", 0) or 0),
         )
         args._stage2_spatial_loss_roi_mask = roi_mask
+        roi_views = (
+            "all"
+            if roi_view_indices is None
+            else ",".join(str(index) for index in roi_view_indices)
+        )
         print(
             f"[stage2_spatial_loss] mode={mode} roi_weight={roi_weight:g} "
-            f"roi_area_fraction={float(roi_mask.mean()):.6f}",
+            f"roi_views={roi_views} "
+            f"roi_area_fraction_per_selected_view={float(roi_mask.mean()):.6f}",
             flush=True,
         )
 
@@ -782,6 +798,30 @@ def _spatial_flow_mse(prediction: torch.Tensor, target: torch.Tensor, args) -> t
         size=error.shape[-2:],
         mode="area",
     ).unsqueeze(2)
+    if roi_view_indices is not None:
+        if error.ndim != 5:
+            raise ValueError(
+                "View-specific Stage2 spatial loss expects prediction shaped "
+                f"(V,C,T,H,W), got {tuple(error.shape)}."
+            )
+        invalid = [
+            index
+            for index in roi_view_indices
+            if index >= int(error.shape[0])
+        ]
+        if invalid:
+            raise IndexError(
+                f"spatial_loss_roi_view_indices={invalid} outside "
+                f"num_views={error.shape[0]}."
+            )
+        per_view_mask = torch.zeros(
+            (int(error.shape[0]), 1, 1, int(error.shape[-2]), int(error.shape[-1])),
+            device=error.device,
+            dtype=error.dtype,
+        )
+        for view_index in roi_view_indices:
+            per_view_mask[view_index:view_index + 1] = resized_roi_mask
+        resized_roi_mask = per_view_mask
     spatial_weight = 1.0 + (roi_weight - 1.0) * resized_roi_mask
     spatial_weight = spatial_weight / spatial_weight.mean().clamp_min(1e-8)
     return (error * spatial_weight).mean()

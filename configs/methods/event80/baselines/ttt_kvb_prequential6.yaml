@@ -54,10 +54,11 @@ execution:
     ready: true
     blocked_by: null
   inference:
-    ready: false
-    blocked_by: wan_support_query_batch_binding
+    ready: true
+    runner: scripts/methods/infer_ttt_kvb_event80.py
+    blocked_by: null
 
 runtime:
-  implementation_status: practical_prequential_training_ready
+  implementation_status: practical_prequential_training_and_inference_ready
   train_entrypoint: scripts/methods/train_ttt_kvb_event80.py
   legacy_train_config: configs/train/train_push_box_event80_ttt_kvb_prequential6_2gpu_24h.yaml
