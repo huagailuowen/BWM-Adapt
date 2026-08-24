@@ -16,6 +16,7 @@ Last updated: 2026-08-21
 | Z 如何初始化 | PushBox `88822` shared 对比 `88823` independent random | Independent random initialization 更容易打破对称性，形成可辨识 latent geometry，并改善 Stage2 迁移 | 新实验默认采用每个环境独立随机初始化 |
 | Batch 应如何组织 | Joint mass-friction 失败版与 `91267/step7172` | 仅增大环境数不够；一次更新中让同一环境出现更多不同 actions，能给共享 Z 更一致、更充分的物理监督 | Batch shape 应同时报告 environment 数和每环境 action 数，不能只报告总 batch |
 | Chunk 如何选择 | LightSwitch 长窗口失败版对比 `95498` event-centered 短窗口 | 稀疏因果事件中，大量无关帧会稀释监督；集中覆盖关键 interaction 的 chunk 更容易学习 | 关键 chunk 选择可能是必要条件；需要补同配置 30/120-frame 严格对照 |
+| Flow-matching 空间监督如何分配 | Real Ball Friction full-frame objective 对比 normalized ROI 6x objective | 对球、trough 和接触运动所在的关键区域提高 flow-matching loss 权重后，模型的有效关注明显集中到动力学区域，生成质量大幅提升；学习得到的 Z 在 PCA 中也呈现出更强、更有规律的组织结构 | 对物理事件占画面比例较小的任务，应优先使用 mean-normalized key-region weighting；还需用固定 seed、预算和样本的定量消融分离 ROI weighting 的独立贡献 |
 
 ### 2. 代表实验结果
 
@@ -37,7 +38,7 @@ Last updated: 2026-08-21
 
 | 实验 | 代表训练/状态 | 环境与输入 | 方法 | 当前获得的信息 | 结论边界 |
 |---|---|---|---|---|---|
-| Real Ball Friction | Stage1 `101378/step5500`；正式评测使用 model/Z `step5500` | 7 个真实 ball-friction environments；每环境抽取 6 个不同 impact/skill levels；60 个真实帧 tail-pad 为 61-frame 输入；14D joint-state-action | Independent Z32；4 GPUs；每 rank `3 env x 6 skill`；1000-step-style curriculum；trough ROI 使用归一化 6x loss weight；Stage2 context-only adaptation | 完成 42 组 GT/Stage1/Stage2 生成、7-environment x 6-level grid、Z trajectory；表明真实接触运动可由共享模型与 environment Z 联合建模 | 正式生成评测已完成；当前 Stage2 仍以 query chunk 自身作为 support，尚未证明独立 showcase 到 query 的跨 episode adaptation 或闭环控制 |
+| Real Ball Friction | Stage1 `101378/step5500`；正式评测使用 model/Z `step5500` | 7 个真实 ball-friction environments；每环境抽取 6 个不同 impact/skill levels；60 个真实帧 tail-pad 为 61-frame 输入；14D joint-state-action | Independent Z32；4 GPUs；每 rank `3 env x 6 skill`；1000-step-style curriculum；trough ROI 使用归一化 6x loss weight；Stage2 context-only adaptation | 完成 42 组 GT/Stage1/Stage2 生成、7-environment x 6-level grid 和 Z trajectory；关键区域加权使模型关注集中到球-槽接触动力学，生成效果相对 full-frame objective 大幅提升，PCA latent geometry 呈现出很强的规律性 | 正式生成评测已完成；当前 Stage2 仍以 query chunk 自身作为 support，尚未证明独立 showcase 到 query 的跨 episode adaptation 或闭环控制；ROI 收益仍需统一指标的严格消融 |
 | Real Stick Balance | Stage1 `98364/step5500`；eval `98738` | 8 个真实左右配重环境；每环境 6 个 episode；raw 120 frames、stride 3 得到 41-frame 输入；14D joint-state-action | Independent Z32；4 GPUs；每 rank `3 env x 6 action`；80% 采样关键 lift windows；Stage1 model/Z 交替训练；Stage2 context-only adaptation | 完成 48 组 GT/Stage1/Stage2、8 个 environment grids、training/inference Z 联合 PCA；不同配重环境具有可分析的 latent structure | 正式生成与 latent 评测已完成；当前 Stage2 仍为 support=query，后续需补 disjoint support/query 和横杆倾角定量指标 |
 
 ### 4. 尚未形成主结果的方向
@@ -423,7 +424,8 @@ Last updated: 2026-08-21
 | 项目 | 记录 |
 |---|---|
 | 已完成 | 7 个真实 ball-friction environments 的数据准备、共享 world-model/Z 训练、安全配对 checkpoint、42-case Stage1/Stage2 生成与 environment-level grid 已全部跑通 |
-| 主要观察 | ROI-weighted objective 能把监督集中在球和 trough 的接触运动区域；共享模型配合 environment Z 能生成不同真实接触条件下的运动差异 |
+| 主要观察 | 相比将 flow-matching loss 均匀分配给整幅画面，mean-normalized ROI 6x objective 能使模型的有效关注高度集中在球、trough 与接触运动区域，显著减少背景对优化预算的稀释；生成中的运动一致性与可辨识物理差异均大幅改善 |
+| Latent geometry | ROI-weighted 版本学到的 environment Z 在 PCA 图谱中展现出极强的规律性，说明将监督集中到因果动力学区域不仅改善像素生成，也明显改善 environment representation 的可组织性与可分析性 |
 | 结论边界 | 当前生成评测是正式结果，但 Stage2 使用 support=query；不能据此宣称独立 showcase 到 query 的跨 episode adaptation、未见 ball/friction OOD 泛化或真实闭环控制 |
 | 下一步 | 固定同一组 7 environments，按 episode/impact level 建立严格 disjoint support/query，并加入球重心轨迹 ADE/FDE 与落点/停止距离指标 |
 
