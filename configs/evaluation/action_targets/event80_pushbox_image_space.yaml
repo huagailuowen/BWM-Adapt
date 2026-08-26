@@ -1,0 +1,30 @@
+version: 1
+task: pushbox_friction_event80
+coordinate_space: normalized_main_camera_xy
+endpoint_statistic: median_last_frames
+terminal_window: 5
+main_view_width: 224
+candidate_set: protocol_support_and_queries
+
+# These first-pass regions follow the observed Event80 motion axis (+image-y).
+# Headline success is reported only for environment/target pairs for which at
+# least one ground-truth action reaches the region.
+targets:
+  - id: short_push
+    region:
+      x_min: 0.49
+      x_max: 0.57
+      y_min: 0.58
+      y_max: 0.68
+  - id: medium_push
+    region:
+      x_min: 0.49
+      x_max: 0.57
+      y_min: 0.72
+      y_max: 0.82
+  - id: long_push
+    region:
+      x_min: 0.47
+      x_max: 0.59
+      y_min: 0.88
+      y_max: 1.00

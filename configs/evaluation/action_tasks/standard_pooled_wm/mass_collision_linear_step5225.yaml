@@ -1,0 +1,33 @@
+version: 1
+task: mass_collision
+method_name: standard_pooled_wm
+seed: 20260719
+metadata_jsonl: data/mass_collision_linear_theory_distance_bwm_full61_20260717/train.jsonl
+dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass/libero_two_box_collision_9speed_20mass_linear_theory_distance_180eps_lerobot_2026-07-17_hai-machine
+output_dir: results/mass_collision/linear_theory_distance_grid_id10_k1_oracle_informative_support25_60_uniform_v2/methods/standard_pooled_wm/step_5225/seed_20260719/action_evaluation
+transfer_plans:
+  - {path: results/mass_collision/linear_theory_distance_grid_id10_k1_oracle_informative_support25_60_uniform_v2/methods/standard_pooled_wm/step_5225/seed_20260719/transfer/transfer_plan.json, domain: id}
+action_field: action_id
+environment_report_fields: [target_mass_index, target_mass_kg]
+action_report_fields: [action_id, speed_index, action_amplitude, preimpact_speed_mps]
+minimum_actions: 2
+extractor: {main_view_width: 224, edge_margin: 16, fps: 10.0}
+outcome:
+  object_index: 0
+  object_roles: {struck_object: 0, target: 0, striker: 1, projectile: 1}
+  terminal_window: 5
+targets:
+  - {id: short_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.43, x_max: 0.57, y_min: 0.62, y_max: 0.72}}
+  - {id: medium_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.43, x_max: 0.57, y_min: 0.75, y_max: 0.86}}
+  - {id: long_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.42, x_max: 0.58, y_min: 0.92, y_max: 1.00}}
+inference:
+  train_config: configs/train/train_mass20_collision_linear_standard_pooled_wm_2gpu_24h.yaml
+  checkpoint: outputs/method_benchmarks/mass_collision_linear/standard_pooled_wm/seed_20260718/checkpoints/step-5225.safetensors
+  cache_key: mass-collision-linear-standard-pooled-step5225
+  source_transfer_plan: results/mass_collision/linear_theory_distance_grid_id10_k1_oracle_informative_support25_60_uniform_v2/methods/ours/step_3848/seed_20260719/same_mass_other_actions/transfer_plan.json
+  method_output_root: results/mass_collision/linear_theory_distance_grid_id10_k1_oracle_informative_support25_60_uniform_v2/methods/standard_pooled_wm/step_5225/seed_20260719
+  num_inference_steps: 25
+  cfg_scale: 1.0
+  fps: 20
+  quality: 6
+  seed: 20260719

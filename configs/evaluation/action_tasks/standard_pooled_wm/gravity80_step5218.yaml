@@ -1,0 +1,31 @@
+version: 1
+task: gravity
+method_name: standard_pooled_wm
+seed: 20260712
+metadata_jsonl: data/gravity_bwm_full61_20260710/train.jsonl
+dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/gravity/change_gravity_lerobot_v21
+output_dir: results/gravity/gravity80_same_environment_actions_89519/methods/standard_pooled_wm/step_5218/seed_20260712/action_evaluation
+transfer_plans:
+  - path: results/gravity/gravity80_same_environment_actions_89519/methods/standard_pooled_wm/step_5218/seed_20260712/transfer/transfer_plan.json
+    domain_by_source: {205: id, 235: ood, 595: id, 615: ood}
+action_field: action_id
+environment_report_fields: [gravity_index, gravity_mps2]
+action_report_fields: [action_id, speed_index, initial_speed_mps]
+minimum_actions: 2
+extractor: {main_view_width: 224, edge_margin: 16, fps: 10.0}
+outcome: {object_index: 0, terminal_window: 5}
+targets:
+  - {id: short_range, kind: point_rectangle, region: {x_min: 0.42, x_max: 0.58, y_min: 0.48, y_max: 0.70}}
+  - {id: medium_range, kind: point_rectangle, region: {x_min: 0.60, x_max: 0.78, y_min: 0.50, y_max: 0.78}}
+  - {id: long_range, kind: point_rectangle, region: {x_min: 0.84, x_max: 1.00, y_min: 0.52, y_max: 0.86}}
+inference:
+  train_config: configs/train/train_gravity80_active25_standard_pooled_wm_2gpu_24h.yaml
+  checkpoint: outputs/method_benchmarks/gravity/standard_pooled_wm/seed_20260708/checkpoints/step-5218.safetensors
+  cache_key: gravity-standard-pooled-step5218
+  source_transfer_plan: outputs/infer_gravity80_oldrandom_step3837_stage1_stage2_grid_89519/same_gravity_other_speeds/transfer_plan.json
+  method_output_root: results/gravity/gravity80_same_environment_actions_89519/methods/standard_pooled_wm/step_5218/seed_20260712
+  num_inference_steps: 25
+  cfg_scale: 1.0
+  fps: 20
+  quality: 6
+  seed: 20260712
