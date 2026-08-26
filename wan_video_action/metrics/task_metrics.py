@@ -18,8 +18,18 @@ class TaskMetricResult:
 
 
 def _aligned(record: EvaluationRecord, gt: TaskState, pred: TaskState) -> tuple[TaskState, TaskState]:
-    gt = gt.sliced(record.gt_start_frame, record.num_frames)
-    pred = pred.sliced(record.pred_start_frame, record.num_frames)
+    gt_start = (
+        record.gt_start_frame
+        if record.gt_state_start_frame is None
+        else record.gt_state_start_frame
+    )
+    pred_start = (
+        record.pred_start_frame
+        if record.pred_state_start_frame is None
+        else record.pred_state_start_frame
+    )
+    gt = gt.sliced(gt_start, record.num_frames)
+    pred = pred.sliced(pred_start, record.num_frames)
     count = min(gt.frame_count, pred.frame_count)
     return gt.sliced(0, count), pred.sliced(0, count)
 
@@ -67,8 +77,7 @@ def _centroid_metrics(
     names = _object_names(settings, gt.centroids.shape[1])
     output: dict[str, float] = {}
     metric_names: list[str] = []
-    all_errors: list[float] = []
-    all_final: list[float] = []
+    errors_by_object: list[list[float]] = []
     for object_index, name in enumerate(names):
         valid = np.flatnonzero(gt_visible[:, object_index])
         if not len(valid):
@@ -97,13 +106,28 @@ def _centroid_metrics(
         }
         output.update(values)
         metric_names.extend(values)
-        all_errors.extend(errors)
-        all_final.append(errors[-1])
+        errors_by_object.append(errors)
+    primary_indices = [
+        int(index)
+        for index in settings.get(
+            "primary_object_indices", range(len(errors_by_object))
+        )
+    ]
+    if not primary_indices or any(
+        index < 0 or index >= len(errors_by_object) for index in primary_indices
+    ):
+        raise ValueError("primary_object_indices must select valid tracked objects.")
+    primary_errors = [
+        error
+        for index in primary_indices
+        for error in errors_by_object[index]
+    ]
+    primary_final = [errors_by_object[index][-1] for index in primary_indices]
     aggregate = {
-        "centroid_ade_px": float(np.mean(all_errors)),
-        "centroid_fde_px": float(np.mean(all_final)),
-        "centroid_ade_normalized": float(np.mean(all_errors) / diagonal),
-        "centroid_fde_normalized": float(np.mean(all_final) / diagonal),
+        "centroid_ade_px": float(np.mean(primary_errors)),
+        "centroid_fde_px": float(np.mean(primary_final)),
+        "centroid_ade_normalized": float(np.mean(primary_errors) / diagonal),
+        "centroid_fde_normalized": float(np.mean(primary_final) / diagonal),
     }
     output.update(aggregate)
     metric_names.extend(aggregate)

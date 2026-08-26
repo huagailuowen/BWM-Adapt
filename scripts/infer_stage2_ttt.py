@@ -202,6 +202,10 @@ def _write_context_pca_plot(
         table_values = table_values[active_mask]
     center, components, explained = _fit_context_pca(contexts)
     table_xy = _project_contexts(contexts, center, components)
+    pc1_correlation = np.corrcoef(table_values, table_xy[:, 0])[0, 1]
+    if np.isfinite(pc1_correlation) and pc1_correlation < 0:
+        components[0] *= -1
+        table_xy[:, 0] *= -1
 
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -209,22 +213,21 @@ def _write_context_pca_plot(
     for row in trajectory_rows:
         by_sample[int(row["sample_index"])].append(row)
 
-    trajectory_xy = []
     projected_by_sample = {}
     for sample_index, rows in sorted(by_sample.items()):
         rows = sorted(rows, key=lambda item: int(item["inner_step"]))
-        values = np.asarray([row["context_flat"] for row in rows], dtype=np.float32)
-        xy = _project_contexts(values[:, None, :], center, components)
-        projected_by_sample[sample_index] = (rows, xy)
-        trajectory_xy.append(xy)
+        final_value = np.asarray(rows[-1]["context_flat"], dtype=np.float32)[None, None, :]
+        final_xy = _project_contexts(final_value, center, components)[0]
+        projected_by_sample[sample_index] = (rows, final_xy)
 
-    all_xy = np.concatenate([table_xy] + trajectory_xy, axis=0)
+    endpoint_xy = np.stack([item[1] for item in projected_by_sample.values()])
+    all_xy = np.concatenate([table_xy, endpoint_xy], axis=0)
     min_xy = all_xy.min(axis=0)
     max_xy = all_xy.max(axis=0)
     span = np.maximum(max_xy - min_xy, 1e-6)
 
-    width, height = 980, 760
-    margin_left, margin_right, margin_top, margin_bottom = 90, 40, 70, 90
+    width, height = 1240, 820
+    margin_left, margin_right, margin_top, margin_bottom = 105, 80, 120, 145
     plot_w = width - margin_left - margin_right
     plot_h = height - margin_top - margin_bottom
 
@@ -243,17 +246,33 @@ def _write_context_pca_plot(
             .replace('"', "&quot;")
         )
 
-    colors = [
-        "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
-        "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
+    palette = [
+        "#2463eb", "#226bd7", "#2173c4", "#1f7ab0", "#1d829d", "#1a8e7e",
+        "#179e57", "#25a346", "#4fa23a", "#7aa12e", "#a4a022", "#ce9f16",
+        "#f59c0b", "#f08511", "#e7591b", "#dc2626",
     ]
-    unique_mus = sorted({float(rows[0].get("friction_mu")) for rows, _ in projected_by_sample.values()})
-    mu_to_color = {mu: colors[idx % len(colors)] for idx, mu in enumerate(unique_mus)}
+    endpoint_values = [float(rows[-1].get("friction_mu")) for rows, _ in projected_by_sample.values()]
+    color_min = min(float(table_values.min()), min(endpoint_values))
+    color_max = max(float(table_values.max()), max(endpoint_values))
+
+    def color_for(value):
+        ratio = (float(value) - color_min) / max(color_max - color_min, 1e-12)
+        index = round(min(1.0, max(0.0, ratio)) * (len(palette) - 1))
+        return palette[index]
+
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
-        '<rect width="100%" height="100%" fill="white"/>',
-        '<style>text{font-family:Arial,sans-serif}.axis{stroke:#333;stroke-width:1}.grid{stroke:#ddd;stroke-width:1}.label{font-size:13px;fill:#222}.small{font-size:11px;fill:#333}.title{font-size:18px;font-weight:700;fill:#111}</style>',
-        f'<text class="title" x="{width/2:.1f}" y="32" text-anchor="middle">Active C32 table PCA with mean-initialized inner-loop C trajectories</text>',
+        '<defs><linearGradient id="friction" x1="0" y1="0" x2="1" y2="0">'
+        + ''.join(
+            f'<stop offset="{100 * idx / (len(palette) - 1):.1f}%" stop-color="{color}"/>'
+            for idx, color in enumerate(palette)
+        )
+        + '</linearGradient></defs>',
+        '<rect width="100%" height="100%" fill="#fbfaf6"/>',
+        f'<rect x="{margin_left}" y="{margin_top}" width="{plot_w}" height="{plot_h}" rx="7" fill="#fffdf8" stroke="#d8d2c7"/>',
+        '<style>text{font-family:DejaVu Sans,sans-serif}.axis{stroke:#4b5359;stroke-width:1}.grid{stroke:#ded9ce;stroke-width:1;opacity:.72}.label{font-size:15px;fill:#25313a}.small{font-size:11px;fill:#746f66}.title{font-size:24px;font-weight:650;fill:#17212b}.subtitle{font-size:14px;fill:#6c675f}</style>',
+        f'<text class="title" x="{width/2:.1f}" y="39" text-anchor="middle">Training-Time and Inference-Time Z (PCA)</text>',
+        f'<text class="subtitle" x="{width/2:.1f}" y="72" text-anchor="middle">PCA fitted on {len(table_values)} active training-time Z entries | {len(projected_by_sample)} final inference-time Z values | update paths omitted</text>',
     ]
 
     for i in range(6):
@@ -268,34 +287,34 @@ def _write_context_pca_plot(
 
     parts.append(f'<line class="axis" x1="{margin_left}" y1="{height-margin_bottom}" x2="{width-margin_right}" y2="{height-margin_bottom}"/>')
     parts.append(f'<line class="axis" x1="{margin_left}" y1="{margin_top}" x2="{margin_left}" y2="{height-margin_bottom}"/>')
-    parts.append(f'<text class="label" x="{margin_left+plot_w/2:.1f}" y="{height-32}" text-anchor="middle">PC1 ({100.0 * float(explained[0]):.1f}% active-table variance)</text>')
+    parts.append(f'<text class="label" x="{margin_left+plot_w/2:.1f}" y="{height-77}" text-anchor="middle">PC1 ({100.0 * float(explained[0]):.1f}% active-table variance)</text>')
     parts.append(f'<text class="label" transform="translate(26 {margin_top+plot_h/2:.1f}) rotate(-90)" text-anchor="middle">PC2 ({100.0 * float(explained[1]):.1f}% active-table variance)</text>')
 
-    for idx, (xy, mu) in enumerate(zip(table_xy, table_values)):
+    training_order = np.argsort(table_values)
+    training_points = " ".join(
+        f"{sx(table_xy[index, 0]):.2f},{sy(table_xy[index, 1]):.2f}"
+        for index in training_order
+    )
+    parts.append(f'<polyline points="{training_points}" fill="none" stroke="#8b857b" stroke-width="1.5" stroke-dasharray="5 5" opacity=".58"/>')
+    for xy, mu in zip(table_xy, table_values):
         x, y = sx(xy[0]), sy(xy[1])
-        parts.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="6" fill="#111"/>')
-        parts.append(f'<text class="small" x="{x+8:.2f}" y="{y-7:.2f}">mu={float(mu):.4g}</text>')
+        color = color_for(mu)
+        parts.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="6" fill="{color}" fill-opacity=".88" stroke="#fffdf8" stroke-width="1.4"><title>training time Z, friction={float(mu):.6g}</title></circle>')
 
     for sample_index, (rows, xy) in sorted(projected_by_sample.items()):
-        mu = float(rows[0].get("friction_mu"))
-        color = mu_to_color[mu]
-        points = " ".join(f"{sx(point[0]):.2f},{sy(point[1]):.2f}" for point in xy)
-        parts.append(f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="2" opacity="0.88"/>')
-        x0, y0 = sx(xy[0, 0]), sy(xy[0, 1])
-        x1, y1 = sx(xy[-1, 0]), sy(xy[-1, 1])
-        parts.append(f'<line x1="{x0-5:.2f}" y1="{y0-5:.2f}" x2="{x0+5:.2f}" y2="{y0+5:.2f}" stroke="{color}" stroke-width="2"/>')
-        parts.append(f'<line x1="{x0-5:.2f}" y1="{y0+5:.2f}" x2="{x0+5:.2f}" y2="{y0-5:.2f}" stroke="{color}" stroke-width="2"/>')
-        parts.append(f'<polygon points="{x1+7:.2f},{y1:.2f} {x1-5:.2f},{y1-6:.2f} {x1-5:.2f},{y1+6:.2f}" fill="{color}"/>')
-        parts.append(f'<text class="small" x="{x1+10:.2f}" y="{y1+4:.2f}" fill="{color}">s{sample_index}/mu={mu:.4g}</text>')
+        mu = float(rows[-1].get("friction_mu"))
+        color = color_for(mu)
+        x, y = sx(xy[0]), sy(xy[1])
+        points = f"{x:.2f},{y-9:.2f} {x-8.2:.2f},{y+7.2:.2f} {x+8.2:.2f},{y+7.2:.2f}"
+        parts.append(f'<polygon points="{points}" fill="{color}" stroke="#111827" stroke-width="1.8" stroke-linejoin="round"><title>inference time final Z, sample={sample_index}, friction={mu:.6g}, step={int(rows[-1]["inner_step"])}</title></polygon>')
 
-    legend_y = 64
-    parts.append('<text class="small" x="700" y="48">black dots: active learned C table; x: init; triangle: final</text>')
-    parts.append('<text class="small" x="700" y="64">trajectory color is shared by friction group</text>')
-    for idx, mu in enumerate(unique_mus[:8]):
-        x = 700 + (idx % 4) * 70
-        y = 84 + (idx // 4) * 18
-        parts.append(f'<rect x="{x}" y="{y-10}" width="10" height="10" fill="{mu_to_color[mu]}"/>')
-        parts.append(f'<text class="small" x="{x+14}" y="{y}">mu={mu:.4g}</text>')
+    parts.append('<circle cx="120" cy="778" r="6" fill="#4fa23a" stroke="#fffdf8" stroke-width="1.2"/>')
+    parts.append('<text class="small" x="136" y="783">training time active Z-table</text>')
+    parts.append('<polygon points="385,769 377,785 393,785" fill="#e2441f" stroke="#111827" stroke-width="1.8" stroke-linejoin="round"/>')
+    parts.append('<text class="small" x="403" y="783">inference time final Z</text>')
+    parts.append('<rect x="910" y="772" width="210" height="14" rx="2" fill="url(#friction)" stroke="#8b857b" stroke-width=".6"/>')
+    parts.append('<text class="small" x="900" y="783" text-anchor="end">low friction</text>')
+    parts.append('<text class="small" x="1130" y="783">high friction</text>')
     parts.append("</svg>")
     path.write_text("\n".join(parts), encoding="utf-8")
 

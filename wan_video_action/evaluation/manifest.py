@@ -23,6 +23,10 @@ class EvaluationRecord:
     gt_start_frame: int = 0
     pred_start_frame: int = 0
     num_frames: int | None = None
+    gt_frame_stride: int = 1
+    pred_frame_stride: int = 1
+    gt_state_start_frame: int | None = None
+    pred_state_start_frame: int | None = None
     gt_mask_path: str | None = None
     pred_mask_path: str | None = None
     gt_state_path: str | None = None
@@ -46,6 +50,12 @@ class EvaluationRecord:
             raise ValueError("domain must be 'id' or 'ood'.")
         if self.gt_start_frame < 0 or self.pred_start_frame < 0:
             raise ValueError("Frame offsets cannot be negative.")
+        if self.gt_frame_stride <= 0 or self.pred_frame_stride <= 0:
+            raise ValueError("Frame strides must be positive.")
+        if self.gt_state_start_frame is not None and self.gt_state_start_frame < 0:
+            raise ValueError("GT state offset cannot be negative.")
+        if self.pred_state_start_frame is not None and self.pred_state_start_frame < 0:
+            raise ValueError("Prediction state offset cannot be negative.")
         if self.num_frames is not None and self.num_frames <= 0:
             raise ValueError("num_frames must be positive when provided.")
 

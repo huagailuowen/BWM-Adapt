@@ -4768,10 +4768,17 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                     f"max={float(displacement.max().cpu()):.6f}",
                     flush=True,
                 )
-            if should_checkpoint_model_phase and step in protected_checkpoint_steps:
-                _protect_paired_checkpoint(accelerator, model_logger, step)
         mean_loss = torch.stack([loss.float() for loss in detached_losses]).mean()
         model_logger.on_step_end(accelerator, model, args.save_steps, loss=mean_loss)
+        if (
+            step == int(phase_info["phase_end"])
+            and phase in ("model", "joint")
+            and step in protected_checkpoint_steps
+        ):
+            # A regular save due at this step is performed by on_step_end above.
+            # Protect only after both paired artifacts have reached the output
+            # directory; doing this inside the phase-end block races that save.
+            _protect_paired_checkpoint(accelerator, model_logger, step)
         if validation_interval > 0 and step % validation_interval == 0:
             validation_loss, validation_count = _run_fixed_validation(
                 accelerator,

@@ -58,13 +58,14 @@ def main() -> None:
         evaluate_global_record(
             record,
             compute_psnr=bool(settings.get("psnr", True)),
+            compute_ssim=bool(settings.get("ssim", True)),
             lpips_evaluator=lpips_evaluator,
             lpips_batch_size=int(settings.get("lpips_batch_size", 8)),
         )
         for record in load_manifest(manifest_path)
     ]
     metric_names = [
-        name for name in ("psnr", "lpips") if name in rows[0]
+        name for name in ("psnr", "ssim", "lpips") if name in rows[0]
     ]
     aggregation = aggregate_query_metrics(rows, metric_names)
     destination = Path(output_dir)

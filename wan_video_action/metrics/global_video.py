@@ -66,6 +66,23 @@ def frame_ssim(gt: np.ndarray, pred: np.ndarray) -> np.ndarray:
     ], dtype=np.float64)
 
 
+def _read_record_video(
+    path: str,
+    *,
+    start_frame: int,
+    num_frames: int | None,
+    frame_stride: int,
+) -> np.ndarray:
+    raw_count = (
+        None
+        if num_frames is None
+        else (num_frames - 1) * frame_stride + 1
+    )
+    frames = read_video_frames(path, start_frame=start_frame, num_frames=raw_count)
+    frames = frames[::frame_stride]
+    return frames if num_frames is None else frames[:num_frames]
+
+
 class LPIPSEvaluator:
     def __init__(self, net: str = "alex", device: str = "cuda") -> None:
         try:
@@ -107,18 +124,21 @@ def evaluate_global_record(
     record: EvaluationRecord,
     *,
     compute_psnr: bool = True,
+    compute_ssim: bool = True,
     lpips_evaluator: LPIPSEvaluator | None = None,
     lpips_batch_size: int = 8,
 ) -> dict[str, Any]:
-    gt = read_video_frames(
+    gt = _read_record_video(
         record.gt_video_path,
         start_frame=record.gt_start_frame,
         num_frames=record.num_frames,
+        frame_stride=record.gt_frame_stride,
     )
-    pred = read_video_frames(
+    pred = _read_record_video(
         record.pred_video_path,
         start_frame=record.pred_start_frame,
         num_frames=record.num_frames,
+        frame_stride=record.pred_frame_stride,
     )
     gt, pred = _align_frames(gt, pred)
     output: dict[str, Any] = {
@@ -133,6 +153,8 @@ def evaluate_global_record(
     }
     if compute_psnr:
         output["psnr"] = float(np.mean(frame_psnr(gt, pred)))
+    if compute_ssim:
+        output["ssim"] = float(np.mean(frame_ssim(gt, pred)))
     if lpips_evaluator is not None:
         output["lpips"] = float(np.mean(
             lpips_evaluator(gt, pred, batch_size=lpips_batch_size)

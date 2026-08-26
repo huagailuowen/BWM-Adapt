@@ -76,8 +76,8 @@ def evaluate_object_record(
         read_mask_array(record.pred_mask_path, key=mask_key),
         record.object_index,
     )
-    gt = gt[record.gt_start_frame:]
-    pred = pred[record.pred_start_frame:]
+    gt = gt[record.gt_start_frame::record.gt_frame_stride]
+    pred = pred[record.pred_start_frame::record.pred_frame_stride]
     count = min(len(gt), len(pred))
     if record.num_frames is not None:
         count = min(count, record.num_frames)
