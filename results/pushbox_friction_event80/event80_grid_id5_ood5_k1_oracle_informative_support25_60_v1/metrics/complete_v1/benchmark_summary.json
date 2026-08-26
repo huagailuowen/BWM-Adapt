@@ -1,0 +1,1482 @@
+{
+  "all_active_joint_no_curriculum": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.6153846153846154,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.02880353639865905,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.46153846153846156,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.5833333333333334,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.033481195778873964,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.4166666666666667,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.03688456632653059,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.4,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.04474959713084463,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.4,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007899305555555403,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0387237394957983,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.25,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.060976001315727085,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007438465250965143,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.03780415291116444,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.25,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.3333333333333333,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.051961332324125725,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.3333333333333333,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007668885403260273,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.75,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.6,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.03104881290116221,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.44,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.017006995523583857,
+          "centroid_ade_px": 5.387541314326261,
+          "centroid_fde_normalized": 0.036361661501669196,
+          "centroid_fde_px": 11.518786685521968,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.05413512413700422,
+          "psnr_main": 34.85746404859755,
+          "psnr_multiview": 31.76831580268012,
+          "psnr_wrist": 32.136952082316085,
+          "query_count": 45,
+          "ssim_main": 0.9714345928695467,
+          "ssim_multiview": 0.950693579547935,
+          "ssim_wrist": 0.9288012517823112
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.018443545209799607,
+          "centroid_ade_px": 5.842617037362545,
+          "centroid_fde_normalized": 0.039656927393544615,
+          "centroid_fde_px": 12.562673661887084,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.05525700905256801,
+          "psnr_main": 34.77305708991157,
+          "psnr_multiview": 31.625466537475585,
+          "psnr_wrist": 32.06403863694933,
+          "query_count": 45,
+          "ssim_main": 0.9712993538048533,
+          "ssim_multiview": 0.9506187156505055,
+          "ssim_wrist": 0.9287814921471809
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.01772527036669173,
+        "centroid_ade_px": 5.615079175844403,
+        "centroid_fde_normalized": 0.03800929444760691,
+        "centroid_fde_px": 12.040730173704526,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.05469606659478612,
+        "psnr_main": 34.81526056925456,
+        "psnr_multiview": 31.696891170077855,
+        "psnr_wrist": 32.1004953596327,
+        "ssim_main": 0.9713669733371999,
+        "ssim_multiview": 0.9506561475992203,
+        "ssim_wrist": 0.9287913719647459
+      },
+      "query_count": 90
+    }
+  },
+  "dinov2_amortized_context": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.38461538461538464,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.04598093198343286,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.15384615384615385,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.4166666666666667,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.041531030002258267,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.16666666666666666,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.05221832482993194,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.07714381884853545,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007899305555555403,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.041038693149015315,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.08281055033266296,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007438465250965143,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.04662850898947363,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.07966236617481434,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007668885403260273,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.4,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.043844979032469054,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.16,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.03575844905031083,
+          "centroid_ade_px": 11.327698730068425,
+          "centroid_fde_normalized": 0.07792730465652369,
+          "centroid_fde_px": 24.68611065187363,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.06681383616394468,
+          "psnr_main": 34.722267150878906,
+          "psnr_multiview": 31.046563466389973,
+          "psnr_wrist": 31.194532521565755,
+          "query_count": 45,
+          "ssim_main": 0.9720203504297468,
+          "ssim_multiview": 0.9487534211410417,
+          "ssim_wrist": 0.924261705312464
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.03526070953788096,
+          "centroid_ade_px": 11.170022897010792,
+          "centroid_fde_normalized": 0.07678802174957547,
+          "centroid_fde_px": 24.32520424007516,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.06732118133869436,
+          "psnr_main": 34.74271219041613,
+          "psnr_multiview": 31.06230748494466,
+          "psnr_wrist": 31.198276646931966,
+          "query_count": 45,
+          "ssim_main": 0.972154191268815,
+          "ssim_multiview": 0.94881541877985,
+          "ssim_wrist": 0.9242555604378383
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.0355095792940959,
+        "centroid_ade_px": 11.24886081353961,
+        "centroid_fde_normalized": 0.07735766320304957,
+        "centroid_fde_px": 24.505657445974396,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.06706750875131952,
+        "psnr_main": 34.73248967064752,
+        "psnr_multiview": 31.054435475667315,
+        "psnr_wrist": 31.19640458424886,
+        "ssim_main": 0.9720872708492809,
+        "ssim_multiview": 0.9487844199604458,
+        "ssim_wrist": 0.9242586328751511
+      },
+      "query_count": 90
+    }
+  },
+  "history_conditioned_wm": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.6153846153846154,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.04792615542272135,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.3076923076923077,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.5833333333333334,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.041795386897600324,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.25,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.03688456632653059,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.4,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0944684065934066,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.4,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007899305555555403,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0387237394957983,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.25,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.08591857467190617,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007438465250965143,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.03780415291116444,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.3333333333333333,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.09066848129496197,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.3333333333333333,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007668885403260273,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.6,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.04498338653066326,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.28,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.03851466084170284,
+          "centroid_ade_px": 12.200822079608091,
+          "centroid_fde_normalized": 0.08576061296241298,
+          "centroid_fde_px": 27.167576121027842,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.06504134308132861,
+          "psnr_main": 34.69440303378635,
+          "psnr_multiview": 31.039133410983617,
+          "psnr_wrist": 31.717460378011065,
+          "query_count": 45,
+          "ssim_main": 0.9731122833490371,
+          "ssim_multiview": 0.9520875401960479,
+          "ssim_wrist": 0.9299151451388996
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.03933146189669042,
+          "centroid_ade_px": 12.459571452666289,
+          "centroid_fde_normalized": 0.08808069672004092,
+          "centroid_fde_px": 27.902541158184725,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.06655715919203228,
+          "psnr_main": 34.5928150177002,
+          "psnr_multiview": 30.83201633029514,
+          "psnr_wrist": 31.521069293551978,
+          "query_count": 45,
+          "ssim_main": 0.9730100511511166,
+          "ssim_multiview": 0.9517958737744227,
+          "ssim_wrist": 0.9294246972931756
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.03892306136919663,
+        "centroid_ade_px": 12.33019676613719,
+        "centroid_fde_normalized": 0.08692065484122695,
+        "centroid_fde_px": 27.535058639606284,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.06579925113668045,
+        "psnr_main": 34.643609025743274,
+        "psnr_multiview": 30.93557487063938,
+        "psnr_wrist": 31.619264835781518,
+        "ssim_main": 0.973061167250077,
+        "ssim_multiview": 0.9519417069852352,
+        "ssim_wrist": 0.9296699212160375
+      },
+      "query_count": 90
+    }
+  },
+  "joint_model_latent_training": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.6153846153846154,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.025259184264609918,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.46153846153846156,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.6666666666666666,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.017673359777610826,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.015333758503401351,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.4,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.052774927840820274,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.4,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007899305555555403,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0023149536532170167,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.04996127915451895,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007438465250965143,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.008824356078309184,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.4444444444444444,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.05152441731357524,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.4444444444444444,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007668885403260273,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.64,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.021617988510850353,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.48,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.01379340688888483,
+          "centroid_ade_px": 4.369528372964474,
+          "centroid_fde_normalized": 0.02943372534975433,
+          "centroid_fde_px": 9.324128482096365,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.0606832274960147,
+          "psnr_main": 34.69385833740235,
+          "psnr_multiview": 31.542626783582897,
+          "psnr_wrist": 31.519166480170355,
+          "query_count": 45,
+          "ssim_main": 0.9694723377294011,
+          "ssim_multiview": 0.9487220241626104,
+          "ssim_wrist": 0.9267943346831535
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.013672837677099776,
+          "centroid_ade_px": 4.331333995313998,
+          "centroid_fde_normalized": 0.027090670861556726,
+          "centroid_fde_px": 8.581886688748607,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.056660879900058116,
+          "psnr_main": 34.74291470845541,
+          "psnr_multiview": 31.93216069539388,
+          "psnr_wrist": 32.21480933295356,
+          "query_count": 45,
+          "ssim_main": 0.9695682258076138,
+          "ssim_multiview": 0.9501091739204195,
+          "ssim_wrist": 0.929510723385546
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.013733122282992302,
+        "centroid_ade_px": 4.350431184139237,
+        "centroid_fde_normalized": 0.028262198105655528,
+        "centroid_fde_px": 8.953007585422487,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.05867205369803641,
+        "psnr_main": 34.718386522928874,
+        "psnr_multiview": 31.73739373948839,
+        "psnr_wrist": 31.866987906561956,
+        "ssim_main": 0.9695202817685076,
+        "ssim_multiview": 0.949415599041515,
+        "ssim_wrist": 0.9281525290343497
+      },
+      "query_count": 90
+    }
+  },
+  "lora_tta": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.3076923076923077,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.054248650661346876,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.15384615384615385,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.040824088434158766,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.4166666666666667,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.016618677375256324,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.11956191734636996,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.25,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.01023704059115857,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0023149536532170167,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.11677237501331458,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.003384936635944691,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.00946681551423667,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.375,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.11832212075390089,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.00681098861355163,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.4,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.04780486079229658,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.28,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.025293436564223937,
+          "centroid_ade_px": 8.012551910305381,
+          "centroid_fde_normalized": 0.05582523221865998,
+          "centroid_fde_px": 17.684531317881437,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.05915498158170117,
+          "psnr_main": 34.757904307047525,
+          "psnr_multiview": 32.07337472703722,
+          "psnr_wrist": 33.32959586249457,
+          "query_count": 45,
+          "ssim_main": 0.9719298217031691,
+          "ssim_multiview": 0.9535756619440185,
+          "ssim_wrist": 0.9341320184866587
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.026414709093507478,
+          "centroid_ade_px": 8.367752925543916,
+          "centroid_fde_normalized": 0.06533092757161021,
+          "centroid_fde_px": 20.69578197437756,
+          "centroid_prediction_missing_rate": 0.005555555555555555,
+          "environment_count": 5,
+          "lpips_multiview": 0.05723140161070559,
+          "psnr_main": 34.78438424004449,
+          "psnr_multiview": 31.987803819444444,
+          "psnr_wrist": 32.95930447048611,
+          "query_count": 45,
+          "ssim_main": 0.9720129558775159,
+          "ssim_multiview": 0.9533652076787419,
+          "ssim_wrist": 0.9336225483814875
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.02585407282886571,
+        "centroid_ade_px": 8.190152417924649,
+        "centroid_fde_normalized": 0.0605780798951351,
+        "centroid_fde_px": 19.1901566461295,
+        "centroid_prediction_missing_rate": 0.0027777777777777775,
+        "lpips_multiview": 0.05819319159620338,
+        "psnr_main": 34.77114427354601,
+        "psnr_multiview": 32.030589273240835,
+        "psnr_wrist": 33.144450166490344,
+        "ssim_main": 0.9719713887903426,
+        "ssim_multiview": 0.9534704348113803,
+        "ssim_wrist": 0.9338772834340732
+      },
+      "query_count": 90
+    }
+  },
+  "ours": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.6923076923076923,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.02777429363160437,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.5384615384615384,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.6666666666666666,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.022189728825229876,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.4166666666666667,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.03560083762886598,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.6,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.04310054889463415,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.6,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007899305555555403,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.03637745365321701,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.029447886297376102,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007438465250965143,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.625,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0359891456410415,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.125,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.6666666666666666,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.03703269885140835,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.6666666666666666,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007668885403260273,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.625,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.68,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.025093702524544615,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.48,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.012072983694345703,
+          "centroid_ade_px": 3.8245261104630557,
+          "centroid_fde_normalized": 0.02328470707946319,
+          "centroid_fde_px": 7.376218874676214,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.04936016309592459,
+          "psnr_main": 35.0746767255995,
+          "psnr_multiview": 31.925469589233398,
+          "psnr_wrist": 32.22757572597927,
+          "query_count": 45,
+          "ssim_main": 0.9718688958883286,
+          "ssim_multiview": 0.9511322426795961,
+          "ssim_wrist": 0.9292531027065383
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.012258955383062303,
+          "centroid_ade_px": 3.883438935768754,
+          "centroid_fde_normalized": 0.024654006041016484,
+          "centroid_fde_px": 7.809990655047555,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.04966423052052657,
+          "psnr_main": 35.02107870313856,
+          "psnr_multiview": 32.025789684719506,
+          "psnr_wrist": 32.57483609517415,
+          "query_count": 45,
+          "ssim_main": 0.971791510283947,
+          "ssim_multiview": 0.9513869021005099,
+          "ssim_wrist": 0.9298447003960609
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.012165969538704002,
+        "centroid_ade_px": 3.853982523115905,
+        "centroid_fde_normalized": 0.023969356560239838,
+        "centroid_fde_px": 7.593104764861884,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.04951219680822558,
+        "psnr_main": 35.04787771436903,
+        "psnr_multiview": 31.975629636976453,
+        "psnr_wrist": 32.401205910576714,
+        "ssim_main": 0.9718302030861377,
+        "ssim_multiview": 0.951259572390053,
+        "ssim_wrist": 0.9295489015512997
+      },
+      "query_count": 90
+    }
+  },
+  "standard_pooled_wm": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.38461538461538464,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.044131672802442914,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.23076923076923078,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.4166666666666667,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.04002266242118554,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.25,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.05221832482993194,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0693188798985965,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.004561011904761908,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.041038693149015315,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0756443574785966,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.003384936635944691,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.04662850898947363,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.07213020326748544,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.003972974270353299,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.75,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.4,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.04215934781943938,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.24,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.03516894302843214,
+          "centroid_ade_px": 11.140952749950337,
+          "centroid_fde_normalized": 0.07765434056033318,
+          "centroid_fde_px": 24.599640037853966,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.06607382802499664,
+          "psnr_main": 34.78952975802951,
+          "psnr_multiview": 31.13977762858073,
+          "psnr_wrist": 31.19004537794325,
+          "query_count": 45,
+          "ssim_main": 0.9722190471159088,
+          "ssim_multiview": 0.9515711102551883,
+          "ssim_wrist": 0.9297766007648575
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.0346744710591934,
+          "centroid_ade_px": 10.984312021765529,
+          "centroid_fde_normalized": 0.0764669501565312,
+          "centroid_fde_px": 24.22349394856695,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.06732636197573609,
+          "psnr_main": 34.7807117038303,
+          "psnr_multiview": 31.085444429185657,
+          "psnr_wrist": 31.106013022528753,
+          "query_count": 45,
+          "ssim_main": 0.9722625172800488,
+          "ssim_multiview": 0.9509897806578212,
+          "ssim_wrist": 0.9285544568300248
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.03492170704381277,
+        "centroid_ade_px": 11.062632385857935,
+        "centroid_fde_normalized": 0.0770606453584322,
+        "centroid_fde_px": 24.41156699321046,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.06670009500036636,
+        "psnr_main": 34.785120730929904,
+        "psnr_multiview": 31.11261102888319,
+        "psnr_wrist": 31.148029200236003,
+        "ssim_main": 0.9722407821979788,
+        "ssim_multiview": 0.9512804454565048,
+        "ssim_wrist": 0.9291655287974411
+      },
+      "query_count": 90
+    }
+  },
+  "ttt_kqv": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.23076923076923078,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.08846394134361509,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.15384615384615385,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.25,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.08554866788586439,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.08333333333333333,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.25,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.13178023931015687,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.11265249255321023,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.014911954365079333,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.25,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.13342935684865298,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.12020377854471326,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.00301286826422692,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.25,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.13260479807940492,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.11600861966054492,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.0,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.008962411314653126,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.375,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.24,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.08706461008389475,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.12,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.0344992190770267,
+          "centroid_ade_px": 10.928795026242636,
+          "centroid_fde_normalized": 0.07495329364689697,
+          "centroid_fde_px": 23.743992030074363,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.058912792139583156,
+          "psnr_main": 35.01240921020508,
+          "psnr_multiview": 32.22660594516331,
+          "psnr_wrist": 33.310018836127384,
+          "query_count": 45,
+          "ssim_main": 0.9734003223313226,
+          "ssim_multiview": 0.9554723193910387,
+          "ssim_wrist": 0.9364905177222358
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.040026277516526675,
+          "centroid_ade_px": 12.679677811400612,
+          "centroid_fde_normalized": 0.08760779959816745,
+          "centroid_fde_px": 27.75273499295194,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.06005972429282136,
+          "psnr_main": 35.02126689487034,
+          "psnr_multiview": 32.27918315463596,
+          "psnr_wrist": 33.362847052680124,
+          "query_count": 45,
+          "ssim_main": 0.9735115020142662,
+          "ssim_multiview": 0.9559032951129808,
+          "ssim_wrist": 0.9372562221686046
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.037262748296776685,
+        "centroid_ade_px": 11.804236418821626,
+        "centroid_fde_normalized": 0.08128054662253222,
+        "centroid_fde_px": 25.74836351151315,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.05948625821620226,
+        "psnr_main": 35.01683805253771,
+        "psnr_multiview": 32.252894549899636,
+        "psnr_wrist": 33.336432944403754,
+        "ssim_main": 0.9734559121727944,
+        "ssim_multiview": 0.9556878072520097,
+        "ssim_wrist": 0.9368733699454201
+      },
+      "query_count": 90
+    }
+  }
+}

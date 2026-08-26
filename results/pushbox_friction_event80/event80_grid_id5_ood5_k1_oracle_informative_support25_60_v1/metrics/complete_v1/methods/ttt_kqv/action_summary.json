@@ -1,0 +1,130 @@
+{
+  "by_domain": {
+    "id": {
+      "complete_decision_count": 15,
+      "decision_count": 15,
+      "headline_task_success_rate": 0.23076923076923078,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.08846394134361509,
+      "oracle_reachable_complete_count": 13,
+      "selected_is_oracle_rate": 0.15384615384615385,
+      "valid_decision_count": 15
+    },
+    "ood": {
+      "complete_decision_count": 15,
+      "decision_count": 15,
+      "headline_task_success_rate": 0.25,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.08554866788586439,
+      "oracle_reachable_complete_count": 12,
+      "selected_is_oracle_rate": 0.08333333333333333,
+      "valid_decision_count": 15
+    }
+  },
+  "by_domain_and_target": {
+    "id/long_push": {
+      "complete_decision_count": 5,
+      "decision_count": 5,
+      "headline_task_success_rate": 0.25,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.13178023931015687,
+      "oracle_reachable_complete_count": 4,
+      "selected_is_oracle_rate": 0.0,
+      "valid_decision_count": 5
+    },
+    "id/medium_push": {
+      "complete_decision_count": 5,
+      "decision_count": 5,
+      "headline_task_success_rate": 0.0,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.11265249255321023,
+      "oracle_reachable_complete_count": 5,
+      "selected_is_oracle_rate": 0.0,
+      "valid_decision_count": 5
+    },
+    "id/short_push": {
+      "complete_decision_count": 5,
+      "decision_count": 5,
+      "headline_task_success_rate": 0.5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.014911954365079333,
+      "oracle_reachable_complete_count": 4,
+      "selected_is_oracle_rate": 0.5,
+      "valid_decision_count": 5
+    },
+    "ood/long_push": {
+      "complete_decision_count": 5,
+      "decision_count": 5,
+      "headline_task_success_rate": 0.25,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.13342935684865298,
+      "oracle_reachable_complete_count": 4,
+      "selected_is_oracle_rate": 0.0,
+      "valid_decision_count": 5
+    },
+    "ood/medium_push": {
+      "complete_decision_count": 5,
+      "decision_count": 5,
+      "headline_task_success_rate": 0.0,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.12020377854471326,
+      "oracle_reachable_complete_count": 4,
+      "selected_is_oracle_rate": 0.0,
+      "valid_decision_count": 5
+    },
+    "ood/short_push": {
+      "complete_decision_count": 5,
+      "decision_count": 5,
+      "headline_task_success_rate": 0.5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.00301286826422692,
+      "oracle_reachable_complete_count": 4,
+      "selected_is_oracle_rate": 0.25,
+      "valid_decision_count": 5
+    }
+  },
+  "by_target": {
+    "long_push": {
+      "complete_decision_count": 10,
+      "decision_count": 10,
+      "headline_task_success_rate": 0.25,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.13260479807940492,
+      "oracle_reachable_complete_count": 8,
+      "selected_is_oracle_rate": 0.0,
+      "valid_decision_count": 10
+    },
+    "medium_push": {
+      "complete_decision_count": 10,
+      "decision_count": 10,
+      "headline_task_success_rate": 0.0,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.11600861966054492,
+      "oracle_reachable_complete_count": 9,
+      "selected_is_oracle_rate": 0.0,
+      "valid_decision_count": 10
+    },
+    "short_push": {
+      "complete_decision_count": 10,
+      "decision_count": 10,
+      "headline_task_success_rate": 0.5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.008962411314653126,
+      "oracle_reachable_complete_count": 8,
+      "selected_is_oracle_rate": 0.375,
+      "valid_decision_count": 10
+    }
+  },
+  "headline_subset": "complete candidate sets with a GT-reachable target",
+  "overall": {
+    "complete_decision_count": 30,
+    "decision_count": 30,
+    "headline_task_success_rate": 0.24,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 0.08706461008389475,
+    "oracle_reachable_complete_count": 25,
+    "selected_is_oracle_rate": 0.12,
+    "valid_decision_count": 30
+  },
+  "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+}

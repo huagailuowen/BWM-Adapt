@@ -1,0 +1,26 @@
+{
+  "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
+  "aggregation": "equal weight per environment after averaging its nine queries",
+  "dataset_root": "/hai/scratch/cyzhou05/projects/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine",
+  "future_start_frame": 1,
+  "ground_truth_window": "metadata start_frame and length (65-105 for Event80)",
+  "lpips_implementation": "official lpips package",
+  "lpips_network": "alex",
+  "metadata_path": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl",
+  "methods": {
+    "all_active_joint_no_curriculum": "methods/all_active_joint_no_curriculum/step_5200/seed_20260708",
+    "dinov2_amortized_context": "methods/dinov2_amortized_context/step_11500/seed_20260708",
+    "history_conditioned_wm": "methods/history_conditioned_wm/step_26200/seed_20260708",
+    "joint_model_latent_training": "methods/joint_model_latent_training/step_5200/seed_20260708",
+    "lora_tta": "methods/lora_tta/pooled_step_7849/seed_20260708",
+    "ours": "methods/ours/step_7272/seed_20260708",
+    "standard_pooled_wm": "methods/standard_pooled_wm/step_7849/seed_20260708",
+    "ttt_kqv": "methods/ttt_kqv/step_12400/seed_20260708"
+  },
+  "object_metric": "main-camera pushed-block centroid ADE/FDE",
+  "offscreen_handling": "Event80 tracker bottom-center sentinel",
+  "query_ground_truth_used_for_action_selection": false,
+  "source_protocol": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json",
+  "support_is_excluded_from_query_metrics": true,
+  "support_size": 1
+}
