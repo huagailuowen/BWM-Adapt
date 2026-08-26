@@ -1,6 +1,6 @@
 # TTT-Physics Experiment Results
 
-Last updated: 2026-08-21
+Last updated: 2026-08-25
 
 代码中的 physical context / latent `C` 在论文与图中统一记作 latent `Z`。正文只保留核心发现；逐项配置、checkpoint 和评测资产见附录。
 
@@ -15,6 +15,7 @@ Last updated: 2026-08-21
 | Stage1 如何联合训练模型和 Z | Model-only 与 Z-only 分阶段 iterative learning | 分阶段冻结可以避免模型和 Z 同时漂移；新环境先快速定位 Z，再做全局细化 | 当前最稳定方案；仍需与 simultaneous optimization 做严格消融 |
 | Z 如何初始化 | PushBox `88822` shared 对比 `88823` independent random | Independent random initialization 更容易打破对称性，形成可辨识 latent geometry，并改善 Stage2 迁移 | 新实验默认采用每个环境独立随机初始化 |
 | Batch 应如何组织 | Joint mass-friction 失败版与 `91267/step7172` | 仅增大环境数不够；一次更新中让同一环境出现更多不同 actions，能给共享 Z 更一致、更充分的物理监督 | Batch shape 应同时报告 environment 数和每环境 action 数，不能只报告总 batch |
+| 视觉背景变化如何处理 | Multi-background 独立 group 对比 shared-friction job `103424` | 将同一 friction 在不同背景下设为同一个 environment group，可直接要求 Z 对背景变化保持不变；修正 LR 后 active Z 已形成 friction-related structure | Shared-friction Z 是当前背景不变性主线；仍需用统一 checkpoint 和评测预算与独立 `(background, friction)` group 做严格对照 |
 | Chunk 如何选择 | LightSwitch 长窗口失败版对比 `95498` event-centered 短窗口 | 稀疏因果事件中，大量无关帧会稀释监督；集中覆盖关键 interaction 的 chunk 更容易学习 | 关键 chunk 选择可能是必要条件；需要补同配置 30/120-frame 严格对照 |
 | Flow-matching 空间监督如何分配 | Real Ball Friction full-frame objective 对比 normalized ROI 6x objective | 对球、trough 和接触运动所在的关键区域提高 flow-matching loss 权重后，模型的有效关注明显集中到动力学区域，生成质量大幅提升；学习得到的 Z 在 PCA 中也呈现出更强、更有规律的组织结构 | 对物理事件占画面比例较小的任务，应优先使用 mean-normalized key-region weighting；还需用固定 seed、预算和样本的定量消融分离 ROI weighting 的独立贡献 |
 
@@ -32,6 +33,7 @@ Last updated: 2026-08-21
 | Joint mass-friction，失败版 | `90527`、`90748 -> 90917` | 无正式主评测 | `4 env x 4 action` 或 `6 env x 3 action/rank`；有效 batch 64/72 | 未形成清晰、可迁移的多因素 latent 结构 | 失败对照 |
 | Joint mass-friction，成功版 | `90971 -> 91267/step7172` | `91479` | `4 env x 6 action/rank`；有效 batch 96；new-Z lr `0.09` | Z 在无 factor supervision 下自发组织 mass 与 friction 两个因素 | 完成，主结果 |
 | Multi-background PushBox | 原始 random-C9 curriculum `step6000` -> `97909/step8200` | `98506` | 3 backgrounds x 40 frictions；固定前三个 waves 的 21 groups；每 rank `6 env x 6 common actions`；Z/model 每 200 steps 交替 | 每个背景内部出现 friction-related structure，但三个背景仍形成各自 cluster，说明 Z 同时编码了物理与视觉 domain | 当前最佳多背景结果 |
+| Multi-background PushBox，shared-friction Z | `103424/step4000`；错位续跑观察点 `104188/step4400` | `104091`；`105521` | 5 backgrounds x 30 frictions；同 friction 跨背景共享 Z32；ROI 10x；all-Z lr `0.03`，new-Z lr `0.09` | 正常 step4000 已出现 friction-related ordering；错位续跑 step4400 形成强单调弧线，但实际多执行 500 updates，不能作为受控主结果 | 正常基线完成；mis-resume 分支保留作机制观察 |
 | LightSwitch causal dynamics | `95498`；评测状态为 model 4100 + Z 4300 | `95707` | 4 causal env；event-centered 约 30-frame core，Wan 输入 33 帧；每 wave 加 4 groups | 短而关键的 interaction chunk 明显优于此前长窗口设置，说明 chunk information density 很重要 | 最新成功版；待严格 120-frame 对照 |
 
 ### 3. 真机实验
@@ -350,6 +352,118 @@ Last updated: 2026-08-21
 | 仿真实现 | 固定状态、动作和 friction，仅改变 renderer/background/light；可以获得时间严格对齐的 counterfactual visual views，最适合先做 shared-Z augmentation ablation |
 | 真实数据难点 | 很难在不同背景和光照下重复完全相同的状态、动作与接触过程；普通独立重采集会把物理轨迹差异混入 augmentation。可优先尝试背景替换、颜色/光照扰动、阴影/遮挡合成，或同步多相机采集 |
 | 后续严格评测 | 增加 unseen background、unseen friction、cross-action transfer；比较无 augmentation、shared-Z augmentation、single-Z 与 factorized environment-Z/background-Z |
+
+### H.6 Shared-friction multi-background：jobs 103424 / 104188
+
+#### H.6.1 数据与表示
+
+| 字段 | 配置 |
+|---|---|
+| 数据集 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox_various_env/libero_plus_push_box_event80_matched_physics_5randombackground_30friction_10action_1500eps_adaptive_end_2026-08-19_hai-machine` |
+| Metadata | `data/push_box_bwm_matchedphysics5bg30fric10action_65_105_shared_friction30_20260819/train.jsonl` |
+| 数据 | 5 个随机视觉 backgrounds，30 个 friction settings，10 actions，共 1500 episodes |
+| Environment group | 仅由 friction 决定，共 30 groups；同一 friction 在 5 个 backgrounds 下共享同一个 Z32 |
+| Sampling | 采样 friction 与 action 后，从对应的 5 个 backgrounds 中随机选择视频；background 不再拥有独立 Z |
+| 视频 | 固定 frames `65-105`，41 frames；不足 105 帧时使用最后一帧 padding |
+| 与 H.1 的区别 | H.1 为 120 个独立 `(background, friction)` groups；本实验为 30 个 shared-friction groups，显式要求 Z 对视觉背景保持不变 |
+
+#### H.6.2 修正 LR 后的标准训练：job 103424
+
+| 字段 | 配置 |
+|---|---|
+| Canonical config | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/configs/train/train_push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_4gpu_3fric6action_initial5_add5_original1000_tailc200m200_alllr003_newlr009_model300_stage1_8700.yaml` |
+| 输出目录 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_original1000_tailc200m200_alllr003_newlr009_model300_3fric6action_stage1_8700_103424` |
+| Z | dim 32，1 token；每个 friction 一个 Z；independent `U(0,1)` initialization；clamp `[0,1]` |
+| Batch shape | 每 rank `3 friction x 6 action = 18`；4 GPUs；有效 72 chunks/update |
+| Initial model phase | model-only 300 steps；前 100 steps 做 model-lr warm-up |
+| Curriculum groups | initial 5；每 wave add 5；最多 30 groups |
+| Learning rate | model `1e-5`；all-Z `0.03`；new-Z `0.09` |
+| ROI objective | 仅主相机 view 0 的 polygon `94,92;142,92;154,224;78,224` 使用 10x flow-matching weight；整张 loss map 做 mean normalization；wrist view 保持 1x |
+| Checkpoint | 每 100 steps 保存，滚动保留最新 2 个；step 4500 为永久保护点 |
+
+每个 curriculum 共 1400 steps：
+
+| 顺序 | 阶段 | Steps | Learning rate |
+|---:|---|---:|---:|
+| 1 | new-Z only | 200 | `0.09` |
+| 2 | all-Z only | 200 | `0.03` |
+| 3 | model only | 200 | `1e-5` |
+| 4 | all-Z only | 200 | `0.03` |
+| 5 | model only | 200 | `1e-5` |
+| 6 | all-Z only | 200 | `0.03` |
+| 7 | model only | 200 | `1e-5` |
+
+此前一部分 shared-friction 实验误将 all-Z lr 设为 `0.3`，或将 new-Z lr 设为 `0.9`。job 103424 使用的 `all-Z=0.03 / new-Z=0.09` 是本系列的修正基线。
+
+#### H.6.3 Checkpoint、PCA 与标准评测
+
+| 资产 | 绝对路径/说明 |
+|---|---|
+| 最新完整模型 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_original1000_tailc200m200_alllr003_newlr009_model300_3fric6action_stage1_8700_103424/step-4000.safetensors` |
+| 配对 Z table | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_original1000_tailc200m200_alllr003_newlr009_model300_3fric6action_stage1_8700_103424/step-4000.context_table.json` |
+| Curriculum order | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_original1000_tailc200m200_alllr003_newlr009_model300_3fric6action_stage1_8700_103424/curriculum_group_order.json` |
+| 评测 job | `104091` |
+| 评测输出 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/infer_push_box_matchedphysics5bg30fric_roi10x_alllr003_step4000_gt_stage1_stage2_x5fp32_10cases_grid_pca_104091` |
+
+| Step | Active groups | PC1 | PC2 | PC1+PC2 | Pearson corr(`friction`, PC1) | Rank corr |
+|---:|---:|---:|---:|---:|---:|---:|
+| 700 | 5 | 38.0% | 25.8% | 63.8% | 0.171 | 0.300 |
+| 1700 | 5 | 38.3% | 30.6% | 68.9% | 0.156 | 0.400 |
+| 3500 | 15 | 44.1% | 41.8% | 86.0% | 0.619 | 0.825 |
+| 4000 | 15 | 52.6% | 38.8% | 91.4% | 0.210 | 0.804 |
+
+step 4000 的 Pearson correlation 受 `group 14 / friction=0.07` 离群点影响，但 rank correlation 仍为 0.804。PCA 资产位于训练输出目录的 `pca/step700`、`pca/step1700`、`pca/step3500` 和 `pca/step4000`。
+
+| Stage2 字段 | 配置/结果 |
+|---|---|
+| Cases | 5 个 backgrounds 中的 10 个 active-friction cases |
+| Stage1 | 使用匹配 friction 的 training-time Z table entry |
+| Stage2 initialization | 15 个 active Z entries 的均值 |
+| Support/update | support=query；context-only FP32；ROI-weighted support flow loss |
+| Inner schedule | 40 steps：`3.0x10 + 1.5x10 + 0.5x10 + 0.15x10`；gradient clip 1；reg 0.001；clamp `[0,1]` |
+| Z displacement | 40 steps 后平均 `||Z_final-Z_initial||=0.196` |
+| Target-table distance | 平均从 0.588 降至 0.474；10 cases 中 9 个更接近对应 training-time Z |
+| Exception | `friction=0.07` 从 1.693 增至 1.720 |
+| 生成 | 10 个 Stage1、10 个 Stage2、10 个 GT/Stage1/Stage2 comparisons，以及 grid/PCA |
+
+当前 Stage2 endpoints 整体向对应 training-time Z 靠近，但仍集中在 Z 空间中央。Stage1 使用匹配的 training-time Z，生成效果整体优于当前 Stage2；当前 x5 schedule 能推动 Z，但仍属于高方差的探索性设置。
+
+#### H.6.4 错位续跑观察：job 104188
+
+| 字段 | 记录 |
+|---|---|
+| 输出目录 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_resume4000_stage1_8700_104188` |
+| Load source | job 103424 的 `step-4000.safetensors` 与 `step-4000.context_table.json` |
+| 错误 | 脚本将逻辑 `resume_step` 设为 3500，而不是 4000 |
+| 有效配对 | `step-4400.safetensors` 与 `step-4400.context_table.json` |
+| 失败位置 | labeled step 4500；protected-checkpoint copy 在常规模型 checkpoint 写盘前执行 |
+| PCA | PC1 81.2%，PC2 11.1%，累计 92.3%；Pearson 0.961；rank 0.993，形成清晰单调弧线 |
+| PCA 资产 | 输出目录下 `pca/step4500/active_context_pca.png/.svg/.csv`；该处 Z table 与 step 4400 配对表一致 |
+| 推理 job | `105521` |
+| 推理输出 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/infer_push_box_matchedphysics5bg30fric_roi10x_misresume104188_step4400_gt_stage1_stage2_x5fp32_10cases_grid_pca_105521` |
+
+labeled step 4400 实际执行了以下 900 次更新，而不是正确续跑应有的 400 次更新：
+
+| 逻辑区间 | 更新对象 | Updates |
+|---|---|---:|
+| 3501-3700 | model | 200 |
+| 3701-3900 | all-Z | 200 |
+| 3901-4100 | model | 200 |
+| 4101-4300 | all-Z | 200 |
+| 4301-4400 | model | 100 |
+
+相对于正确的 source step 4000 → step 4400，该分支额外执行了 300 次 model updates 和 200 次 all-Z updates。强单调弧线可能来自这部分额外优化，因此该结果只作为机制假设和后续 schedule ablation 的证据，不能作为与 job 103424 公平比较的主结果。其模型、Z table 和推理目录保留，不覆盖、不删除，并统一标记为 `mis-resume`。
+
+#### H.6.5 正确续跑与存档隔离
+
+| Job | 输出目录/状态 |
+|---|---|
+| `105512` | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_resume4000_stage1_8700_105512`；已改为正确 `resume_step=4000`，但首次更新前因 `phase_ended` `NameError` 退出；目录保留用于审计 |
+| `105524` | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_resume4000_stage1_8700_105524`；修复异常与 protected-checkpoint 写盘顺序后的正确续跑分支 |
+
+job 105524 只读加载 job 103424 的 step 4000 配对，不覆盖源目录。正确 phase 为：4001-4100 model，4101-4300 all-Z@0.03，4301-4500 model；step 4500 保存正常配对与永久保护副本；4501-4700 以 new-Z@0.09 进入第四个 curriculum。
+
+job 103424 的 step 4000 保存了模型和 Z table，但没有 AdamW optimizer moments。因此 job 105524 的模型/Z 状态连续，optimizer state 重新初始化；后续需要严格 optimizer-level resume 的训练必须同步保存 optimizer state。所有续跑均使用带 job ID 的独立输出目录，job 103424、104188、105512 和 105524 互不覆盖。
 
 ## I. LightSwitch event-centered causal dynamics：job 95498
 
