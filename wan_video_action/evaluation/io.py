@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import time
 from typing import Any
 
 import numpy as np
@@ -37,17 +38,35 @@ def read_video_frames(
     else:
         import imageio.v2 as imageio
 
-        reader = imageio.get_reader(str(path), "ffmpeg")
-        try:
-            stop = None if num_frames is None else start_frame + num_frames
-            for index, frame in enumerate(reader):
-                if index < start_frame:
-                    continue
-                if stop is not None and index >= stop:
-                    break
-                frames.append(np.asarray(frame))
-        finally:
-            reader.close()
+        last_error: Exception | None = None
+        for attempt in range(3):
+            frames.clear()
+            reader = None
+            try:
+                reader = imageio.get_reader(str(path), "ffmpeg")
+                stop = None if num_frames is None else start_frame + num_frames
+                for index, frame in enumerate(reader):
+                    if index < start_frame:
+                        continue
+                    if stop is not None and index >= stop:
+                        break
+                    frames.append(np.asarray(frame))
+                last_error = None
+                break
+            except (OSError, RuntimeError, ValueError) as error:
+                last_error = error
+                if attempt < 2:
+                    time.sleep(2**attempt)
+            finally:
+                if reader is not None:
+                    try:
+                        reader.close()
+                    except Exception:
+                        pass
+        if last_error is not None:
+            raise OSError(
+                f"Unable to decode video after 3 attempts: {path}"
+            ) from last_error
     if not frames:
         raise ValueError(f"No frames read from {path} at offset {start_frame}.")
     return np.stack(frames)

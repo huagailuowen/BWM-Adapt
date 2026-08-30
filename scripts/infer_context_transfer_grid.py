@@ -231,6 +231,12 @@ def parse_args():
     parser.add_argument("--raw_output_path", required=True)
     parser.add_argument("--plan_output_path", default=None)
     parser.add_argument("--skip_existing", action="store_true", default=False)
+    parser.add_argument(
+        "--skip_grid",
+        action="store_true",
+        default=False,
+        help="Generate raw predictions and the transfer plan without rendering a wide comparison grid.",
+    )
     parser.add_argument("--parameter_label", default="mu")
     parser.add_argument("--condition_fields", default="")
     args = parser.parse_args()
@@ -325,27 +331,28 @@ def main() -> None:
             _run_autoregressive(pipe=pipe, sample=sample, args=args)
             torch.cuda.empty_cache()
 
-        grid_path = grid_root / (
-            f"source{source_index:04d}_mu{float(item['source_friction_mu']):.6f}_"
-            f"2x{len(item['target_indices'])}_gt_transfer.mp4"
-        )
-        _write_2x5_grid_video(
-            metadata_rows=metadata_rows,
-            dataset_base_path=Path(args.dataset_base_path),
-            source_index=source_index,
-            target_indices=[int(x) for x in item["target_indices"]],
-            pred_dir=source_raw_dir,
-            output_path=grid_path,
-            width=int(args.width),
-            height=int(args.height),
-              fps=int(args.fps),
-              quality=int(args.quality),
-              parameter_label=str(args.parameter_label),
-              condition_fields=tuple(
-                  field.strip() for field in str(args.condition_fields).split(",") if field.strip()
-              ),
-          )
-        print(f"[grid] {grid_path}", flush=True)
+        if not args.skip_grid:
+            grid_path = grid_root / (
+                f"source{source_index:04d}_mu{float(item['source_friction_mu']):.6f}_"
+                f"2x{len(item['target_indices'])}_gt_transfer.mp4"
+            )
+            _write_2x5_grid_video(
+                metadata_rows=metadata_rows,
+                dataset_base_path=Path(args.dataset_base_path),
+                source_index=source_index,
+                target_indices=[int(x) for x in item["target_indices"]],
+                pred_dir=source_raw_dir,
+                output_path=grid_path,
+                width=int(args.width),
+                height=int(args.height),
+                fps=int(args.fps),
+                quality=int(args.quality),
+                parameter_label=str(args.parameter_label),
+                condition_fields=tuple(
+                    field.strip() for field in str(args.condition_fields).split(",") if field.strip()
+                ),
+            )
+            print(f"[grid] {grid_path}", flush=True)
 
     print(f"[done] raw={raw_root} grids={grid_root} plan={plan_path}", flush=True)
 

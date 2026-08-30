@@ -62,6 +62,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lpips-net", default="alex")
     parser.add_argument("--lpips-device", default="cuda")
     parser.add_argument("--lpips-batch-size", type=int, default=8)
+    parser.add_argument(
+        "--state-metrics-only",
+        action="store_true",
+        help="Re-extract and overwrite object/task metrics without touching global metrics.",
+    )
     return parser.parse_args()
 
 
@@ -82,6 +87,7 @@ def _extractor_settings(config: Mapping[str, Any]) -> dict[str, Any]:
         "min_area",
         "max_area",
         "edge_margin",
+        "max_tracking_jump_px",
         "light_roi",
         "yellow_threshold",
     }
@@ -114,6 +120,8 @@ def _sample_id(row: Mapping[str, Any], index: int) -> str:
 
 def main() -> None:
     args = parse_args()
+    if args.state_metrics_only and args.lpips:
+        raise SystemExit("--state-metrics-only and --lpips are mutually exclusive.")
     if args.lpips and not __import__("os").environ.get("SLURM_JOB_ID"):
         raise SystemExit("LPIPS is restricted to a scheduled compute node.")
 
@@ -132,6 +140,7 @@ def main() -> None:
     extractor = _extractor_settings(config)
     main_view_width = int(extractor.get("main_view_width", 224))
     task_settings = _task_settings(task, config)
+    support_size = int(config.get("support_size", 1))
     lpips = (
         LPIPSEvaluator(net=args.lpips_net, device=args.lpips_device)
         if args.lpips
@@ -170,37 +179,36 @@ def main() -> None:
 
                 gt_frames = _gt_frames(row, dataset_root)
                 pred_frames = np.asarray(read_video_frames(prediction_path))
-                gt_global, pred_global = _align_frames(
-                    _main_view(gt_frames, main_view_width),
-                    _main_view(pred_frames, main_view_width),
-                )
-                count = min(len(gt_global), len(pred_global))
-                gt_global, pred_global = gt_global[:count], pred_global[:count]
+                count = min(len(gt_frames), len(pred_frames))
                 target_id = _sample_id(row, target_index)
-                common = {
-                    "sample_id": target_id,
-                    "environment_id": f"source{source_index:04d}",
-                    "method": method,
-                    "split": "evaluation",
-                    "domain": domain,
-                    "support_size": 1,
-                    "seed": int(config.get("seed", 0)),
-                    "source_index": source_index,
-                    "target_index": target_index,
-                    "evaluated_frames": count,
-                }
-                appearance = dict(common)
-                appearance.update({
-                    "psnr": float(np.mean(frame_psnr(gt_global, pred_global))),
-                    "ssim": float(np.mean(frame_ssim(gt_global, pred_global))),
-                })
-                if lpips is not None:
-                    appearance["lpips"] = float(np.mean(lpips(
-                        gt_global,
-                        pred_global,
-                        batch_size=args.lpips_batch_size,
-                    )))
-                global_rows.append(appearance)
+                if not args.state_metrics_only:
+                    gt_global, pred_global = _align_frames(
+                        _main_view(gt_frames, main_view_width),
+                        _main_view(pred_frames, main_view_width),
+                    )
+                    count = min(len(gt_global), len(pred_global))
+                    gt_global, pred_global = gt_global[:count], pred_global[:count]
+                    appearance = {
+                        "sample_id": target_id,
+                        "environment_id": f"source{source_index:04d}",
+                        "method": method,
+                        "split": "evaluation",
+                        "domain": domain,
+                        "support_size": support_size,
+                        "seed": int(config.get("seed", 0)),
+                        "source_index": source_index,
+                        "target_index": target_index,
+                        "evaluated_frames": count,
+                        "psnr": float(np.mean(frame_psnr(gt_global, pred_global))),
+                        "ssim": float(np.mean(frame_ssim(gt_global, pred_global))),
+                    }
+                    if lpips is not None:
+                        appearance["lpips"] = float(np.mean(lpips(
+                            gt_global,
+                            pred_global,
+                            batch_size=args.lpips_batch_size,
+                        )))
+                    global_rows.append(appearance)
 
                 gt_state = extract_sim_task_state(task, gt_frames, **extractor)
                 pred_state = extract_sim_task_state(task, pred_frames, **extractor)
@@ -253,11 +261,12 @@ def main() -> None:
     ]
     physical_names = [name for name in sorted_task_names if name not in object_names]
     write_jsonl_atomic(output_dir / "manifest.jsonl", manifest_rows)
-    write_jsonl_atomic(output_dir / "global" / "global_per_query.jsonl", global_rows)
-    write_json_atomic(
-        output_dir / "global" / "global_summary.json",
-        aggregate_query_metrics(global_rows, global_names),
-    )
+    if not args.state_metrics_only:
+        write_jsonl_atomic(output_dir / "global" / "global_per_query.jsonl", global_rows)
+        write_json_atomic(
+            output_dir / "global" / "global_summary.json",
+            aggregate_query_metrics(global_rows, global_names),
+        )
     write_jsonl_atomic(output_dir / "task_specific" / "task_per_query.jsonl", task_rows)
     write_json_atomic(output_dir / "object_centric" / "object_summary.json", {
         "metric_names": object_names,
@@ -276,7 +285,11 @@ def main() -> None:
     write_json_atomic(output_dir / "protocol.json", {
         "config": str(config_path),
         "extractor": "sim_rgb_v1",
-        "global_metrics": global_names,
+        "extractor_settings": {
+            "max_tracking_jump_px": float(extractor.get("max_tracking_jump_px", 64.0)),
+            "offscreen_centroid": "hold_last_observed_position",
+        },
+        "global_metrics": "preserved_existing" if args.state_metrics_only else global_names,
         "method": method,
         "object_primary_indices": task_settings.get("primary_object_indices", []),
         "query_ground_truth_used_for_selection": False,

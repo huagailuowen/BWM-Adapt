@@ -162,8 +162,9 @@ def _state(
     frames: np.ndarray,
     cache_path: Path,
     extractor: Mapping[str, Any],
+    force_reextract: bool = False,
 ):
-    if cache_path.is_file():
+    if cache_path.is_file() and not force_reextract:
         return load_task_state(cache_path)
     state = extract_sim_task_state(
         task,
@@ -173,6 +174,7 @@ def _state(
         min_area=int(extractor.get("min_area", 8)),
         max_area=int(extractor.get("max_area", 3000)),
         edge_margin=int(extractor.get("edge_margin", 16)),
+        max_tracking_jump_px=float(extractor.get("max_tracking_jump_px", 64.0)),
         light_roi=tuple(extractor.get("light_roi", (98, 108, 151, 166))),
         yellow_threshold=float(extractor.get("yellow_threshold", 0.35)),
     )
@@ -379,6 +381,7 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path)
+    parser.add_argument("--force-state-reextract", action="store_true")
     return parser.parse_args()
 
 
@@ -447,7 +450,13 @@ def main() -> None:
                 if row is None:
                     raise KeyError(f"Missing metadata sample {index}.")
                 gt_cache = output_dir / "states" / "sim_rgb_v1" / "ground_truth" / f"sample{index:04d}.npz"
-                gt_state = _state(task, _gt_frames(row, dataset_root), gt_cache, extractor)
+                gt_state = _state(
+                    task,
+                    _gt_frames(row, dataset_root),
+                    gt_cache,
+                    extractor,
+                    force_reextract=args.force_state_reextract,
+                )
                 gt_outcome = _outcome(task, gt_state, outcome_settings)
                 is_support = index in support_index_set
                 prediction_path = None if is_support else predictions.get((source_index, index))
@@ -467,6 +476,7 @@ def main() -> None:
                         np.asarray(read_video_frames(prediction_path)),
                         pred_cache,
                         extractor,
+                        force_reextract=args.force_state_reextract,
                     )
                     selection_outcome = _outcome(task, pred_state, outcome_settings)
                     selection_source = "model_prediction"

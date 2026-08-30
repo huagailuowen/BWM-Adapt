@@ -18,6 +18,7 @@ class Event80TrackerConfig:
     maximum_area: int = 700
     maximum_width: int = 45
     maximum_height: int = 55
+    maximum_tracking_jump_px: float = 64.0
     offscreen_min_y: float = 185.0
     initial_x: float = 118.0
     initial_y: float = 103.0
@@ -137,6 +138,8 @@ def track_event80_block(
                     continue
                 center = np.array([xs.mean(), ys.mean()], dtype=np.float64)
                 continuity = float(np.linalg.norm(center - previous))
+                if continuity > config.maximum_tracking_jump_px:
+                    continue
                 color_score = float(np.mean((blue - red)[ys, xs]))
                 score = (
                     color_score * 80.0
@@ -168,9 +171,13 @@ def track_event80_block(
             exited = True
         if exited:
             offscreen[frame_index] = True
-            sentinel_x, sentinel_y = width // 2, height - 1
-            masks[frame_index, sentinel_y, sentinel_x] = True
-            centers[frame_index] = np.array([sentinel_x, sentinel_y])
+            # Preserve the final observed image-plane location continuously.
+            # This avoids introducing an artificial jump to a task-specific
+            # sentinel after the object leaves the camera view.
+            held_x = int(np.clip(round(previous[0]), 0, width - 1))
+            held_y = int(np.clip(round(previous[1]), 0, height - 1))
+            masks[frame_index, held_y, held_x] = True
+            centers[frame_index] = previous
 
     offscreen_indices = np.flatnonzero(offscreen)
     first_offscreen = int(offscreen_indices[0]) if len(offscreen_indices) else None

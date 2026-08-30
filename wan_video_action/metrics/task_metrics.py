@@ -72,21 +72,23 @@ def _centroid_metrics(
         raise ValueError("image_height and image_width are required for normalized errors.")
     diagonal = float(np.hypot(height, width))
     penalty = float(settings.get("missing_penalty_normalized", 1.0)) * diagonal
-    gt_visible = gt.visible if gt.visible is not None else np.all(np.isfinite(gt.centroids), axis=-1)
-    pred_visible = pred.visible if pred.visible is not None else np.all(np.isfinite(pred.centroids), axis=-1)
+    # A confirmed screen exit carries a finite, held-last-position centroid
+    # even though the object is no longer visibly segmented. Such states are
+    # valid trajectory estimates and must not receive the missing-track
+    # diagonal penalty. Unexplained detector loss remains NaN and is penalized.
+    gt_track_valid = np.all(np.isfinite(gt.centroids), axis=-1)
+    pred_track_valid = np.all(np.isfinite(pred.centroids), axis=-1)
     names = _object_names(settings, gt.centroids.shape[1])
     output: dict[str, float] = {}
     metric_names: list[str] = []
     errors_by_object: list[list[float]] = []
     for object_index, name in enumerate(names):
-        valid = np.flatnonzero(gt_visible[:, object_index])
+        valid = np.flatnonzero(gt_track_valid[:, object_index])
         if not len(valid):
             raise ValueError(f"GT object {name!r} is never visible.")
         errors = []
         for frame_index in valid:
-            if pred_visible[frame_index, object_index] and np.all(
-                np.isfinite(pred.centroids[frame_index, object_index])
-            ):
+            if pred_track_valid[frame_index, object_index]:
                 error = float(np.linalg.norm(
                     gt.centroids[frame_index, object_index]
                     - pred.centroids[frame_index, object_index]
@@ -101,7 +103,7 @@ def _centroid_metrics(
             f"{prefix}_ade_normalized": float(np.mean(errors) / diagonal),
             f"{prefix}_fde_normalized": float(errors[-1] / diagonal),
             f"{name}_missing_rate": float(
-                np.mean(~pred_visible[valid, object_index])
+                np.mean(~pred_track_valid[valid, object_index])
             ),
         }
         output.update(values)
@@ -200,10 +202,18 @@ def _first_transition(values: np.ndarray) -> int | None:
 def _light_metrics(gt: TaskState, pred: TaskState) -> tuple[dict[str, float], list[str]]:
     if gt.light_on is None or pred.light_on is None:
         raise ValueError("LightSwitch evaluation requires light_on state arrays.")
+    if gt.light_score is None or pred.light_score is None:
+        raise ValueError("LightSwitch evaluation requires continuous light_score arrays.")
     if gt.light_on.shape[1] != pred.light_on.shape[1]:
         raise ValueError("GT and prediction contain different lamp counts.")
+    if gt.light_score.shape != pred.light_score.shape:
+        raise ValueError("GT and prediction contain different light_score shapes.")
+    score_error = pred.light_score.astype(np.float64) - gt.light_score.astype(np.float64)
     equal = gt.light_on == pred.light_on
     output = {
+        "light_yellow_score_mae": float(np.mean(np.abs(score_error))),
+        "light_yellow_score_rmse": float(np.sqrt(np.mean(np.square(score_error)))),
+        "light_yellow_score_final_abs_error": float(np.mean(np.abs(score_error[-1]))),
         "light_state_accuracy": float(np.mean(equal)),
         "light_final_state_accuracy": float(np.mean(equal[-1])),
     }

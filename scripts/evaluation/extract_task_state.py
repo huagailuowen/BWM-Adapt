@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
 from wan_video_action.evaluation.io import read_mask_array, read_video_frames
 from wan_video_action.evaluation.sim_task_extractors import (
     DEFAULT_LIGHT_ROI,
+    DEFAULT_MAX_TRACKING_JUMP_PX,
     extract_sim_task_state,
     render_task_state_audit,
 )
@@ -47,6 +48,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--min-area", type=int, default=8)
     parser.add_argument("--max-area", type=int, default=3000)
     parser.add_argument("--edge-margin", type=int, default=16)
+    parser.add_argument(
+        "--max-tracking-jump-px",
+        type=float,
+        default=DEFAULT_MAX_TRACKING_JUMP_PX,
+    )
     parser.add_argument("--audit-video")
     parser.add_argument("--fps", type=float, default=1.0)
     return parser.parse_args()
@@ -67,6 +73,7 @@ def main() -> None:
             min_area=args.min_area,
             max_area=args.max_area,
             edge_margin=args.edge_margin,
+            max_tracking_jump_px=args.max_tracking_jump_px,
             light_roi=light_roi,
             yellow_threshold=args.yellow_threshold,
         )

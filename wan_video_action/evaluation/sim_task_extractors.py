@@ -20,6 +20,7 @@ from .task_state import TaskState
 DEFAULT_MAIN_VIEW_WIDTH = 224
 DEFAULT_LIGHT_ROI = (98, 108, 151, 166)
 DEFAULT_YELLOW_THRESHOLD = 0.35
+DEFAULT_MAX_TRACKING_JUMP_PX = 64.0
 
 
 def crop_main_view(frames: np.ndarray, width: int = DEFAULT_MAIN_VIEW_WIDTH) -> np.ndarray:
@@ -109,6 +110,7 @@ def _track_colour(
     min_area: int,
     max_area: int,
     edge_margin: int,
+    max_tracking_jump_px: float,
 ) -> tuple[np.ndarray, np.ndarray, dict[str, np.ndarray]]:
     frame_count, height, width = frames.shape[:3]
     centroids = np.full((frame_count, 2), np.nan, dtype=np.float64)
@@ -130,6 +132,11 @@ def _track_colour(
                 components,
                 key=lambda item: float(np.linalg.norm(item["center"] - previous)),
             )
+            if float(np.linalg.norm(choice["center"] - previous)) > max_tracking_jump_px:
+                # Do not let an unrelated same-colour component take over after
+                # the tracked object has disappeared or left the image.
+                selected.append(None)
+                continue
         previous = np.asarray(choice["center"], dtype=np.float64)
         selected.append(choice)
         index = len(selected) - 1
@@ -155,19 +162,13 @@ def _track_colour(
             height=height,
             edge_margin=edge_margin,
         )
-        if exit_info is not None and (last < frame_count - 1 or exit_info[1]):
-            side, touches_boundary = exit_info
-            start = last if touches_boundary else last + 1
-            boundary = np.asarray(choice["center"], dtype=np.float64).copy()
-            if side == "left":
-                boundary[0] = 0.0
-            elif side == "right":
-                boundary[0] = float(width - 1)
-            elif side == "top":
-                boundary[1] = 0.0
-            else:
-                boundary[1] = float(height - 1)
-            centroids[start:] = boundary
+        if exit_info is not None and last < frame_count - 1:
+            side, _ = exit_info
+            start = last + 1
+            # Off-screen state is the final observed image-plane location. It
+            # stays constant, so the trajectory remains continuous and can be
+            # compared without inventing motion or snapping to a boundary.
+            centroids[start:] = np.asarray(choice["center"], dtype=np.float64)
             events["offscreen"][start:] = True
             events[f"exit_{side}"][start:] = True
     return centroids, visible, events
@@ -182,6 +183,7 @@ def extract_coloured_object_state(
     min_area: int = 8,
     max_area: int = 3000,
     edge_margin: int = 16,
+    max_tracking_jump_px: float = DEFAULT_MAX_TRACKING_JUMP_PX,
 ) -> TaskState:
     main = crop_main_view(frames, main_view_width)
     tracks = [
@@ -191,6 +193,7 @@ def extract_coloured_object_state(
             min_area=min_area,
             max_area=max_area,
             edge_margin=edge_margin,
+            max_tracking_jump_px=max_tracking_jump_px,
         )
         for colour in colours
     ]
@@ -293,6 +296,7 @@ def extract_sim_task_state(
     min_area: int = 8,
     max_area: int = 3000,
     edge_margin: int = 16,
+    max_tracking_jump_px: float = DEFAULT_MAX_TRACKING_JUMP_PX,
     light_roi: tuple[int, int, int, int] = DEFAULT_LIGHT_ROI,
     yellow_threshold: float = DEFAULT_YELLOW_THRESHOLD,
 ) -> TaskState:
@@ -306,6 +310,7 @@ def extract_sim_task_state(
             min_area=min_area,
             max_area=max_area,
             edge_margin=edge_margin,
+            max_tracking_jump_px=max_tracking_jump_px,
         )
     if name in {"mass_collision", "collision", "mass_friction", "joint_mass_friction"}:
         # Object 0 is the red struck/pushed object; object 1 is the blue driver.
@@ -317,6 +322,7 @@ def extract_sim_task_state(
             min_area=min_area,
             max_area=max_area,
             edge_margin=edge_margin,
+            max_tracking_jump_px=max_tracking_jump_px,
         )
     if name in {"mass_balance", "balance"}:
         return extract_mass_balance_state(
@@ -390,4 +396,3 @@ def render_task_state_audit(
             writer.append_data(np.asarray(image))
     finally:
         writer.close()
-

@@ -78,7 +78,7 @@ def main() -> None:
     destination_plan_path = resolve(config["transfer_plans"][0]["path"])
     transfer_root = destination_plan_path.parent
     raw_root = transfer_root / "raw"
-    flat_root = transfer_root / "flat"
+    flat_root = transfer_root / str(inference.get("flat_dir_name", "flat"))
     raw_root.mkdir(parents=True, exist_ok=True)
     flat_root.mkdir(parents=True, exist_ok=True)
 
@@ -112,6 +112,8 @@ def main() -> None:
             str(ROOT / "scripts/infer.py"),
             "--config",
             str(train_config),
+            "--dataset_metadata_path",
+            str(resolve(config["metadata_jsonl"])),
             "--model_paths",
             str(args.model_paths.resolve()),
             "--ckpt_path",

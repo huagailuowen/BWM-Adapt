@@ -1,0 +1,23 @@
+version: 1
+task: mass_collision
+method_name: ours_stage2_roi10x
+seed: 20260827
+metadata_jsonl: data/mass_collision_noleak_original20_mainview_bwm_full61_20260827/train.jsonl
+dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass/libero_two_box_collision_9speed_30mass_linear_theory_distance_noleak_270eps_lerobot_2026-08-27_hai-machine
+output_dir: results/mass_collision/noleak_original20_grid_id10_k1_fullrange_visible_or_min_action_v3/methods/ours_stage2_roi10x/step_4300/seed_20260827/action_evaluation
+transfer_plans:
+  - path: results/mass_collision/noleak_original20_grid_id10_k1_fullrange_visible_or_min_action_v3/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/transfer_plan.json
+    domain: id
+action_field: action_id
+environment_report_fields: [target_mass_index, target_mass_kg]
+action_report_fields: [action_id, speed_index, action_amplitude, preimpact_speed_mps]
+minimum_actions: 2
+extractor: {main_view_width: 224, edge_margin: 16, fps: 10.0}
+outcome:
+  object_index: 0
+  object_roles: {struck_object: 0, target: 0, striker: 1, projectile: 1}
+  terminal_window: 5
+targets:
+  - {id: short_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.43, x_max: 0.57, y_min: 0.62, y_max: 0.72}}
+  - {id: medium_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.43, x_max: 0.57, y_min: 0.75, y_max: 0.86}}
+  - {id: long_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.42, x_max: 0.58, y_min: 0.92, y_max: 1.00}}

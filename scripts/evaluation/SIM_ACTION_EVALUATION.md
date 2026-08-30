@@ -33,3 +33,7 @@ LightSwitch is partitioned by `lamp_before`, actions are aggregated by
 evaluated. This prevents sequential chunks with different initial lamp states
 from being treated as interchangeable actions.
 
+The canonical LightSwitch manifest contains 15 query chunks for each of all
+four causal environments. Action selection filters that shared manifest to
+`red_only` and `blue_only`, retaining all 15 chunks in each environment rather
+than evaluating the historical five-chunk subset.

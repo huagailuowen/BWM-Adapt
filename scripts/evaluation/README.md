@@ -54,11 +54,15 @@ Mass Balance requires the bar mask or `angles_rad [T,N]`. Its tilt is the
 principal axis of one fixed longitudinal bar edge. Angle error is computed
 modulo pi because an undirected edge at theta and theta + pi is identical.
 
-LightSwitch uses only `light_on [T,L]` as its primary task state. The supplied
-extractor can classify a calibrated, frozen lamp ROI by mean luminance. The ROI
-and threshold must be fitted on training/calibration videos and then frozen for
-all methods. It reports frame accuracy, final-state accuracy, transition-time
-error, and exact-transition rate; EEF motion is not a LightSwitch target metric.
+LightSwitch uses continuous `light_score [T,L]`, the frozen yellow-pixel
+fraction in the lamp ROI, as its primary task state. It reports per-frame MAE,
+RMSE, and final-frame absolute error. Thresholded `light_on [T,L]`, frame
+accuracy, final-state accuracy, transition-time error, and exact-transition
+rate are retained as diagnostics; EEF motion is not a LightSwitch target
+metric. The canonical protocol evaluates 15 held-out chunks in each of all
+four causal environments for visual and lamp-intensity metrics. Action
+selection uses the same manifest but only the `red_only` and `blue_only`
+environments.
 
 Example evaluation:
 
@@ -76,8 +80,8 @@ Event80 run 89097. It evaluates the main camera, wrist camera, combined RGB,
 and a frozen color/trajectory block tracker. The segmentation mask is used only
 to extract the object centroid and is not itself scored. The primary object
 metric is the per-frame Euclidean distance between GT and predicted centroids.
-Off-screen blocks are represented by the fixed bottom-center sentinel
-`(x=0.5, y=1.0)`. The historical run reused
+Off-screen blocks retain their final observed image-plane centroid, with a
+separate off-screen flag recording the confirmed exit. The historical run reused
 the adapted episode for generation, so its outputs are explicitly labeled
 `legacy_same_episode_smoke` and must not be reported as the final disjoint
 support/query benchmark.

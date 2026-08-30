@@ -8,9 +8,12 @@ change training or legacy inference behavior.
 
 - Global appearance: PSNR, SSIM, and optional official LPIPS.
 - Object-centric: per-object centroid ADE/FDE in pixels and normalized image
-  coordinates, plus missing-track rate.
+  coordinates, plus missing-track rate. Confirmed off-screen tracks hold the
+  final observed position and remain valid; only unexplained detector loss is
+  penalized as missing.
 - Task-specific: target-object kinematics, mass-balance bar angle, or
-  LightSwitch lamp state and transition timing.
+  LightSwitch per-frame yellow-lamp intensity error. Binary lamp state and
+  transition timing are retained as diagnostics.
 - Action selection remains in `evaluate_sim_action_selection.py` and reports
   task success, oracle agreement, and oracle regret.
 
@@ -59,3 +62,16 @@ video_metrics/
 
 The global, object-centric, task-specific, and action-selection stages all use
 the same transfer plan and query identities.
+
+## LightSwitch protocol
+
+The canonical non-action LightSwitch benchmark uses all four causal
+environments (`neither`, `red_only`, `blue_only`, and `both`) and exactly 15
+held-out query chunks per environment. The 60 queries are disjoint from the
+eight support chunks used to optimize the environment context. Global metrics
+and continuous yellow-lamp metrics consume all 60 queries.
+
+Action selection consumes the same frozen manifest but evaluates only the
+`red_only` and `blue_only` environments. All 15 chunks from each eligible
+environment remain candidate rollouts; they cover both button colors and both
+initial lamp states.

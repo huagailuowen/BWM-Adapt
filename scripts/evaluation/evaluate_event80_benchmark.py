@@ -602,7 +602,7 @@ def main() -> None:
         "future_start_frame": future_start,
         "aggregation": "equal weight per environment after averaging its nine queries",
         "object_metric": "main-camera pushed-block centroid ADE/FDE",
-        "offscreen_handling": "Event80 tracker bottom-center sentinel",
+        "offscreen_handling": "hold final observed centroid after confirmed exit",
         "lpips_implementation": "official lpips package",
         "lpips_network": lpips_config.get("network", "alex"),
         "methods": config["methods"],

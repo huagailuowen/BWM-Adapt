@@ -1,0 +1,32 @@
+version: 1
+task: lightswitch
+method_name: standard_pooled_wm
+seed: 20260803
+metadata_jsonl: data/lightswitch_randominitial_absolute_eef_event33_group20_20260801/event_centered_group20_train.jsonl
+dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/robomme-lightSwitch/robomme_light_switch_independent_controls_random8_fixed_close_buttons_no_pause_random_initial_absolute_eef_200eps_hai-machine_lerobot
+output_dir: results/lightswitch/event33_all4env_15chunks_v1/methods/standard_pooled_wm/step_5756/seed_20260803/action_evaluation
+transfer_plans:
+  - {path: results/lightswitch/event33_all4env_15chunks_v1/methods/standard_pooled_wm/step_5756/seed_20260803/transfer/transfer_plan.json, domain: id}
+eligible_environment_field: causal_class
+eligible_environment_values: [red_only, blue_only]
+partition_field: lamp_before
+action_field: button_color
+environment_report_fields: [causal_class, red_controls_lamp, blue_controls_lamp]
+action_report_fields: [action_id, button_color, lamp_before, lamp_after]
+minimum_actions: 2
+extractor: {main_view_width: 224, light_roi: [98, 108, 151, 166], yellow_threshold: 0.35, fps: 10.0}
+outcome: {terminal_window: 5, yellow_threshold: 0.35}
+targets:
+  - {id: lamp_on, kind: binary, value: true}
+  - {id: lamp_off, kind: binary, value: false}
+inference:
+  train_config: configs/train/train_lightswitch_event33_active12_standard_pooled_wm_2gpu_24h.yaml
+  checkpoint: outputs/method_benchmarks/lightswitch_event33/standard_pooled_wm/seed_20260801/checkpoints/step-5756.safetensors
+  cache_key: lightswitch-event33-standard-pooled-step5756
+  source_transfer_plan: results/lightswitch/event33_all4env_15chunks_v1/methods/ours/step_4100_context_4300/seed_20260803/transfer/transfer_plan.json
+  method_output_root: results/lightswitch/event33_all4env_15chunks_v1/methods/standard_pooled_wm/step_5756/seed_20260803
+  num_inference_steps: 25
+  cfg_scale: 1.0
+  fps: 30
+  quality: 6
+  seed: 20260803

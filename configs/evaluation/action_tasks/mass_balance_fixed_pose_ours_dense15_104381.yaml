@@ -1,0 +1,20 @@
+version: 1
+task: mass_balance
+method_name: ours
+seed: 20260722
+metadata_jsonl: data/mass_balance_fixed_pose_20ratio_stride2_41f_20260722/train.jsonl
+dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass_balance/libero_mass_balance_fixed_pose_20ratio_15support_300eps_direct_approach_absolute_eef_lerobot_2026-07-22_hai-machine
+output_dir: results/mass_balance/fixed_pose_dense15_boundary_104381/methods/ours/action_evaluation
+transfer_plans:
+  - path: outputs/infer_mass_balance_fixed_pose_91441_stage1_stage2_dense15_boundary_104381/same_ratio_other_supports/transfer_plan.json
+    domain: id
+action_field: action_id
+action_order_field: sampled_support_offset_m
+selection_strategy: boundary_crossing
+environment_report_fields: [ratio_index, mass_ratio]
+action_report_fields: [action_id, support_bin_index, sampled_support_offset_m]
+minimum_actions: 15
+extractor: {main_view_width: 224, fps: 10.0}
+outcome: {terminal_window: 5}
+targets:
+  - {id: balanced, kind: scalar_interval, min: -3.0, max: 3.0}

@@ -1326,6 +1326,19 @@ def parse_args():
     parser.add_argument("--ttt_quiet_inner", action="store_true", default=False)
     parser.add_argument("--adapt_only", action="store_true", default=False)
     parser.add_argument("--resume_context_trajectory", action="store_true", default=False)
+    parser.add_argument(
+        "--ttt_transfer_targets_by_source",
+        type=str,
+        default=None,
+        help=(
+            "Optional SOURCE:TARGET,TARGET;SOURCE:TARGET,TARGET mapping. After adapting each "
+            "listed source, generate all mapped queries with the same adapted state in this "
+            "process so the model is loaded only once."
+        ),
+    )
+    parser.add_argument("--ttt_transfer_output_path", type=str, default=None)
+    parser.add_argument("--ttt_transfer_plan_output_path", type=str, default=None)
+    parser.add_argument("--ttt_transfer_skip_existing", action="store_true", default=False)
     args = parser.parse_args()
     if args.config is not None:
         args = merge_yaml_and_args(args.config, parser, args)
@@ -1391,6 +1404,36 @@ def main() -> None:
         sample_indices = list(range(start, end))
     if args.max_samples and args.sample_indices is not None:
         sample_indices = sample_indices[: int(args.max_samples)]
+
+    transfer_targets_by_source: dict[int, list[int]] = {}
+    if args.ttt_transfer_targets_by_source:
+        if not args.ttt_transfer_output_path or not args.ttt_transfer_plan_output_path:
+            raise ValueError(
+                "--ttt_transfer_targets_by_source requires --ttt_transfer_output_path and "
+                "--ttt_transfer_plan_output_path."
+            )
+        if args.adapt_only:
+            raise ValueError("In-process transfer is incompatible with --adapt_only.")
+        for entry in str(args.ttt_transfer_targets_by_source).split(";"):
+            entry = entry.strip()
+            if not entry:
+                continue
+            if ":" not in entry:
+                raise ValueError(f"Invalid transfer mapping entry: {entry!r}")
+            source_raw, targets_raw = entry.split(":", 1)
+            source_index = int(source_raw.strip())
+            targets = _parse_sample_indices(targets_raw)
+            if not targets:
+                raise ValueError(f"No transfer targets supplied for source={source_index}.")
+            if source_index in transfer_targets_by_source:
+                raise ValueError(f"Duplicate transfer source={source_index}.")
+            transfer_targets_by_source[source_index] = [int(index) for index in targets]
+        missing_sources = sorted(set(transfer_targets_by_source) - set(map(int, sample_indices)))
+        if missing_sources:
+            raise ValueError(
+                "Every in-process transfer source must be included in --sample_indices; "
+                f"missing={missing_sources}."
+            )
 
     support_plan = {}
     sample_cache_keys = {}
@@ -1581,6 +1624,7 @@ def main() -> None:
     rendered_support = set()
     result_rows = []
     trajectory_rows = []
+    resumed_trajectory_rows_by_sample: dict[int, list[dict]] = {}
     trajectory_path = Path(args.ttt_context_trajectory_path) if args.ttt_context_trajectory_path else output_path.parent / "context_trajectory.jsonl"
     pca_output_path = Path(args.ttt_context_pca_output_path) if args.ttt_context_pca_output_path else output_path.parent / "context_trajectory_pca.svg"
     completed_context_samples = set()
@@ -1596,6 +1640,18 @@ def main() -> None:
             sample_index
             for sample_index in trajectory_complete_samples
             if (output_path / _default_pred_name(sample_index, query_rows[sample_index])).is_file()
+        }
+        resumed_trajectory_rows_by_sample = {
+            sample_index: sorted(
+                [
+                    row
+                    for row in trajectory_rows
+                    if row.get("sample_index") is not None
+                    and int(row["sample_index"]) == sample_index
+                ],
+                key=lambda row: int(row["inner_step"]),
+            )
+            for sample_index in completed_context_samples
         }
         trajectory_rows = [
             row
@@ -1614,10 +1670,24 @@ def main() -> None:
     if args.render_support:
         support_output_path.mkdir(parents=True, exist_ok=True)
         support_comparison_path.mkdir(parents=True, exist_ok=True)
+    transfer_output_path = (
+        Path(args.ttt_transfer_output_path) if args.ttt_transfer_output_path else None
+    )
+    transfer_plan_output_path = (
+        Path(args.ttt_transfer_plan_output_path)
+        if args.ttt_transfer_plan_output_path
+        else None
+    )
+    transfer_plan_rows = []
+    if transfer_output_path is not None:
+        transfer_output_path.mkdir(parents=True, exist_ok=True)
+        transfer_plan_output_path.parent.mkdir(parents=True, exist_ok=True)
 
     for sample_index in sample_indices:
         sample_index = int(sample_index)
-        if sample_index in completed_context_samples:
+        resumed_sample = sample_index in completed_context_samples
+        has_transfer_targets = sample_index in transfer_targets_by_source
+        if resumed_sample and not has_transfer_targets:
             print(f"[resume_context_skip] sample_index={sample_index}", flush=True)
             continue
         row = query_rows[sample_index]
@@ -1626,6 +1696,30 @@ def main() -> None:
         pred_name = _default_pred_name(sample_index, row)
         pred_path = output_path / pred_name
 
+        if cache_key not in context_cache and resumed_sample:
+            if args.ttt_adapt_scope != "context":
+                raise ValueError(
+                    "Restoring an adapted state for in-process transfer currently requires "
+                    "--ttt_adapt_scope context."
+                )
+            resumed_rows = resumed_trajectory_rows_by_sample[sample_index]
+            adapted_context = torch.tensor(
+                resumed_rows[-1]["context_flat"],
+                device=pipe.device,
+                dtype=context_dtype,
+            ).reshape_as(initial_context_tensor)
+            context_cache[cache_key] = (
+                adapted_context,
+                [],
+                base_adapter_state,
+                {},
+                resumed_rows,
+            )
+            print(
+                f"[resume_context_restore] sample_index={sample_index} "
+                f"inner_step={resumed_rows[-1]['inner_step']}",
+                flush=True,
+            )
         if cache_key not in context_cache:
             support_indices = support_plan[cache_key]
             print(f"[adapt] group={group_key} cache_key={cache_key} support={support_indices}", flush=True)
@@ -1736,19 +1830,92 @@ def main() -> None:
                 )
                 print(f"[support_comparison] {support_comparison}", flush=True)
             rendered_support.add(cache_key)
-        if pred_path.exists() and args.skip_existing:
+        if resumed_sample:
+            print(f"[resume_context_skip_prediction] sample_index={sample_index}", flush=True)
+        elif pred_path.exists() and args.skip_existing:
             print(f"[skip] existing prediction {pred_path}", flush=True)
         else:
             sample = query_dataset[sample_index]
             sample = prepare_sample_for_rollout(sample, sample_index, pipe, args)
             sample["physical_context"] = _compose_known_physical_context(sample, adapted_context, args)
+            write_pred_path = pred_path
+            if args.resume_context_trajectory:
+                write_pred_path = pred_path.with_name(
+                    pred_path.stem + ".partial" + pred_path.suffix
+                )
+                write_pred_path.unlink(missing_ok=True)
+            sample["output_path"] = str(write_pred_path)
             print(
                 f"[sample] sample_index={sample_index} group={group_key} "
                 f"episode={sample['episode_index']} output={pred_path}",
                 flush=True,
             )
             _run_autoregressive(pipe=pipe, sample=sample, args=args)
+            if write_pred_path != pred_path:
+                os.replace(write_pred_path, pred_path)
             torch.cuda.empty_cache()
+
+        if has_transfer_targets:
+            source_mu = float(row["friction_mu"])
+            source_transfer_dir = transfer_output_path / (
+                f"source{sample_index:04d}_mu{source_mu:.6f}"
+            )
+            source_transfer_dir.mkdir(parents=True, exist_ok=True)
+            target_indices = transfer_targets_by_source[sample_index]
+            for target_index in target_indices:
+                target_row = query_rows[int(target_index)]
+                target_mu = float(target_row["friction_mu"])
+                if abs(target_mu - source_mu) > 1e-8:
+                    raise ValueError(
+                        f"Transfer target={target_index} has friction_mu={target_mu}, "
+                        f"but source={sample_index} has friction_mu={source_mu}."
+                    )
+                target_pred_path = source_transfer_dir / _default_pred_name(
+                    int(target_index), target_row
+                )
+                if target_pred_path.exists() and args.ttt_transfer_skip_existing:
+                    print(f"[transfer_skip] {target_pred_path}", flush=True)
+                    continue
+                target_sample = query_dataset[int(target_index)]
+                target_sample = prepare_sample_for_rollout(
+                    target_sample, int(target_index), pipe, args
+                )
+                target_sample["physical_context"] = _compose_known_physical_context(
+                    target_sample, adapted_context, args
+                )
+                temporary_target_path = target_pred_path.with_name(
+                    target_pred_path.stem + ".partial" + target_pred_path.suffix
+                )
+                temporary_target_path.unlink(missing_ok=True)
+                target_sample["output_path"] = str(temporary_target_path)
+                print(
+                    f"[transfer] source={sample_index} target={target_index} "
+                    f"output={target_pred_path}",
+                    flush=True,
+                )
+                _run_autoregressive(pipe=pipe, sample=target_sample, args=args)
+                os.replace(temporary_target_path, target_pred_path)
+                torch.cuda.empty_cache()
+            transfer_plan_rows.append(
+                {
+                    "source_index": sample_index,
+                    "source_sample_id": row.get("sample_id"),
+                    "source_friction_mu": row.get("friction_mu"),
+                    "source_inner_step": cached_trajectory[-1].get("inner_step"),
+                    "target_indices": target_indices,
+                    "target_sample_ids": [
+                        query_rows[index].get("sample_id") for index in target_indices
+                    ],
+                }
+            )
+            temporary_plan_path = transfer_plan_output_path.with_name(
+                transfer_plan_output_path.name + ".tmp"
+            )
+            temporary_plan_path.write_text(
+                json.dumps(transfer_plan_rows, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+            os.replace(temporary_plan_path, transfer_plan_output_path)
 
         comparison_file = None
         if args.baseline_pred_dir:
