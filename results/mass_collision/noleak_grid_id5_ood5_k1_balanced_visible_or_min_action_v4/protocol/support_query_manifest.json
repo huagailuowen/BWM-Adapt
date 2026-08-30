@@ -1,0 +1,397 @@
+{
+  "protocol": "K=1 support selected directly from no-leak GT with both-object visibility constraints",
+  "support_size": 1,
+  "selection_uses_ground_truth": true,
+  "selection_constraints": {
+    "minimum_visible_fraction_per_object": 0.95,
+    "no_offscreen_event_for_either_object": true,
+    "final_five_frame_minimum_centroid_margin_px": 20.0,
+    "preferred_red_displacement_px": [
+      25.0,
+      60.0
+    ]
+  },
+  "environment_selection": "explicit balanced 5-ID/5-OOD masses with strict-visible preference and minimum-action fallback",
+  "environments": [
+    {
+      "domain": "id",
+      "environment_id": "id_mass_index_29",
+      "target_mass_index": 29,
+      "target_mass_kg": 2.0,
+      "support_indices": [
+        240
+      ],
+      "query_indices": [
+        0,
+        30,
+        60,
+        90,
+        120,
+        150,
+        180,
+        210
+      ],
+      "selection": {
+        "sample_index": 240,
+        "sample_id": "mass_collision_noleak:ep000240:frames0000-0060",
+        "target_mass_kg": 2.0,
+        "target_mass_index": 29,
+        "action_id": 8,
+        "action_amplitude": 1.0,
+        "red_displacement_px": 6.0,
+        "red_visible_fraction": 1.0,
+        "blue_visible_fraction": 1.0,
+        "red_final_margin_px": 90.5,
+        "blue_final_margin_px": 106.34437086092716,
+        "red_offscreen": false,
+        "blue_offscreen": false,
+        "strict_both_visible": true,
+        "displacement_class": "outside_informative_band",
+        "selection_score": 119.0,
+        "selection_mode": "strict_visible_preferred_displacement"
+      }
+    },
+    {
+      "domain": "id",
+      "environment_id": "id_mass_index_26",
+      "target_mass_index": 26,
+      "target_mass_kg": 0.509433585,
+      "support_indices": [
+        153
+      ],
+      "query_indices": [
+        3,
+        33,
+        63,
+        93,
+        123,
+        183,
+        213,
+        243
+      ],
+      "selection": {
+        "sample_index": 153,
+        "sample_id": "mass_collision_noleak:ep000153:frames0000-0060",
+        "target_mass_kg": 0.509433585,
+        "target_mass_index": 26,
+        "action_id": 5,
+        "action_amplitude": 0.68,
+        "red_displacement_px": 44.7250388659697,
+        "red_visible_fraction": 1.0,
+        "blue_visible_fraction": 1.0,
+        "red_final_margin_px": 51.78125,
+        "blue_final_margin_px": 96.1734693877551,
+        "red_offscreen": false,
+        "blue_offscreen": false,
+        "strict_both_visible": true,
+        "displacement_class": "inside_informative_band",
+        "selection_score": 2.225038865969701,
+        "selection_mode": "strict_visible_preferred_displacement"
+      }
+    },
+    {
+      "domain": "id",
+      "environment_id": "id_mass_index_23",
+      "target_mass_index": 23,
+      "target_mass_kg": 0.302980968,
+      "support_indices": [
+        66
+      ],
+      "query_indices": [
+        6,
+        36,
+        96,
+        126,
+        156,
+        186,
+        216,
+        246
+      ],
+      "selection": {
+        "sample_index": 66,
+        "sample_id": "mass_collision_noleak:ep000066:frames0000-0060",
+        "target_mass_kg": 0.302980968,
+        "target_mass_index": 23,
+        "action_id": 2,
+        "action_amplitude": 0.46,
+        "red_displacement_px": 45.00438451636456,
+        "red_visible_fraction": 1.0,
+        "blue_visible_fraction": 1.0,
+        "red_final_margin_px": 51.49707602339183,
+        "blue_final_margin_px": 88.23076923076923,
+        "red_offscreen": false,
+        "blue_offscreen": false,
+        "strict_both_visible": true,
+        "displacement_class": "inside_informative_band",
+        "selection_score": 2.50438451636456,
+        "selection_mode": "strict_visible_preferred_displacement"
+      }
+    },
+    {
+      "domain": "id",
+      "environment_id": "id_mass_index_20",
+      "target_mass_index": 20,
+      "target_mass_kg": 0.206122244,
+      "support_indices": [
+        9
+      ],
+      "query_indices": [
+        39,
+        69,
+        99,
+        129,
+        159,
+        189,
+        219,
+        249
+      ],
+      "selection": {
+        "sample_index": 9,
+        "sample_id": "mass_collision_noleak:ep000009:frames0000-0060",
+        "target_mass_kg": 0.206122244,
+        "target_mass_index": 20,
+        "action_id": 0,
+        "action_amplitude": 0.38,
+        "red_displacement_px": 43.12678315353009,
+        "red_visible_fraction": 1.0,
+        "blue_visible_fraction": 1.0,
+        "red_final_margin_px": 53.373860182370834,
+        "blue_final_margin_px": 85.97235023041475,
+        "red_offscreen": false,
+        "blue_offscreen": false,
+        "strict_both_visible": true,
+        "displacement_class": "inside_informative_band",
+        "selection_score": 0.6267831535300914,
+        "selection_mode": "strict_visible_preferred_displacement"
+      }
+    },
+    {
+      "domain": "id",
+      "environment_id": "id_mass_index_10",
+      "target_mass_index": 10,
+      "target_mass_kg": 0.075892716,
+      "support_indices": [
+        19
+      ],
+      "query_indices": [
+        49,
+        79,
+        109,
+        139,
+        169,
+        199,
+        229,
+        259
+      ],
+      "selection": {
+        "sample_index": 19,
+        "sample_id": "mass_collision_noleak:ep000019:frames0000-0060",
+        "target_mass_kg": 0.075892716,
+        "target_mass_index": 10,
+        "action_id": 0,
+        "action_amplitude": 0.38,
+        "red_displacement_px": 94.55128205128204,
+        "red_visible_fraction": 1.0,
+        "blue_visible_fraction": 1.0,
+        "red_final_margin_px": 1.5,
+        "blue_final_margin_px": 51.175757575757586,
+        "red_offscreen": false,
+        "blue_offscreen": false,
+        "strict_both_visible": false,
+        "displacement_class": "outside_informative_band",
+        "selection_score": 134.55128205128204,
+        "selection_mode": "minimum_action_visibility_fallback"
+      }
+    },
+    {
+      "domain": "ood",
+      "environment_id": "ood_mass_index_28",
+      "target_mass_index": 28,
+      "target_mass_kg": 0.9129817872407724,
+      "support_indices": [
+        241
+      ],
+      "query_indices": [
+        1,
+        31,
+        61,
+        91,
+        121,
+        151,
+        181,
+        211
+      ],
+      "selection": {
+        "sample_index": 241,
+        "sample_id": "mass_collision_noleak:ep000241:frames0000-0060",
+        "target_mass_kg": 0.9129817872407724,
+        "target_mass_index": 28,
+        "action_id": 8,
+        "action_amplitude": 1.0,
+        "red_displacement_px": 24.903916556106328,
+        "red_visible_fraction": 1.0,
+        "blue_visible_fraction": 1.0,
+        "red_final_margin_px": 71.59677419354838,
+        "blue_final_margin_px": 92.00970873786409,
+        "red_offscreen": false,
+        "blue_offscreen": false,
+        "strict_both_visible": true,
+        "displacement_class": "outside_informative_band",
+        "selection_score": 100.09608344389368,
+        "selection_mode": "strict_visible_preferred_displacement"
+      }
+    },
+    {
+      "domain": "ood",
+      "environment_id": "ood_mass_index_24",
+      "target_mass_index": 24,
+      "target_mass_kg": 0.36666105396263127,
+      "support_indices": [
+        95
+      ],
+      "query_indices": [
+        5,
+        35,
+        65,
+        125,
+        155,
+        185,
+        215,
+        245
+      ],
+      "selection": {
+        "sample_index": 95,
+        "sample_id": "mass_collision_noleak:ep000095:frames0000-0060",
+        "target_mass_kg": 0.36666105396263127,
+        "target_mass_index": 24,
+        "action_id": 3,
+        "action_amplitude": 0.56,
+        "red_displacement_px": 46.67370477083787,
+        "red_visible_fraction": 1.0,
+        "blue_visible_fraction": 1.0,
+        "red_final_margin_px": 49.83050847457628,
+        "blue_final_margin_px": 85.27826086956523,
+        "red_offscreen": false,
+        "blue_offscreen": false,
+        "strict_both_visible": true,
+        "displacement_class": "inside_informative_band",
+        "selection_score": 4.1737047708378725,
+        "selection_mode": "strict_visible_preferred_displacement"
+      }
+    },
+    {
+      "domain": "ood",
+      "environment_id": "ood_mass_index_22",
+      "target_mass_index": 22,
+      "target_mass_kg": 0.2567309741554602,
+      "support_indices": [
+        37
+      ],
+      "query_indices": [
+        7,
+        67,
+        97,
+        127,
+        157,
+        187,
+        217,
+        247
+      ],
+      "selection": {
+        "sample_index": 37,
+        "sample_id": "mass_collision_noleak:ep000037:frames0000-0060",
+        "target_mass_kg": 0.2567309741554602,
+        "target_mass_index": 22,
+        "action_id": 1,
+        "action_amplitude": 0.42,
+        "red_displacement_px": 39.99267319311714,
+        "red_visible_fraction": 1.0,
+        "blue_visible_fraction": 1.0,
+        "red_final_margin_px": 56.51524390243901,
+        "blue_final_margin_px": 85.32188841201716,
+        "red_offscreen": false,
+        "blue_offscreen": false,
+        "strict_both_visible": true,
+        "displacement_class": "inside_informative_band",
+        "selection_score": 2.5073268068828582,
+        "selection_mode": "strict_visible_preferred_displacement"
+      }
+    },
+    {
+      "domain": "ood",
+      "environment_id": "ood_mass_index_19",
+      "target_mass_index": 19,
+      "target_mass_kg": 0.1742944349721352,
+      "support_indices": [
+        10
+      ],
+      "query_indices": [
+        40,
+        70,
+        100,
+        130,
+        160,
+        190,
+        220,
+        250
+      ],
+      "selection": {
+        "sample_index": 10,
+        "sample_id": "mass_collision_noleak:ep000010:frames0000-0060",
+        "target_mass_kg": 0.1742944349721352,
+        "target_mass_index": 19,
+        "action_id": 0,
+        "action_amplitude": 0.38,
+        "red_displacement_px": 51.912496814391105,
+        "red_visible_fraction": 1.0,
+        "blue_visible_fraction": 1.0,
+        "red_final_margin_px": 44.58791208791209,
+        "blue_final_margin_px": 81.35021097046413,
+        "red_offscreen": false,
+        "blue_offscreen": false,
+        "strict_both_visible": true,
+        "displacement_class": "inside_informative_band",
+        "selection_score": 9.412496814391105,
+        "selection_mode": "strict_visible_preferred_displacement"
+      }
+    },
+    {
+      "domain": "ood",
+      "environment_id": "ood_mass_index_13",
+      "target_mass_index": 13,
+      "target_mass_kg": 0.09233397390639964,
+      "support_indices": [
+        16
+      ],
+      "query_indices": [
+        46,
+        76,
+        106,
+        136,
+        166,
+        196,
+        226,
+        256
+      ],
+      "selection": {
+        "sample_index": 16,
+        "sample_id": "mass_collision_noleak:ep000016:frames0000-0060",
+        "target_mass_kg": 0.09233397390639964,
+        "target_mass_index": 13,
+        "action_id": 0,
+        "action_amplitude": 0.38,
+        "red_displacement_px": 89.0,
+        "red_visible_fraction": 1.0,
+        "blue_visible_fraction": 1.0,
+        "red_final_margin_px": 7.5,
+        "blue_final_margin_px": 59.184931506849324,
+        "red_offscreen": false,
+        "blue_offscreen": false,
+        "strict_both_visible": false,
+        "displacement_class": "outside_informative_band",
+        "selection_score": 129.0,
+        "selection_mode": "minimum_action_visibility_fallback"
+      }
+    }
+  ]
+}

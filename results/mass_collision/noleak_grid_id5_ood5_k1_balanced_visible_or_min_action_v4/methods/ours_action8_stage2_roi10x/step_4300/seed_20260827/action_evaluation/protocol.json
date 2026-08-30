@@ -1,0 +1,58 @@
+{
+  "action_order_field": null,
+  "candidate_count_is_protocol_defined": true,
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/mass_collision_noleak_ours_action8_step4300_id5_ood5_balanced_roi10x_v4.yaml",
+  "method": "ours_action8_stage2_roi10x",
+  "observed_support_is_selectable": true,
+  "selection_strategy": "nearest",
+  "selection_uses_query_ground_truth": false,
+  "targets": [
+    {
+      "id": "short_displacement",
+      "kind": "point_rectangle",
+      "object_index": 0,
+      "object_role": "struck_object",
+      "region": {
+        "x_max": 0.57,
+        "x_min": 0.43,
+        "y_max": 0.72,
+        "y_min": 0.62
+      }
+    },
+    {
+      "id": "medium_displacement",
+      "kind": "point_rectangle",
+      "object_index": 0,
+      "object_role": "struck_object",
+      "region": {
+        "x_max": 0.57,
+        "x_min": 0.43,
+        "y_max": 0.86,
+        "y_min": 0.75
+      }
+    },
+    {
+      "id": "long_displacement",
+      "kind": "point_rectangle",
+      "object_index": 0,
+      "object_role": "struck_object",
+      "region": {
+        "x_max": 0.58,
+        "x_min": 0.42,
+        "y_max": 1.0,
+        "y_min": 0.92
+      }
+    }
+  ],
+  "task": "mass_collision",
+  "transfer_plans": [
+    {
+      "domain": "id",
+      "path": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_action8_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/transfer_plan_id.json"
+    },
+    {
+      "domain": "ood",
+      "path": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_action8_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/transfer_plan_ood.json"
+    }
+  ]
+}

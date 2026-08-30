@@ -1,0 +1,28 @@
+{
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/mass_collision_noleak_ours_step4300_id5_ood5_balanced_roi10x_v4.yaml",
+  "extractor": "sim_rgb_v1",
+  "extractor_settings": {
+    "max_tracking_jump_px": 64.0,
+    "offscreen_centroid": "hold_last_observed_position"
+  },
+  "global_metrics": [
+    "psnr",
+    "ssim"
+  ],
+  "method": "ours_stage2_roi10x",
+  "object_primary_indices": [
+    0
+  ],
+  "query_ground_truth_used_for_selection": false,
+  "task": "mass_collision",
+  "transfer_plans": [
+    {
+      "domain": "id",
+      "path": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/transfer_plan_id.json"
+    },
+    {
+      "domain": "ood",
+      "path": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/transfer_plan_ood.json"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "environment": [
+    {
+      "count": 8,
+      "domain": "id",
+      "environment_id": "source0009",
+      "lpips": 0.051156359259039164,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 30.442163944244385,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9621469693594291,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "id",
+      "environment_id": "source0019",
+      "lpips": 0.053394130198284984,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 31.301072120666504,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.965074502786652,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "id",
+      "environment_id": "source0066",
+      "lpips": 0.05754626449197531,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 30.063243627548218,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.962001558210029,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "id",
+      "environment_id": "source0153",
+      "lpips": 0.04321971954777837,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 31.696480751037598,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9638153861780636,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "id",
+      "environment_id": "source0240",
+      "lpips": 0.024891657289117575,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 35.9850492477417,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9728751076293773,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "ood",
+      "environment_id": "source0010",
+      "lpips": 0.05527379619888961,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 30.064727306365967,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.960827345120125,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "ood",
+      "environment_id": "source0016",
+      "lpips": 0.052657597698271275,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 31.017757177352905,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9647895735306817,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "ood",
+      "environment_id": "source0037",
+      "lpips": 0.051592102739959955,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 30.09521484375,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9610668958210554,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "ood",
+      "environment_id": "source0095",
+      "lpips": 0.057446565479040146,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 29.96849822998047,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9611947139511343,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "ood",
+      "environment_id": "source0241",
+      "lpips": 0.037707600742578506,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 32.05730938911438,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.964018457126422,
+      "support_size": 1
+    }
+  ],
+  "seed": [
+    {
+      "count": 5,
+      "domain": "id",
+      "lpips": 0.04604162615723908,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 31.897601938247682,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9651827048327102,
+      "support_size": 1
+    },
+    {
+      "count": 5,
+      "domain": "ood",
+      "lpips": 0.0509355325717479,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 30.640701389312746,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9623793971098837,
+      "support_size": 1
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "lpips": 0.04604162615723908,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 31.897601938247682,
+      "split": "evaluation",
+      "ssim": 0.9651827048327102,
+      "support_size": 1
+    },
+    {
+      "count": 1,
+      "domain": "ood",
+      "lpips": 0.0509355325717479,
+      "method": "ours_action8_stage2_roi10x",
+      "psnr": 30.640701389312746,
+      "split": "evaluation",
+      "ssim": 0.9623793971098837,
+      "support_size": 1
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+[
+  {
+    "source_index": 240,
+    "target_mass_kg": 2.0,
+    "support_action_id": 8,
+    "support_action_amplitude": 1.0,
+    "query_indices": [
+      0,
+      30,
+      60,
+      90,
+      120,
+      150,
+      180,
+      210
+    ],
+    "output": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/grids_support_plus_queries/source0240_mass2.000000_support_plus_8queries_2x5_gt_stage2.mp4"
+  },
+  {
+    "source_index": 153,
+    "target_mass_kg": 0.509433585,
+    "support_action_id": 5,
+    "support_action_amplitude": 0.68,
+    "query_indices": [
+      3,
+      33,
+      63,
+      93,
+      123,
+      183,
+      213,
+      243
+    ],
+    "output": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/grids_support_plus_queries/source0153_mass0.509434_support_plus_8queries_2x5_gt_stage2.mp4"
+  },
+  {
+    "source_index": 66,
+    "target_mass_kg": 0.302980968,
+    "support_action_id": 2,
+    "support_action_amplitude": 0.46,
+    "query_indices": [
+      6,
+      36,
+      96,
+      126,
+      156,
+      186,
+      216,
+      246
+    ],
+    "output": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/grids_support_plus_queries/source0066_mass0.302981_support_plus_8queries_2x5_gt_stage2.mp4"
+  },
+  {
+    "source_index": 9,
+    "target_mass_kg": 0.206122244,
+    "support_action_id": 0,
+    "support_action_amplitude": 0.38,
+    "query_indices": [
+      39,
+      69,
+      99,
+      129,
+      159,
+      189,
+      219,
+      249
+    ],
+    "output": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/grids_support_plus_queries/source0009_mass0.206122_support_plus_8queries_2x5_gt_stage2.mp4"
+  },
+  {
+    "source_index": 19,
+    "target_mass_kg": 0.075892716,
+    "support_action_id": 0,
+    "support_action_amplitude": 0.38,
+    "query_indices": [
+      49,
+      79,
+      109,
+      139,
+      169,
+      199,
+      229,
+      259
+    ],
+    "output": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/grids_support_plus_queries/source0019_mass0.075893_support_plus_8queries_2x5_gt_stage2.mp4"
+  },
+  {
+    "source_index": 241,
+    "target_mass_kg": 0.9129817872407724,
+    "support_action_id": 8,
+    "support_action_amplitude": 1.0,
+    "query_indices": [
+      1,
+      31,
+      61,
+      91,
+      121,
+      151,
+      181,
+      211
+    ],
+    "output": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/grids_support_plus_queries/source0241_mass0.912982_support_plus_8queries_2x5_gt_stage2.mp4"
+  },
+  {
+    "source_index": 95,
+    "target_mass_kg": 0.36666105396263127,
+    "support_action_id": 3,
+    "support_action_amplitude": 0.56,
+    "query_indices": [
+      5,
+      35,
+      65,
+      125,
+      155,
+      185,
+      215,
+      245
+    ],
+    "output": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/grids_support_plus_queries/source0095_mass0.366661_support_plus_8queries_2x5_gt_stage2.mp4"
+  },
+  {
+    "source_index": 37,
+    "target_mass_kg": 0.2567309741554602,
+    "support_action_id": 1,
+    "support_action_amplitude": 0.42,
+    "query_indices": [
+      7,
+      67,
+      97,
+      127,
+      157,
+      187,
+      217,
+      247
+    ],
+    "output": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/grids_support_plus_queries/source0037_mass0.256731_support_plus_8queries_2x5_gt_stage2.mp4"
+  },
+  {
+    "source_index": 10,
+    "target_mass_kg": 0.1742944349721352,
+    "support_action_id": 0,
+    "support_action_amplitude": 0.38,
+    "query_indices": [
+      40,
+      70,
+      100,
+      130,
+      160,
+      190,
+      220,
+      250
+    ],
+    "output": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/grids_support_plus_queries/source0010_mass0.174294_support_plus_8queries_2x5_gt_stage2.mp4"
+  },
+  {
+    "source_index": 16,
+    "target_mass_kg": 0.09233397390639964,
+    "support_action_id": 0,
+    "support_action_amplitude": 0.38,
+    "query_indices": [
+      46,
+      76,
+      106,
+      136,
+      166,
+      196,
+      226,
+      256
+    ],
+    "output": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/ours_stage2_roi10x/step_4300/seed_20260827/same_mass_other_actions/grids_support_plus_queries/source0016_mass0.092334_support_plus_8queries_2x5_gt_stage2.mp4"
+  }
+]

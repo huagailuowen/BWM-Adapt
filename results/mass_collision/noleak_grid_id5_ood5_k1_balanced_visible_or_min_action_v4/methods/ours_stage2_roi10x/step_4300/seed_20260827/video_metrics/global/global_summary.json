@@ -1,0 +1,156 @@
+{
+  "environment": [
+    {
+      "count": 8,
+      "domain": "id",
+      "environment_id": "source0009",
+      "method": "ours_stage2_roi10x",
+      "psnr": 30.67650818824768,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9618503084925354,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "id",
+      "environment_id": "source0019",
+      "method": "ours_stage2_roi10x",
+      "psnr": 31.524532794952393,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9650062532698522,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "id",
+      "environment_id": "source0066",
+      "method": "ours_stage2_roi10x",
+      "psnr": 28.898497819900513,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9581605423180783,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "id",
+      "environment_id": "source0153",
+      "method": "ours_stage2_roi10x",
+      "psnr": 31.47410225868225,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9610194793490113,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "id",
+      "environment_id": "source0240",
+      "method": "ours_stage2_roi10x",
+      "psnr": 35.31852102279663,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9701219759270793,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "ood",
+      "environment_id": "source0010",
+      "method": "ours_stage2_roi10x",
+      "psnr": 30.33715510368347,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9611385837197304,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "ood",
+      "environment_id": "source0016",
+      "method": "ours_stage2_roi10x",
+      "psnr": 31.018779516220093,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9612161663712049,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "ood",
+      "environment_id": "source0037",
+      "method": "ours_stage2_roi10x",
+      "psnr": 30.137933254241943,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9595506008042664,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "ood",
+      "environment_id": "source0095",
+      "method": "ours_stage2_roi10x",
+      "psnr": 29.35952877998352,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9574497991898021,
+      "support_size": 1
+    },
+    {
+      "count": 8,
+      "domain": "ood",
+      "environment_id": "source0241",
+      "method": "ours_stage2_roi10x",
+      "psnr": 33.11299729347229,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9651279021970562,
+      "support_size": 1
+    }
+  ],
+  "seed": [
+    {
+      "count": 5,
+      "domain": "id",
+      "method": "ours_stage2_roi10x",
+      "psnr": 31.578432416915895,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9632317118713113,
+      "support_size": 1
+    },
+    {
+      "count": 5,
+      "domain": "ood",
+      "method": "ours_stage2_roi10x",
+      "psnr": 30.793278789520265,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.960896610456412,
+      "support_size": 1
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "method": "ours_stage2_roi10x",
+      "psnr": 31.578432416915895,
+      "split": "evaluation",
+      "ssim": 0.9632317118713113,
+      "support_size": 1
+    },
+    {
+      "count": 1,
+      "domain": "ood",
+      "method": "ours_stage2_roi10x",
+      "psnr": 30.793278789520265,
+      "split": "evaluation",
+      "ssim": 0.960896610456412,
+      "support_size": 1
+    }
+  ]
+}
