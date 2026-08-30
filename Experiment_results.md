@@ -16,7 +16,7 @@ Last updated: 2026-08-25
 | Z 如何初始化 | PushBox `88822` shared 对比 `88823` independent random | Independent random initialization 更容易打破对称性，形成可辨识 latent geometry，并改善 Stage2 迁移 | 新实验默认采用每个环境独立随机初始化 |
 | Batch 应如何组织 | Joint mass-friction 失败版与 `91267/step7172` | 仅增大环境数不够；一次更新中让同一环境出现更多不同 actions，能给共享 Z 更一致、更充分的物理监督 | Batch shape 应同时报告 environment 数和每环境 action 数，不能只报告总 batch |
 | 视觉背景变化如何处理 | Multi-background 独立 group 对比 shared-friction job `103424` | 将同一 friction 在不同背景下设为同一个 environment group，可直接要求 Z 对背景变化保持不变；修正 LR 后 active Z 已形成 friction-related structure | Shared-friction Z 是当前背景不变性主线；仍需用统一 checkpoint 和评测预算与独立 `(background, friction)` group 做严格对照 |
-| Chunk 如何选择 | LightSwitch 长窗口失败版对比 `95498` event-centered 短窗口 | 稀疏因果事件中，大量无关帧会稀释监督；集中覆盖关键 interaction 的 chunk 更容易学习 | 关键 chunk 选择可能是必要条件；需要补同配置 30/120-frame 严格对照 |
+| Chunk 如何选择 | LightSwitch 旧 event-centered `95498` 与新版 physical-trigger no-leak 数据 | 旧 event-centered crop 后来发现与环境/结果相关的 timing pattern leakage，不能再用于证明短 chunk 的优势；新版只按物理按键触发时刻裁剪并随机 jitter | 关键 chunk information density 仍是合理假设，但必须在新版 no-leak 数据上补固定其他设置的 33/120-frame 严格对照 |
 | Flow-matching 空间监督如何分配 | Real Ball Friction full-frame objective 对比 normalized ROI 6x objective | 对球、trough 和接触运动所在的关键区域提高 flow-matching loss 权重后，模型的有效关注明显集中到动力学区域，生成质量大幅提升；学习得到的 Z 在 PCA 中也呈现出更强、更有规律的组织结构 | 对物理事件占画面比例较小的任务，应优先使用 mean-normalized key-region weighting；还需用固定 seed、预算和样本的定量消融分离 ROI weighting 的独立贡献 |
 
 ### 2. 代表实验结果
@@ -27,14 +27,16 @@ Last updated: 2026-08-25
 | PushBox friction，shared C32 | `88822/step6814` | 主要使用 C-table/PCA 与 `88823` 比较 | 80 friction；frames 65-105；所有环境从同一 C32 起点开始 | Shared initialization 保留对称性，latent 分离和 Stage2 可辨识性较弱 | 完成；缺严格同样本 Stage2 对照 |
 | PushBox friction，random C32 | `88823/step7272` | `89097`、`89098` | 80 friction；independent `U(0,1)`；1000-step curriculum；Stage2 FP32 40 steps | 当前 PushBox 最佳；Z 与 friction 相关，并能从 showcase 迁移到同 friction 的其他 actions | 完成，主结果 |
 | Gravity | `89152/step3837` | `89519` | 80 gravity；full 61 frames；C32 random curriculum | 未显式提供 gravity，Z 仍形成 gravity 相关结构并支持 Stage2 | 完成，主结果 |
-| Mass collision | `90515/step3848` | `90735` | 20 个按 theoretical-distance effect 采样的 mass；9 speeds；full 61 frames | 比线性质量采样更有效地覆盖不同碰撞效应；Z 可跨撞击速度迁移 | 完成，主结果 |
+| Mass collision，旧版（有泄漏） | `90515/step3848` | `90735` | 20 个按 theoretical-distance effect 采样的 mass；9 speeds；full 61 frames | 后续审计发现不同 mass 环境存在稳定的环境相关视觉/episode pattern，模型可能不经物理适应即可识别环境 | 历史结果保留审计；不得作为正式主结果或方法优越性证据 |
+| Mass collision，no-leak | `107912/step4300`；pooled `step8000` | `results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4` | 新 30-mass 数据中按数值匹配旧版 20 个 mass 训练；main view only；9 speeds；Ours 为 C32 random curriculum、每 rank `4 mass x 8 actions`；pooled 为 2 GPUs、每卡 batch 16 | 正式 Action8 Ours：PSNR 31.10、SSIM 0.9639、final-displacement error 8.17 px；均明显优于 pooled 的 29.80、0.9623、25.62 px | 新正式结果；跨任务主表使用 Action8；Action4/ROI10x 仅作同任务消融 |
 | Mass balance，workspace random | `91401/step4300` | `91912` | 20 ratios；15 supports；stride 2；`3 env x 6 chunk/rank` | 在 workspace/pose 变化下仍能学习质量分布 latent | 完成，鲁棒性结果 |
 | Mass balance，fixed pose | `91441/step4300` | `92059` | 与 random 版相同训练机制，但固定 pose | 减少无关视觉变化后，质量比例与 latent geometry 更容易分析 | 完成，主结果 |
 | Joint mass-friction，失败版 | `90527`、`90748 -> 90917` | 无正式主评测 | `4 env x 4 action` 或 `6 env x 3 action/rank`；有效 batch 64/72 | 未形成清晰、可迁移的多因素 latent 结构 | 失败对照 |
 | Joint mass-friction，成功版 | `90971 -> 91267/step7172` | `91479` | `4 env x 6 action/rank`；有效 batch 96；new-Z lr `0.09` | Z 在无 factor supervision 下自发组织 mass 与 friction 两个因素 | 完成，主结果 |
 | Multi-background PushBox | 原始 random-C9 curriculum `step6000` -> `97909/step8200` | `98506` | 3 backgrounds x 40 frictions；固定前三个 waves 的 21 groups；每 rank `6 env x 6 common actions`；Z/model 每 200 steps 交替 | 每个背景内部出现 friction-related structure，但三个背景仍形成各自 cluster，说明 Z 同时编码了物理与视觉 domain | 当前最佳多背景结果 |
 | Multi-background PushBox，shared-friction Z | `103424/step4000`；错位续跑观察点 `104188/step4400` | `104091`；`105521` | 5 backgrounds x 30 frictions；同 friction 跨背景共享 Z32；ROI 10x；all-Z lr `0.03`，new-Z lr `0.09` | 正常 step4000 已出现 friction-related ordering；错位续跑 step4400 形成强单调弧线，但实际多执行 500 updates，不能作为受控主结果 | 正常基线完成；mis-resume 分支保留作机制观察 |
-| LightSwitch causal dynamics | `95498`；评测状态为 model 4100 + Z 4300 | `95707` | 4 causal env；event-centered 约 30-frame core，Wan 输入 33 帧；每 wave 加 4 groups | 短而关键的 interaction chunk 明显优于此前长窗口设置，说明 chunk information density 很重要 | 最新成功版；待严格 120-frame 对照 |
+| LightSwitch，旧 event-centered（有泄漏） | `95498`；评测状态为 model 4100 + Z 4300 | `95707` | 4 causal env；按旧规则截取约 30-frame core | 后续发现 crop timing/pattern 与 causal environment 或结果相关，模型可能利用该模式而非按钮因果规律 | 历史结果保留审计；不得作为正式主结果或 chunk-length 证据 |
+| LightSwitch，physical-press no-leak | `107549/step3100`；pooled `step3289` | `results/lightswitch/physicalpress33_all4env_support8_query15_v1` | Main view only；33 frames；crop 只由物理按键 trigger 决定并 jitter 到 index 11-22；Ours 每 env 使用 K=8 support，4 red + 4 blue；每个 causal env 15 个 disjoint query | Ours：PSNR 33.45、final light-state accuracy 93.33%、action success 87.5%；pooled：32.62、60.00%、50.0% | 新正式结果；60 query/method 与 30 条 action rollouts 已汇总 |
 
 ### 3. 真机实验
 
@@ -53,7 +55,7 @@ Last updated: 2026-08-25
 
 | 优先级 | 消融 | 固定项 | 唯一变化 | 要回答的问题 |
 |---|---|---|---|---|
-| P0 | LightSwitch chunk length | 数据分组、关键事件中心、batch shape、curriculum、LR、seed | 约 30-frame core 对比 120-frame window | 成功是否主要来自更高的关键事件信息密度 |
+| P0 | LightSwitch chunk length | 新版 physical-trigger no-leak 数据、groups、batch shape、curriculum、LR、seed | 33-frame physical-event window 对比 120-frame window | 排除 timing leakage 后，收益是否仍主要来自更高的关键事件信息密度 |
 | P0 | Joint mass-friction batch shape | 数据、group order、LR、curriculum、总训练步数 | `6x3`、`4x6`、`4x9` env/action shape | 改善来自总 batch、同环境 action diversity，还是二者共同作用 |
 | P1 | Iterative vs simultaneous | 数据、初始化、总优化预算 | 分阶段冻结对比模型/Z 同时更新 | Iterative learning 是否是必要条件 |
 | P1 | Multi-background factorization | 相同训练和评测数据 | single Z 对比 environment-Z + background-Z | 模型能否分离物理属性与视觉 domain |
@@ -183,7 +185,11 @@ Last updated: 2026-08-25
 | 评测输出 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/infer_gravity80_oldrandom_step3837_stage1_stage2_grid_89519` |
 | 覆盖范围 | GT、Stage1、Stage2、PCA、grid、同 gravity 其他动作 |
 
-## E. Mass collision linear-theory-distance：job 90515
+## E. Mass collision
+
+### E.1 旧 linear-theory-distance：job 90515（有泄漏，历史审计）
+
+> **警告：该数据后来确认存在环境相关视觉/episode pattern leakage。** 同一 mass 环境内的 episode 具有稳定可辨识模式，使模型可能从初始画面或非物理 nuisance 识别环境。下面的 checkpoint、PCA 和 `90735` 仅为历史审计资产，不得用于正式比较、物理泛化结论或论文主表。
 
 | 字段 | 配置 |
 |---|---|
@@ -203,6 +209,27 @@ Last updated: 2026-08-25
 | 评测 job | `90735` |
 | 评测输出 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/infer_mass20_linear_theory_distance_day1_c32_stage1_stage2_grid_90735` |
 | 覆盖范围 | GT、Stage1、Stage2、mass PCA、9-speed transfer grid |
+
+### E.2 No-leak main-view Mass Collision：jobs 107912 / pooled checkpoint step8000
+
+| 字段 | 新正式配置 |
+|---|---|
+| 数据集 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass/libero_two_box_collision_9speed_30mass_linear_theory_distance_noleak_270eps_lerobot_2026-08-27_hai-machine` |
+| Leakage control | 重建环境与 episode，移除旧版可稳定识别 mass 的视觉/轨迹 pattern；仅使用主视角；训练 mass 按物理数值匹配旧版 20 档，而不是简单取前 20 个 index |
+| Ours canonical config | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/configs/train/train_mass20of30_collision_noleak_mainview_full61_curriculum_c32_old_random_8action_stage1_4300.yaml` |
+| Ours checkpoint | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/mass20of30_collision_noleak_mainview_c32_oldrandom_8action_s1_107912/step-4300.safetensors`；配对 Z table 为同目录 `step-4300.context_table.json` |
+| Ours training | C32 independent random curriculum；20 active masses；9 speeds；full 61 frames；每 rank `4 mass x 8 actions = 32`；model lr `1e-5`，new-Z lr `0.15`，all-Z lr `0.03` |
+| Pooled canonical config | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/configs/train/train_mass20of30_collision_noleak_mainview_standard_pooled_wm_2gpu_24h.yaml` |
+| Pooled checkpoint | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/method_benchmarks/mass_collision_noleak_original20/standard_pooled_wm/seed_20260827/checkpoints/step-8000.safetensors`；2 GPUs，batch 16/rank，无 Z/adaptation |
+| 正式协议 | 5 ID + 5 OOD masses；K=1 informative visible support；每个环境 8 个其他 actions；同一冻结协议比较 Ours、ROI10x 和 pooled |
+| 正式结果根目录 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4` |
+
+| 方法 | PSNR ↑ | SSIM ↑ | Final-displacement error ↓ | Action success ↑ |
+|---|---:|---:|---:|---:|
+| Ours，Action8（正式） | **31.10** | **0.9639** | **8.17 px** | 26.7% |
+| Standard pooled WM | 29.80 | 0.9623 | 25.62 px | 23.3% |
+
+Action 的 oracle-reachable 子集上，Action8 Ours 为 44.4%，pooled 为 38.9%。Action4 与 ROI10x Action4 保留为同任务消融，不进入跨任务主表。当前 aggregate 可用；早期汇总曾将全部环境错误标为 `ood`，因此 ID/OOD 分项在进入论文表格前仍需完成 metadata 审计，不能直接引用该分项。
 
 ## F. Mass balance
 
@@ -465,9 +492,11 @@ job 105524 只读加载 job 103424 的 step 4000 配对，不覆盖源目录。�
 
 job 103424 的 step 4000 保存了模型和 Z table，但没有 AdamW optimizer moments。因此 job 105524 的模型/Z 状态连续，optimizer state 重新初始化；后续需要严格 optimizer-level resume 的训练必须同步保存 optimizer state。所有续跑均使用带 job ID 的独立输出目录，job 103424、104188、105512 和 105524 互不覆盖。
 
-## I. LightSwitch event-centered causal dynamics：job 95498
+## I. LightSwitch causal dynamics
 
-### I.1 配置与关键参数
+> **旧 job 95498/95707 后来确认存在 crop timing/pattern leakage。** 旧资产继续保留，但旧结果不再支持“短关键 chunk 更好”或“模型已学习按钮因果规律”的正式结论。新版 physical-press 实验只按生成器记录的物理按键 trigger 裁剪，且随机化 trigger 在窗口中的位置。
+
+### I.1 旧 event-centered 配置与关键参数（历史审计）
 
 | 字段 | 配置 |
 |---|---|
@@ -484,7 +513,7 @@ job 103424 的 step 4000 保存了模型和 Z table，但没有 AdamW optimizer 
 | 每 wave 1400 steps | new-Z 200@0.09；model 200@1e-5；new-Z-mid 200@0.06；all-Z 200@0.03；model 200@1e-5；all-Z 200@0.03；model 200@1e-5 |
 | 保存 | `save_steps=500`；至少每 60 分钟保存；仅保留最近两个普通 checkpoint，phase-end Z tables 单独记录 |
 
-### I.2 Checkpoint 与评测
+### I.2 旧 checkpoint 与评测（不可作为正式结论）
 
 | 资产 | 绝对路径/说明 |
 |---|---|
@@ -497,6 +526,28 @@ job 103424 的 step 4000 保存了模型和 Z table，但没有 AdamW optimizer 
 | 评测输出 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/infer_lightswitch_event33_m4100_c4300_gt_stage1_stage2_95707` |
 | 覆盖范围 | GT、Stage1、Stage2；event-centered causal cases；使用 model4100/Z4300 状态 |
 | 待补对照 | 完全固定数据 groups、batch、curriculum、LR 和 seed，仅把约 30-frame core 改为 120-frame window |
+
+### I.3 Physical-press no-leak 正式实验：job 107549 / pooled step3289
+
+| 字段 | 新正式配置 |
+|---|---|
+| 数据集 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/robomme-lightSwitch/robomme_light_switch_independent_controls_random8_fixed_close_buttons_no_pause_random_initial_absolute_eef_200eps_hai-machine_lerobot` |
+| Leakage control | Main view only；33-frame window；裁剪锚点只来自 generator-recorded physical button trigger；trigger 随机 jitter 到 index 11-22；lamp transition 与 causal label 均不参与 crop timing |
+| Ours canonical config | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/configs/train/train_lightswitch_physicalpress33jitter11to22_maincam_group20_c32_3wave1400_actions8_stage1_4500.yaml` |
+| Ours checkpoint | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/lightswitch_physicalpress33jitter11to22_maincam_group20_c32_3wave1400_actions8_high2gpu_107549/step-3100.safetensors`；正式评测使用其配对 Z table |
+| Ours training | 4 causal classes、20 groups、12 active；2 GPUs；每 rank `4 environments x 8 actions = 32`；C32；model lr `1e-5`，new-Z `0.09`，mid-Z `0.06`，all-Z `0.03` |
+| Pooled canonical config | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/configs/train/train_lightswitch_physicalpress33jitter11to22_maincam_active12_standard_pooled_wm_2gpu_24h.yaml` |
+| Pooled checkpoint | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/method_benchmarks/lightswitch_physicalpress33jitter11to22_maincam/standard_pooled_wm/seed_20260827/checkpoints/step-3289.safetensors`；2 GPUs，batch 32/rank，无 Z/adaptation |
+| 正式协议 | 四类环境 `neither/red_only/blue_only/both` 各 15 个 disjoint query，共 60/method；Ours 每环境实际使用 K=8 support（4 red + 4 blue，8 个独立 trajectories）；action 只在 red-only/blue-only 上使用全部 30 条 rollout |
+| 正式结果根目录 | `/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/results/lightswitch/physicalpress33_all4env_support8_query15_v1` |
+| 汇总文件 | `results/lightswitch/physicalpress33_all4env_support8_query15_v1/metrics/complete_v1/summary.csv` 与 `summary.json` |
+
+| 方法 | PSNR ↑ | SSIM ↑ | Final light-state accuracy ↑ | Light yellow-score MAE ↓ | Action success ↑ |
+|---|---:|---:|---:|---:|---:|
+| Ours，K=8 | **33.45** | 0.9443 | **93.33%** | **0.0358** | **87.5%** |
+| Standard pooled WM | 32.62 | **0.9480** | 60.00% | 0.1035 | 50.0% |
+
+Ours 的全序列 light-state accuracy 为 96.36%，transition exact rate 为 83.33%，transition timing error 为 2.30 frames；pooled 分别为 80.20%、51.67% 和 13.28 frames。LPIPS 尚未计算。旧 `95498/95707` 不与此表混用。
 
 ## J. Real Ball Friction：training job 101378
 
