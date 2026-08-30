@@ -1,0 +1,22 @@
+{
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/standard_pooled_wm/lightswitch_physicalpress_step3289_all4env_support8_query15_v1.yaml",
+  "extractor": "sim_rgb_v1",
+  "extractor_settings": {
+    "max_tracking_jump_px": 64.0,
+    "offscreen_centroid": "hold_last_observed_position"
+  },
+  "global_metrics": [
+    "psnr",
+    "ssim"
+  ],
+  "method": "standard_pooled_wm",
+  "object_primary_indices": [],
+  "query_ground_truth_used_for_selection": false,
+  "task": "lightswitch",
+  "transfer_plans": [
+    {
+      "domain": "id",
+      "path": "results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/standard_pooled_wm/step_3289/seed_20260828/transfer/transfer_plan.json"
+    }
+  ]
+}

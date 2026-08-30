@@ -1,0 +1,33 @@
+version: 1
+protocol_id: lightswitch_physicalpress33_all4env_support8_query15_v1
+metadata_jsonl: data/lightswitch_randominitial_absolute_eef_physicalpress33jitter11to22_maincam_group20_20260827/physical_press_event_group20_train.jsonl
+support:
+  chunks_per_environment: 8
+  source_indices:
+  - 1448
+  - 1211
+  - 171
+  - 1221
+  context_inner_steps: 80
+query:
+  environments:
+  - neither
+  - red_only
+  - blue_only
+  - both
+  chunks_per_environment: 15
+  total_chunks: 60
+  disjoint_from_support_episodes: true
+  query_episodes_are_disjoint_from_support: true
+  stratified_by:
+  - button_color
+  - lamp_before
+metrics:
+  global_environment_values:
+  - neither
+  - red_only
+  - blue_only
+  - both
+  action_environment_values:
+  - red_only
+  - blue_only

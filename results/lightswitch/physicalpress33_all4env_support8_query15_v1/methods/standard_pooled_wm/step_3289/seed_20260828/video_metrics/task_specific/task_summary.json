@@ -1,0 +1,113 @@
+{
+  "aggregation": {
+    "environment": [
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source0171",
+        "light_final_state_accuracy": 0.3333333333333333,
+        "light_state_accuracy": 0.6727272727272727,
+        "light_transition_exact_rate": 0.26666666666666666,
+        "light_transition_time_abs_error_frames": 22.066666666666666,
+        "light_yellow_score_final_abs_error": 0.29982650184341786,
+        "light_yellow_score_mae": 0.15740883131904598,
+        "light_yellow_score_rmse": 0.21474154963674846,
+        "method": "standard_pooled_wm",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source1211",
+        "light_final_state_accuracy": 0.5333333333333333,
+        "light_state_accuracy": 0.7696969696969697,
+        "light_transition_exact_rate": 0.4,
+        "light_transition_time_abs_error_frames": 15.533333333333333,
+        "light_yellow_score_final_abs_error": 0.21472565603990457,
+        "light_yellow_score_mae": 0.11595525850568139,
+        "light_yellow_score_rmse": 0.1594065006100926,
+        "method": "standard_pooled_wm",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source1221",
+        "light_final_state_accuracy": 0.5333333333333333,
+        "light_state_accuracy": 0.7656565656565656,
+        "light_transition_exact_rate": 0.4,
+        "light_transition_time_abs_error_frames": 15.533333333333333,
+        "light_yellow_score_final_abs_error": 0.21548471047495119,
+        "light_yellow_score_mae": 0.11970387019183376,
+        "light_yellow_score_rmse": 0.1620914844056811,
+        "method": "standard_pooled_wm",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source1448",
+        "light_final_state_accuracy": 1.0,
+        "light_state_accuracy": 1.0,
+        "light_transition_exact_rate": 1.0,
+        "light_transition_time_abs_error_frames": 0.0,
+        "light_yellow_score_final_abs_error": 0.022749945781826066,
+        "light_yellow_score_mae": 0.020916385717947197,
+        "light_yellow_score_rmse": 0.021389106766712695,
+        "method": "standard_pooled_wm",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ],
+    "seed": [
+      {
+        "count": 4,
+        "domain": "id",
+        "light_final_state_accuracy": 0.6,
+        "light_state_accuracy": 0.802020202020202,
+        "light_transition_exact_rate": 0.5166666666666667,
+        "light_transition_time_abs_error_frames": 13.283333333333333,
+        "light_yellow_score_final_abs_error": 0.18819670353502493,
+        "light_yellow_score_mae": 0.10349608643362708,
+        "light_yellow_score_rmse": 0.1394071603548087,
+        "method": "standard_pooled_wm",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ],
+    "summary": [
+      {
+        "count": 1,
+        "domain": "id",
+        "light_final_state_accuracy": 0.6,
+        "light_state_accuracy": 0.802020202020202,
+        "light_transition_exact_rate": 0.5166666666666667,
+        "light_transition_time_abs_error_frames": 13.283333333333333,
+        "light_yellow_score_final_abs_error": 0.18819670353502493,
+        "light_yellow_score_mae": 0.10349608643362708,
+        "light_yellow_score_rmse": 0.1394071603548087,
+        "method": "standard_pooled_wm",
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ]
+  },
+  "metric_names": [
+    "light_final_state_accuracy",
+    "light_state_accuracy",
+    "light_transition_exact_rate",
+    "light_transition_time_abs_error_frames",
+    "light_yellow_score_final_abs_error",
+    "light_yellow_score_mae",
+    "light_yellow_score_rmse"
+  ],
+  "task": "lightswitch"
+}

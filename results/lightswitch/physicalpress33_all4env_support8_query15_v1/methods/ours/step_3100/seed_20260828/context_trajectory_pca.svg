@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="820" viewBox="0 0 1240 820">
+<defs><linearGradient id="friction" x1="0" y1="0" x2="1" y2="0"><stop offset="0.0%" stop-color="#2463eb"/><stop offset="6.7%" stop-color="#226bd7"/><stop offset="13.3%" stop-color="#2173c4"/><stop offset="20.0%" stop-color="#1f7ab0"/><stop offset="26.7%" stop-color="#1d829d"/><stop offset="33.3%" stop-color="#1a8e7e"/><stop offset="40.0%" stop-color="#179e57"/><stop offset="46.7%" stop-color="#25a346"/><stop offset="53.3%" stop-color="#4fa23a"/><stop offset="60.0%" stop-color="#7aa12e"/><stop offset="66.7%" stop-color="#a4a022"/><stop offset="73.3%" stop-color="#ce9f16"/><stop offset="80.0%" stop-color="#f59c0b"/><stop offset="86.7%" stop-color="#f08511"/><stop offset="93.3%" stop-color="#e7591b"/><stop offset="100.0%" stop-color="#dc2626"/></linearGradient></defs>
+<rect width="100%" height="100%" fill="#fbfaf6"/>
+<rect x="105" y="120" width="1055" height="555" rx="7" fill="#fffdf8" stroke="#d8d2c7"/>
+<style>text{font-family:DejaVu Sans,sans-serif}.axis{stroke:#4b5359;stroke-width:1}.grid{stroke:#ded9ce;stroke-width:1;opacity:.72}.label{font-size:15px;fill:#25313a}.small{font-size:11px;fill:#746f66}.title{font-size:24px;font-weight:650;fill:#17212b}.subtitle{font-size:14px;fill:#6c675f}</style>
+<text class="title" x="620.0" y="39" text-anchor="middle">Training-Time and Inference-Time Z (PCA)</text>
+<text class="subtitle" x="620.0" y="72" text-anchor="middle">PCA fitted on 8 active training-time Z entries | 4 final inference-time Z values | update paths omitted</text>
+<line class="grid" x1="105.00" y1="120" x2="105.00" y2="675"/>
+<line class="grid" x1="105" y1="675.00" x2="1160" y2="675.00"/>
+<text class="small" x="105.00" y="697" text-anchor="middle">-0.955</text>
+<text class="small" x="95" y="679.00" text-anchor="end">-0.881</text>
+<line class="grid" x1="316.00" y1="120" x2="316.00" y2="675"/>
+<line class="grid" x1="105" y1="564.00" x2="1160" y2="564.00"/>
+<text class="small" x="316.00" y="697" text-anchor="middle">-0.568</text>
+<text class="small" x="95" y="568.00" text-anchor="end">-0.540</text>
+<line class="grid" x1="527.00" y1="120" x2="527.00" y2="675"/>
+<line class="grid" x1="105" y1="453.00" x2="1160" y2="453.00"/>
+<text class="small" x="527.00" y="697" text-anchor="middle">-0.180</text>
+<text class="small" x="95" y="457.00" text-anchor="end">-0.200</text>
+<line class="grid" x1="738.00" y1="120" x2="738.00" y2="675"/>
+<line class="grid" x1="105" y1="342.00" x2="1160" y2="342.00"/>
+<text class="small" x="738.00" y="697" text-anchor="middle">0.208</text>
+<text class="small" x="95" y="346.00" text-anchor="end">0.141</text>
+<line class="grid" x1="949.00" y1="120" x2="949.00" y2="675"/>
+<line class="grid" x1="105" y1="231.00" x2="1160" y2="231.00"/>
+<text class="small" x="949.00" y="697" text-anchor="middle">0.595</text>
+<text class="small" x="95" y="235.00" text-anchor="end">0.481</text>
+<line class="grid" x1="1160.00" y1="120" x2="1160.00" y2="675"/>
+<line class="grid" x1="105" y1="120.00" x2="1160" y2="120.00"/>
+<text class="small" x="1160.00" y="697" text-anchor="middle">0.983</text>
+<text class="small" x="95" y="124.00" text-anchor="end">0.822</text>
+<line class="axis" x1="105" y1="675" x2="1160" y2="675"/>
+<line class="axis" x1="105" y1="120" x2="105" y2="675"/>
+<text class="label" x="632.5" y="743" text-anchor="middle">PC1 (69.4% active-table variance)</text>
+<text class="label" transform="translate(26 397.5) rotate(-90)" text-anchor="middle">PC2 (29.6% active-table variance)</text>
+<polyline points="111.39,395.10 105.00,399.61 1097.63,671.81 1090.20,675.00 121.72,368.79 159.14,351.52 1160.00,121.39 1154.83,120.00" fill="none" stroke="#8b857b" stroke-width="1.5" stroke-dasharray="5 5" opacity=".58"/>
+<circle cx="111.39" cy="395.10" r="6" fill="#2463eb" fill-opacity=".88" stroke="#fffdf8" stroke-width="1.4"><title>training time Z, friction=3</title></circle>
+<circle cx="105.00" cy="399.61" r="6" fill="#226bd7" fill-opacity=".88" stroke="#fffdf8" stroke-width="1.4"><title>training time Z, friction=4</title></circle>
+<circle cx="1097.63" cy="671.81" r="6" fill="#1d829d" fill-opacity=".88" stroke="#fffdf8" stroke-width="1.4"><title>training time Z, friction=7</title></circle>
+<circle cx="1090.20" cy="675.00" r="6" fill="#1a8e7e" fill-opacity=".88" stroke="#fffdf8" stroke-width="1.4"><title>training time Z, friction=8</title></circle>
+<circle cx="121.72" cy="368.79" r="6" fill="#4fa23a" fill-opacity=".88" stroke="#fffdf8" stroke-width="1.4"><title>training time Z, friction=12</title></circle>
+<circle cx="159.14" cy="351.52" r="6" fill="#7aa12e" fill-opacity=".88" stroke="#fffdf8" stroke-width="1.4"><title>training time Z, friction=13</title></circle>
+<circle cx="1160.00" cy="121.39" r="6" fill="#e7591b" fill-opacity=".88" stroke="#fffdf8" stroke-width="1.4"><title>training time Z, friction=18</title></circle>
+<circle cx="1154.83" cy="120.00" r="6" fill="#dc2626" fill-opacity=".88" stroke="#fffdf8" stroke-width="1.4"><title>training time Z, friction=19</title></circle>
+<polygon points="486.64,370.65 478.44,386.85 494.84,386.85" fill="#4fa23a" stroke="#111827" stroke-width="1.8" stroke-linejoin="round"><title>inference time final Z, sample=171, friction=12, step=80</title></polygon>
+<polygon points="771.30,449.18 763.10,465.38 779.50,465.38" fill="#1a8e7e" stroke="#111827" stroke-width="1.8" stroke-linejoin="round"><title>inference time final Z, sample=1211, friction=8, step=80</title></polygon>
+<polygon points="726.08,375.90 717.88,392.10 734.28,392.10" fill="#dc2626" stroke="#111827" stroke-width="1.8" stroke-linejoin="round"><title>inference time final Z, sample=1221, friction=19, step=80</title></polygon>
+<polygon points="482.04,382.18 473.84,398.38 490.24,398.38" fill="#226bd7" stroke="#111827" stroke-width="1.8" stroke-linejoin="round"><title>inference time final Z, sample=1448, friction=4, step=80</title></polygon>
+<circle cx="120" cy="778" r="6" fill="#4fa23a" stroke="#fffdf8" stroke-width="1.2"/>
+<text class="small" x="136" y="783">training time active Z-table</text>
+<polygon points="385,769 377,785 393,785" fill="#e2441f" stroke="#111827" stroke-width="1.8" stroke-linejoin="round"/>
+<text class="small" x="403" y="783">inference time final Z</text>
+<rect x="910" y="772" width="210" height="14" rx="2" fill="url(#friction)" stroke="#8b857b" stroke-width=".6"/>
+<text class="small" x="900" y="783" text-anchor="end">low friction</text>
+<text class="small" x="1130" y="783">high friction</text>
+</svg>

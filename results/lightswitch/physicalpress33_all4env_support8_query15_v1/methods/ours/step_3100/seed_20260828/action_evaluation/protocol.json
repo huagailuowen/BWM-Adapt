@@ -1,0 +1,28 @@
+{
+  "action_order_field": null,
+  "candidate_count_is_protocol_defined": true,
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/lightswitch_physicalpress_step3100_all4env_support8_query15_v1.yaml",
+  "method": "ours",
+  "observed_support_is_selectable": true,
+  "selection_strategy": "nearest",
+  "selection_uses_query_ground_truth": false,
+  "targets": [
+    {
+      "id": "lamp_on",
+      "kind": "binary",
+      "value": true
+    },
+    {
+      "id": "lamp_off",
+      "kind": "binary",
+      "value": false
+    }
+  ],
+  "task": "lightswitch",
+  "transfer_plans": [
+    {
+      "domain": "id",
+      "path": "results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/ours/step_3100/seed_20260828/transfer/transfer_plan.json"
+    }
+  ]
+}

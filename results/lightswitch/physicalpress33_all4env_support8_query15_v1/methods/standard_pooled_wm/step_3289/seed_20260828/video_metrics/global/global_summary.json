@@ -1,0 +1,71 @@
+{
+  "environment": [
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source0171",
+      "method": "standard_pooled_wm",
+      "psnr": 31.029250717163087,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.943947005633152,
+      "support_size": 0
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source1211",
+      "method": "standard_pooled_wm",
+      "psnr": 32.16383488972982,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9466986011977147,
+      "support_size": 0
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source1221",
+      "method": "standard_pooled_wm",
+      "psnr": 32.21636047363281,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.946161184768484,
+      "support_size": 0
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source1448",
+      "method": "standard_pooled_wm",
+      "psnr": 35.06620839436849,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9551804077745688,
+      "support_size": 0
+    }
+  ],
+  "seed": [
+    {
+      "count": 4,
+      "domain": "id",
+      "method": "standard_pooled_wm",
+      "psnr": 32.61891361872355,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9479967998434798,
+      "support_size": 0
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "method": "standard_pooled_wm",
+      "psnr": 32.61891361872355,
+      "split": "evaluation",
+      "ssim": 0.9479967998434798,
+      "support_size": 0
+    }
+  ]
+}

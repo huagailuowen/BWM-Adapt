@@ -1,0 +1,30 @@
+{
+  "generated_at": "2026-08-30T18:18:11.198810+00:00",
+  "comparison": "Ours versus standard pooled world model",
+  "global_metrics": "PSNR/SSIM/LPIPS are averaged over the available ID/OOD environment summaries.",
+  "object_metrics": "Mean/final object-state error: centroid ADE/FDE in pixels for moving objects; yellow-lamp score MAE/final absolute error for LightSwitch.",
+  "action_metric": "Task success on complete candidate sets whose targets are reachable in GT.",
+  "query_protocol": "Each pooled baseline reuses the exact Ours transfer plan; pooled WM ignores support by design.",
+  "superseded_for_leakage": [
+    "Mass collision: job 90515 / evaluation 90735",
+    "Light switch: job 95498 / evaluation 95707"
+  ],
+  "replacement_provenance": {
+    "mass_collision_ours": {
+      "train_config": "configs/train/train_mass20of30_collision_noleak_mainview_full61_curriculum_c32_old_random_8action_stage1_4300.yaml",
+      "checkpoint": "outputs/mass20of30_collision_noleak_mainview_c32_oldrandom_8action_s1_107912/step-4300.safetensors",
+      "actions_per_environment_per_update": 8
+    },
+    "light_switch_ours": {
+      "train_config": "configs/train/train_lightswitch_physicalpress33jitter11to22_maincam_group20_c32_3wave1400_actions8_stage1_4500.yaml",
+      "checkpoint": "outputs/lightswitch_physicalpress33jitter11to22_maincam_group20_c32_3wave1400_actions8_high2gpu_107549/step-3100.safetensors",
+      "support_size": 8
+    }
+  },
+  "pending": [
+    "Gravity / Ours: partial: missing lpips",
+    "Mass collision / Standard pooled WM: partial: missing lpips",
+    "Light switch / Standard pooled WM: partial: missing lpips",
+    "Light switch / Ours: partial: missing lpips"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "environment": [
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source0171",
+      "method": "ours",
+      "psnr": 33.5926274617513,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9449752022521664,
+      "support_size": 8
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source1211",
+      "method": "ours",
+      "psnr": 32.41706364949544,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9401043212775027,
+      "support_size": 8
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source1221",
+      "method": "ours",
+      "psnr": 33.86759821573893,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9441926189143249,
+      "support_size": 8
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source1448",
+      "method": "ours",
+      "psnr": 33.937642669677736,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9479861605046976,
+      "support_size": 8
+    }
+  ],
+  "seed": [
+    {
+      "count": 4,
+      "domain": "id",
+      "method": "ours",
+      "psnr": 33.45373299916585,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9443145757371729,
+      "support_size": 8
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "method": "ours",
+      "psnr": 33.45373299916585,
+      "split": "evaluation",
+      "ssim": 0.9443145757371729,
+      "support_size": 8
+    }
+  ]
+}
