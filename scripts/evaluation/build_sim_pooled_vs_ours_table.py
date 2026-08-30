@@ -234,7 +234,7 @@ def build_records() -> list[dict[str, Any]]:
         ),
         "Ours": (
             "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/"
-            "methods/ours_action8/step_4300/seed_20260827"
+            "methods/ours_action8_stage2_roi10x/step_4300/seed_20260827"
         ),
     }
     collision_records = [

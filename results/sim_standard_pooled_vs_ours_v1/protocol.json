@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-30T18:18:11.198810+00:00",
+  "generated_at": "2026-08-30T19:14:47.295842+00:00",
   "comparison": "Ours versus standard pooled world model",
   "global_metrics": "PSNR/SSIM/LPIPS are averaged over the available ID/OOD environment summaries.",
   "object_metrics": "Mean/final object-state error: centroid ADE/FDE in pixels for moving objects; yellow-lamp score MAE/final absolute error for LightSwitch.",
