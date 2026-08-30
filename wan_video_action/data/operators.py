@@ -443,6 +443,9 @@ class LoadCobotAction(DataProcessingOperator):
             joint_delta (原 action_joint：关节相对动作/增量)
             eef_delta (原 action_pose：末端相对动作/增量)
             joint_state_action (observation.state[:7] + action[:7])
+            eef_observed_state (observation.eef_state=[xyz,qw,qx,qy,qz])
+            eef_state_action ([eef_state[t], eef_state[t+1]])
+            eef_swing_angle ([unwrapped roll_x in degrees, zero x13])
         """
         requested_action_type = action_type
         # Compatibility aliases for older script conventions.
@@ -460,6 +463,9 @@ class LoadCobotAction(DataProcessingOperator):
             "action_joint",
             "action_pose",
             "joint_state_action",
+            "eef_observed_state",
+            "eef_state_action",
+            "eef_swing_angle",
         ):
             raise ValueError(f"Unsupported action type: {action_type}")
         self.base_path = base_path
@@ -469,6 +475,9 @@ class LoadCobotAction(DataProcessingOperator):
         self.use_percentile_stats = use_percentile_stats
         # `state_*` means read observation.state and `action_*` means read action.
         self.use_state_action = action_type == "joint_state_action"
+        self.use_observed_eef_state = action_type == "eef_observed_state"
+        self.use_eef_state_action = action_type == "eef_state_action"
+        self.use_eef_swing_angle = action_type == "eef_swing_angle"
         self.use_state = action_type.startswith("state_")
         self.use_joint = action_type.endswith("_joint") or self.use_state_action
         name_to_idx = {name: idx for idx, name in enumerate(JOINT_AND_EEF_NAMES)}
@@ -582,6 +591,27 @@ class LoadCobotAction(DataProcessingOperator):
             return np.asarray(rows, dtype=np.float32)
         return np.asarray(data[start:end], dtype=np.float32)
 
+    @staticmethod
+    def _canonicalize_eef_states(arr: np.ndarray, parquet_path) -> np.ndarray:
+        if arr.ndim != 2 or arr.shape[1] != 7:
+            raise ValueError(
+                f"EEF state must have shape [T,7], got {arr.shape} in {parquet_path}"
+            )
+        arr = arr.copy()
+        quaternions = arr[:, 3:7]
+        norms = np.linalg.norm(quaternions, axis=1, keepdims=True)
+        if np.any(norms < 1e-8):
+            raise ValueError(f"Zero-norm EEF quaternion in {parquet_path}")
+        quaternions /= norms
+        dominant = int(np.argmax(np.abs(quaternions[0])))
+        if quaternions[0, dominant] < 0:
+            quaternions[0] *= -1
+        for frame_index in range(1, len(quaternions)):
+            if np.dot(quaternions[frame_index - 1], quaternions[frame_index]) < 0:
+                quaternions[frame_index] *= -1
+        arr[:, 3:7] = quaternions
+        return arr
+
     def get_num_frames(self, total_frames):
         if self.num_frames is None:
             return int(total_frames)
@@ -607,8 +637,13 @@ class LoadCobotAction(DataProcessingOperator):
         num_frames = self.get_num_frames(available_frames)
         raw_num_frames = min(clip_frames, max(1, (num_frames - 1) * self.frame_stride + 1))
 
-        def read_aligned_column(column: str) -> np.ndarray:
-            values = self._read_slice(parquet_path, column, start_frame, raw_num_frames)
+        def read_aligned_column(column: str, frame_offset: int = 0) -> np.ndarray:
+            values = self._read_slice(
+                parquet_path,
+                column,
+                start_frame + int(frame_offset),
+                raw_num_frames,
+            )
             if self.frame_stride > 1:
                 values = values[::self.frame_stride]
             if values.shape[0] < num_frames:
@@ -633,15 +668,55 @@ class LoadCobotAction(DataProcessingOperator):
                     f"state={state.shape}, action={action.shape} in {parquet_path}"
                 )
             arr = np.concatenate([state[:, :7], action[:, :7]], axis=1)
+        elif self.use_eef_swing_angle:
+            eef_state = self._canonicalize_eef_states(
+                read_aligned_column("observation.eef_state"), parquet_path
+            )
+            qw, qx, qy, qz = (eef_state[:, index] for index in range(3, 7))
+            roll_x = np.unwrap(
+                np.arctan2(
+                    2.0 * (qw * qx + qy * qz),
+                    1.0 - 2.0 * (qx * qx + qy * qy),
+                )
+            )
+            # This rig swings around pi radians. Anchor every independently loaded
+            # chunk to that branch so crossing +/-pi cannot create a 360-degree jump.
+            roll_x += 2.0 * np.pi * np.rint(
+                (np.pi - np.median(roll_x)) / (2.0 * np.pi)
+            )
+            arr = np.zeros((eef_state.shape[0], 14), dtype=eef_state.dtype)
+            arr[:, 0] = np.rad2deg(roll_x)
+        elif self.use_eef_state_action:
+            current = self._canonicalize_eef_states(
+                read_aligned_column("observation.eef_state"), parquet_path
+            )
+            target = self._canonicalize_eef_states(
+                read_aligned_column(
+                    "observation.eef_state", frame_offset=self.frame_stride
+                ),
+                parquet_path,
+            )
+            target_quaternions = target[:, 3:7]
+            opposite_sign = (
+                np.sum(current[:, 3:7] * target_quaternions, axis=1) < 0
+            )
+            target_quaternions[opposite_sign] *= -1
+            target[:, 3:7] = target_quaternions
+            arr = np.concatenate([current, target], axis=1)
+        elif self.use_observed_eef_state:
+            arr = self._canonicalize_eef_states(
+                read_aligned_column("observation.eef_state"), parquet_path
+            )
         else:
             column = "observation.state" if self.use_state else "action"
             arr = read_aligned_column(column)
         if arr.ndim != 2:
             raise ValueError(f"Unexpected action shape {arr.shape} in {parquet_path}")
-        if self.use_state_action:
+        if self.use_state_action or self.use_eef_state_action or self.use_eef_swing_angle:
             if arr.shape[1] != 14:
                 raise ValueError(
-                    f"joint_state_action must produce 14 channels, got {arr.shape[1]} in {parquet_path}"
+                    f"{self.action_type} must produce 14 channels, got "
+                    f"{arr.shape[1]} in {parquet_path}"
                 )
         elif arr.shape[1] == len(JOINT_AND_EEF_NAMES):
             arr = arr[:, self.indices]

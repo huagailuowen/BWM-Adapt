@@ -716,6 +716,8 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_structured_updates", type=int, default=0)
     group.add_argument("--grouped_context_friction_groups_per_update", type=int, default=4)
     group.add_argument("--grouped_context_actions_per_update", type=int, default=4)
+    group.add_argument("--grouped_context_environment_weight_threshold", type=float, default=None)
+    group.add_argument("--grouped_context_environment_weight_multiplier", type=float, default=1.0)
     group.add_argument("--grouped_context_backgrounds_per_action", type=int, default=1)
     group.add_argument("--grouped_context_microbatches_per_update", type=int, default=0)
     group.add_argument("--grouped_context_sampling_mode", type=str, default="common_actions")
@@ -969,18 +971,18 @@ def _load_action_sampling_weights(
 def _weighted_sample_without_replacement(
     *,
     rng: random.Random,
-    values: list[int],
+    values: list,
     weights: list[float],
     count: int,
-) -> list[int]:
+) -> list:
     if count > len(values):
         raise ValueError(f"Cannot sample {count} distinct values from {len(values)} candidates.")
     pool = list(zip(values, weights))
-    selected: list[int] = []
+    selected: list = []
     for _ in range(count):
         total = sum(weight for _, weight in pool)
         if total <= 0.0:
-            raise ValueError("Weighted action sampler has no positive probability mass.")
+            raise ValueError("Weighted sampler has no positive probability mass.")
         threshold = rng.random() * total
         cumulative = 0.0
         selected_index = len(pool) - 1
@@ -1002,6 +1004,8 @@ def _sample_structured_indices(
     friction_groups: int,
     actions_per_update: int,
     allowed_friction_values: list[float] | None = None,
+    environment_weight_threshold: float | None = None,
+    environment_weight_multiplier: float = 1.0,
 ) -> list[int]:
     allowed_values = None
     if allowed_friction_values is not None:
@@ -1020,7 +1024,22 @@ def _sample_structured_indices(
             f"Need at least {friction_groups} friction groups with {actions_per_update} actions, "
             f"got {len(valid_friction_values)}."
         )
-    selected_mu = rng.sample(valid_friction_values, friction_groups)
+    if environment_weight_multiplier <= 0.0:
+        raise ValueError("grouped_context_environment_weight_multiplier must be positive.")
+    if environment_weight_threshold is None or environment_weight_multiplier == 1.0:
+        selected_mu = rng.sample(valid_friction_values, friction_groups)
+    else:
+        selected_mu = _weighted_sample_without_replacement(
+            rng=rng,
+            values=valid_friction_values,
+            weights=[
+                environment_weight_multiplier
+                if float(mu) >= environment_weight_threshold
+                else 1.0
+                for mu in valid_friction_values
+            ],
+            count=friction_groups,
+        )
     common_actions = set(grouped_indices[selected_mu[0]])
     for mu in selected_mu[1:]:
         common_actions &= set(grouped_indices[mu])
@@ -1701,6 +1720,12 @@ def _sample_update_indices(
         friction_groups=friction_groups,
         actions_per_update=actions_per_update,
         allowed_friction_values=allowed_friction_values,
+        environment_weight_threshold=getattr(
+            args, "grouped_context_environment_weight_threshold", None
+        ),
+        environment_weight_multiplier=float(
+            getattr(args, "grouped_context_environment_weight_multiplier", 1.0) or 1.0
+        ),
     )
     if len(sample_indices) > microbatches_per_update:
         sample_indices = sample_indices[:microbatches_per_update]
@@ -4423,6 +4448,14 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
     microbatches_per_update = int(args.grouped_context_microbatches_per_update)
     if microbatches_per_update <= 0:
         microbatches_per_update = friction_groups_per_update * actions_per_update
+    environment_weight_threshold = getattr(
+        args, "grouped_context_environment_weight_threshold", None
+    )
+    environment_weight_multiplier = float(
+        getattr(args, "grouped_context_environment_weight_multiplier", 1.0) or 1.0
+    )
+    if environment_weight_multiplier <= 0.0:
+        raise ValueError("grouped_context_environment_weight_multiplier must be positive.")
     validation_interval = int(getattr(args, "grouped_context_validation_interval", 0) or 0)
     validation_seed = int(getattr(args, "grouped_context_validation_seed", 20260810))
     validation_indices: list[int] = []
@@ -4458,7 +4491,9 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
             f"updates={updates} initial_groups={args.grouped_context_curriculum_initial_groups} "
             f"add_groups={add_groups} total_groups={total_groups} rounds={rounds} "
             f"variant={getattr(args, 'grouped_context_curriculum_variant', 'default')} "
-            f"actions_per_update={actions_per_update} microbatches_per_update={microbatches_per_update}",
+            f"actions_per_update={actions_per_update} microbatches_per_update={microbatches_per_update} "
+            f"environment_weight_threshold={environment_weight_threshold} "
+            f"environment_weight_multiplier={environment_weight_multiplier:g}",
             flush=True,
         )
         selected = [friction_values[index] for index in group_order[: min(total_groups, len(group_order))]]

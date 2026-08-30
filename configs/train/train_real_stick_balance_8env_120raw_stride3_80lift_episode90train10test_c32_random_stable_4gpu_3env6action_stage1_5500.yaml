@@ -1,0 +1,139 @@
+# Episode-level holdout experiment. Each environment reserves three complete
+# episodes (about 10%) for test inference. Test episodes are absent from both
+# training updates and the fixed training-validation batch. All optimization,
+# batching, curriculum, LR, and checkpoint settings match run 98364.
+dataset:
+  dataset_base_path: "/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets_real/stick_balance"
+  dataset_metadata_path: "data/real_stick_balance_8env_120raw_stride3_1general4lift_episode90train10test_seed20260829/train.jsonl"
+  dataset_repeat: 1
+  dataset_num_workers: 0
+  data_file_keys: "video,action"
+
+video:
+  height: 224
+  width: 224
+  max_pixels: 16777216
+  num_frames: 41
+  frame_stride: 3
+  resize_mode: "letterbox"
+  num_history_frames: 1
+  time_division_factor: 4
+  time_division_remainder: 1
+  spatial_division_factor: 32
+  chunk_mode: "static"
+  pad_short_chunks: true
+
+model:
+  model_paths: "models/Wan2.2-TI2V-5B"
+  model_id_with_origin_paths: null
+  extra_inputs: null
+  fp8_models: null
+  offload_models: null
+  model_config_path: "configs/model/wan2_2_ti2v_5b.yaml"
+  initialize_model_on_cpu: false
+  text_mode: "none"
+  enable_text: false
+  enable_dit: true
+  enable_vae: true
+  enable_image: false
+  action_mode: "adaln"
+
+action:
+  action_type: "joint_state_action"
+  action_stat_path: "data/real_stick_balance_8env_120raw_stride3_1general4lift_episode90train10test_seed20260829/action_stats.json"
+  action_dim: 14
+
+physical_context:
+  physical_context_mode: "both"
+  physical_context_dim: 32
+  physical_context_tokens: 1
+  physical_context_hidden_dim: 128
+  physical_context_init_std: 0.0
+  physical_context_init_value: 0.0
+  physical_adapter_mode: "none"
+  physical_adapter_rank: 16
+  physical_adapter_layers: "all"
+  physical_adapter_gate_init: 0.0
+
+grouped_context_stage1:
+  grouped_context_init_mode: "uniform"
+  grouped_context_init_value: 0.0
+  grouped_context_init_std: 0.0
+  grouped_context_init_min: -1.0
+  grouped_context_init_max: 1.0
+  grouped_context_clamp_min: -1.0
+  grouped_context_clamp_max: 1.0
+  grouped_context_lr: 0.03
+  grouped_context_new_context_lr: 0.075
+  grouped_context_post_curriculum_lr: 0.015
+  grouped_context_post_curriculum_start_step: 2301
+  grouped_context_phase_max_displacement: 0.4
+  grouped_context_phase_max_displacement_start_step: 2301
+  grouped_context_model_lr_warmup_steps: 100
+  grouped_context_model_phase_warmup_steps: 30
+  grouped_context_validation_interval: 100
+  grouped_context_validation_seed: 20260810
+  grouped_context_protected_checkpoint_steps: "2300"
+  grouped_context_weight_decay: 0.0
+  grouped_context_structured_updates: 5500
+  grouped_context_friction_groups_per_update: 3
+  grouped_context_actions_per_update: 6
+  grouped_context_microbatches_per_update: 18
+  grouped_context_sampling_mode: "uniform_episode_then_window"
+  grouped_context_episode_key: "source_episode_index"
+  grouped_context_window_kind_field: "sampling_kind"
+  grouped_context_preferred_window_kind: "lift"
+  grouped_context_preferred_window_probability: 0.8
+  grouped_context_curriculum_initial_groups: 4
+  grouped_context_curriculum_add_groups: 4
+  grouped_context_curriculum_total_groups: 8
+  grouped_context_curriculum_initial_model_steps: 300
+  grouped_context_curriculum_new_context_steps: 200
+  grouped_context_curriculum_all_context_steps: 200
+  grouped_context_curriculum_model_steps: 200
+  grouped_context_post_curriculum_cycle_steps: 200
+  grouped_context_model_phase_checkpoint_policy: "all"
+  grouped_context_stage_checkpoints_locally: true
+  grouped_context_local_checkpoint_root: null
+
+training:
+  learning_rate: 1e-5
+  num_epochs: 1
+  trainable_models: "dit,action_encoder,physical_context_encoder"
+  find_unused_parameters: true
+  weight_decay: 0.01
+  task: "sft"
+  seed: 20260809
+  mixed_precision: "bf16"
+  max_timestep_boundary: 1.0
+  min_timestep_boundary: 0.0
+  batch_size: 1
+
+output:
+  output_path: "./outputs/real_stick_balance_8env_120raw_stride3_80lift_episode90train10test_c32_random_stable_4gpu_3env6action_stage1_5500_PENDING_JOB"
+  remove_prefix_in_ckpt: "pipe.dit."
+  save_steps: 100000
+  checkpoint_save_minutes: 100000
+  checkpoint_keep_last: 2
+  log_steps: 10
+  ckpt_path: "ckpt/BLM/step-12000.safetensors"
+  resume_from: null
+
+lora:
+  lora_base_model: null
+  lora_target_modules: null
+  lora_rank: 32
+  lora_checkpoint: null
+  preset_lora_path: null
+  preset_lora_model: null
+
+gradient:
+  use_gradient_checkpointing: true
+  use_gradient_checkpointing_offload: false
+  gradient_accumulation_steps: 1
+  max_grad_norm: 0.5
+
+tracking:
+  use_wandb: false
+  use_swanlab: false
+  swanlab_experiment_name: null
