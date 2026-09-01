@@ -1,0 +1,26 @@
+version: 1
+task: mass_friction
+method_name: ours_stage2_roi10x
+seed: 20260720
+support_size: 1
+metadata_jsonl: data/mass_friction_joint100_bwm_full61_20260718/train.jsonl
+dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass-fric/libero_two_box_mass_friction_balanced100env_9action_900eps_lerobot_2026-07-18_hai-machine
+output_dir: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_stage2_roi10x/step_7172/seed_20260720/action_evaluation
+transfer_plans:
+  - path: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_stage2_roi10x/step_7172/seed_20260720/same_environment_other_actions/transfer_plan_id.json
+    domain: id
+  - path: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_stage2_roi10x/step_7172/seed_20260720/same_environment_other_actions/transfer_plan_ood.json
+    domain: ood
+action_field: action_id
+environment_report_fields: [environment_id, mass_index, target_mass_kg, friction_index, target_table_friction_mu]
+action_report_fields: [action_id, action_amplitude]
+minimum_actions: 2
+extractor: {main_view_width: 224, edge_margin: 16, fps: 10.0}
+outcome:
+  object_index: 0
+  object_roles: {struck_object: 0, target: 0, striker: 1, projectile: 1, driver: 1}
+  terminal_window: 5
+targets:
+  - {id: short_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.43, x_max: 0.57, y_min: 0.62, y_max: 0.72}}
+  - {id: medium_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.43, x_max: 0.57, y_min: 0.75, y_max: 0.86}}
+  - {id: long_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.42, x_max: 0.58, y_min: 0.92, y_max: 1.00}}

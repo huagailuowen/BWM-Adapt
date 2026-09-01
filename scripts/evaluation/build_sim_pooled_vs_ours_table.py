@@ -181,8 +181,60 @@ def event80_records() -> list[dict[str, Any]]:
     return output
 
 
+def multibackground_records() -> list[dict[str, Any]]:
+    """Load the shared-friction multi-background benchmark.
+
+    The mis-resume checkpoint is retained as a mechanism-observation result.
+    A matched standard-pooled benchmark has not been produced yet, so its row
+    remains explicit and empty rather than implying an unfair comparison.
+    """
+    summary = load_json(
+        "results/pushbox_multibackground/"
+        "misresume_step4400_id5_ood5_k1_oracle_informative_support25_60_v1/"
+        "metrics/complete_v1/benchmark_summary.json"
+    )["ours_misresume"]
+    video = summary["video_object"]["overall"]
+    action = summary["action_selection"]["overall"]
+
+    pooled = {
+        "task": "Multi-background friction",
+        "method": "Standard pooled WM",
+        "queries": 90,
+        "status": "pending matched-protocol pooled benchmark",
+        "psnr": None,
+        "ssim": None,
+        "lpips": None,
+        "object_mean_error": None,
+        "object_final_error": None,
+        "object_metric_label": "Object-centroid error",
+        "object_metric_unit": "px",
+        "action_success": None,
+        "task_metric": None,
+        "task_metric_label": "Final centroid error (px) ↓",
+        "task_metric_higher_is_better": False,
+    }
+    ours = {
+        "task": "Multi-background friction",
+        "method": "Ours (mis-resume)",
+        "queries": int(summary["video_object"]["query_count"]),
+        "status": "complete" if video.get("lpips_multiview") is not None else "partial: missing lpips",
+        "psnr": float(video["psnr_multiview"]),
+        "ssim": float(video["ssim_multiview"]),
+        "lpips": None if video.get("lpips_multiview") is None else float(video["lpips_multiview"]),
+        "object_mean_error": float(video["centroid_ade_px"]),
+        "object_final_error": float(video["centroid_fde_px"]),
+        "object_metric_label": "Object-centroid error",
+        "object_metric_unit": "px",
+        "action_success": float(action["headline_task_success_rate"]),
+        "task_metric": float(video["centroid_fde_px"]),
+        "task_metric_label": "Final centroid error (px) ↓",
+        "task_metric_higher_is_better": False,
+    }
+    return [pooled, ours]
+
+
 def build_records() -> list[dict[str, Any]]:
-    records = event80_records()
+    records = event80_records() + multibackground_records()
     definitions = [
         {
             "task": "Gravity",
@@ -326,6 +378,14 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
                 "support_size": 8,
             },
         },
+        "additional_provenance": {
+            "multi_background_ours_misresume": {
+                "benchmark_config": "configs/evaluation/multi_background_pushbox/misresume_step4400_complete_benchmark.yaml",
+                "checkpoint": "outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_resume4000_stage1_8700_104188/step-4400.safetensors",
+                "protocol": "5 ID + 5 OOD environments; K=1 oracle-informative support; 9 disjoint cross-background queries per environment",
+                "note": "Mechanism-observation result from the audited mis-resume branch; matched pooled row remains pending.",
+            },
+        },
         "pending": [
             f"{row['task']} / {row['method']}: {row['status']}"
             for row in records
@@ -450,7 +510,7 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
             draw.rectangle(box, fill=fill, outline="#c8d2dc", width=2)
             bold = column == 0 or (row_index, column) in best_cells
             font = fonts["body_bold"] if bold else fonts["body"]
-            color = "#0b5a75" if column == 1 and record["method"] == "Ours" else "#27313a"
+            color = "#0b5a75" if column == 1 and record["method"].startswith("Ours") else "#27313a"
             if column in (0, 1):
                 wrapped = "\n".join(textwrap.wrap(value, width=28 if column == 0 else 24))
                 line_height = font.getbbox("Ag")[3] - font.getbbox("Ag")[1] + 3
@@ -463,15 +523,15 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
                 centered_text(value, box, font, color)
 
     footer_y = table_top + header_height + len(body) * row_height + 25
-    draw.text((margin, footer_y), "Task-specific metric: endpoint error (Event80), final displacement error (gravity/collision/mass×friction), bar tilt MAE (balance), and yellow-light score MAE.", font=fonts["foot"], fill="#52606d")
-    draw.text((margin, footer_y + 40), "Blank cells indicate unavailable or withheld metrics; LightSwitch pooled metrics await leakage-free retraining. LPIPS uses official AlexNet.", font=fonts["foot"], fill="#7a4b00")
+    draw.text((margin, footer_y), "Task-specific metric: endpoint error (Event80/multi-background), final displacement error (gravity/collision/mass×friction), bar tilt MAE (balance), and yellow-light score MAE.", font=fonts["foot"], fill="#52606d")
+    draw.text((margin, footer_y + 40), "All reported LPIPS values use the official AlexNet network; blank cells indicate unavailable or withheld metrics.", font=fonts["foot"], fill="#7a4b00")
     image.save(OUTPUT / "sim_standard_pooled_vs_ours.png", dpi=(220, 220))
 
     svg: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         '<rect width="100%" height="100%" fill="white"/>',
         f'<text x="{margin}" y="68" font-family="Georgia,serif" font-size="42" font-weight="700" fill="#17324d">Simulation Benchmarks: Ours vs. Standard Pooled World Model</text>',
-        f'<text x="{margin}" y="120" font-family="Georgia,serif" font-size="23" fill="#52606d">Shared K=1 query protocols; the pooled baseline receives no test-time adaptation.</text>',
+        f'<text x="{margin}" y="120" font-family="Georgia,serif" font-size="23" fill="#52606d">Shared frozen support/query protocols; the pooled baseline receives no test-time adaptation.</text>',
     ]
 
     def svg_centered(text: str, left: int, top: int, right: int, bottom: int, *, size: int, fill: str, weight: str = "400") -> None:
@@ -494,13 +554,13 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
             left, right = x_edges[column], x_edges[column + 1]
             svg.append(f'<rect x="{left}" y="{top}" width="{right-left}" height="{row_height}" fill="{fill}" stroke="#c8d2dc"/>')
             weight = "700" if column == 0 or (row_index, column) in best_cells else "400"
-            color = "#0b5a75" if column == 1 and record["method"] == "Ours" else "#27313a"
+            color = "#0b5a75" if column == 1 and record["method"].startswith("Ours") else "#27313a"
             if column in (0, 1):
                 svg.append(f'<text x="{left+12}" y="{top + row_height/2 + 7:.1f}" font-family="Georgia,serif" font-size="20" font-weight="{weight}" fill="{color}">{html.escape(value)}</text>')
             else:
                 svg_centered(value, left, top, right, top + row_height, size=20, fill=color, weight=weight)
-    svg.append(f'<text x="{margin}" y="{footer_y+18}" font-family="Georgia,serif" font-size="17" fill="#52606d">Task-specific metric: endpoint error (Event80), final displacement error (gravity/collision/mass×friction), bar tilt MAE (balance), and yellow-light score MAE.</text>')
-    svg.append(f'<text x="{margin}" y="{footer_y+58}" font-family="Georgia,serif" font-size="17" fill="#7a4b00">Blank cells indicate unavailable or withheld metrics; LightSwitch pooled metrics await leakage-free retraining. LPIPS uses official AlexNet.</text>')
+    svg.append(f'<text x="{margin}" y="{footer_y+18}" font-family="Georgia,serif" font-size="17" fill="#52606d">Task-specific metric: endpoint error (Event80/multi-background), final displacement error (gravity/collision/mass×friction), bar tilt MAE (balance), and yellow-light score MAE.</text>')
+    svg.append(f'<text x="{margin}" y="{footer_y+58}" font-family="Georgia,serif" font-size="17" fill="#7a4b00">All reported LPIPS values use the official AlexNet network; blank cells indicate unavailable or withheld metrics.</text>')
     svg.append("</svg>")
     (OUTPUT / "sim_standard_pooled_vs_ours.svg").write_text("\n".join(svg) + "\n", encoding="utf-8")
 

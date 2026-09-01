@@ -74,37 +74,63 @@ def main() -> None:
     config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
     inference = config["inference"]
     train_config = resolve(inference["train_config"])
-    source_plan_path = resolve(inference["source_transfer_plan"])
-    destination_plan_path = resolve(config["transfer_plans"][0]["path"])
-    transfer_root = destination_plan_path.parent
-    raw_root = transfer_root / "raw"
-    flat_root = transfer_root / str(inference.get("flat_dir_name", "flat"))
-    raw_root.mkdir(parents=True, exist_ok=True)
+    transfer_entries = list(config["transfer_plans"])
+    source_plan_values = inference.get("source_transfer_plans")
+    if source_plan_values is None:
+        source_plan_values = [inference["source_transfer_plan"]]
+        if len(transfer_entries) != 1:
+            raise ValueError(
+                "Legacy inference.source_transfer_plan requires exactly one transfer_plans entry. "
+                "Use inference.source_transfer_plans for a joint ID/OOD run."
+            )
+    if len(source_plan_values) != len(transfer_entries):
+        raise ValueError(
+            "inference.source_transfer_plans and transfer_plans must have the same length: "
+            f"{len(source_plan_values)} != {len(transfer_entries)}"
+        )
+
+    method_root = resolve(inference["method_output_root"])
+    plan_pairs: list[tuple[Path, Path, Path]] = []
+    target_records: dict[int, tuple[int, Path]] = {}
+    for source_value, transfer_entry in zip(source_plan_values, transfer_entries):
+        source_plan_path = resolve(source_value)
+        destination_plan_path = resolve(transfer_entry["path"])
+        raw_root = destination_plan_path.parent / "raw"
+        raw_root.mkdir(parents=True, exist_ok=True)
+
+        source_plan = read_json(source_plan_path)
+        if destination_plan_path.is_file():
+            if read_json(destination_plan_path) != source_plan:
+                raise ValueError(f"Existing transfer plan differs from {source_plan_path}")
+        else:
+            write_json_atomic(destination_plan_path, source_plan)
+        plan_pairs.append((source_plan_path, destination_plan_path, raw_root))
+
+        for environment in source_plan:
+            source_index = int(environment["source_index"])
+            for value in environment["target_indices"]:
+                target_index = int(value)
+                record = (source_index, raw_root)
+                previous = target_records.setdefault(target_index, record)
+                if previous != record:
+                    raise ValueError(
+                        f"Target {target_index} belongs to both {previous} and {record}"
+                    )
+
+    if len(plan_pairs) == 1:
+        flat_root = plan_pairs[0][1].parent / str(inference.get("flat_dir_name", "flat"))
+    else:
+        flat_root = method_root / str(inference.get("flat_dir_name", "flat"))
     flat_root.mkdir(parents=True, exist_ok=True)
 
-    source_plan = read_json(source_plan_path)
-    if destination_plan_path.is_file():
-        if read_json(destination_plan_path) != source_plan:
-            raise ValueError(f"Existing transfer plan differs from {source_plan_path}")
-    else:
-        write_json_atomic(destination_plan_path, source_plan)
-
-    target_to_source: dict[int, int] = {}
-    for environment in source_plan:
-        source_index = int(environment["source_index"])
-        for value in environment["target_indices"]:
-            target_index = int(value)
-            previous = target_to_source.setdefault(target_index, source_index)
-            if previous != source_index:
-                raise ValueError(
-                    f"Target {target_index} belongs to both source {previous} and {source_index}"
-                )
-
-    existing = prediction_index(raw_root)
+    existing_by_root = {
+        raw_root: prediction_index(raw_root)
+        for raw_root in {record[1] for record in target_records.values()}
+    }
     missing = [
         target
-        for target, source in sorted(target_to_source.items())
-        if (source, target) not in existing
+        for target, (source, raw_root) in sorted(target_records.items())
+        if (source, target) not in existing_by_root[raw_root]
     ]
     if missing:
         command = [
@@ -136,7 +162,7 @@ def main() -> None:
         ]
         subprocess.run(command, cwd=ROOT, check=True)
 
-    for target_index, source_index in sorted(target_to_source.items()):
+    for target_index, (source_index, raw_root) in sorted(target_records.items()):
         destination_dir = raw_root / f"source{source_index:04d}_pooled"
         destination_dir.mkdir(parents=True, exist_ok=True)
         existing_matches = sorted(destination_dir.glob(f"sample{target_index:04d}_*.mp4"))
@@ -151,23 +177,28 @@ def main() -> None:
             )
         shutil.move(str(generated[0]), destination_dir / generated[0].name)
 
-    final_predictions = prediction_index(raw_root)
-    expected = {(source, target) for target, source in target_to_source.items()}
-    missing_final = sorted(expected - set(final_predictions))
+    final_predictions_by_root = {
+        raw_root: prediction_index(raw_root)
+        for raw_root in {record[1] for record in target_records.values()}
+    }
+    missing_final = sorted(
+        (source, target)
+        for target, (source, raw_root) in target_records.items()
+        if (source, target) not in final_predictions_by_root[raw_root]
+    )
     if missing_final:
         raise RuntimeError(f"Missing organized predictions: {missing_final}")
 
-    method_root = resolve(inference["method_output_root"])
     write_json_atomic(method_root / "inference_protocol.json", {
         "adaptation": "none",
         "checkpoint": str(args.checkpoint.resolve()),
         "method": "standard_pooled_wm",
-        "query_count": len(target_to_source),
+        "query_count": len(target_records),
         "query_state_policy": "none",
-        "source_transfer_plan": str(source_plan_path),
+        "source_transfer_plans": [str(pair[0]) for pair in plan_pairs],
         "support_is_ignored_by_generator": True,
         "train_config": str(train_config),
-        "transfer_plan": str(destination_plan_path),
+        "transfer_plans": [str(pair[1]) for pair in plan_pairs],
     })
 
     subprocess.run(
@@ -196,7 +227,7 @@ def main() -> None:
         check=True,
     )
     print(
-        f"[done] task={config['task']} queries={len(target_to_source)} output={method_root}",
+        f"[done] task={config['task']} queries={len(target_records)} output={method_root}",
         flush=True,
     )
 

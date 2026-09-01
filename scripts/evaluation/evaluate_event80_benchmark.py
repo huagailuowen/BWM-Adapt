@@ -29,6 +29,10 @@ from wan_video_action.evaluation.event80_pushbox import (  # noqa: E402
     Event80TrackerConfig,
     track_event80_block,
 )
+from wan_video_action.evaluation.multibackground_pushbox import (  # noqa: E402
+    MultiBackgroundTrackerConfig,
+    track_multibackground_block,
+)
 from wan_video_action.evaluation.io import read_video_frames  # noqa: E402
 from wan_video_action.metrics.global_video import (  # noqa: E402
     LPIPSEvaluator,
@@ -195,7 +199,8 @@ def prediction_index(method_root: Path, wanted: set[int]) -> dict[int, Path]:
 def load_ground_truth(
     record: Mapping[str, Any],
     dataset_root: Path,
-    tracker_config: Event80TrackerConfig,
+    tracker,
+    tracker_config,
     terminal_window: int,
 ) -> dict[str, Any]:
     video_paths = [dataset_root / value for value in record["video"]]
@@ -208,7 +213,7 @@ def load_ground_truth(
     count = min(count, len(main), len(wrist))
     main = main[:count]
     wrist = wrist[:count]
-    track = track_event80_block(main, tracker_config)
+    track = tracker(main, tracker_config)
     height, width = main.shape[1:3]
     return {
         "main": main,
@@ -223,6 +228,20 @@ def load_ground_truth(
     }
 
 
+def environment_mu_index(environment: Mapping[str, Any]) -> int:
+    for key in ("mu_index", "friction_index", "context_group_id"):
+        value = environment.get(key)
+        if value is not None:
+            return int(value)
+    suffix = str(environment["environment_id"]).rsplit("_", 1)[-1]
+    try:
+        return int(suffix)
+    except ValueError as error:
+        raise KeyError(
+            f"Cannot determine friction index for {environment['environment_id']!r}"
+        ) from error
+
+
 def evaluate_prediction(
     *,
     method: str,
@@ -231,7 +250,8 @@ def evaluate_prediction(
     metadata: Mapping[str, Any],
     ground_truth: Mapping[str, Any],
     prediction_path: Path,
-    tracker_config: Event80TrackerConfig,
+    tracker,
+    tracker_config,
     terminal_window: int,
     future_start: int,
     lpips_evaluator: LPIPSEvaluator | None,
@@ -270,7 +290,7 @@ def evaluate_prediction(
     pred_multiview = np.concatenate((pred_main_float, pred_wrist_float), axis=2)
 
     gt_centers = np.asarray(ground_truth["centers"][:count], dtype=np.float64)
-    pred_centers = track_event80_block(pred_main, tracker_config).centers
+    pred_centers = tracker(pred_main, tracker_config).centers
     height, width = gt_main.shape[1:3]
     diagonal = float(np.hypot(height, width))
     centroid_errors: list[float] = []
@@ -296,7 +316,7 @@ def evaluate_prediction(
         "sample_id": metadata["sample_id"],
         "action_id": int(metadata["action_id"]),
         "environment_id": environment["environment_id"],
-        "mu_index": int(environment["mu_index"]),
+        "mu_index": environment_mu_index(environment),
         "friction_mu": float(environment["friction_mu"]),
         "domain": environment["domain"],
         "support_size": 1,
@@ -459,12 +479,20 @@ def main() -> None:
     if missing_metadata:
         raise KeyError(f"Missing metadata for samples: {missing_metadata}")
 
-    tracker_config = Event80TrackerConfig(**config.get("tracker", {}))
+    tracker_type = str(config.get("tracker_type", "event80")).strip().lower()
+    if tracker_type == "event80":
+        tracker = track_event80_block
+        tracker_config = Event80TrackerConfig(**config.get("tracker", {}))
+    elif tracker_type == "multi_background":
+        tracker = track_multibackground_block
+        tracker_config = MultiBackgroundTrackerConfig(**config.get("tracker", {}))
+    else:
+        raise ValueError(f"Unknown PushBox tracker type: {tracker_type!r}")
     terminal_window = int(config.get("terminal_window", 5))
     future_start = int(config.get("future_start_frame", 1))
     ground_truth = {
         index: load_ground_truth(
-            metadata[index], dataset_root, tracker_config, terminal_window
+            metadata[index], dataset_root, tracker, tracker_config, terminal_window
         )
         for index in sorted(candidate_indices)
     }
@@ -496,6 +524,7 @@ def main() -> None:
                     metadata=metadata[sample_index],
                     ground_truth=ground_truth[sample_index],
                     prediction_path=predictions[sample_index],
+                    tracker=tracker,
                     tracker_config=tracker_config,
                     terminal_window=terminal_window,
                     future_start=future_start,
@@ -518,7 +547,7 @@ def main() -> None:
                     "method": method,
                     "environment_id": environment["environment_id"],
                     "domain": environment["domain"],
-                    "mu_index": int(environment["mu_index"]),
+                    "mu_index": environment_mu_index(environment),
                     "friction_mu": float(environment["friction_mu"]),
                     "sample_index": sample_index,
                     "action_id": int(metadata[sample_index]["action_id"]),
@@ -544,7 +573,7 @@ def main() -> None:
                     "method": method,
                     "environment_id": environment["environment_id"],
                     "domain": environment["domain"],
-                    "mu_index": int(environment["mu_index"]),
+                    "mu_index": environment_mu_index(environment),
                     "friction_mu": float(environment["friction_mu"]),
                 })
                 decision_rows.append(decision)
@@ -603,6 +632,7 @@ def main() -> None:
         "aggregation": "equal weight per environment after averaging its nine queries",
         "object_metric": "main-camera pushed-block centroid ADE/FDE",
         "offscreen_handling": "hold final observed centroid after confirmed exit",
+        "tracker_type": tracker_type,
         "lpips_implementation": "official lpips package",
         "lpips_network": lpips_config.get("network", "alex"),
         "methods": config["methods"],

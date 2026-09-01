@@ -1,0 +1,40 @@
+schema_version: 1
+
+benchmark_root: results/pushbox_multibackground/misresume_step4400_id5_ood5_k1_oracle_informative_support25_60_v1
+protocol_path: results/pushbox_multibackground/misresume_step4400_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json
+metadata_path: data/push_box_bwm_matchedphysics5bg30fric10action_65_105_shared_friction30_20260819/train.jsonl
+dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox_various_env/libero_plus_push_box_event80_matched_physics_5randombackground_30friction_10action_1500eps_adaptive_end_2026-08-19_hai-machine
+output_root: results/pushbox_multibackground/misresume_step4400_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1
+action_target_config: configs/evaluation/action_targets/event80_pushbox_image_space.yaml
+
+tracker_type: multi_background
+tracker:
+  initial_x: 118.0
+  initial_y: 103.0
+  roi_x_min: 77
+  roi_x_max: 167
+  roi_y_min: 88
+  roi_y_max: 216
+  search_x_radius: 25
+  search_y_backward: 10
+  search_y_forward: 30
+  missing_search_y_forward: 45
+  minimum_contrast: 0.025
+  initial_contrast_ratio: 0.30
+  maximum_tracking_jump_px: 55.0
+  offscreen_min_y: 185.0
+
+future_start_frame: 1
+terminal_window: 5
+
+metrics:
+  global: [psnr, ssim]
+  object: [centroid_ade, centroid_fde]
+  lpips:
+    enabled: true
+    network: alex
+    batch_size: 8
+    device: cuda
+
+methods:
+  ours_misresume: methods/ours/step_4400/seed_20260825
