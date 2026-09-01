@@ -1,0 +1,54 @@
+{
+  "action_order_field": null,
+  "candidate_count_is_protocol_defined": true,
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/standard_pooled_wm/mass_friction_step3277_id.yaml",
+  "method": "standard_pooled_wm",
+  "observed_support_is_selectable": true,
+  "selection_strategy": "nearest",
+  "selection_uses_query_ground_truth": false,
+  "targets": [
+    {
+      "id": "short_displacement",
+      "kind": "point_rectangle",
+      "object_index": 0,
+      "object_role": "struck_object",
+      "region": {
+        "x_max": 0.57,
+        "x_min": 0.43,
+        "y_max": 0.72,
+        "y_min": 0.62
+      }
+    },
+    {
+      "id": "medium_displacement",
+      "kind": "point_rectangle",
+      "object_index": 0,
+      "object_role": "struck_object",
+      "region": {
+        "x_max": 0.57,
+        "x_min": 0.43,
+        "y_max": 0.86,
+        "y_min": 0.75
+      }
+    },
+    {
+      "id": "long_displacement",
+      "kind": "point_rectangle",
+      "object_index": 0,
+      "object_role": "struck_object",
+      "region": {
+        "x_max": 0.58,
+        "x_min": 0.42,
+        "y_max": 1.0,
+        "y_min": 0.92
+      }
+    }
+  ],
+  "task": "mass_friction",
+  "transfer_plans": [
+    {
+      "domain": "id",
+      "path": "results/mass_friction/joint100_same_environment_actions_91479/methods/standard_pooled_wm/step_3277/seed_20260719/id/transfer/transfer_plan.json"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "aggregation": {
+    "environment": [
+      {
+        "count": 8,
+        "domain": "id",
+        "environment_id": "source0220",
+        "final_displacement_abs_error_px": 1.3803966127878038,
+        "method": "standard_pooled_wm",
+        "seed": 20260719,
+        "split": "evaluation",
+        "support_size": 1,
+        "terminal_speed_abs_error_px_s": 0.0,
+        "travel_distance_abs_error_px": 1.6866763674338454
+      },
+      {
+        "count": 8,
+        "domain": "id",
+        "environment_id": "source0382",
+        "final_displacement_abs_error_px": 9.290713038694397,
+        "method": "standard_pooled_wm",
+        "seed": 20260719,
+        "split": "evaluation",
+        "support_size": 1,
+        "terminal_speed_abs_error_px_s": 0.5116313148677026,
+        "travel_distance_abs_error_px": 9.613881831105338
+      },
+      {
+        "count": 8,
+        "domain": "id",
+        "environment_id": "source0634",
+        "final_displacement_abs_error_px": 23.6826774324499,
+        "method": "standard_pooled_wm",
+        "seed": 20260719,
+        "split": "evaluation",
+        "support_size": 1,
+        "terminal_speed_abs_error_px_s": 0.3548683020798419,
+        "travel_distance_abs_error_px": 24.254223236031898
+      }
+    ],
+    "seed": [
+      {
+        "count": 3,
+        "domain": "id",
+        "final_displacement_abs_error_px": 11.451262361310702,
+        "method": "standard_pooled_wm",
+        "seed": 20260719,
+        "split": "evaluation",
+        "support_size": 1,
+        "terminal_speed_abs_error_px_s": 0.2888332056491815,
+        "travel_distance_abs_error_px": 11.851593811523694
+      }
+    ],
+    "summary": [
+      {
+        "count": 1,
+        "domain": "id",
+        "final_displacement_abs_error_px": 11.451262361310702,
+        "method": "standard_pooled_wm",
+        "split": "evaluation",
+        "support_size": 1,
+        "terminal_speed_abs_error_px_s": 0.2888332056491815,
+        "travel_distance_abs_error_px": 11.851593811523694
+      }
+    ]
+  },
+  "metric_names": [
+    "final_displacement_abs_error_px",
+    "terminal_speed_abs_error_px_s",
+    "travel_distance_abs_error_px"
+  ],
+  "task": "joint_mass_friction"
+}

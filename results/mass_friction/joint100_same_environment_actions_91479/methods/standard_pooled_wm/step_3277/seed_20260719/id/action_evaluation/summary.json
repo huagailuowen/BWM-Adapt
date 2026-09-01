@@ -1,0 +1,46 @@
+{
+  "all_valid_decisions": {
+    "count": 9,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 0.02689885386017315,
+    "selected_is_oracle_rate": 0.5555555555555556,
+    "task_success_rate": 0.1111111111111111
+  },
+  "by_domain_and_target": {
+    "id/long_displacement": {
+      "count": 3,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.03478302611367127,
+      "selected_is_oracle_rate": 0.6666666666666666,
+      "task_success_rate": 0.3333333333333333
+    },
+    "id/medium_displacement": {
+      "count": 3,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.03478302611367127,
+      "selected_is_oracle_rate": 0.6666666666666666,
+      "task_success_rate": 0.0
+    },
+    "id/short_displacement": {
+      "count": 3,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.011130509353176906,
+      "selected_is_oracle_rate": 0.3333333333333333,
+      "task_success_rate": 0.0
+    }
+  },
+  "complete_candidate_set_decisions": {
+    "count": 9,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 0.02689885386017315,
+    "selected_is_oracle_rate": 0.5555555555555556,
+    "task_success_rate": 0.1111111111111111
+  },
+  "headline_oracle_reachable_complete_decisions": {
+    "count": 2,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 0.011749924653405686,
+    "selected_is_oracle_rate": 0.5,
+    "task_success_rate": 0.5
+  }
+}

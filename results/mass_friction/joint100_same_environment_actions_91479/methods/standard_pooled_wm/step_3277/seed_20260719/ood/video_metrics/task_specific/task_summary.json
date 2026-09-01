@@ -1,0 +1,73 @@
+{
+  "aggregation": {
+    "environment": [
+      {
+        "count": 8,
+        "domain": "ood",
+        "environment_id": "source0094",
+        "final_displacement_abs_error_px": 56.88836117205625,
+        "method": "standard_pooled_wm",
+        "seed": 20260719,
+        "split": "evaluation",
+        "support_size": 1,
+        "terminal_speed_abs_error_px_s": 0.0,
+        "travel_distance_abs_error_px": 56.71035311410828
+      },
+      {
+        "count": 8,
+        "domain": "ood",
+        "environment_id": "source0643",
+        "final_displacement_abs_error_px": 32.11659290086423,
+        "method": "standard_pooled_wm",
+        "seed": 20260719,
+        "split": "evaluation",
+        "support_size": 1,
+        "terminal_speed_abs_error_px_s": 0.3548683020798419,
+        "travel_distance_abs_error_px": 31.506510181237836
+      },
+      {
+        "count": 8,
+        "domain": "ood",
+        "environment_id": "source0814",
+        "final_displacement_abs_error_px": 6.004653002678541,
+        "method": "standard_pooled_wm",
+        "seed": 20260719,
+        "split": "evaluation",
+        "support_size": 1,
+        "terminal_speed_abs_error_px_s": 0.0,
+        "travel_distance_abs_error_px": 7.473261015138956
+      }
+    ],
+    "seed": [
+      {
+        "count": 3,
+        "domain": "ood",
+        "final_displacement_abs_error_px": 31.66986902519967,
+        "method": "standard_pooled_wm",
+        "seed": 20260719,
+        "split": "evaluation",
+        "support_size": 1,
+        "terminal_speed_abs_error_px_s": 0.11828943402661396,
+        "travel_distance_abs_error_px": 31.896708103495026
+      }
+    ],
+    "summary": [
+      {
+        "count": 1,
+        "domain": "ood",
+        "final_displacement_abs_error_px": 31.66986902519967,
+        "method": "standard_pooled_wm",
+        "split": "evaluation",
+        "support_size": 1,
+        "terminal_speed_abs_error_px_s": 0.11828943402661396,
+        "travel_distance_abs_error_px": 31.896708103495026
+      }
+    ]
+  },
+  "metric_names": [
+    "final_displacement_abs_error_px",
+    "terminal_speed_abs_error_px_s",
+    "travel_distance_abs_error_px"
+  ],
+  "task": "joint_mass_friction"
+}
