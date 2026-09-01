@@ -1,0 +1,36 @@
+{
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/gravity80_ours_uniform5id5ood_strict_v1.yaml",
+  "extractor": "sim_rgb_v1",
+  "extractor_settings": {
+    "max_tracking_jump_px": 64.0,
+    "offscreen_centroid": "hold_last_observed_position"
+  },
+  "global_metrics": [
+    "psnr",
+    "ssim",
+    "lpips"
+  ],
+  "method": "ours",
+  "object_primary_indices": [
+    0
+  ],
+  "query_ground_truth_used_for_selection": false,
+  "task": "gravity",
+  "transfer_plans": [
+    {
+      "domain_by_source": {
+        "5": "id",
+        "85": "ood",
+        "205": "id",
+        "245": "ood",
+        "395": "ood",
+        "405": "id",
+        "555": "ood",
+        "595": "id",
+        "715": "ood",
+        "795": "id"
+      },
+      "path": "results/gravity/gravity80_uniform5id5ood_strict_v1/methods/ours/step_3837/seed_20260712/transfer/transfer_plan.json"
+    }
+  ]
+}

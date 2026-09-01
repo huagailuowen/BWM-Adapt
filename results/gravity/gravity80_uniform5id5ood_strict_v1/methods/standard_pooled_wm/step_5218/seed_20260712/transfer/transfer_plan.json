@@ -1,0 +1,282 @@
+[
+  {
+    "source_friction_mu": 0.25,
+    "source_index": 5,
+    "source_inner_step": 40,
+    "source_sample_id": "gravity_v21:ep000005:frames0000-0060",
+    "target_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9
+    ],
+    "target_sample_ids": [
+      "gravity_v21:ep000000:frames0000-0060",
+      "gravity_v21:ep000001:frames0000-0060",
+      "gravity_v21:ep000002:frames0000-0060",
+      "gravity_v21:ep000003:frames0000-0060",
+      "gravity_v21:ep000004:frames0000-0060",
+      "gravity_v21:ep000006:frames0000-0060",
+      "gravity_v21:ep000007:frames0000-0060",
+      "gravity_v21:ep000008:frames0000-0060",
+      "gravity_v21:ep000009:frames0000-0060"
+    ]
+  },
+  {
+    "source_friction_mu": 0.42748013545389874,
+    "source_index": 205,
+    "source_inner_step": 40,
+    "source_sample_id": "gravity_v21:ep000205:frames0000-0060",
+    "target_indices": [
+      200,
+      201,
+      202,
+      203,
+      204,
+      206,
+      207,
+      208,
+      209
+    ],
+    "target_sample_ids": [
+      "gravity_v21:ep000200:frames0000-0060",
+      "gravity_v21:ep000201:frames0000-0060",
+      "gravity_v21:ep000202:frames0000-0060",
+      "gravity_v21:ep000203:frames0000-0060",
+      "gravity_v21:ep000204:frames0000-0060",
+      "gravity_v21:ep000206:frames0000-0060",
+      "gravity_v21:ep000207:frames0000-0060",
+      "gravity_v21:ep000208:frames0000-0060",
+      "gravity_v21:ep000209:frames0000-0060"
+    ]
+  },
+  {
+    "source_friction_mu": 0.8917664371359004,
+    "source_index": 405,
+    "source_inner_step": 40,
+    "source_sample_id": "gravity_v21:ep000405:frames0000-0060",
+    "target_indices": [
+      400,
+      401,
+      402,
+      403,
+      404,
+      406,
+      407,
+      408,
+      409
+    ],
+    "target_sample_ids": [
+      "gravity_v21:ep000400:frames0000-0060",
+      "gravity_v21:ep000401:frames0000-0060",
+      "gravity_v21:ep000402:frames0000-0060",
+      "gravity_v21:ep000403:frames0000-0060",
+      "gravity_v21:ep000404:frames0000-0060",
+      "gravity_v21:ep000406:frames0000-0060",
+      "gravity_v21:ep000407:frames0000-0060",
+      "gravity_v21:ep000408:frames0000-0060",
+      "gravity_v21:ep000409:frames0000-0060"
+    ]
+  },
+  {
+    "source_friction_mu": 2.6703705829795945,
+    "source_index": 595,
+    "source_inner_step": 40,
+    "source_sample_id": "gravity_v21:ep000595:frames0000-0060",
+    "target_indices": [
+      590,
+      591,
+      592,
+      593,
+      594,
+      596,
+      597,
+      598,
+      599
+    ],
+    "target_sample_ids": [
+      "gravity_v21:ep000590:frames0000-0060",
+      "gravity_v21:ep000591:frames0000-0060",
+      "gravity_v21:ep000592:frames0000-0060",
+      "gravity_v21:ep000593:frames0000-0060",
+      "gravity_v21:ep000594:frames0000-0060",
+      "gravity_v21:ep000596:frames0000-0060",
+      "gravity_v21:ep000597:frames0000-0060",
+      "gravity_v21:ep000598:frames0000-0060",
+      "gravity_v21:ep000599:frames0000-0060"
+    ]
+  },
+  {
+    "source_friction_mu": 50.0,
+    "source_index": 795,
+    "source_inner_step": 40,
+    "source_sample_id": "gravity_v21:ep000795:frames0000-0060",
+    "target_indices": [
+      790,
+      791,
+      792,
+      793,
+      794,
+      796,
+      797,
+      798,
+      799
+    ],
+    "target_sample_ids": [
+      "gravity_v21:ep000790:frames0000-0060",
+      "gravity_v21:ep000791:frames0000-0060",
+      "gravity_v21:ep000792:frames0000-0060",
+      "gravity_v21:ep000793:frames0000-0060",
+      "gravity_v21:ep000794:frames0000-0060",
+      "gravity_v21:ep000796:frames0000-0060",
+      "gravity_v21:ep000797:frames0000-0060",
+      "gravity_v21:ep000798:frames0000-0060",
+      "gravity_v21:ep000799:frames0000-0060"
+    ]
+  },
+  {
+    "source_friction_mu": 0.3046383125125432,
+    "source_index": 85,
+    "source_inner_step": 40,
+    "source_sample_id": "gravity_v21:ep000085:frames0000-0060",
+    "target_indices": [
+      80,
+      81,
+      82,
+      83,
+      84,
+      86,
+      87,
+      88,
+      89
+    ],
+    "target_sample_ids": [
+      "gravity_v21:ep000080:frames0000-0060",
+      "gravity_v21:ep000081:frames0000-0060",
+      "gravity_v21:ep000082:frames0000-0060",
+      "gravity_v21:ep000083:frames0000-0060",
+      "gravity_v21:ep000084:frames0000-0060",
+      "gravity_v21:ep000086:frames0000-0060",
+      "gravity_v21:ep000087:frames0000-0060",
+      "gravity_v21:ep000088:frames0000-0060",
+      "gravity_v21:ep000089:frames0000-0060"
+    ]
+  },
+  {
+    "source_friction_mu": 0.48537026813856643,
+    "source_index": 245,
+    "source_inner_step": 40,
+    "source_sample_id": "gravity_v21:ep000245:frames0000-0060",
+    "target_indices": [
+      240,
+      241,
+      242,
+      243,
+      244,
+      246,
+      247,
+      248,
+      249
+    ],
+    "target_sample_ids": [
+      "gravity_v21:ep000240:frames0000-0060",
+      "gravity_v21:ep000241:frames0000-0060",
+      "gravity_v21:ep000242:frames0000-0060",
+      "gravity_v21:ep000243:frames0000-0060",
+      "gravity_v21:ep000244:frames0000-0060",
+      "gravity_v21:ep000246:frames0000-0060",
+      "gravity_v21:ep000247:frames0000-0060",
+      "gravity_v21:ep000248:frames0000-0060",
+      "gravity_v21:ep000249:frames0000-0060"
+    ]
+  },
+  {
+    "source_friction_mu": 0.8534246555112347,
+    "source_index": 395,
+    "source_inner_step": 40,
+    "source_sample_id": "gravity_v21:ep000395:frames0000-0060",
+    "target_indices": [
+      390,
+      391,
+      392,
+      393,
+      394,
+      396,
+      397,
+      398,
+      399
+    ],
+    "target_sample_ids": [
+      "gravity_v21:ep000390:frames0000-0060",
+      "gravity_v21:ep000391:frames0000-0060",
+      "gravity_v21:ep000392:frames0000-0060",
+      "gravity_v21:ep000393:frames0000-0060",
+      "gravity_v21:ep000394:frames0000-0060",
+      "gravity_v21:ep000396:frames0000-0060",
+      "gravity_v21:ep000397:frames0000-0060",
+      "gravity_v21:ep000398:frames0000-0060",
+      "gravity_v21:ep000399:frames0000-0060"
+    ]
+  },
+  {
+    "source_friction_mu": 2.0059753309610002,
+    "source_index": 555,
+    "source_inner_step": 40,
+    "source_sample_id": "gravity_v21:ep000555:frames0000-0060",
+    "target_indices": [
+      550,
+      551,
+      552,
+      553,
+      554,
+      556,
+      557,
+      558,
+      559
+    ],
+    "target_sample_ids": [
+      "gravity_v21:ep000550:frames0000-0060",
+      "gravity_v21:ep000551:frames0000-0060",
+      "gravity_v21:ep000552:frames0000-0060",
+      "gravity_v21:ep000553:frames0000-0060",
+      "gravity_v21:ep000554:frames0000-0060",
+      "gravity_v21:ep000556:frames0000-0060",
+      "gravity_v21:ep000557:frames0000-0060",
+      "gravity_v21:ep000558:frames0000-0060",
+      "gravity_v21:ep000559:frames0000-0060"
+    ]
+  },
+  {
+    "source_friction_mu": 9.203259324314132,
+    "source_index": 715,
+    "source_inner_step": 40,
+    "source_sample_id": "gravity_v21:ep000715:frames0000-0060",
+    "target_indices": [
+      710,
+      711,
+      712,
+      713,
+      714,
+      716,
+      717,
+      718,
+      719
+    ],
+    "target_sample_ids": [
+      "gravity_v21:ep000710:frames0000-0060",
+      "gravity_v21:ep000711:frames0000-0060",
+      "gravity_v21:ep000712:frames0000-0060",
+      "gravity_v21:ep000713:frames0000-0060",
+      "gravity_v21:ep000714:frames0000-0060",
+      "gravity_v21:ep000716:frames0000-0060",
+      "gravity_v21:ep000717:frames0000-0060",
+      "gravity_v21:ep000718:frames0000-0060",
+      "gravity_v21:ep000719:frames0000-0060"
+    ]
+  }
+]

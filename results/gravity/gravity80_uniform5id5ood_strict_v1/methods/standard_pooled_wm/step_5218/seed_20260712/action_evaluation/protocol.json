@@ -1,0 +1,62 @@
+{
+  "action_order_field": null,
+  "candidate_count_is_protocol_defined": true,
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/standard_pooled_wm/gravity80_step5218_uniform5id5ood_strict_v1.yaml",
+  "method": "standard_pooled_wm",
+  "observed_support_is_selectable": true,
+  "selection_strategy": "nearest",
+  "selection_uses_query_ground_truth": false,
+  "targets": [
+    {
+      "id": "near_disambiguating",
+      "kind": "point_rectangle",
+      "object_index": 0,
+      "region": {
+        "x_max": 0.555,
+        "x_min": 0.525,
+        "y_max": 0.585,
+        "y_min": 0.535
+      }
+    },
+    {
+      "id": "middle_disambiguating",
+      "kind": "point_rectangle",
+      "object_index": 0,
+      "region": {
+        "x_max": 0.625,
+        "x_min": 0.585,
+        "y_max": 0.625,
+        "y_min": 0.57
+      }
+    },
+    {
+      "id": "far_disambiguating",
+      "kind": "point_rectangle",
+      "object_index": 0,
+      "region": {
+        "x_max": 0.845,
+        "x_min": 0.795,
+        "y_max": 0.69,
+        "y_min": 0.62
+      }
+    }
+  ],
+  "task": "gravity",
+  "transfer_plans": [
+    {
+      "domain_by_source": {
+        "5": "id",
+        "85": "ood",
+        "205": "id",
+        "245": "ood",
+        "395": "ood",
+        "405": "id",
+        "555": "ood",
+        "595": "id",
+        "715": "ood",
+        "795": "id"
+      },
+      "path": "results/gravity/gravity80_uniform5id5ood_strict_v1/methods/standard_pooled_wm/step_5218/seed_20260712/transfer/transfer_plan.json"
+    }
+  ]
+}

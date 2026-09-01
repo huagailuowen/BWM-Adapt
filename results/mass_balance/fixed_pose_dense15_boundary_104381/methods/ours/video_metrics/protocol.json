@@ -1,0 +1,25 @@
+{
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/mass_balance_fixed_pose_ours_dense15_104381.yaml",
+  "extractor": "sim_rgb_v1",
+  "extractor_settings": {
+    "max_tracking_jump_px": 64.0,
+    "offscreen_centroid": "hold_last_observed_position"
+  },
+  "global_metrics": [
+    "psnr",
+    "ssim",
+    "lpips"
+  ],
+  "method": "ours",
+  "object_primary_indices": [
+    0
+  ],
+  "query_ground_truth_used_for_selection": false,
+  "task": "mass_balance",
+  "transfer_plans": [
+    {
+      "domain": "id",
+      "path": "outputs/infer_mass_balance_fixed_pose_91441_stage1_stage2_dense15_boundary_104381/same_ratio_other_supports/transfer_plan.json"
+    }
+  ]
+}

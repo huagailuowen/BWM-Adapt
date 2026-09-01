@@ -1,0 +1,21 @@
+{
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/standard_pooled_wm/mass_balance_fixed_step8000.yaml",
+  "extractor": "sim_rgb_v1",
+  "global_metrics": [
+    "psnr",
+    "ssim",
+    "lpips"
+  ],
+  "method": "standard_pooled_wm",
+  "object_primary_indices": [
+    0
+  ],
+  "query_ground_truth_used_for_selection": false,
+  "task": "mass_balance",
+  "transfer_plans": [
+    {
+      "domain": "id",
+      "path": "results/mass_balance/fixed_pose_dense15_boundary_104381/methods/standard_pooled_wm/step_8000/seed_20260722/transfer/transfer_plan.json"
+    }
+  ]
+}

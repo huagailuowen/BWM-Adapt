@@ -1,0 +1,127 @@
+[
+  {
+    "source_index": 241,
+    "source_sample_id": "mass_collision_noleak:ep000241:frames0000-0060",
+    "source_friction_mu": 0.9129817872407724,
+    "target_indices": [
+      1,
+      31,
+      61,
+      91,
+      121,
+      151,
+      181,
+      211
+    ],
+    "target_sample_ids": [
+      "mass_collision_noleak:ep000001:frames0000-0060",
+      "mass_collision_noleak:ep000031:frames0000-0060",
+      "mass_collision_noleak:ep000061:frames0000-0060",
+      "mass_collision_noleak:ep000091:frames0000-0060",
+      "mass_collision_noleak:ep000121:frames0000-0060",
+      "mass_collision_noleak:ep000151:frames0000-0060",
+      "mass_collision_noleak:ep000181:frames0000-0060",
+      "mass_collision_noleak:ep000211:frames0000-0060"
+    ]
+  },
+  {
+    "source_index": 95,
+    "source_sample_id": "mass_collision_noleak:ep000095:frames0000-0060",
+    "source_friction_mu": 0.36666105396263127,
+    "target_indices": [
+      5,
+      35,
+      65,
+      125,
+      155,
+      185,
+      215,
+      245
+    ],
+    "target_sample_ids": [
+      "mass_collision_noleak:ep000005:frames0000-0060",
+      "mass_collision_noleak:ep000035:frames0000-0060",
+      "mass_collision_noleak:ep000065:frames0000-0060",
+      "mass_collision_noleak:ep000125:frames0000-0060",
+      "mass_collision_noleak:ep000155:frames0000-0060",
+      "mass_collision_noleak:ep000185:frames0000-0060",
+      "mass_collision_noleak:ep000215:frames0000-0060",
+      "mass_collision_noleak:ep000245:frames0000-0060"
+    ]
+  },
+  {
+    "source_index": 37,
+    "source_sample_id": "mass_collision_noleak:ep000037:frames0000-0060",
+    "source_friction_mu": 0.2567309741554602,
+    "target_indices": [
+      7,
+      67,
+      97,
+      127,
+      157,
+      187,
+      217,
+      247
+    ],
+    "target_sample_ids": [
+      "mass_collision_noleak:ep000007:frames0000-0060",
+      "mass_collision_noleak:ep000067:frames0000-0060",
+      "mass_collision_noleak:ep000097:frames0000-0060",
+      "mass_collision_noleak:ep000127:frames0000-0060",
+      "mass_collision_noleak:ep000157:frames0000-0060",
+      "mass_collision_noleak:ep000187:frames0000-0060",
+      "mass_collision_noleak:ep000217:frames0000-0060",
+      "mass_collision_noleak:ep000247:frames0000-0060"
+    ]
+  },
+  {
+    "source_index": 10,
+    "source_sample_id": "mass_collision_noleak:ep000010:frames0000-0060",
+    "source_friction_mu": 0.1742944349721352,
+    "target_indices": [
+      40,
+      70,
+      100,
+      130,
+      160,
+      190,
+      220,
+      250
+    ],
+    "target_sample_ids": [
+      "mass_collision_noleak:ep000040:frames0000-0060",
+      "mass_collision_noleak:ep000070:frames0000-0060",
+      "mass_collision_noleak:ep000100:frames0000-0060",
+      "mass_collision_noleak:ep000130:frames0000-0060",
+      "mass_collision_noleak:ep000160:frames0000-0060",
+      "mass_collision_noleak:ep000190:frames0000-0060",
+      "mass_collision_noleak:ep000220:frames0000-0060",
+      "mass_collision_noleak:ep000250:frames0000-0060"
+    ]
+  },
+  {
+    "source_index": 16,
+    "source_sample_id": "mass_collision_noleak:ep000016:frames0000-0060",
+    "source_friction_mu": 0.09233397390639964,
+    "target_indices": [
+      46,
+      76,
+      106,
+      136,
+      166,
+      196,
+      226,
+      256
+    ],
+    "target_sample_ids": [
+      "mass_collision_noleak:ep000046:frames0000-0060",
+      "mass_collision_noleak:ep000076:frames0000-0060",
+      "mass_collision_noleak:ep000106:frames0000-0060",
+      "mass_collision_noleak:ep000136:frames0000-0060",
+      "mass_collision_noleak:ep000166:frames0000-0060",
+      "mass_collision_noleak:ep000196:frames0000-0060",
+      "mass_collision_noleak:ep000226:frames0000-0060",
+      "mass_collision_noleak:ep000256:frames0000-0060"
+    ]
+  }
+]

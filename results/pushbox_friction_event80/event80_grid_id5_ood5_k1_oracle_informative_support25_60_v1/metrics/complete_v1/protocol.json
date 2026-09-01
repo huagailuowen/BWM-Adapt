@@ -17,6 +17,11 @@
     "standard_pooled_wm": "methods/standard_pooled_wm/step_7849/seed_20260708",
     "ttt_kqv": "methods/ttt_kqv/step_12400/seed_20260708"
   },
+  "method_implementation_versions": {
+    "dinov2_amortized_context": "legacy_8frame_action_transition_mean_pool",
+    "history_conditioned_wm": "legacy_flamingo_perceiver_gated_xattn",
+    "ttt_kqv": "legacy_prequential_read_then_write_uniform8_sampled512"
+  },
   "object_metric": "main-camera pushed-block centroid ADE/FDE",
   "offscreen_handling": "Event80 tracker bottom-center sentinel",
   "query_ground_truth_used_for_action_selection": false,

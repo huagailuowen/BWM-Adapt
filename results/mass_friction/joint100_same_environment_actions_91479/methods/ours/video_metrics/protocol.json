@@ -1,0 +1,25 @@
+{
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/mass_friction_ours_91479.yaml",
+  "extractor": "sim_rgb_v1",
+  "extractor_settings": {
+    "max_tracking_jump_px": 64.0,
+    "offscreen_centroid": "hold_last_observed_position"
+  },
+  "global_metrics": "preserved_existing",
+  "method": "ours",
+  "object_primary_indices": [
+    0
+  ],
+  "query_ground_truth_used_for_selection": false,
+  "task": "joint_mass_friction",
+  "transfer_plans": [
+    {
+      "domain": "id",
+      "path": "outputs/infer_mass_friction100_backup_step7172_stage1_stage2_id3_ood3_91479/id3_same_environment_other_actions/transfer_plan.json"
+    },
+    {
+      "domain": "ood",
+      "path": "outputs/infer_mass_friction100_backup_step7172_stage1_stage2_id3_ood3_91479/ood3_same_environment_other_actions/transfer_plan.json"
+    }
+  ]
+}

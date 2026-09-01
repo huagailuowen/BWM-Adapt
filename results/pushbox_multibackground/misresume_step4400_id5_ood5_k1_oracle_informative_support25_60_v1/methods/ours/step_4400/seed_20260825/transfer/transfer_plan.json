@@ -1,0 +1,282 @@
+[
+  {
+    "source_friction_mu": 0.0,
+    "source_index": 0,
+    "source_inner_step": 40,
+    "source_sample_id": "hidden_straight_lerobot:ep000000:frames0065-0105",
+    "target_indices": [
+      301,
+      602,
+      903,
+      1204,
+      305,
+      606,
+      907,
+      1208,
+      309
+    ],
+    "target_sample_ids": [
+      "hidden_straight_lerobot:ep000301:frames0065-0105",
+      "hidden_straight_lerobot:ep000602:frames0065-0105",
+      "hidden_straight_lerobot:ep000903:frames0065-0105",
+      "hidden_straight_lerobot:ep001204:frames0065-0105",
+      "hidden_straight_lerobot:ep000305:frames0065-0105",
+      "hidden_straight_lerobot:ep000606:frames0065-0105",
+      "hidden_straight_lerobot:ep000907:frames0065-0105",
+      "hidden_straight_lerobot:ep001208:frames0065-0105",
+      "hidden_straight_lerobot:ep000309:frames0065-0105"
+    ]
+  },
+  {
+    "source_friction_mu": 9.0,
+    "source_index": 93,
+    "source_inner_step": 40,
+    "source_sample_id": "hidden_straight_lerobot:ep000093:frames0065-0105",
+    "target_indices": [
+      690,
+      991,
+      1292,
+      394,
+      695,
+      996,
+      1297,
+      398,
+      699
+    ],
+    "target_sample_ids": [
+      "hidden_straight_lerobot:ep000690:frames0065-0105",
+      "hidden_straight_lerobot:ep000991:frames0065-0105",
+      "hidden_straight_lerobot:ep001292:frames0065-0105",
+      "hidden_straight_lerobot:ep000394:frames0065-0105",
+      "hidden_straight_lerobot:ep000695:frames0065-0105",
+      "hidden_straight_lerobot:ep000996:frames0065-0105",
+      "hidden_straight_lerobot:ep001297:frames0065-0105",
+      "hidden_straight_lerobot:ep000398:frames0065-0105",
+      "hidden_straight_lerobot:ep000699:frames0065-0105"
+    ]
+  },
+  {
+    "source_friction_mu": 15.0,
+    "source_index": 154,
+    "source_inner_step": 40,
+    "source_sample_id": "hidden_straight_lerobot:ep000154:frames0065-0105",
+    "target_indices": [
+      1050,
+      1351,
+      452,
+      753,
+      1055,
+      1356,
+      457,
+      758,
+      1059
+    ],
+    "target_sample_ids": [
+      "hidden_straight_lerobot:ep001050:frames0065-0105",
+      "hidden_straight_lerobot:ep001351:frames0065-0105",
+      "hidden_straight_lerobot:ep000452:frames0065-0105",
+      "hidden_straight_lerobot:ep000753:frames0065-0105",
+      "hidden_straight_lerobot:ep001055:frames0065-0105",
+      "hidden_straight_lerobot:ep001356:frames0065-0105",
+      "hidden_straight_lerobot:ep000457:frames0065-0105",
+      "hidden_straight_lerobot:ep000758:frames0065-0105",
+      "hidden_straight_lerobot:ep001059:frames0065-0105"
+    ]
+  },
+  {
+    "source_friction_mu": 20.0,
+    "source_index": 205,
+    "source_inner_step": 40,
+    "source_sample_id": "hidden_straight_lerobot:ep000205:frames0065-0105",
+    "target_indices": [
+      1400,
+      501,
+      802,
+      1103,
+      1404,
+      506,
+      807,
+      1108,
+      1409
+    ],
+    "target_sample_ids": [
+      "hidden_straight_lerobot:ep001400:frames0065-0105",
+      "hidden_straight_lerobot:ep000501:frames0065-0105",
+      "hidden_straight_lerobot:ep000802:frames0065-0105",
+      "hidden_straight_lerobot:ep001103:frames0065-0105",
+      "hidden_straight_lerobot:ep001404:frames0065-0105",
+      "hidden_straight_lerobot:ep000506:frames0065-0105",
+      "hidden_straight_lerobot:ep000807:frames0065-0105",
+      "hidden_straight_lerobot:ep001108:frames0065-0105",
+      "hidden_straight_lerobot:ep001409:frames0065-0105"
+    ]
+  },
+  {
+    "source_friction_mu": 29.0,
+    "source_index": 298,
+    "source_inner_step": 40,
+    "source_sample_id": "hidden_straight_lerobot:ep000298:frames0065-0105",
+    "target_indices": [
+      590,
+      891,
+      1192,
+      1493,
+      594,
+      895,
+      1196,
+      1497,
+      599
+    ],
+    "target_sample_ids": [
+      "hidden_straight_lerobot:ep000590:frames0065-0105",
+      "hidden_straight_lerobot:ep000891:frames0065-0105",
+      "hidden_straight_lerobot:ep001192:frames0065-0105",
+      "hidden_straight_lerobot:ep001493:frames0065-0105",
+      "hidden_straight_lerobot:ep000594:frames0065-0105",
+      "hidden_straight_lerobot:ep000895:frames0065-0105",
+      "hidden_straight_lerobot:ep001196:frames0065-0105",
+      "hidden_straight_lerobot:ep001497:frames0065-0105",
+      "hidden_straight_lerobot:ep000599:frames0065-0105"
+    ]
+  },
+  {
+    "source_friction_mu": 1.0,
+    "source_index": 11,
+    "source_inner_step": 40,
+    "source_sample_id": "hidden_straight_lerobot:ep000011:frames0065-0105",
+    "target_indices": [
+      610,
+      912,
+      1213,
+      314,
+      615,
+      916,
+      1217,
+      318,
+      619
+    ],
+    "target_sample_ids": [
+      "hidden_straight_lerobot:ep000610:frames0065-0105",
+      "hidden_straight_lerobot:ep000912:frames0065-0105",
+      "hidden_straight_lerobot:ep001213:frames0065-0105",
+      "hidden_straight_lerobot:ep000314:frames0065-0105",
+      "hidden_straight_lerobot:ep000615:frames0065-0105",
+      "hidden_straight_lerobot:ep000916:frames0065-0105",
+      "hidden_straight_lerobot:ep001217:frames0065-0105",
+      "hidden_straight_lerobot:ep000318:frames0065-0105",
+      "hidden_straight_lerobot:ep000619:frames0065-0105"
+    ]
+  },
+  {
+    "source_friction_mu": 8.0,
+    "source_index": 83,
+    "source_inner_step": 40,
+    "source_sample_id": "hidden_straight_lerobot:ep000083:frames0065-0105",
+    "target_indices": [
+      980,
+      1281,
+      382,
+      684,
+      985,
+      1286,
+      387,
+      688,
+      989
+    ],
+    "target_sample_ids": [
+      "hidden_straight_lerobot:ep000980:frames0065-0105",
+      "hidden_straight_lerobot:ep001281:frames0065-0105",
+      "hidden_straight_lerobot:ep000382:frames0065-0105",
+      "hidden_straight_lerobot:ep000684:frames0065-0105",
+      "hidden_straight_lerobot:ep000985:frames0065-0105",
+      "hidden_straight_lerobot:ep001286:frames0065-0105",
+      "hidden_straight_lerobot:ep000387:frames0065-0105",
+      "hidden_straight_lerobot:ep000688:frames0065-0105",
+      "hidden_straight_lerobot:ep000989:frames0065-0105"
+    ]
+  },
+  {
+    "source_friction_mu": 13.0,
+    "source_index": 134,
+    "source_inner_step": 40,
+    "source_sample_id": "hidden_straight_lerobot:ep000134:frames0065-0105",
+    "target_indices": [
+      1330,
+      431,
+      732,
+      1033,
+      1335,
+      436,
+      737,
+      1038,
+      1339
+    ],
+    "target_sample_ids": [
+      "hidden_straight_lerobot:ep001330:frames0065-0105",
+      "hidden_straight_lerobot:ep000431:frames0065-0105",
+      "hidden_straight_lerobot:ep000732:frames0065-0105",
+      "hidden_straight_lerobot:ep001033:frames0065-0105",
+      "hidden_straight_lerobot:ep001335:frames0065-0105",
+      "hidden_straight_lerobot:ep000436:frames0065-0105",
+      "hidden_straight_lerobot:ep000737:frames0065-0105",
+      "hidden_straight_lerobot:ep001038:frames0065-0105",
+      "hidden_straight_lerobot:ep001339:frames0065-0105"
+    ]
+  },
+  {
+    "source_friction_mu": 21.0,
+    "source_index": 215,
+    "source_inner_step": 40,
+    "source_sample_id": "hidden_straight_lerobot:ep000215:frames0065-0105",
+    "target_indices": [
+      510,
+      811,
+      1112,
+      1413,
+      514,
+      816,
+      1117,
+      1418,
+      519
+    ],
+    "target_sample_ids": [
+      "hidden_straight_lerobot:ep000510:frames0065-0105",
+      "hidden_straight_lerobot:ep000811:frames0065-0105",
+      "hidden_straight_lerobot:ep001112:frames0065-0105",
+      "hidden_straight_lerobot:ep001413:frames0065-0105",
+      "hidden_straight_lerobot:ep000514:frames0065-0105",
+      "hidden_straight_lerobot:ep000816:frames0065-0105",
+      "hidden_straight_lerobot:ep001117:frames0065-0105",
+      "hidden_straight_lerobot:ep001418:frames0065-0105",
+      "hidden_straight_lerobot:ep000519:frames0065-0105"
+    ]
+  },
+  {
+    "source_friction_mu": 28.0,
+    "source_index": 287,
+    "source_inner_step": 40,
+    "source_sample_id": "hidden_straight_lerobot:ep000287:frames0065-0105",
+    "target_indices": [
+      880,
+      1181,
+      1482,
+      583,
+      884,
+      1185,
+      1486,
+      588,
+      889
+    ],
+    "target_sample_ids": [
+      "hidden_straight_lerobot:ep000880:frames0065-0105",
+      "hidden_straight_lerobot:ep001181:frames0065-0105",
+      "hidden_straight_lerobot:ep001482:frames0065-0105",
+      "hidden_straight_lerobot:ep000583:frames0065-0105",
+      "hidden_straight_lerobot:ep000884:frames0065-0105",
+      "hidden_straight_lerobot:ep001185:frames0065-0105",
+      "hidden_straight_lerobot:ep001486:frames0065-0105",
+      "hidden_straight_lerobot:ep000588:frames0065-0105",
+      "hidden_straight_lerobot:ep000889:frames0065-0105"
+    ]
+  }
+]

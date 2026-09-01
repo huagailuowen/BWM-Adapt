@@ -1,0 +1,33 @@
+{
+  "evaluation_id": "pushbox_multibackground_misresume_step4400_id5_ood5_k1_oracle_informative_support25_60_v1",
+  "method": "ours_misresume",
+  "checkpoint": "/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_resume4000_stage1_8700_104188/step-4400.safetensors",
+  "context_table": "/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_resume4000_stage1_8700_104188/step-4400.context_table.json",
+  "source_inference_run": "/afs/ir/users/c/y/cyzhou05/TTT-Physics/repos/BWM-Adapt/outputs/infer_push_box_matchedphysics5bg30fric_misresume104188_step4400_id5_ood5_k1_oracle_informative_support25_60_transfer_grid_105611",
+  "seed": 20260825,
+  "support_size": 1,
+  "id_environment_count": 5,
+  "ood_environment_count": 5,
+  "query_count_per_environment": 9,
+  "total_query_count": 90,
+  "grid_count": 10,
+  "support_selection": {
+    "uses_ground_truth_only": true,
+    "target_object_displacement_px": [
+      25.0,
+      60.0
+    ],
+    "fixed_action_id": false,
+    "criterion": "Choose the candidate action whose GT object displacement is informative and closest to the target range center."
+  },
+  "query_protocol": {
+    "support_query_disjoint": true,
+    "query_state": "read_only_after_support_adaptation",
+    "cross_action": true,
+    "cross_background": true
+  },
+  "storage": {
+    "layout": "standard_results_tree",
+    "materialization": "hardlinks_to_completed_source_run"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-30T19:14:47.295842+00:00",
+  "generated_at": "2026-08-31T23:19:37.997695+00:00",
   "comparison": "Ours versus standard pooled world model",
   "global_metrics": "PSNR/SSIM/LPIPS are averaged over the available ID/OOD environment summaries.",
   "object_metrics": "Mean/final object-state error: centroid ADE/FDE in pixels for moving objects; yellow-lamp score MAE/final absolute error for LightSwitch.",
@@ -21,10 +21,16 @@
       "support_size": 8
     }
   },
+  "additional_provenance": {
+    "multi_background_ours_misresume": {
+      "benchmark_config": "configs/evaluation/multi_background_pushbox/misresume_step4400_complete_benchmark.yaml",
+      "checkpoint": "outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_resume4000_stage1_8700_104188/step-4400.safetensors",
+      "protocol": "5 ID + 5 OOD environments; K=1 oracle-informative support; 9 disjoint cross-background queries per environment",
+      "note": "Mechanism-observation result from the audited mis-resume branch; matched pooled row remains pending."
+    }
+  },
   "pending": [
-    "Gravity / Ours: partial: missing lpips",
-    "Mass collision / Standard pooled WM: partial: missing lpips",
-    "Light switch / Standard pooled WM: partial: missing lpips",
-    "Light switch / Ours: partial: missing lpips"
+    "Multi-background friction / Standard pooled WM: pending matched-protocol pooled benchmark",
+    "Multi-background friction / Ours (mis-resume): partial: missing lpips"
   ]
 }

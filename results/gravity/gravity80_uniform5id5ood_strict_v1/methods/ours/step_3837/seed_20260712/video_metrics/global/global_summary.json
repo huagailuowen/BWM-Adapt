@@ -1,0 +1,170 @@
+{
+  "environment": [
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0005",
+      "lpips": 0.015545107217298614,
+      "method": "ours",
+      "psnr": 34.10599899291992,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.952990263971909,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0205",
+      "lpips": 0.014016741886734962,
+      "method": "ours",
+      "psnr": 34.634669833713104,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.954399645871369,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0405",
+      "lpips": 0.01539002400305536,
+      "method": "ours",
+      "psnr": 34.01701672871908,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9522252069796369,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0595",
+      "lpips": 0.02057173413534959,
+      "method": "ours",
+      "psnr": 33.30100186665853,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9515227596182206,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0795",
+      "lpips": 0.024508327452672854,
+      "method": "ours",
+      "psnr": 32.38180711534288,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9490347665298615,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0085",
+      "lpips": 0.014823125157919195,
+      "method": "ours",
+      "psnr": 34.15046310424805,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9520961342613554,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0245",
+      "lpips": 0.015053644155462583,
+      "method": "ours",
+      "psnr": 34.31776004367404,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9532225964716441,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0395",
+      "lpips": 0.01596168325179153,
+      "method": "ours",
+      "psnr": 33.68081834581163,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9499785748118694,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0555",
+      "lpips": 0.031087932487328846,
+      "method": "ours",
+      "psnr": 31.95574082268609,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9445094378268133,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0715",
+      "lpips": 0.03512696921825409,
+      "method": "ours",
+      "psnr": 31.344209882948135,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9441062040450576,
+      "support_size": 1
+    }
+  ],
+  "seed": [
+    {
+      "count": 5,
+      "domain": "id",
+      "lpips": 0.018006386939022276,
+      "method": "ours",
+      "psnr": 33.6880989074707,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9520345285941992,
+      "support_size": 1
+    },
+    {
+      "count": 5,
+      "domain": "ood",
+      "lpips": 0.02241067085415125,
+      "method": "ours",
+      "psnr": 33.08979843987358,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9487825894833479,
+      "support_size": 1
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "lpips": 0.018006386939022276,
+      "method": "ours",
+      "psnr": 33.6880989074707,
+      "split": "evaluation",
+      "ssim": 0.9520345285941992,
+      "support_size": 1
+    },
+    {
+      "count": 1,
+      "domain": "ood",
+      "lpips": 0.02241067085415125,
+      "method": "ours",
+      "psnr": 33.08979843987358,
+      "split": "evaluation",
+      "ssim": 0.9487825894833479,
+      "support_size": 1
+    }
+  ]
+}

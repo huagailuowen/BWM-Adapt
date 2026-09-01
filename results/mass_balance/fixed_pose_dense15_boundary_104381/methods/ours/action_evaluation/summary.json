@@ -1,0 +1,32 @@
+{
+  "all_valid_decisions": {
+    "count": 10,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 7.409488692230703,
+    "selected_is_oracle_rate": 0.6,
+    "task_success_rate": 0.6
+  },
+  "by_domain_and_target": {
+    "id/balanced": {
+      "count": 10,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 7.409488692230703,
+      "selected_is_oracle_rate": 0.6,
+      "task_success_rate": 0.6
+    }
+  },
+  "complete_candidate_set_decisions": {
+    "count": 10,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 7.409488692230703,
+    "selected_is_oracle_rate": 0.6,
+    "task_success_rate": 0.6
+  },
+  "headline_oracle_reachable_complete_decisions": {
+    "count": 10,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 7.409488692230703,
+    "selected_is_oracle_rate": 0.6,
+    "task_success_rate": 0.6
+  }
+}

@@ -34,7 +34,7 @@
 <text x="3145.0" y="750.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">5.62</text>
 <text x="3645.0" y="750.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">12.04</text>
 <text x="4210.0" y="750.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">60%</text>
-<text x="159" y="878.0" text-anchor="start" dominant-baseline="middle" font-size="40" font-weight="400">History-Conditioned WM</text>
+<text x="159" y="878.0" text-anchor="start" dominant-baseline="middle" font-size="40" font-weight="400">History-Conditioned WM (Legacy)</text>
 <text x="1645.0" y="878.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">30.936</text>
 <text x="2145.0" y="878.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">0.9519</text>
 <text x="2645.0" y="878.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">0.0658</text>
@@ -55,14 +55,14 @@
 <text x="3145.0" y="1134.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">11.06</text>
 <text x="3645.0" y="1134.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">24.41</text>
 <text x="4210.0" y="1134.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">40%</text>
-<text x="159" y="1262.0" text-anchor="start" dominant-baseline="middle" font-size="40" font-weight="400">DINOv2 Context Encoder</text>
+<text x="159" y="1262.0" text-anchor="start" dominant-baseline="middle" font-size="40" font-weight="400">DINOv2 Context Encoder (Legacy)</text>
 <text x="1645.0" y="1262.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">31.054</text>
 <text x="2145.0" y="1262.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">0.9488</text>
 <text x="2645.0" y="1262.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">0.0671</text>
 <text x="3145.0" y="1262.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">11.25</text>
 <text x="3645.0" y="1262.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">24.51</text>
 <text x="4210.0" y="1262.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">40%</text>
-<text x="159" y="1390.0" text-anchor="start" dominant-baseline="middle" font-size="40" font-weight="400">TTT-KQV</text>
+<text x="159" y="1390.0" text-anchor="start" dominant-baseline="middle" font-size="40" font-weight="400">TTT-KQV (Legacy)</text>
 <text x="1645.0" y="1390.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="700">32.253</text>
 <text x="2145.0" y="1390.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="700">0.9557</text>
 <text x="2645.0" y="1390.0" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="400">0.0595</text>

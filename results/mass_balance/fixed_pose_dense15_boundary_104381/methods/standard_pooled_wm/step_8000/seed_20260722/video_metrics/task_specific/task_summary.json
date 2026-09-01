@@ -1,0 +1,157 @@
+{
+  "aggregation": {
+    "environment": [
+      {
+        "bar_angular_velocity_mae_deg_s": 1.116566088379126,
+        "bar_tilt_final_error_deg": 1.8833344662524882,
+        "bar_tilt_mae_deg": 0.4122410736123647,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0022",
+        "method": "standard_pooled_wm",
+        "seed": 20260722,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 1.3280089009566125,
+        "bar_tilt_final_error_deg": 2.7878752689777704,
+        "bar_tilt_mae_deg": 0.7526380355296107,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0112",
+        "method": "standard_pooled_wm",
+        "seed": 20260722,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.3554261211040584,
+        "bar_tilt_final_error_deg": 7.350146343703928,
+        "bar_tilt_mae_deg": 1.8751470764730833,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0202",
+        "method": "standard_pooled_wm",
+        "seed": 20260722,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.7464709080713345,
+        "bar_tilt_final_error_deg": 9.023922944142083,
+        "bar_tilt_mae_deg": 2.300112085928107,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0292",
+        "method": "standard_pooled_wm",
+        "seed": 20260722,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.8947077585864984,
+        "bar_tilt_final_error_deg": 8.90215324813413,
+        "bar_tilt_mae_deg": 2.2860492296079884,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0382",
+        "method": "standard_pooled_wm",
+        "seed": 20260722,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 4.187789486584118,
+        "bar_tilt_final_error_deg": 11.726882740124896,
+        "bar_tilt_mae_deg": 3.019067859448055,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0472",
+        "method": "standard_pooled_wm",
+        "seed": 20260722,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 4.624041691114809,
+        "bar_tilt_final_error_deg": 13.88235757898951,
+        "bar_tilt_mae_deg": 3.456645595652622,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0562",
+        "method": "standard_pooled_wm",
+        "seed": 20260722,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 5.2496585968984135,
+        "bar_tilt_final_error_deg": 15.850844355306526,
+        "bar_tilt_mae_deg": 3.902685615518414,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0652",
+        "method": "standard_pooled_wm",
+        "seed": 20260722,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 5.208662220720761,
+        "bar_tilt_final_error_deg": 15.926672800479029,
+        "bar_tilt_mae_deg": 3.801327645640202,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0742",
+        "method": "standard_pooled_wm",
+        "seed": 20260722,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 6.107942794338531,
+        "bar_tilt_final_error_deg": 18.007604812693724,
+        "bar_tilt_mae_deg": 4.301170196012094,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0877",
+        "method": "standard_pooled_wm",
+        "seed": 20260722,
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ],
+    "seed": [
+      {
+        "bar_angular_velocity_mae_deg_s": 3.5819274566754267,
+        "bar_tilt_final_error_deg": 10.534179455880409,
+        "bar_tilt_mae_deg": 2.610708441342254,
+        "count": 10,
+        "domain": "id",
+        "method": "standard_pooled_wm",
+        "seed": 20260722,
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ],
+    "summary": [
+      {
+        "bar_angular_velocity_mae_deg_s": 3.5819274566754267,
+        "bar_tilt_final_error_deg": 10.534179455880409,
+        "bar_tilt_mae_deg": 2.610708441342254,
+        "count": 1,
+        "domain": "id",
+        "method": "standard_pooled_wm",
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ]
+  },
+  "metric_names": [
+    "bar_angular_velocity_mae_deg_s",
+    "bar_tilt_final_error_deg",
+    "bar_tilt_mae_deg"
+  ],
+  "task": "mass_balance"
+}

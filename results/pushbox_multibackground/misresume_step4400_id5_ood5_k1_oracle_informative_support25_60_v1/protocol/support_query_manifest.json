@@ -1,0 +1,776 @@
+{
+  "active_context_group_ids": [
+    0,
+    7,
+    14,
+    22,
+    29,
+    18,
+    11,
+    4,
+    25,
+    16,
+    9,
+    20,
+    2,
+    27,
+    15
+  ],
+  "environments": [
+    {
+      "context_group_id": 0,
+      "domain": "id",
+      "environment_id": "shared_friction_group_0",
+      "friction_mu": 0.002,
+      "queries": [
+        {
+          "action_id": 1,
+          "background_index": 1,
+          "sample_index": 301
+        },
+        {
+          "action_id": 2,
+          "background_index": 2,
+          "sample_index": 602
+        },
+        {
+          "action_id": 3,
+          "background_index": 3,
+          "sample_index": 903
+        },
+        {
+          "action_id": 4,
+          "background_index": 4,
+          "sample_index": 1204
+        },
+        {
+          "action_id": 5,
+          "background_index": 1,
+          "sample_index": 305
+        },
+        {
+          "action_id": 6,
+          "background_index": 2,
+          "sample_index": 606
+        },
+        {
+          "action_id": 7,
+          "background_index": 3,
+          "sample_index": 907
+        },
+        {
+          "action_id": 8,
+          "background_index": 4,
+          "sample_index": 1208
+        },
+        {
+          "action_id": 9,
+          "background_index": 1,
+          "sample_index": 309
+        }
+      ],
+      "query_indices": [
+        301,
+        602,
+        903,
+        1204,
+        305,
+        606,
+        907,
+        1208,
+        309
+      ],
+      "selection": {
+        "distance_to_target_midpoint_px": 7.20719974615119,
+        "final_displacement_px": 35.29280025384881,
+        "reason": "within_target_band_closest_to_midpoint",
+        "support_action_id": 0,
+        "support_background_index": 0
+      },
+      "support_indices": [
+        0
+      ]
+    },
+    {
+      "context_group_id": 9,
+      "domain": "id",
+      "environment_id": "shared_friction_group_9",
+      "friction_mu": 0.04127272727272727,
+      "queries": [
+        {
+          "action_id": 0,
+          "background_index": 2,
+          "sample_index": 690
+        },
+        {
+          "action_id": 1,
+          "background_index": 3,
+          "sample_index": 991
+        },
+        {
+          "action_id": 2,
+          "background_index": 4,
+          "sample_index": 1292
+        },
+        {
+          "action_id": 4,
+          "background_index": 1,
+          "sample_index": 394
+        },
+        {
+          "action_id": 5,
+          "background_index": 2,
+          "sample_index": 695
+        },
+        {
+          "action_id": 6,
+          "background_index": 3,
+          "sample_index": 996
+        },
+        {
+          "action_id": 7,
+          "background_index": 4,
+          "sample_index": 1297
+        },
+        {
+          "action_id": 8,
+          "background_index": 1,
+          "sample_index": 398
+        },
+        {
+          "action_id": 9,
+          "background_index": 2,
+          "sample_index": 699
+        }
+      ],
+      "query_indices": [
+        690,
+        991,
+        1292,
+        394,
+        695,
+        996,
+        1297,
+        398,
+        699
+      ],
+      "selection": {
+        "distance_to_target_midpoint_px": 0.691938937324494,
+        "final_displacement_px": 41.808061062675506,
+        "reason": "within_target_band_closest_to_midpoint",
+        "support_action_id": 3,
+        "support_background_index": 0
+      },
+      "support_indices": [
+        93
+      ]
+    },
+    {
+      "context_group_id": 15,
+      "domain": "id",
+      "environment_id": "shared_friction_group_15",
+      "friction_mu": 0.07666666666666666,
+      "queries": [
+        {
+          "action_id": 0,
+          "background_index": 3,
+          "sample_index": 1050
+        },
+        {
+          "action_id": 1,
+          "background_index": 4,
+          "sample_index": 1351
+        },
+        {
+          "action_id": 2,
+          "background_index": 1,
+          "sample_index": 452
+        },
+        {
+          "action_id": 3,
+          "background_index": 2,
+          "sample_index": 753
+        },
+        {
+          "action_id": 5,
+          "background_index": 3,
+          "sample_index": 1055
+        },
+        {
+          "action_id": 6,
+          "background_index": 4,
+          "sample_index": 1356
+        },
+        {
+          "action_id": 7,
+          "background_index": 1,
+          "sample_index": 457
+        },
+        {
+          "action_id": 8,
+          "background_index": 2,
+          "sample_index": 758
+        },
+        {
+          "action_id": 9,
+          "background_index": 3,
+          "sample_index": 1059
+        }
+      ],
+      "query_indices": [
+        1050,
+        1351,
+        452,
+        753,
+        1055,
+        1356,
+        457,
+        758,
+        1059
+      ],
+      "selection": {
+        "distance_to_target_midpoint_px": 8.037927903404103,
+        "final_displacement_px": 34.4620720965959,
+        "reason": "within_target_band_closest_to_midpoint",
+        "support_action_id": 4,
+        "support_background_index": 0
+      },
+      "support_indices": [
+        154
+      ]
+    },
+    {
+      "context_group_id": 20,
+      "domain": "id",
+      "environment_id": "shared_friction_group_20",
+      "friction_mu": 0.11,
+      "queries": [
+        {
+          "action_id": 0,
+          "background_index": 4,
+          "sample_index": 1400
+        },
+        {
+          "action_id": 1,
+          "background_index": 1,
+          "sample_index": 501
+        },
+        {
+          "action_id": 2,
+          "background_index": 2,
+          "sample_index": 802
+        },
+        {
+          "action_id": 3,
+          "background_index": 3,
+          "sample_index": 1103
+        },
+        {
+          "action_id": 4,
+          "background_index": 4,
+          "sample_index": 1404
+        },
+        {
+          "action_id": 6,
+          "background_index": 1,
+          "sample_index": 506
+        },
+        {
+          "action_id": 7,
+          "background_index": 2,
+          "sample_index": 807
+        },
+        {
+          "action_id": 8,
+          "background_index": 3,
+          "sample_index": 1108
+        },
+        {
+          "action_id": 9,
+          "background_index": 4,
+          "sample_index": 1409
+        }
+      ],
+      "query_indices": [
+        1400,
+        501,
+        802,
+        1103,
+        1404,
+        506,
+        807,
+        1108,
+        1409
+      ],
+      "selection": {
+        "distance_to_target_midpoint_px": 6.358716561344252,
+        "final_displacement_px": 36.14128343865575,
+        "reason": "within_target_band_closest_to_midpoint",
+        "support_action_id": 5,
+        "support_background_index": 0
+      },
+      "support_indices": [
+        205
+      ]
+    },
+    {
+      "context_group_id": 29,
+      "domain": "id",
+      "environment_id": "shared_friction_group_29",
+      "friction_mu": 0.2,
+      "queries": [
+        {
+          "action_id": 0,
+          "background_index": 1,
+          "sample_index": 590
+        },
+        {
+          "action_id": 1,
+          "background_index": 2,
+          "sample_index": 891
+        },
+        {
+          "action_id": 2,
+          "background_index": 3,
+          "sample_index": 1192
+        },
+        {
+          "action_id": 3,
+          "background_index": 4,
+          "sample_index": 1493
+        },
+        {
+          "action_id": 4,
+          "background_index": 1,
+          "sample_index": 594
+        },
+        {
+          "action_id": 5,
+          "background_index": 2,
+          "sample_index": 895
+        },
+        {
+          "action_id": 6,
+          "background_index": 3,
+          "sample_index": 1196
+        },
+        {
+          "action_id": 7,
+          "background_index": 4,
+          "sample_index": 1497
+        },
+        {
+          "action_id": 9,
+          "background_index": 1,
+          "sample_index": 599
+        }
+      ],
+      "query_indices": [
+        590,
+        891,
+        1192,
+        1493,
+        594,
+        895,
+        1196,
+        1497,
+        599
+      ],
+      "selection": {
+        "distance_to_target_midpoint_px": 2.5766970975284735,
+        "final_displacement_px": 45.07669709752847,
+        "reason": "within_target_band_closest_to_midpoint",
+        "support_action_id": 8,
+        "support_background_index": 0
+      },
+      "support_indices": [
+        298
+      ]
+    },
+    {
+      "context_group_id": 1,
+      "domain": "ood",
+      "environment_id": "shared_friction_group_1",
+      "friction_mu": 0.006363636363636364,
+      "queries": [
+        {
+          "action_id": 0,
+          "background_index": 2,
+          "sample_index": 610
+        },
+        {
+          "action_id": 2,
+          "background_index": 3,
+          "sample_index": 912
+        },
+        {
+          "action_id": 3,
+          "background_index": 4,
+          "sample_index": 1213
+        },
+        {
+          "action_id": 4,
+          "background_index": 1,
+          "sample_index": 314
+        },
+        {
+          "action_id": 5,
+          "background_index": 2,
+          "sample_index": 615
+        },
+        {
+          "action_id": 6,
+          "background_index": 3,
+          "sample_index": 916
+        },
+        {
+          "action_id": 7,
+          "background_index": 4,
+          "sample_index": 1217
+        },
+        {
+          "action_id": 8,
+          "background_index": 1,
+          "sample_index": 318
+        },
+        {
+          "action_id": 9,
+          "background_index": 2,
+          "sample_index": 619
+        }
+      ],
+      "query_indices": [
+        610,
+        912,
+        1213,
+        314,
+        615,
+        916,
+        1217,
+        318,
+        619
+      ],
+      "selection": {
+        "distance_to_target_midpoint_px": 9.090976327570928,
+        "final_displacement_px": 51.59097632757093,
+        "reason": "within_target_band_closest_to_midpoint",
+        "support_action_id": 1,
+        "support_background_index": 0
+      },
+      "support_indices": [
+        11
+      ]
+    },
+    {
+      "context_group_id": 8,
+      "domain": "ood",
+      "environment_id": "shared_friction_group_8",
+      "friction_mu": 0.03690909090909091,
+      "queries": [
+        {
+          "action_id": 0,
+          "background_index": 3,
+          "sample_index": 980
+        },
+        {
+          "action_id": 1,
+          "background_index": 4,
+          "sample_index": 1281
+        },
+        {
+          "action_id": 2,
+          "background_index": 1,
+          "sample_index": 382
+        },
+        {
+          "action_id": 4,
+          "background_index": 2,
+          "sample_index": 684
+        },
+        {
+          "action_id": 5,
+          "background_index": 3,
+          "sample_index": 985
+        },
+        {
+          "action_id": 6,
+          "background_index": 4,
+          "sample_index": 1286
+        },
+        {
+          "action_id": 7,
+          "background_index": 1,
+          "sample_index": 387
+        },
+        {
+          "action_id": 8,
+          "background_index": 2,
+          "sample_index": 688
+        },
+        {
+          "action_id": 9,
+          "background_index": 3,
+          "sample_index": 989
+        }
+      ],
+      "query_indices": [
+        980,
+        1281,
+        382,
+        684,
+        985,
+        1286,
+        387,
+        688,
+        989
+      ],
+      "selection": {
+        "distance_to_target_midpoint_px": 5.828891266436834,
+        "final_displacement_px": 48.328891266436834,
+        "reason": "within_target_band_closest_to_midpoint",
+        "support_action_id": 3,
+        "support_background_index": 0
+      },
+      "support_indices": [
+        83
+      ]
+    },
+    {
+      "context_group_id": 13,
+      "domain": "ood",
+      "environment_id": "shared_friction_group_13",
+      "friction_mu": 0.06333333333333334,
+      "queries": [
+        {
+          "action_id": 0,
+          "background_index": 4,
+          "sample_index": 1330
+        },
+        {
+          "action_id": 1,
+          "background_index": 1,
+          "sample_index": 431
+        },
+        {
+          "action_id": 2,
+          "background_index": 2,
+          "sample_index": 732
+        },
+        {
+          "action_id": 3,
+          "background_index": 3,
+          "sample_index": 1033
+        },
+        {
+          "action_id": 5,
+          "background_index": 4,
+          "sample_index": 1335
+        },
+        {
+          "action_id": 6,
+          "background_index": 1,
+          "sample_index": 436
+        },
+        {
+          "action_id": 7,
+          "background_index": 2,
+          "sample_index": 737
+        },
+        {
+          "action_id": 8,
+          "background_index": 3,
+          "sample_index": 1038
+        },
+        {
+          "action_id": 9,
+          "background_index": 4,
+          "sample_index": 1339
+        }
+      ],
+      "query_indices": [
+        1330,
+        431,
+        732,
+        1033,
+        1335,
+        436,
+        737,
+        1038,
+        1339
+      ],
+      "selection": {
+        "distance_to_target_midpoint_px": 0.13882859029505568,
+        "final_displacement_px": 42.361171409704944,
+        "reason": "within_target_band_closest_to_midpoint",
+        "support_action_id": 4,
+        "support_background_index": 0
+      },
+      "support_indices": [
+        134
+      ]
+    },
+    {
+      "context_group_id": 21,
+      "domain": "ood",
+      "environment_id": "shared_friction_group_21",
+      "friction_mu": 0.11666666666666667,
+      "queries": [
+        {
+          "action_id": 0,
+          "background_index": 1,
+          "sample_index": 510
+        },
+        {
+          "action_id": 1,
+          "background_index": 2,
+          "sample_index": 811
+        },
+        {
+          "action_id": 2,
+          "background_index": 3,
+          "sample_index": 1112
+        },
+        {
+          "action_id": 3,
+          "background_index": 4,
+          "sample_index": 1413
+        },
+        {
+          "action_id": 4,
+          "background_index": 1,
+          "sample_index": 514
+        },
+        {
+          "action_id": 6,
+          "background_index": 2,
+          "sample_index": 816
+        },
+        {
+          "action_id": 7,
+          "background_index": 3,
+          "sample_index": 1117
+        },
+        {
+          "action_id": 8,
+          "background_index": 4,
+          "sample_index": 1418
+        },
+        {
+          "action_id": 9,
+          "background_index": 1,
+          "sample_index": 519
+        }
+      ],
+      "query_indices": [
+        510,
+        811,
+        1112,
+        1413,
+        514,
+        816,
+        1117,
+        1418,
+        519
+      ],
+      "selection": {
+        "distance_to_target_midpoint_px": 7.577064964003689,
+        "final_displacement_px": 34.92293503599631,
+        "reason": "within_target_band_closest_to_midpoint",
+        "support_action_id": 5,
+        "support_background_index": 0
+      },
+      "support_indices": [
+        215
+      ]
+    },
+    {
+      "context_group_id": 28,
+      "domain": "ood",
+      "environment_id": "shared_friction_group_28",
+      "friction_mu": 0.18333333333333335,
+      "queries": [
+        {
+          "action_id": 0,
+          "background_index": 2,
+          "sample_index": 880
+        },
+        {
+          "action_id": 1,
+          "background_index": 3,
+          "sample_index": 1181
+        },
+        {
+          "action_id": 2,
+          "background_index": 4,
+          "sample_index": 1482
+        },
+        {
+          "action_id": 3,
+          "background_index": 1,
+          "sample_index": 583
+        },
+        {
+          "action_id": 4,
+          "background_index": 2,
+          "sample_index": 884
+        },
+        {
+          "action_id": 5,
+          "background_index": 3,
+          "sample_index": 1185
+        },
+        {
+          "action_id": 6,
+          "background_index": 4,
+          "sample_index": 1486
+        },
+        {
+          "action_id": 8,
+          "background_index": 1,
+          "sample_index": 588
+        },
+        {
+          "action_id": 9,
+          "background_index": 2,
+          "sample_index": 889
+        }
+      ],
+      "query_indices": [
+        880,
+        1181,
+        1482,
+        583,
+        884,
+        1185,
+        1486,
+        588,
+        889
+      ],
+      "selection": {
+        "distance_to_target_midpoint_px": 0.6506008090793927,
+        "final_displacement_px": 41.84939919092061,
+        "reason": "within_target_band_closest_to_midpoint",
+        "support_action_id": 7,
+        "support_background_index": 0
+      },
+      "support_indices": [
+        287
+      ]
+    }
+  ],
+  "evaluation_id": "shared_friction_id5_ood5_k1_oracle_informative_support25_60_cross_background_v1",
+  "id_definition": "first 15 groups in curriculum order",
+  "ood_definition": "groups outside the active curriculum prefix",
+  "protocol": "oracle informative K=1 support selected from all five backgrounds and ten actions; support action is excluded from nine read-only cross-background action queries",
+  "selection_target": {
+    "endpoint_frames": 5,
+    "maximum_displacement_px": 60.0,
+    "metric": "Euclidean distance between median block centroids in first and last endpoint frames",
+    "minimum_displacement_px": 25.0,
+    "minimum_visible_endpoint_frames": 3,
+    "require_visible_final_endpoint": true,
+    "target_midpoint_px": 42.5
+  },
+  "selection_uses_ground_truth": true,
+  "support_size": 1
+}

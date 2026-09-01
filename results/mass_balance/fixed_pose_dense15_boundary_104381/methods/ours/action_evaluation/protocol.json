@@ -1,0 +1,24 @@
+{
+  "action_order_field": "sampled_support_offset_m",
+  "candidate_count_is_protocol_defined": true,
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/infer_mass_balance_fixed_pose_91441_stage1_stage2_dense15_boundary_104381/action_evaluation_dense15_boundary.yaml",
+  "method": "ours",
+  "observed_support_is_selectable": true,
+  "selection_strategy": "boundary_crossing",
+  "selection_uses_query_ground_truth": false,
+  "targets": [
+    {
+      "id": "balanced",
+      "kind": "scalar_interval",
+      "max": 3.0,
+      "min": -3.0
+    }
+  ],
+  "task": "mass_balance",
+  "transfer_plans": [
+    {
+      "domain": "id",
+      "path": "outputs/infer_mass_balance_fixed_pose_91441_stage1_stage2_dense15_boundary_104381/same_ratio_other_supports/transfer_plan.json"
+    }
+  ]
+}

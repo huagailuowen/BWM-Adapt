@@ -1,0 +1,80 @@
+[
+  {
+    "source_friction_mu": 1.0,
+    "source_index": 643,
+    "source_inner_step": 40,
+    "source_sample_id": "mass_friction_joint:ep000643:frames0000-0060",
+    "target_indices": [
+      639,
+      640,
+      641,
+      642,
+      644,
+      645,
+      646,
+      647
+    ],
+    "target_sample_ids": [
+      "mass_friction_joint:ep000639:frames0000-0060",
+      "mass_friction_joint:ep000640:frames0000-0060",
+      "mass_friction_joint:ep000641:frames0000-0060",
+      "mass_friction_joint:ep000642:frames0000-0060",
+      "mass_friction_joint:ep000644:frames0000-0060",
+      "mass_friction_joint:ep000645:frames0000-0060",
+      "mass_friction_joint:ep000646:frames0000-0060",
+      "mass_friction_joint:ep000647:frames0000-0060"
+    ]
+  },
+  {
+    "source_friction_mu": 86.0,
+    "source_index": 94,
+    "source_inner_step": 40,
+    "source_sample_id": "mass_friction_joint:ep000094:frames0000-0060",
+    "target_indices": [
+      90,
+      91,
+      92,
+      93,
+      95,
+      96,
+      97,
+      98
+    ],
+    "target_sample_ids": [
+      "mass_friction_joint:ep000090:frames0000-0060",
+      "mass_friction_joint:ep000091:frames0000-0060",
+      "mass_friction_joint:ep000092:frames0000-0060",
+      "mass_friction_joint:ep000093:frames0000-0060",
+      "mass_friction_joint:ep000095:frames0000-0060",
+      "mass_friction_joint:ep000096:frames0000-0060",
+      "mass_friction_joint:ep000097:frames0000-0060",
+      "mass_friction_joint:ep000098:frames0000-0060"
+    ]
+  },
+  {
+    "source_friction_mu": 98.0,
+    "source_index": 814,
+    "source_inner_step": 40,
+    "source_sample_id": "mass_friction_joint:ep000814:frames0000-0060",
+    "target_indices": [
+      810,
+      811,
+      812,
+      813,
+      815,
+      816,
+      817,
+      818
+    ],
+    "target_sample_ids": [
+      "mass_friction_joint:ep000810:frames0000-0060",
+      "mass_friction_joint:ep000811:frames0000-0060",
+      "mass_friction_joint:ep000812:frames0000-0060",
+      "mass_friction_joint:ep000813:frames0000-0060",
+      "mass_friction_joint:ep000815:frames0000-0060",
+      "mass_friction_joint:ep000816:frames0000-0060",
+      "mass_friction_joint:ep000817:frames0000-0060",
+      "mass_friction_joint:ep000818:frames0000-0060"
+    ]
+  }
+]

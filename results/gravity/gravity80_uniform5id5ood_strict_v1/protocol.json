@@ -1,0 +1,50 @@
+{
+  "name": "gravity80_uniform5id5ood_strict_v1",
+  "environment_count": 10,
+  "support_action_id": 5,
+  "unreachable_rule": "For each target, environments with no ground-truth reachable action are skipped rather than counted as failures.",
+  "id_environments": [
+    {"gravity_index": 0, "gravity_mps2": 0.25, "support_sample_index": 5},
+    {"gravity_index": 20, "gravity_mps2": 0.42748013545389874, "support_sample_index": 205},
+    {"gravity_index": 40, "gravity_mps2": 0.8917664371359004, "support_sample_index": 405},
+    {"gravity_index": 59, "gravity_mps2": 2.6703705829795945, "support_sample_index": 595},
+    {"gravity_index": 79, "gravity_mps2": 50.0, "support_sample_index": 795}
+  ],
+  "ood_environments": [
+    {"gravity_index": 8, "gravity_mps2": 0.3046383126992835, "support_sample_index": 85},
+    {"gravity_index": 24, "gravity_mps2": 0.4853702683647836, "support_sample_index": 245},
+    {"gravity_index": 39, "gravity_mps2": 0.8534246557795792, "support_sample_index": 395},
+    {"gravity_index": 55, "gravity_mps2": 2.005975332500944, "support_sample_index": 555},
+    {"gravity_index": 71, "gravity_mps2": 9.203259318019698, "support_sample_index": 715}
+  ],
+  "target_audit": [
+    {
+      "id": "near_disambiguating",
+      "region": {"x_min": 0.525, "x_max": 0.555, "y_min": 0.535, "y_max": 0.585},
+      "eligible_environment_count": 7,
+      "feasible_actions": {"20": [0], "40": [1], "59": [3], "8": [0], "39": [1], "55": [2], "71": [6]},
+      "best_target_only_fixed_action_rate": 0.2857142857142857,
+      "uniform_random_action_rate": 0.1
+    },
+    {
+      "id": "middle_disambiguating",
+      "region": {"x_min": 0.585, "x_max": 0.625, "y_min": 0.57, "y_max": 0.625},
+      "eligible_environment_count": 7,
+      "feasible_actions": {"20": [1], "40": [2], "59": [4], "24": [1], "39": [2], "55": [4], "71": [9]},
+      "best_target_only_fixed_action_rate": 0.2857142857142857,
+      "uniform_random_action_rate": 0.1
+    },
+    {
+      "id": "far_disambiguating",
+      "region": {"x_min": 0.795, "x_max": 0.845, "y_min": 0.62, "y_max": 0.69},
+      "eligible_environment_count": 6,
+      "feasible_actions": {"40": [4], "59": [8], "8": [2], "24": [3], "39": [4], "55": [7]},
+      "best_target_only_fixed_action_rate": 0.3333333333333333,
+      "uniform_random_action_rate": 0.1
+    }
+  ],
+  "aggregate_reachable_decisions": 20,
+  "aggregate_best_target_only_fixed_action_rate": 0.3,
+  "aggregate_uniform_random_action_rate": 0.1,
+  "support_action_is_never_feasible": true
+}

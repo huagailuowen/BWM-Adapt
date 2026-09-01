@@ -1,0 +1,26 @@
+[
+  {
+    "action_eligible_decisions_all": 26,
+    "action_mean_coverage_all": 1.0,
+    "action_mean_regret_all": 0.014258241758241752,
+    "action_selected_oracle_all": 0.6153846153846154,
+    "action_success_all": 0.6538461538461539,
+    "action_success_id": 0.6153846153846154,
+    "action_success_ood": 0.6923076923076923,
+    "centroid_ade_normalized": 0.010857898821459508,
+    "centroid_ade_px": 3.439606860968966,
+    "centroid_fde_normalized": 0.018315162191597994,
+    "centroid_fde_px": 5.801947372126264,
+    "centroid_prediction_missing_rate": 0.0,
+    "environment_count": 10,
+    "lpips_multiview": null,
+    "method": "ours_misresume",
+    "psnr_main": 31.259722434149847,
+    "psnr_multiview": 28.770420646667482,
+    "psnr_wrist": 28.22447855207655,
+    "query_count": 90,
+    "ssim_main": 0.8958934649328392,
+    "ssim_multiview": 0.820046677109268,
+    "ssim_wrist": 0.7439648499339819
+  }
+]
