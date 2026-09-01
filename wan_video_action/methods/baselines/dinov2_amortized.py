@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import math
 from pathlib import Path
 import random
 from typing import Any
@@ -143,19 +144,27 @@ class DINOv2AmortizedContextEncoder(nn.Module):
         self,
         *,
         model_path: str | Path,
-        sampled_frames: int = 8,
+        sampled_frames: int = 11,
+        temporal_stride: int = 4,
         action_dim: int = 14,
         hidden_dim: int = 256,
         action_hidden_dim: int = 128,
         output_dim: int = 32,
+        temporal_layers: int = 2,
+        temporal_heads: int = 8,
     ) -> None:
         super().__init__()
         self.model_path = str(Path(model_path).expanduser())
         self.sampled_frames = int(sampled_frames)
+        self.temporal_stride = int(temporal_stride)
         self.action_dim = int(action_dim)
         self.output_dim = int(output_dim)
         if self.sampled_frames < 2:
             raise ValueError("sampled_frames must be at least two.")
+        if self.temporal_stride < 1:
+            raise ValueError("temporal_stride must be positive.")
+        if hidden_dim % int(temporal_heads):
+            raise ValueError("hidden_dim must be divisible by temporal_heads.")
         self.dino = AutoModel.from_pretrained(self.model_path, local_files_only=True)
         self.dino.requires_grad_(False)
         self.dino.eval()
@@ -194,6 +203,24 @@ class DINOv2AmortizedContextEncoder(nn.Module):
             nn.Linear(hidden_dim, hidden_dim),
             nn.GELU(),
         )
+        self.summary_token = nn.Parameter(torch.zeros(1, 1, hidden_dim))
+        self.temporal_position = nn.Parameter(
+            torch.randn(self.sampled_frames - 1, hidden_dim) / math.sqrt(hidden_dim)
+        )
+        temporal_layer = nn.TransformerEncoderLayer(
+            d_model=hidden_dim,
+            nhead=int(temporal_heads),
+            dim_feedforward=4 * hidden_dim,
+            dropout=0.0,
+            activation="gelu",
+            batch_first=True,
+            norm_first=True,
+        )
+        self.temporal_aggregator = nn.TransformerEncoder(
+            temporal_layer,
+            num_layers=int(temporal_layers),
+            norm=nn.LayerNorm(hidden_dim),
+        )
         self.output_head = nn.Sequential(
             nn.LayerNorm(hidden_dim),
             nn.Linear(hidden_dim, output_dim),
@@ -225,12 +252,13 @@ class DINOv2AmortizedContextEncoder(nn.Module):
     ) -> tuple[torch.Tensor, tuple[int, ...], int]:
         video_tensor = self._canonical_video(video)
         frame_count = int(video_tensor.shape[1])
-        indices_tensor = torch.linspace(
-            0, frame_count - 1, steps=self.sampled_frames
-        ).round().to(dtype=torch.long)
+        indices_tensor = torch.arange(0, frame_count, self.temporal_stride, dtype=torch.long)
+        if int(indices_tensor[-1]) != frame_count - 1:
+            indices_tensor = torch.cat((indices_tensor, torch.tensor([frame_count - 1])))
         if int(torch.unique(indices_tensor).numel()) != self.sampled_frames:
             raise ValueError(
-                f"Cannot select {self.sampled_frames} unique frames from T={frame_count}."
+                f"Expected {self.sampled_frames} Wan-aligned anchors for T={frame_count} "
+                f"and stride={self.temporal_stride}, got {indices_tensor.tolist()}."
             )
         indices = tuple(int(value) for value in indices_tensor.tolist())
         device = next(self.dino.parameters()).device
@@ -298,7 +326,21 @@ class DINOv2AmortizedContextEncoder(nn.Module):
                 dim=-1,
             )
         )
-        code = self.output_head(transition_features.mean(dim=0, keepdim=True))
+        transitions = transition_features + self.temporal_position.to(
+            device=transition_features.device,
+            dtype=transition_features.dtype,
+        )
+        sequence = torch.cat(
+            (
+                self.summary_token.to(
+                    device=transitions.device, dtype=transitions.dtype
+                ).expand(1, -1, -1),
+                transitions.unsqueeze(0),
+            ),
+            dim=1,
+        )
+        summary = self.temporal_aggregator(sequence)[:, 0]
+        code = self.output_head(summary)
         return torch.sigmoid(code)
 
     def forward(self, video: Any, action: Any) -> torch.Tensor:

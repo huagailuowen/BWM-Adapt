@@ -40,14 +40,26 @@ def _ttt_kvb_attention_forward(self: nn.Module, x: torch.Tensor, freqs: torch.Te
     controller: TTTKVBController = self._ttt_kvb_controller
     if controller.mode == TTTKVBMode.DISABLED:
         return base_output
+    memory_input = base_output if self._ttt_kvb_serial_after_attention else x
+    if controller.mode == TTTKVBMode.CAUSAL_SCAN:
+        memory_output = controller.scan(
+            self._ttt_kvb_layer_id, self.ttt_kvb_memory, memory_input
+        )
+        gate = torch.tanh(self.ttt_kvb_gate).to(base_output.dtype)
+        if gate.ndim == 1:
+            gate = gate.view(1, 1, -1)
+        return base_output + gate * memory_output
     if controller.mode == TTTKVBMode.SUPPORT_WRITE:
         # Support is a pure prefill/write pass.  It cannot alter the backbone
         # activation, so query information is the only supervised read path.
-        controller.write(self._ttt_kvb_layer_id, self.ttt_kvb_memory, x)
+        controller.write(self._ttt_kvb_layer_id, self.ttt_kvb_memory, memory_input)
         return base_output
     if controller.mode == TTTKVBMode.QUERY_READ:
-        memory_output = controller.read(self._ttt_kvb_layer_id, self.ttt_kvb_memory, x)
-        return base_output + torch.tanh(self.ttt_kvb_gate).to(x.dtype) * memory_output
+        memory_output = controller.read(self._ttt_kvb_layer_id, self.ttt_kvb_memory, memory_input)
+        gate = torch.tanh(self.ttt_kvb_gate).to(base_output.dtype)
+        if gate.ndim == 1:
+            gate = gate.view(1, 1, -1)
+        return base_output + gate * memory_output
     raise RuntimeError(f"Unsupported TTT-KVB mode: {controller.mode}")
 
 
@@ -71,6 +83,8 @@ def install_ttt_kvb(
     inner_batch_size: int = 64,
     write_token_budget: int = 512,
     gate_init: float = 0.0,
+    gate_vector: bool = False,
+    serial_after_attention: bool = False,
 ) -> TTTKVBInstallation:
     """Attach TTT branches after the Wan checkpoint has been loaded.
 
@@ -103,13 +117,19 @@ def install_ttt_kvb(
         memory.to(device=reference.device, dtype=reference.dtype)
 
         attention.add_module("ttt_kvb_memory", memory)
+        gate_value = (
+            torch.full((dim,), float(gate_init), device=reference.device, dtype=torch.float32)
+            if gate_vector
+            else torch.tensor(float(gate_init), device=reference.device, dtype=torch.float32)
+        )
         attention.register_parameter(
             "ttt_kvb_gate",
-            nn.Parameter(torch.tensor(float(gate_init), device=reference.device, dtype=torch.float32)),
+            nn.Parameter(gate_value),
         )
         attention._ttt_kvb_original_forward = attention.__class__.forward
         attention._ttt_kvb_controller = controller
         attention._ttt_kvb_layer_id = f"block_{index:02d}"
+        attention._ttt_kvb_serial_after_attention = bool(serial_after_attention)
         attention.forward = MethodType(_ttt_kvb_attention_forward, attention)
         installed.append(attention)
 

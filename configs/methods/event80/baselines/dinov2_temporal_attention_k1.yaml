@@ -1,0 +1,26 @@
+extends: ../common.yaml
+experiment:
+  id: dinov2_temporal_attention_k1_3envpergpu
+method:
+  slug: dinov2_temporal_attention
+  family: baseline
+  encoder: dinov2_b14_frozen
+  source_window_frames: 41
+  wan_aligned_visual_anchors: [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40]
+  action_conditioning: ten_complete_four_frame_action_intervals
+  temporal_aggregator: two_layer_transformer
+  temporal_hidden_dim: 256
+  temporal_heads: 8
+  output_latent_dim: 32
+protocol:
+  environments_per_rank: 3
+  world_size: 2
+  global_environments_per_update: 6
+  support_size: 1
+  queries_per_environment: 5
+  global_query_losses_per_update: 30
+  support_query_disjoint: true
+resources:
+  gpu_count: 2
+  gpu_sku: H200
+  wall_clock_hours: 24

@@ -15,6 +15,7 @@ class TTTKVBMode(str, Enum):
     DISABLED = "disabled"
     SUPPORT_WRITE = "support_write"
     QUERY_READ = "query_read"
+    CAUSAL_SCAN = "causal_scan"
 
 
 class TTTKVBController:
@@ -68,6 +69,31 @@ class TTTKVBController:
             yield
         finally:
             self.mode, self.differentiable, self.query_state_indices = previous
+
+    @contextmanager
+    def causal_scan(self, differentiable: bool = True) -> Iterator[None]:
+        if self.batch_size is None:
+            raise RuntimeError("reset(batch_size) must be called before causal_scan")
+        previous = (self.mode, self.differentiable, self.query_state_indices)
+        self.mode = TTTKVBMode.CAUSAL_SCAN
+        self.differentiable = bool(differentiable)
+        self.query_state_indices = None
+        try:
+            yield
+        finally:
+            self.mode, self.differentiable, self.query_state_indices = previous
+
+    def scan(self, layer_id: str, memory: TTTMLPMemory, tokens: torch.Tensor) -> torch.Tensor:
+        if self.mode != TTTKVBMode.CAUSAL_SCAN:
+            raise RuntimeError(f"Cannot scan fast state in mode={self.mode}")
+        state, output, stats = memory.write_then_read(
+            tokens,
+            self._states.get(layer_id),
+            differentiable=self.differentiable,
+        )
+        self._states[layer_id] = state
+        self._write_statistics.setdefault(layer_id, []).extend(stats)
+        return output
 
     def write(self, layer_id: str, memory: TTTMLPMemory, tokens: torch.Tensor) -> None:
         if self.mode != TTTKVBMode.SUPPORT_WRITE:

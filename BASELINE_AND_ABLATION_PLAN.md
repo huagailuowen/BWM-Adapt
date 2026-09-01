@@ -8,7 +8,7 @@ This file is the repository-local mirror of the authoritative ablation plan in t
 | --- | --- | --- |
 | Standard Pooled World Model (No Adaptation) | Whether ordinary pooled world-model training alone is sufficient. | No-adaptation pooled-model baseline |
 | Same-Model Mean-Z | Whether test-time Z optimization helps when architecture and checkpoint are held fixed. | Clean no-adaptation control for Ours |
-| History-Conditioned WM | Whether raw support trajectories alone enable in-context environment inference. | WAM-ICL, L2World, and Echo-Memory-style raw context |
+| Native Prefix-History WM | Whether raw support trajectories supplied through Wan's native history interface enable environment inference. | Raw-history and previous-segment conditioning |
 | LoRA TTA | Whether LoRA test-time adaptation is sufficient when initialized from the normally trained Standard Pooled World Model checkpoint. | Parameter-space test-time adaptation baseline |
 | TTT-KQV | Whether long-history implicit fast-weight memory is sufficient. | Test-time training and fast-weight memory |
 | DINOv2 Amortized Context Encoder | Whether an explicit amortized encoder matches generator-based latent inference. | Amortized context-inference baseline |
@@ -84,9 +84,9 @@ Load the exact checkpoint used by Ours, initialize `Z` to the mean of the active
 
 ### 3. History-Conditioned WM
 
-Encode the `K` clean support trajectories with the frozen Wan VAE and place their visual tokens and aligned action tokens before the query tokens. Give each trajectory a separate segment identifier and reset local temporal positions at trajectory boundaries. The noised query future may attend to all support tokens. Do not use an environment encoder, optimized latent, LoRA, or fast-weight update.
+The primary raw-history baseline is now **Native Prefix-History WM**. For Event80, form an 85-frame model input from all 41 support frames, one complete four-frame reset-anchor group containing repeated `Q0`, and the 40 query-future frames `Q1:Q40`. This maps exactly to 22 Wan temporal groups: 11 support, one reset anchor, and 10 query groups. Learned support/reset/query segment embeddings mark the discontinuity without resetting pretrained RoPE positions. Aligned support actions precede four reset/no-op slots and the query action sequence. Only the 10 query-future latent groups receive flow-matching loss.
 
-Train a separate Wan copy with query-only flow-matching loss using the same disjoint support/query construction as Ours. Randomize support order. At inference, prepend support trajectories and perform one frozen generation pass.
+Training uses two H200s for 24 hours, three environments per rank, one support and five disjoint queries per environment. The global outer update therefore contains six environments and 30 query losses. The previously evaluated `history_conditioned_wm/step_26200` is the earlier Flamingo Perceiver-memory implementation; its result remains valid but is labeled legacy and is not the Native Prefix-History result.
 
 ### 4. LoRA Test-Time Adaptation
 
@@ -98,25 +98,21 @@ Use learning rate `1e-4` unless the validation split selects another value befor
 
 ### 5. TTT-KQV
 
-Reuse the project TTT-KQV block placement. Use the video TTT-MLP fast model with hidden width four times the head dimension, token mini-batch size 64, and base fast learning rate 0.1. Every outer example and every replaced block owns an independent fast state.
+Use a forward-only adaptation of the TTT-MLP architecture from *One-Minute Video Generation with Test-Time Training*. Insert a serial TTT branch after every Wan attention block, retain the original local attention, use a channel-wise gate initialized to `0.1`, and process the complete Wan token sequence without the former 512-token subsampling. The fast model is a two-layer GELU MLP with hidden width four times the head dimension, FP32 state, token mini-batch size 64, and base fast learning rate 0.1.
 
-Reset fast state to its learned shared initialization for each environment. Process the `K` supports sequentially, carry fast state across supports, and reset temporal positions at trajectory boundaries. During outer training, query tokens read the support-adapted fast state but do not perform additional fast-weight updates. The query flow-matching loss is backpropagated through the support-time write process. At inference, write the support set once, freeze fast state, generate all queries, and reset before the next environment.
+Within every 64-token inner mini-batch, first update the fast state from learned K/V projections and then predict through Q using the updated state, matching the paper's write-then-predict order. Six randomly ordered chunks from one environment share one diffusion timestep and one forward fast-state chain `W0 -> ... -> W6`; local Wan attention remains separated by chunk while TTT carries the global state. Training uses two H200s for 24 hours, three environment streams per rank, and therefore six environments and 36 chunk losses per outer update. The previously evaluated `ttt_kqv/step_12400` used the legacy read-then-write, eight-layer, 512-token implementation and remains a valid legacy result.
 
 ### 6. DINOv2 Amortized Context Encoder
 
-Each DINO support trajectory uses exactly the same full-length support window and clip boundaries as the other methods, normally approximately 40/41 frames depending on the dataset's frame/action convention. The eight DINO frames are sparse visual samples across this complete window, not an eight-frame window or crop.
+Each 41-frame Event80 support is aligned to Wan's temporal compression using DINO anchors `[0,4,8,...,40]`. Frozen DINOv2-B/14 produces 11 visual features, and the ten complete four-frame action intervals produce aligned action embeddings. Visual endpoint features, endpoint differences, and interval-action encodings form ten ordered transition tokens.
 
-With `T` visual frames, use frozen DINOv2-B/14 and uniformly sample eight strictly increasing frame indices `0=t_1<t_2<...<t_8=T-1`. The action input must represent each complete interval between adjacent sampled frames, not a single instantaneous action. For `j=1,...,7`, compute:
+Add temporal position embeddings and aggregate `[Z],u_1,...,u_10` with a two-layer, eight-head Transformer of hidden width 256. Project its learned summary token to the same 32-dimensional environment code consumed by Ours. This replaces temporal mean pooling while preserving the same Z bottleneck and frozen DINO backbone.
 
-```text
-u_j = ActionEncoder(a[t_j:t_{j+1}-1])
-```
-
-The seven chunks collectively cover the complete action-transition sequence between the first and last frame. Feed the eight visual CLS features together with the seven interval action-chunk embeddings to an action-conditioned projection. Map each trajectory to a 32-dimensional code with a two-layer projection head of hidden width 1024, then average the `K` trajectory codes to form one permutation-invariant environment code.
-
-Initialize the Wan generator from the same pretrained Wan checkpoint as Ours and inject the code through the exact conditioning interface used by Ours. Follow the identical progressive environment stream and old/new environment sampler under the same two-H200, 24-hour training envelope. Train the action/projection head and Wan generator with disjoint-query flow-matching loss, and report the resulting model-gradient updates and clip exposure.
+Initialize the Wan generator from the same pretrained Wan checkpoint as Ours and inject the code through the exact conditioning interface used by Ours. Train on two H200s for 24 hours with three environments per rank and `K=1 support + 5 disjoint queries` per environment, yielding six environments and 30 query losses per outer update. Train the temporal/action head and Wan generator with disjoint-query flow-matching loss, and report model-gradient updates and clip exposure.
 
 The intended core difference is only `Z = q_phi(C_E)`, inferred amortized from support context, rather than `Z` obtained by optimizing the generation-model loss. At inference, infer `Z` in one encoder forward pass with no gradient update. This is the DINOv2 Amortized Context Encoder baseline, following the video-context design of Implicit State Estimation via Video Replanning. EVF is cited only as an earlier pixel-generative precedent, not as the implementation reproduced here.
+
+The previously evaluated `dinov2_amortized_context/step_11500` used eight sparse frames and mean aggregation over seven action-conditioned transition features. Its metrics remain valid as a legacy DINO baseline and must not be relabeled as the temporal-attention version.
 
 ### 7. Ours
 

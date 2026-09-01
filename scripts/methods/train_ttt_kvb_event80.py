@@ -19,6 +19,7 @@ import accelerate
 from accelerate.utils import InitProcessGroupKwargs
 from diffsynth.diffusion.runner import initialize_deepspeed_gradient_checkpointing
 import torch
+import torch.nn.functional as F
 from torch.optim.lr_scheduler import LambdaLR
 from tqdm import tqdm
 
@@ -45,7 +46,44 @@ def add_ttt_kvb_config(parser: argparse.ArgumentParser) -> argparse.ArgumentPars
     group.add_argument("--ttt_gate_init", type=float, default=0.01)
     group.add_argument("--ttt_slow_learning_rate", type=float, default=1.0e-4)
     group.add_argument("--ttt_max_updates", type=int, default=50000)
+    group.add_argument("--ttt_protocol", type=str, default="prequential_read_then_write")
+    group.add_argument("--ttt_gate_vector", action=argparse.BooleanOptionalAction, default=False)
+    group.add_argument("--ttt_serial_after_attention", action=argparse.BooleanOptionalAction, default=False)
     return parser
+
+
+class OneMinuteTTTWanTrainingModule(WanTrainingModule):
+    """Wan SFT with an externally fixed timestep shared by one six-chunk stream."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._ttt_timestep_index = None
+        self.task_to_loss["sft"] = self._ttt_flow_loss
+        self.task_to_loss["sft:train"] = self._ttt_flow_loss
+
+    def set_timestep_index(self, index: int) -> None:
+        self._ttt_timestep_index = int(index)
+
+    def _ttt_flow_loss(self, pipe, inputs_shared, inputs_posi, inputs_nega):
+        if self._ttt_timestep_index is None:
+            raise RuntimeError("TTT timestep index was not set for this stream.")
+        inputs = {**inputs_shared, **inputs_posi}
+        timestep = pipe.scheduler.timesteps[self._ttt_timestep_index].reshape(1).to(
+            dtype=pipe.torch_dtype, device=pipe.device
+        )
+        noise = torch.randn_like(inputs["input_latents"])
+        inputs["latents"] = pipe.scheduler.add_noise(
+            inputs["input_latents"], noise, timestep
+        )
+        target = pipe.scheduler.training_target(inputs["input_latents"], noise, timestep)
+        if "first_frame_latents" in inputs:
+            inputs["latents"][:, :, 0:1] = inputs["first_frame_latents"][:, :, 0:1]
+        models = {name: getattr(pipe, name) for name in pipe.in_iteration_models}
+        prediction = pipe.model_fn(**models, **inputs, timestep=timestep)
+        if "first_frame_latents" in inputs:
+            prediction = prediction[:, :, 1:]
+            target = target[:, :, 1:]
+        return F.mse_loss(prediction.float(), target.float()) * pipe.scheduler.training_weight(timestep)
 
 
 def main() -> None:
@@ -56,7 +94,10 @@ def main() -> None:
         args = merge_yaml_and_args(args.config, parser, args)
     if not args.ttt_active_environment_manifest:
         raise ValueError("ttt_active_environment_manifest is required.")
-    if int(args.ttt_write_token_budget) % int(args.ttt_inner_batch_size) != 0:
+    if (
+        args.ttt_protocol != "oneminute_write_then_predict"
+        and int(args.ttt_write_token_budget) % int(args.ttt_inner_batch_size) != 0
+    ):
         raise ValueError("TTT token budget must be divisible by the inner batch size.")
 
     # TTT-KVB keeps an explicit mutable fast state outside the Wan block inputs.
@@ -90,7 +131,12 @@ def main() -> None:
         seed=args.seed,
         sequence_length=args.ttt_sequence_length,
     )
-    model = WanTrainingModule(
+    model_class = (
+        OneMinuteTTTWanTrainingModule
+        if args.ttt_protocol == "oneminute_write_then_predict"
+        else WanTrainingModule
+    )
+    model = model_class(
         model_paths=json.dumps(runtime_config["model_paths_list"]),
         model_id_with_origin_paths=args.model_id_with_origin_paths,
         tokenizer_path=runtime_config["tokenizer_path"],
@@ -124,7 +170,12 @@ def main() -> None:
         inner_batch_size=args.ttt_inner_batch_size,
         write_token_budget=args.ttt_write_token_budget,
         gate_init=args.ttt_gate_init,
+        gate_vector=args.ttt_gate_vector,
+        serial_after_attention=args.ttt_serial_after_attention,
     )
+    if args.ttt_protocol == "oneminute_write_then_predict":
+        model.use_gradient_checkpointing = False
+        model.use_gradient_checkpointing_offload = False
     controller = installation.controller
     ttt_parameters = list(installation.ttt_parameters())
     ttt_parameter_ids = {id(parameter) for parameter in ttt_parameters}
@@ -169,15 +220,18 @@ def main() -> None:
         log_steps=args.log_steps,
     )
 
-    updates_per_chunk = int(args.ttt_write_token_budget) // int(args.ttt_inner_batch_size)
+    updates_per_chunk = (
+        "all_tokens/64"
+        if args.ttt_protocol == "oneminute_write_then_predict"
+        else str(int(args.ttt_write_token_budget) // int(args.ttt_inner_batch_size))
+    )
     if accelerator.is_main_process:
         print(
             "[ttt_kvb_prequential] "
             f"layers={installation.layer_indices} sequence_length={args.ttt_sequence_length} "
             f"environments_per_rank={args.ttt_environments_per_rank} "
-            f"updates_per_chunk={updates_per_chunk} "
-            f"layer_local_updates_per_stream="
-            f"{updates_per_chunk * int(args.ttt_sequence_length) * len(installation.layer_indices)} "
+            f"protocol={args.ttt_protocol} updates_per_chunk={updates_per_chunk} "
+            f"layer_local_updates_per_stream=dynamic "
             f"gate_init={args.ttt_gate_init} base_inner_lr={args.ttt_base_inner_lr}",
             flush=True,
         )
@@ -202,6 +256,12 @@ def main() -> None:
         for episode in episodes:
             controller.reset(batch_size=1)
             unwrapped_model = accelerator.unwrap_model(model)
+            if args.ttt_protocol == "oneminute_write_then_predict":
+                lower = int(float(args.min_timestep_boundary) * len(unwrapped_model.pipe.scheduler.timesteps))
+                upper = int(float(args.max_timestep_boundary) * len(unwrapped_model.pipe.scheduler.timesteps))
+                unwrapped_model.set_timestep_index(
+                    int(torch.randint(lower, upper, (1,)).item())
+                )
             for position, sample_index in enumerate(episode.indices):
                 chunk = dataset[sample_index]
                 is_final_query = position == sequence_length - 1
@@ -209,7 +269,12 @@ def main() -> None:
                     nullcontext() if is_final_query else accelerator.no_sync(model)
                 )
                 with sync_context:
-                    with controller.query_read():
+                    mode_context = (
+                        controller.causal_scan(differentiable=True)
+                        if args.ttt_protocol == "oneminute_write_then_predict"
+                        else controller.query_read()
+                    )
+                    with mode_context:
                         loss = model(chunk)
                         accelerator.backward(
                             loss / float(sequence_length * len(episodes)),
@@ -219,15 +284,15 @@ def main() -> None:
                     len(episodes)
                 )
 
-                # The current chunk is observed only after its prediction. Its write
-                # can therefore affect later chunks, never its own query loss.
-                with controller.support_write(differentiable=not is_final_query):
+                if args.ttt_protocol != "oneminute_write_then_predict":
+                    # Legacy prequential branch: predict first, then write.
+                    with controller.support_write(differentiable=not is_final_query):
                     # Support video tokens are observations, not an outer-loss
                     # path. TTTMLPMemory locally enables autograd for its FP32
                     # fast-state update while the frozen support backbone stays
                     # graph-free.
-                    with torch.no_grad():
-                        unwrapped_model(chunk)
+                        with torch.no_grad():
+                            unwrapped_model(chunk)
 
             if int(args.log_steps) > 0 and step % int(args.log_steps) == 0:
                 state_norms = controller.state_norms()

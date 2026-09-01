@@ -246,6 +246,37 @@ class TTTMLPMemory(nn.Module):
                 statistics.append(stats)
         return state, statistics
 
+    def write_then_read(
+        self,
+        x: torch.Tensor,
+        state: TTTKVBState | None,
+        differentiable: bool,
+    ) -> tuple[TTTKVBState, torch.Tensor, list[dict[str, float]]]:
+        """Paper-style causal TTT scan over every token: update, then emit."""
+
+        if x.ndim != 3:
+            raise ValueError(f"Expected tokens [B,L,D], got {tuple(x.shape)}")
+        with torch.enable_grad():
+            if state is None:
+                state = self.initial_state(
+                    batch_size=int(x.shape[0]),
+                    device=x.device,
+                    differentiable=differentiable,
+                )
+            chunk_size = self.inner_batch_size if self.inner_batch_size > 0 else int(x.shape[1])
+            outputs = []
+            statistics = []
+            for start in range(0, int(x.shape[1]), chunk_size):
+                token_batch = x[:, start : start + chunk_size]
+                state, stats = self._update_once(
+                    token_batch,
+                    state,
+                    differentiable=differentiable,
+                )
+                outputs.append(self.read(token_batch, state))
+                statistics.append(stats)
+        return state, torch.cat(outputs, dim=1), statistics
+
     def read(self, x: torch.Tensor, state: TTTKVBState) -> torch.Tensor:
         """Read a query without changing the fast state."""
 

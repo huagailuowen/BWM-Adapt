@@ -31,10 +31,13 @@ def add_dinov2_config(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
     group = parser.add_argument_group("dinov2_amortized_context")
     group.add_argument("--dinov2_model_path", type=str, required=False)
     group.add_argument("--dinov2_active_environment_manifest", type=str, required=False)
-    group.add_argument("--dinov2_sampled_frames", type=int, default=8)
+    group.add_argument("--dinov2_sampled_frames", type=int, default=11)
+    group.add_argument("--dinov2_temporal_stride", type=int, default=4)
     group.add_argument("--dinov2_hidden_dim", type=int, default=256)
     group.add_argument("--dinov2_action_hidden_dim", type=int, default=128)
     group.add_argument("--dinov2_output_dim", type=int, default=32)
+    group.add_argument("--dinov2_temporal_layers", type=int, default=2)
+    group.add_argument("--dinov2_temporal_heads", type=int, default=8)
     group.add_argument("--dinov2_support_k", type=int, default=1)
     group.add_argument("--dinov2_environments_per_rank", type=int, default=2)
     group.add_argument("--dinov2_queries_per_environment", type=int, default=0)
@@ -147,10 +150,13 @@ def main() -> None:
     support_encoder = DINOv2AmortizedContextEncoder(
         model_path=args.dinov2_model_path,
         sampled_frames=args.dinov2_sampled_frames,
+        temporal_stride=args.dinov2_temporal_stride,
         action_dim=args.action_dim,
         hidden_dim=args.dinov2_hidden_dim,
         action_hidden_dim=args.dinov2_action_hidden_dim,
         output_dim=args.dinov2_output_dim,
+        temporal_layers=args.dinov2_temporal_layers,
+        temporal_heads=args.dinov2_temporal_heads,
     )
     model = DINOv2WanTrainingModule(wan=wan, support_encoder=support_encoder)
     wan_parameters = [parameter for parameter in model.wan.parameters() if parameter.requires_grad]

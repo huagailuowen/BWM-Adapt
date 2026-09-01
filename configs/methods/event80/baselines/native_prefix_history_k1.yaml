@@ -1,0 +1,25 @@
+extends: ../common.yaml
+experiment:
+  id: native_prefix_history_k1q5_3envpergpu
+method:
+  slug: native_prefix_history
+  family: baseline
+  layout: 41_support_plus_4_reset_anchor_plus_40_query_future
+  total_rgb_frames: 85
+  total_wan_temporal_groups: 22
+  conditioned_rgb_frames: 45
+  conditioned_wan_temporal_groups: 12
+  segment_groups: {support: 11, reset_anchor: 1, query: 10}
+  loss_groups: query_only
+protocol:
+  environments_per_rank: 3
+  world_size: 2
+  global_environments_per_update: 6
+  support_size: 1
+  queries_per_environment: 5
+  global_query_losses_per_update: 30
+  support_query_disjoint: true
+resources:
+  gpu_count: 2
+  gpu_sku: H200
+  wall_clock_hours: 24
