@@ -88,7 +88,7 @@ def build_rows(
                     ),
                     "episode_index": episode_index,
                     "source_dataset": source_root.name,
-                    "source_split": "train_all_300eps",
+                    "source_split": physical.get("dataset_split", "train_all_300eps"),
                     "friction_mu": ratio,
                     "mass_ratio": ratio,
                     "right_to_left_mass_ratio": ratio,

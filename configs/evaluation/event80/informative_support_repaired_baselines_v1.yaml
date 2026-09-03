@@ -1,0 +1,29 @@
+schema_version: 1
+
+benchmark_root: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1
+protocol_path: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json
+metadata_path: data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl
+dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine
+output_root: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/repaired_baselines_v1
+action_target_config: configs/evaluation/action_targets/event80_pushbox_image_space.yaml
+
+require_slurm_for_lpips: true
+required_slurm_partition: yejin-lo
+
+future_start_frame: 1
+terminal_window: 5
+
+metrics:
+  global: [psnr, ssim]
+  object: [centroid_ade, centroid_fde]
+  lpips:
+    enabled: true
+    network: alex
+    batch_size: 8
+    device: cuda
+
+methods:
+  ours: methods/ours/step_7272/seed_20260708
+  dinov2_temporal_attention_repaired: methods/dinov2_temporal_attention_repaired/train_job_109236/seed_20260708
+  native_prefix_history_repaired: methods/native_prefix_history_repaired/train_job_109237/seed_20260708
+  ttt_kqv_uniform8_repaired: methods/ttt_kqv_uniform8_repaired/train_job_109313/seed_20260708

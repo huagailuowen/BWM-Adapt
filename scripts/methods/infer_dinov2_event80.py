@@ -69,10 +69,13 @@ def load_support_encoder(args, device: torch.device):
     encoder = DINOv2AmortizedContextEncoder(
         model_path=args.dinov2_model_path,
         sampled_frames=args.dinov2_sampled_frames,
+        temporal_stride=args.dinov2_temporal_stride,
         action_dim=args.action_dim,
         hidden_dim=args.dinov2_hidden_dim,
         action_hidden_dim=args.dinov2_action_hidden_dim,
         output_dim=args.dinov2_output_dim,
+        temporal_layers=args.dinov2_temporal_layers,
+        temporal_heads=args.dinov2_temporal_heads,
     )
     state = {}
     with safe_open(

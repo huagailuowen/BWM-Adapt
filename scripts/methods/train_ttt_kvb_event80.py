@@ -49,6 +49,15 @@ def add_ttt_kvb_config(parser: argparse.ArgumentParser) -> argparse.ArgumentPars
     group.add_argument("--ttt_protocol", type=str, default="prequential_read_then_write")
     group.add_argument("--ttt_gate_vector", action=argparse.BooleanOptionalAction, default=False)
     group.add_argument("--ttt_serial_after_attention", action=argparse.BooleanOptionalAction, default=False)
+    group.add_argument(
+        "--ttt_saved_tensor_cpu_offload",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help=(
+            "Offload tensors retained by the differentiable fast-weight scan to "
+            "CPU. This preserves the full TTT graph while reducing GPU peak memory."
+        ),
+    )
     return parser
 
 
@@ -119,7 +128,8 @@ def main() -> None:
         mixed_precision=args.mixed_precision,
         kwargs_handlers=[
             accelerate.DistributedDataParallelKwargs(
-                find_unused_parameters=args.find_unused_parameters
+                find_unused_parameters=args.find_unused_parameters,
+                gradient_as_bucket_view=True,
             ),
             InitProcessGroupKwargs(timeout=timedelta(hours=1)),
         ],
@@ -232,7 +242,8 @@ def main() -> None:
             f"environments_per_rank={args.ttt_environments_per_rank} "
             f"protocol={args.ttt_protocol} updates_per_chunk={updates_per_chunk} "
             f"layer_local_updates_per_stream=dynamic "
-            f"gate_init={args.ttt_gate_init} base_inner_lr={args.ttt_base_inner_lr}",
+            f"gate_init={args.ttt_gate_init} base_inner_lr={args.ttt_base_inner_lr} "
+            f"saved_tensor_cpu_offload={args.ttt_saved_tensor_cpu_offload}",
             flush=True,
         )
 
@@ -275,7 +286,13 @@ def main() -> None:
                         else controller.query_read()
                     )
                     with mode_context:
-                        loss = model(chunk)
+                        saved_tensor_context = (
+                            torch.autograd.graph.save_on_cpu(pin_memory=False)
+                            if args.ttt_saved_tensor_cpu_offload
+                            else nullcontext()
+                        )
+                        with saved_tensor_context:
+                            loss = model(chunk)
                         accelerator.backward(
                             loss / float(sequence_length * len(episodes)),
                             retain_graph=not is_final_query,

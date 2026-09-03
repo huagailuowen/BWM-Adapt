@@ -1,14 +1,15 @@
 version: 1
 task: mass_collision
-method_name: standard_pooled_wm
+method_name: ours_action8_highmass2x
 seed: 20260827
+support_size: 1
 metadata_jsonl: data/mass_collision_noleak_all30_mainview_bwm_full61_20260828/train.jsonl
 dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass/libero_two_box_collision_9speed_30mass_linear_theory_distance_noleak_270eps_lerobot_2026-08-27_hai-machine
-output_dir: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/standard_pooled_wm/step_8000/seed_20260827/action_evaluation
+output_dir: results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1/methods/ours_action8_highmass2x/step_4300/seed_20260827/action_evaluation
 transfer_plans:
-  - path: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/standard_pooled_wm/step_8000/seed_20260827/transfer/transfer_plan_id.json
+  - path: results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1/methods/ours_action8_highmass2x/step_4300/seed_20260827/same_mass_other_actions/transfer_plan_id.json
     domain: id
-  - path: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/standard_pooled_wm/step_8000/seed_20260827/transfer/transfer_plan_ood.json
+  - path: results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1/methods/ours_action8_highmass2x/step_4300/seed_20260827/same_mass_other_actions/transfer_plan_ood.json
     domain: ood
 action_field: action_id
 action_order_field: speed_index
@@ -30,14 +31,3 @@ targets:
     success_policy: minimum_reaching
     max_action_steps_above_minimum: 1
     region: {x_min: 0.42, x_max: 0.58, y_min: 0.92, y_max: 1.00}
-inference:
-  train_config: configs/train/train_mass20of30_collision_noleak_mainview_standard_pooled_wm_2gpu_24h.yaml
-  checkpoint: outputs/method_benchmarks/mass_collision_noleak_original20/standard_pooled_wm/seed_20260827/checkpoints/step-8000.safetensors
-  cache_key: mass-collision-noleak-standard-pooled-step8000
-  source_transfer_plan: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/protocol/transfer_plan.json
-  method_output_root: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/standard_pooled_wm/step_8000/seed_20260827
-  num_inference_steps: 25
-  cfg_scale: 1.0
-  fps: 20
-  quality: 6
-  seed: 20260827

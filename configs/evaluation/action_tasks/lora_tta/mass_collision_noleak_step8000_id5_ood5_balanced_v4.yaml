@@ -1,15 +1,14 @@
 version: 1
 task: mass_collision
-method_name: standard_pooled_wm
+method_name: lora_tta
 seed: 20260827
+support_size: 1
 metadata_jsonl: data/mass_collision_noleak_all30_mainview_bwm_full61_20260828/train.jsonl
 dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass/libero_two_box_collision_9speed_30mass_linear_theory_distance_noleak_270eps_lerobot_2026-08-27_hai-machine
-output_dir: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/standard_pooled_wm/step_8000/seed_20260827/action_evaluation
+output_dir: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/lora_tta/pooled_step_8000/seed_20260827/action_evaluation
 transfer_plans:
-  - path: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/standard_pooled_wm/step_8000/seed_20260827/transfer/transfer_plan_id.json
-    domain: id
-  - path: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/standard_pooled_wm/step_8000/seed_20260827/transfer/transfer_plan_ood.json
-    domain: ood
+  - {path: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/lora_tta/pooled_step_8000/seed_20260827/transfer/transfer_plan_id.json, domain: id}
+  - {path: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/lora_tta/pooled_step_8000/seed_20260827/transfer/transfer_plan_ood.json, domain: ood}
 action_field: action_id
 action_order_field: speed_index
 environment_report_fields: [target_mass_index, target_mass_kg]
@@ -34,10 +33,24 @@ inference:
   train_config: configs/train/train_mass20of30_collision_noleak_mainview_standard_pooled_wm_2gpu_24h.yaml
   checkpoint: outputs/method_benchmarks/mass_collision_noleak_original20/standard_pooled_wm/seed_20260827/checkpoints/step-8000.safetensors
   cache_key: mass-collision-noleak-standard-pooled-step8000
-  source_transfer_plan: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/protocol/transfer_plan.json
-  method_output_root: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/standard_pooled_wm/step_8000/seed_20260827
+  source_transfer_plans:
+    - results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/protocol/transfer_plan_id.json
+    - results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/protocol/transfer_plan_ood.json
+  method_output_root: results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/lora_tta/pooled_step_8000/seed_20260827
   num_inference_steps: 25
   cfg_scale: 1.0
   fps: 20
   quality: 6
   seed: 20260827
+lora_tta:
+  rank: 8
+  alpha: 8.0
+  target_modules: [q, k, v, o]
+  steps: 50
+  optimizer: AdamW
+  learning_rate: 1.0e-4
+  weight_decay: 0.0
+  gradient_clip_norm: 1.0
+  adapter_seed: 20260708
+  reset_per_environment: true
+  query_updates_lora: false

@@ -1,0 +1,27 @@
+extends: ../common.yaml
+experiment:
+  id: ttt_kqv_oneminute_forward_uniform8_3envpergpu
+method:
+  slug: ttt_kqv_oneminute_forward
+  family: baseline
+  source: one_minute_video_generation_with_ttt
+  direction: forward_only
+  placement: serial_after_uniform_8_attention_blocks
+  gate: channelwise_vector
+  gate_init: 0.1
+  token_coverage: complete_global_wan_token_stream
+  inner_model: two_layer_gelu_mlp_4x_head_dim
+  inner_token_minibatch: 64
+  base_inner_lr: 0.1
+  update_order: write_then_predict
+  shared_diffusion_timestep_within_six_chunk_stream: true
+protocol:
+  environments_per_rank: 3
+  world_size: 2
+  global_environments_per_update: 6
+  chunks_per_environment: 6
+  global_chunk_losses_per_update: 36
+resources:
+  gpu_count: 2
+  gpu_sku: H200
+  wall_clock_hours: 24

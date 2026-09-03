@@ -23,6 +23,9 @@ targets:
       y_min: 0.72
       y_max: 0.82
   - id: long_push
+    selection_strategy: first_reaching
+    success_policy: minimum_reaching
+    max_action_steps_above_minimum: 2
     region:
       x_min: 0.47
       x_max: 0.59

@@ -134,6 +134,39 @@ def _boundary_crossing_choice(
     return selected, details
 
 
+def _first_reaching_choice(
+    records: list[dict[str, Any]],
+    target: "TaskTarget",
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Choose the weakest ordered action predicted to reach the target."""
+
+    ordered = sorted(records, key=_action_sort_key)
+    predicted_reaching = [
+        record for record in ordered if target.contains(record.get("selection_value"))
+    ]
+    if predicted_reaching:
+        selected = predicted_reaching[0]
+        fallback = False
+    else:
+        selected = min(
+            ordered,
+            key=lambda record: (
+                target.distance(record.get("selection_value")),
+                _action_sort_key(record),
+            ),
+        )
+        fallback = True
+    return selected, {
+        "predicted_reaching_action_ids": [
+            str(record["action_id"]) for record in predicted_reaching
+        ],
+        "predicted_minimum_reaching_action_id": (
+            str(predicted_reaching[0]["action_id"]) if predicted_reaching else None
+        ),
+        "used_nearest_fallback": fallback,
+    }
+
+
 @dataclass(frozen=True)
 class TaskTarget:
     target_id: str
@@ -213,8 +246,11 @@ def evaluate_task_action_choice(
         result["status"] = "no_valid_candidate_outcomes"
         return result
 
+    effective_selection_strategy = str(
+        target.parameters.get("selection_strategy", selection_strategy)
+    )
     selection_details: dict[str, Any] = {}
-    if selection_strategy == "nearest":
+    if effective_selection_strategy == "nearest":
         selectable.sort(
             key=lambda record: (
                 target.distance(record["selection_value"]),
@@ -222,67 +258,134 @@ def evaluate_task_action_choice(
             )
         )
         selected = selectable[0]
-    elif selection_strategy == "boundary_crossing":
+    elif effective_selection_strategy == "boundary_crossing":
         selected, selection_details = _boundary_crossing_choice(selectable, target)
+    elif effective_selection_strategy == "first_reaching":
+        selected, selection_details = _first_reaching_choice(selectable, target)
     else:
-        raise ValueError(f"Unknown selection strategy {selection_strategy!r}.")
+        raise ValueError(
+            f"Unknown selection strategy {effective_selection_strategy!r}."
+        )
     selected_action = str(selected["action_id"])
     selected_gt = next(
         (record for record in records if str(record["action_id"]) == selected_action), None
     )
     selected_gt_value = None if selected_gt is None else selected_gt.get("ground_truth_value")
     selected_gt_distance = target.distance(selected_gt_value)
+    success_policy = str(target.parameters.get("success_policy", "target_reach"))
+    ordered_ground_truth = sorted(ground_truth, key=_action_sort_key)
+    ground_truth_rank = {
+        str(record["action_id"]): rank
+        for rank, record in enumerate(ordered_ground_truth)
+    }
+    target_reaching = [
+        record
+        for record in ordered_ground_truth
+        if target.contains(record.get("ground_truth_value"))
+    ]
+    minimum_reaching = target_reaching[0] if target_reaching else None
+    maximum_steps_above_minimum = int(
+        target.parameters.get("max_action_steps_above_minimum", 0)
+    )
+    if maximum_steps_above_minimum < 0:
+        raise ValueError("max_action_steps_above_minimum must be non-negative.")
+    if success_policy == "target_reach":
+        policy_feasible = target_reaching
+    elif success_policy == "minimum_reaching":
+        if minimum_reaching is None:
+            policy_feasible = []
+        else:
+            minimum_rank = ground_truth_rank[str(minimum_reaching["action_id"])]
+            policy_feasible = [
+                record
+                for record in target_reaching
+                if 0
+                <= ground_truth_rank[str(record["action_id"])] - minimum_rank
+                <= maximum_steps_above_minimum
+            ]
+    else:
+        raise ValueError(f"Unknown success policy {success_policy!r}.")
+    policy_feasible_ids = {
+        str(record["action_id"]) for record in policy_feasible
+    }
     result.update(
         {
             "status": "ok" if target.valid(selected_gt_value) else "selected_action_missing_gt",
             "selected_action_id": selected_action,
             "selected_action_order": selected.get("action_order"),
-            "selection_strategy": selection_strategy,
+            "selection_strategy": effective_selection_strategy,
             "selection_details": selection_details,
+            "success_policy": success_policy,
             "selected_sample_indices": selected.get("sample_indices", []),
             "selected_outcome_source": selected.get("selection_source"),
             "selected_candidate_value": selected.get("selection_value"),
             "selected_candidate_distance": target.distance(selected.get("selection_value")),
             "selected_ground_truth_value": selected_gt_value,
             "selected_ground_truth_distance": selected_gt_distance,
-            "task_success": target.valid(selected_gt_value) and target.contains(selected_gt_value),
+            "task_success": selected_action in policy_feasible_ids,
+            "target_reaching_action_ids": [
+                str(record["action_id"]) for record in target_reaching
+            ],
+            "minimum_reaching_action_id": (
+                str(minimum_reaching["action_id"])
+                if minimum_reaching is not None
+                else None
+            ),
+            "max_action_steps_above_minimum": (
+                maximum_steps_above_minimum
+                if success_policy == "minimum_reaching"
+                else None
+            ),
         }
     )
     if ground_truth:
-        oracle = ground_truth[0]
+        oracle = (
+            minimum_reaching
+            if success_policy == "minimum_reaching" and minimum_reaching is not None
+            else ground_truth[0]
+        )
         oracle_distance = target.distance(oracle["ground_truth_value"])
-        oracle_set = [
-            record
-            for record in ground_truth
-            if isclose(
-                target.distance(record["ground_truth_value"]),
-                oracle_distance,
-                rel_tol=0.0,
-                abs_tol=1e-12,
-            )
-        ]
+        if success_policy == "minimum_reaching" and minimum_reaching is not None:
+            oracle_set = [minimum_reaching]
+        else:
+            oracle_set = [
+                record
+                for record in ground_truth
+                if isclose(
+                    target.distance(record["ground_truth_value"]),
+                    oracle_distance,
+                    rel_tol=0.0,
+                    abs_tol=1e-12,
+                )
+            ]
+        minimum_rank = (
+            ground_truth_rank[str(minimum_reaching["action_id"])]
+            if minimum_reaching is not None
+            else None
+        )
+        selected_rank = ground_truth_rank.get(selected_action)
         result.update(
             {
                 "oracle_action_id": str(oracle["action_id"]),
                 "oracle_action_ids": [str(record["action_id"]) for record in oracle_set],
                 "oracle_feasible_action_ids": [
-                    str(record["action_id"])
-                    for record in ground_truth
-                    if target.contains(record["ground_truth_value"])
+                    str(record["action_id"]) for record in policy_feasible
                 ],
                 "oracle_sample_indices": oracle.get("sample_indices", []),
                 "oracle_ground_truth_value": oracle.get("ground_truth_value"),
                 "oracle_ground_truth_distance": oracle_distance,
-                "oracle_reachable": target.contains(oracle["ground_truth_value"]),
-                "selected_is_oracle": isfinite(selected_gt_distance)
-                and isclose(
-                    selected_gt_distance,
-                    oracle_distance,
-                    rel_tol=0.0,
-                    abs_tol=1e-12,
-                ),
+                "oracle_reachable": bool(target_reaching),
+                "selected_is_oracle": selected_action
+                in {str(record["action_id"]) for record in oracle_set},
                 "selected_matches_canonical_oracle": selected_action
                 == str(oracle["action_id"]),
+                "selected_action_rank": selected_rank,
+                "minimum_reaching_action_rank": minimum_rank,
+                "selected_action_offset_from_minimum_steps": (
+                    selected_rank - minimum_rank
+                    if selected_rank is not None and minimum_rank is not None
+                    else None
+                ),
                 "regret": (
                     selected_gt_distance - oracle_distance
                     if isfinite(selected_gt_distance)
@@ -303,6 +406,9 @@ def evaluate_task_action_choice(
                 "selected_is_oracle": False,
                 "selected_matches_canonical_oracle": False,
                 "regret": None,
+                "selected_action_rank": None,
+                "minimum_reaching_action_rank": None,
+                "selected_action_offset_from_minimum_steps": None,
             }
         )
     return result

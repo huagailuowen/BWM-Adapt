@@ -337,9 +337,11 @@ def _domain(plan_spec: Mapping[str, Any], plan_path: Path, source_index: int) ->
     mapping = {str(key): value for key, value in plan_spec.get("domain_by_source", {}).items()}
     if str(source_index) in mapping:
         return str(mapping[str(source_index)]).lower()
+    if "domain" in plan_spec:
+        return str(plan_spec["domain"]).lower()
     if "ood" in str(plan_path).lower():
         return "ood"
-    return str(plan_spec.get("domain", "id")).lower()
+    return "id"
 
 
 def _mean(rows: Sequence[Mapping[str, Any]], key: str) -> float | None:
@@ -353,12 +355,21 @@ def _summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     reachable = [row for row in complete if row.get("oracle_reachable")]
 
     def metrics(group: list[dict[str, Any]]) -> dict[str, Any]:
+        random_rates = [
+            len(row.get("oracle_feasible_action_ids", []))
+            / int(row["protocol_action_count"])
+            for row in group
+            if row.get("oracle_reachable") and int(row.get("protocol_action_count", 0)) > 0
+        ]
         return {
             "count": len(group),
             "task_success_rate": _mean(group, "task_success"),
             "selected_is_oracle_rate": _mean(group, "selected_is_oracle"),
             "mean_regret": _mean(group, "regret"),
             "mean_action_coverage": _mean(group, "action_coverage"),
+            "uniform_random_success_rate": (
+                fmean(random_rates) if random_rates else None
+            ),
         }
 
     grouped = {}

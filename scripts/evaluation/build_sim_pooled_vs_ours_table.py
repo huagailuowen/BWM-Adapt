@@ -278,15 +278,15 @@ def build_records() -> list[dict[str, Any]]:
             ))
 
     # Leakage-free replacement for the superseded linear-theory-distance run.
-    # Ours is the action-batch-8 Stage1 checkpoint from job 107912.
+    # Ours is the action-batch-8 high-mass-2x continuation from job 108592.
     collision_roots = {
         "Standard pooled WM": (
             "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/"
             "methods/standard_pooled_wm/step_8000/seed_20260827"
         ),
         "Ours": (
-            "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/"
-            "methods/ours_action8_stage2_roi10x/step_4300/seed_20260827"
+            "results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1/"
+            "methods/ours_action8_highmass2x/step_4300/seed_20260827"
         ),
     }
     collision_records = [
@@ -305,15 +305,19 @@ def build_records() -> list[dict[str, Any]]:
     insertion = next(index for index, row in enumerate(records) if row["task"] == "Mass balance (fixed pose)")
     records[insertion:insertion] = collision_records
 
-    mass_friction_ours = "results/mass_friction/joint100_same_environment_actions_91479/methods/ours"
-    mass_friction_pool = "results/mass_friction/joint100_same_environment_actions_91479/methods/standard_pooled_wm/step_3277/seed_20260719"
+    mass_friction_root = (
+        "results/mass_friction/"
+        "joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods"
+    )
+    mass_friction_ours = f"{mass_friction_root}/ours/step_7172/seed_20260720"
+    mass_friction_pool = f"{mass_friction_root}/standard_pooled_wm/step_3277/seed_20260719"
     records.extend([
         generic_record(
             task="Mass × friction",
             method="Standard pooled WM",
-            queries=48,
-            roots=[f"{mass_friction_pool}/id", f"{mass_friction_pool}/ood"],
-            action_paths=[f"{mass_friction_pool}/id/action_evaluation/summary.json", f"{mass_friction_pool}/ood/action_evaluation/summary.json"],
+            queries=80,
+            roots=[mass_friction_pool],
+            action_paths=[f"{mass_friction_pool}/action_evaluation/summary.json"],
             task_metric_key="final_displacement_abs_error_px",
             task_metric_label="Final displacement error (px) ↓",
             task_metric_higher_is_better=False,
@@ -321,7 +325,7 @@ def build_records() -> list[dict[str, Any]]:
         generic_record(
             task="Mass × friction",
             method="Ours",
-            queries=48,
+            queries=80,
             roots=[mass_friction_ours],
             action_paths=[f"{mass_friction_ours}/action_evaluation/summary.json"],
             task_metric_key="final_displacement_abs_error_px",
@@ -368,9 +372,10 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
         ],
         "replacement_provenance": {
             "mass_collision_ours": {
-                "train_config": "configs/train/train_mass20of30_collision_noleak_mainview_full61_curriculum_c32_old_random_8action_stage1_4300.yaml",
-                "checkpoint": "outputs/mass20of30_collision_noleak_mainview_c32_oldrandom_8action_s1_107912/step-4300.safetensors",
+                "train_config": "configs/train/train_mass20of30_collision_noleak_mainview_full61_curriculum_c32_old_random_8action_highmass2x_stage1_4300.yaml",
+                "checkpoint": "outputs/mass20of30_collision_noleak_mainview_c32_oldrandom_8action_highmass2x_s1_108592/step-4300.safetensors",
                 "actions_per_environment_per_update": 8,
+                "training_variant": "highmass2x",
             },
             "light_switch_ours": {
                 "train_config": "configs/train/train_lightswitch_physicalpress33jitter11to22_maincam_group20_c32_3wave1400_actions8_stage1_4500.yaml",

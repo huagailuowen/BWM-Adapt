@@ -12,6 +12,7 @@ transfer_plans:
   - path: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours/step_7172/seed_20260720/ood_same_environment_other_actions/transfer_plan.json
     domain: ood
 action_field: action_id
+action_order_field: action_id
 environment_report_fields: [environment_id, mass_index, target_mass_kg, friction_index, target_table_friction_mu]
 action_report_fields: [action_id, action_amplitude]
 minimum_actions: 2
@@ -23,4 +24,10 @@ outcome:
 targets:
   - {id: short_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.43, x_max: 0.57, y_min: 0.62, y_max: 0.72}}
   - {id: medium_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.43, x_max: 0.57, y_min: 0.75, y_max: 0.86}}
-  - {id: long_displacement, kind: point_rectangle, object_role: struck_object, region: {x_min: 0.42, x_max: 0.58, y_min: 0.92, y_max: 1.00}}
+  - id: long_displacement
+    kind: point_rectangle
+    object_role: struck_object
+    selection_strategy: first_reaching
+    success_policy: minimum_reaching
+    max_action_steps_above_minimum: 1
+    region: {x_min: 0.42, x_max: 0.58, y_min: 0.92, y_max: 1.00}

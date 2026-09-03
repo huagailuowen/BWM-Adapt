@@ -191,6 +191,8 @@ def build_training_faithful_model(args):
         inner_batch_size=args.ttt_inner_batch_size,
         write_token_budget=args.ttt_write_token_budget,
         gate_init=args.ttt_gate_init,
+        gate_vector=args.ttt_gate_vector,
+        serial_after_attention=args.ttt_serial_after_attention,
     )
     load_ttt_kvb_checkpoint(model, installation, args.ttt_checkpoint_path)
     model.use_gradient_checkpointing = False

@@ -1,6 +1,6 @@
 # Baseline and Ablation Plan
 
-This file is the repository-local mirror of the authoritative ablation plan in the Google Doc, updated on 2026-08-13.
+This file is the repository-local mirror of the authoritative ablation plan in the Google Doc, updated on 2026-09-03.
 
 ## Baselines
 
@@ -10,8 +10,8 @@ This file is the repository-local mirror of the authoritative ablation plan in t
 | Same-Model Mean-Z | Whether test-time Z optimization helps when architecture and checkpoint are held fixed. | Clean no-adaptation control for Ours |
 | Native Prefix-History WM | Whether raw support trajectories supplied through Wan's native history interface enable environment inference. | Raw-history and previous-segment conditioning |
 | LoRA TTA | Whether LoRA test-time adaptation is sufficient when initialized from the normally trained Standard Pooled World Model checkpoint. | Parameter-space test-time adaptation baseline |
-| TTT-KQV | Whether long-history implicit fast-weight memory is sufficient. | Test-time training and fast-weight memory |
-| DINOv2 Amortized Context Encoder | Whether an explicit amortized encoder matches generator-based latent inference. | Amortized context-inference baseline |
+| TTT-KVB (One-Minute, Uniform8 repaired) | Whether causal fast-weight memory in a standard TTT key-value-binding formulation is sufficient. | Test-time training and fast-weight memory |
+| DINOv2 Temporal-Attention Context Encoder | Whether a frozen visual encoder plus action-aligned temporal aggregation matches generator-based latent inference. | Amortized context-inference baseline |
 | Frozen WM + Optimized Environment Code | Whether new physical regularities must enter the shared model. | Optimized-context and consolidation control |
 | Ours | Full environment-level latent method with iterative training and test-time Z inference. | Reference method |
 
@@ -96,13 +96,15 @@ Insert rank-8 LoRA modules into the Q, K, V, and output projections of its Wan a
 
 Use learning rate `1e-4` unless the validation split selects another value before opening the test set. Keep `K`, support/query data, and the query set fixed, and report LoRA adaptation latency, update count, and peak memory alongside quality because one LoRA update changes far more parameters than one environment-code update.
 
-### 5. TTT-KQV
+### 5. TTT-KVB (One-Minute, Uniform8 repaired)
 
-Use a forward-only adaptation of the TTT-MLP architecture from *One-Minute Video Generation with Test-Time Training*. Insert a serial TTT branch after every Wan attention block, retain the original local attention, use a channel-wise gate initialized to `0.1`, and process the complete Wan token sequence without the former 512-token subsampling. The fast model is a two-layer GELU MLP with hidden width four times the head dimension, FP32 state, token mini-batch size 64, and base fast learning rate 0.1.
+The canonical method name is **TTT with key-value binding (TTT-KVB)**; `TTT-KQV` is retained only as a compatibility alias in legacy paths. Use the repaired forward-only TTT-MLP implementation derived from *One-Minute Video Generation with Test-Time Training*. Retain the original Wan attention path and insert a gated serial TTT branch after eight attention blocks distributed uniformly through the backbone (`Uniform8`), rather than after every block. Use a channel-wise gate initialized to `0.1` and process the complete Wan token sequence without the former 512-token subsampling. The fast model is a two-layer GELU MLP with hidden width four times the head dimension, FP32 state, token mini-batch size 64, and base fast learning rate 0.1.
 
-Within every 64-token inner mini-batch, first update the fast state from learned K/V projections and then predict through Q using the updated state, matching the paper's write-then-predict order. Six randomly ordered chunks from one environment share one diffusion timestep and one forward fast-state chain `W0 -> ... -> W6`; local Wan attention remains separated by chunk while TTT carries the global state. Training uses two H200s for 24 hours, three environment streams per rank, and therefore six environments and 36 chunk losses per outer update. The previously evaluated `ttt_kqv/step_12400` used the legacy read-then-write, eight-layer, 512-token implementation and remains a valid legacy result.
+Within every 64-token inner mini-batch, first update the fast state from learned K/V projections and then predict through Q using the updated state, matching the paper's write-then-predict order. Six randomly ordered chunks from one environment share one diffusion timestep and one forward fast-state chain `W0 -> ... -> W6`; local Wan attention remains separated by chunk while TTT carries the global state. Training uses two H200s for 24 hours, three environment streams per rank, and therefore six environments and 36 chunk losses per outer update. Inference preserves this causal ordering: support writes the fast state before query prediction, while a query cannot update the state used for its own prediction.
 
-### 6. DINOv2 Amortized Context Encoder
+The primary repaired configuration is `configs/train/train_push_box_event80_ttt_kqv_oneminute_uniform8_3envpergpu_2gpu_24h.yaml`; its evaluated checkpoint is `outputs/method_benchmarks/pushbox_friction_event80/ttt_kqv_oneminute_uniform8_3envpergpu_job109313/checkpoints/step-2000.safetensors`. The previously evaluated `ttt_kqv/step_12400` used the legacy read-then-write, eight-layer, 512-token implementation. It is archive-only and must not be reported as the current TTT-KVB baseline.
+
+### 6. DINOv2 Temporal-Attention Context Encoder
 
 Each 41-frame Event80 support is aligned to Wan's temporal compression using DINO anchors `[0,4,8,...,40]`. Frozen DINOv2-B/14 produces 11 visual features, and the ten complete four-frame action intervals produce aligned action embeddings. Visual endpoint features, endpoint differences, and interval-action encodings form ten ordered transition tokens.
 
@@ -110,9 +112,9 @@ Add temporal position embeddings and aggregate `[Z],u_1,...,u_10` with a two-lay
 
 Initialize the Wan generator from the same pretrained Wan checkpoint as Ours and inject the code through the exact conditioning interface used by Ours. Train on two H200s for 24 hours with three environments per rank and `K=1 support + 5 disjoint queries` per environment, yielding six environments and 30 query losses per outer update. Train the temporal/action head and Wan generator with disjoint-query flow-matching loss, and report model-gradient updates and clip exposure.
 
-The intended core difference is only `Z = q_phi(C_E)`, inferred amortized from support context, rather than `Z` obtained by optimizing the generation-model loss. At inference, infer `Z` in one encoder forward pass with no gradient update. This is the DINOv2 Amortized Context Encoder baseline, following the video-context design of Implicit State Estimation via Video Replanning. EVF is cited only as an earlier pixel-generative precedent, not as the implementation reproduced here.
+The intended core difference is only `Z = q_phi(C_E)`, inferred amortized from support context, rather than `Z` obtained by optimizing the generation-model loss. At inference, infer `Z` in one encoder forward pass with no gradient update. This is the DINOv2 Temporal-Attention Context Encoder baseline, following the video-context design of Implicit State Estimation via Video Replanning. EVF is cited only as an earlier pixel-generative precedent, not as the implementation reproduced here.
 
-The previously evaluated `dinov2_amortized_context/step_11500` used eight sparse frames and mean aggregation over seven action-conditioned transition features. Its metrics remain valid as a legacy DINO baseline and must not be relabeled as the temporal-attention version.
+The primary repaired configuration is `configs/train/train_push_box_event80_active35_dinov2_temporal_attention_k1_3envpergpu_2gpu_24h.yaml`; its evaluated checkpoint is `outputs/method_benchmarks/pushbox_friction_event80/dinov2_temporal_attention_k1_3envpergpu_job109236/checkpoints/step-5248.safetensors`. The previously evaluated `dinov2_amortized_context/step_11500` used eight sparse frames and mean aggregation over seven action-conditioned transition features. It is archive-only and must not be reported or relabeled as the current temporal-attention baseline.
 
 ### 7. Ours
 

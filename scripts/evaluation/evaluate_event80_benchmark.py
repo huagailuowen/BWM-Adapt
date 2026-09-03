@@ -386,6 +386,12 @@ def action_statistics(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     valid = [row for row in rows if row.get("status") == "ok"]
     complete = [row for row in valid if row.get("candidate_set_complete")]
     eligible = [row for row in complete if row.get("oracle_reachable")]
+    random_rates = [
+        len(row.get("oracle_feasible_action_ids", []))
+        / int(row["protocol_action_count"])
+        for row in eligible
+        if int(row.get("protocol_action_count", 0)) > 0
+    ]
     return {
         "decision_count": len(rows),
         "valid_decision_count": len(valid),
@@ -404,6 +410,9 @@ def action_statistics(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         ),
         "mean_action_coverage": (
             fmean(float(row["action_coverage"]) for row in valid) if valid else None
+        ),
+        "uniform_random_success_rate": (
+            fmean(random_rates) if random_rates else None
         ),
     }
 

@@ -45,7 +45,7 @@ ttt_kvb:
   ttt_active_environment_manifest: "configs/methods/event80/manifests/ours_88823_step7272_active35.yaml"
   ttt_sequence_length: 6
   ttt_environments_per_rank: 3
-  ttt_layers: "all"
+  ttt_layers: "uniform:10"
   ttt_expansion: 4
   ttt_base_inner_lr: 0.1
   ttt_inner_batch_size: 64
@@ -53,7 +53,7 @@ ttt_kvb:
   ttt_gate_init: 0.1
   ttt_gate_vector: true
   ttt_serial_after_attention: true
-  ttt_saved_tensor_cpu_offload: true
+  ttt_saved_tensor_cpu_offload: false
   ttt_protocol: "oneminute_write_then_predict"
   ttt_slow_learning_rate: 1.0e-4
   ttt_max_updates: 50000
@@ -62,7 +62,7 @@ training:
   stage1_warmup_steps: 100
   num_epochs: 100000
   trainable_models: "dit,action_encoder"
-  find_unused_parameters: true
+  find_unused_parameters: false
   weight_decay: 0.01
   task: "sft"
   seed: 20260708
@@ -71,7 +71,7 @@ training:
   min_timestep_boundary: 0.0
   batch_size: 1
 output:
-  output_path: "./outputs/method_benchmarks/pushbox_friction_event80/ttt_kqv_oneminute_global_allblocks_3envpergpu/seed_20260708/checkpoints"
+  output_path: "./outputs/method_benchmarks/pushbox_friction_event80/ttt_kqv_oneminute_uniform10_3envpergpu/seed_20260708/checkpoints"
   remove_prefix_in_ckpt: "pipe.dit."
   save_steps: 200
   checkpoint_save_minutes: 60
