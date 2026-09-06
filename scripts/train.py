@@ -177,6 +177,7 @@ class WanTrainingModule(DiffusionTrainingModule):
         preset_lora_path=None, preset_lora_model=None,
         use_gradient_checkpointing=True,
         use_gradient_checkpointing_offload=False,
+        allow_disabled_gradient_checkpointing=False,
         extra_inputs=None,
         enable_text=True,
         modules=("dit", "text", "vae", "image", "action"),
@@ -192,7 +193,7 @@ class WanTrainingModule(DiffusionTrainingModule):
     ):
         super().__init__()
         # Warning
-        if not use_gradient_checkpointing:
+        if not use_gradient_checkpointing and not allow_disabled_gradient_checkpointing:
             warnings.warn("Gradient checkpointing is detected as disabled. To prevent out-of-memory errors, the training framework will forcibly enable gradient checkpointing.")
             use_gradient_checkpointing = True
 

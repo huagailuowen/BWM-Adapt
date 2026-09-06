@@ -57,6 +57,20 @@ def _object_names(settings: dict[str, Any], count: int) -> list[str]:
     return names
 
 
+def _hold_last_observed_centroids(centroids: np.ndarray) -> np.ndarray:
+    """Forward-fill missing centroids from the last finite observation."""
+    held = np.asarray(centroids, dtype=np.float64).copy()
+    for object_index in range(held.shape[1]):
+        last_observed: np.ndarray | None = None
+        for frame_index in range(held.shape[0]):
+            point = held[frame_index, object_index]
+            if np.all(np.isfinite(point)):
+                last_observed = point.copy()
+            elif last_observed is not None:
+                held[frame_index, object_index] = last_observed
+    return held
+
+
 def _centroid_metrics(
     gt: TaskState,
     pred: TaskState,
@@ -71,13 +85,11 @@ def _centroid_metrics(
     if height <= 0 or width <= 0:
         raise ValueError("image_height and image_width are required for normalized errors.")
     diagonal = float(np.hypot(height, width))
-    penalty = float(settings.get("missing_penalty_normalized", 1.0)) * diagonal
-    # A confirmed screen exit carries a finite, held-last-position centroid
-    # even though the object is no longer visibly segmented. Such states are
-    # valid trajectory estimates and must not receive the missing-track
-    # diagonal penalty. Unexplained detector loss remains NaN and is penalized.
-    gt_track_valid = np.all(np.isfinite(gt.centroids), axis=-1)
-    pred_track_valid = np.all(np.isfinite(pred.centroids), axis=-1)
+    gt_centroids = _hold_last_observed_centroids(gt.centroids)
+    pred_centroids = _hold_last_observed_centroids(pred.centroids)
+    gt_track_valid = np.all(np.isfinite(gt_centroids), axis=-1)
+    pred_track_valid = np.all(np.isfinite(pred_centroids), axis=-1)
+    pred_observed_valid = np.all(np.isfinite(pred.centroids), axis=-1)
     names = _object_names(settings, gt.centroids.shape[1])
     output: dict[str, float] = {}
     metric_names: list[str] = []
@@ -90,11 +102,14 @@ def _centroid_metrics(
         for frame_index in valid:
             if pred_track_valid[frame_index, object_index]:
                 error = float(np.linalg.norm(
-                    gt.centroids[frame_index, object_index]
-                    - pred.centroids[frame_index, object_index]
+                    gt_centroids[frame_index, object_index]
+                    - pred_centroids[frame_index, object_index]
                 ))
             else:
-                error = penalty
+                raise ValueError(
+                    f"Prediction object {name!r} has no observation to hold at "
+                    f"frame {frame_index}."
+                )
             errors.append(error)
         prefix = f"{name}_centroid"
         values = {
@@ -103,7 +118,7 @@ def _centroid_metrics(
             f"{prefix}_ade_normalized": float(np.mean(errors) / diagonal),
             f"{prefix}_fde_normalized": float(errors[-1] / diagonal),
             f"{name}_missing_rate": float(
-                np.mean(~pred_track_valid[valid, object_index])
+                np.mean(~pred_observed_valid[valid, object_index])
             ),
         }
         output.update(values)
@@ -142,8 +157,8 @@ def _kinematic_metrics(
     object_index: int,
 ) -> tuple[dict[str, float], list[str]]:
     assert gt.centroids is not None and pred.centroids is not None
-    gt_track = gt.centroids[:, object_index]
-    pred_track = pred.centroids[:, object_index]
+    gt_track = _hold_last_observed_centroids(gt.centroids)[:, object_index]
+    pred_track = _hold_last_observed_centroids(pred.centroids)[:, object_index]
     valid = np.all(np.isfinite(gt_track), axis=1) & np.all(np.isfinite(pred_track), axis=1)
     indices = np.flatnonzero(valid)
     if len(indices) < 2:

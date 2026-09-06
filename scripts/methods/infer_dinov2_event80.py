@@ -114,7 +114,7 @@ def main() -> None:
     with torch.no_grad():
         for support_index in _parse_sample_indices(args.support_indices):
             support = dataset[support_index]
-            environment_id = int(support["mu_index"])
+            environment_id = int(support[args.dinov2_environment_key])
             code = encoder(support["video"], support["action"])[0].detach().cpu()
             support_codes[environment_id] = code
             support_records.append(
@@ -135,7 +135,7 @@ def main() -> None:
     for sample_index in _parse_sample_indices(args.sample_indices):
         sample = dataset[sample_index]
         sample = prepare_sample_for_rollout(sample, sample_index, pipe, args)
-        environment_id = int(sample["mu_index"])
+        environment_id = int(sample[args.dinov2_environment_key])
         if environment_id not in support_codes:
             raise KeyError(f"No DINO support code for environment {environment_id}.")
         sample["physical_context"] = support_codes[environment_id].to(

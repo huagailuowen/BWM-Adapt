@@ -36,6 +36,13 @@ from wan_video_action.utils import set_global_seed
 def add_ttt_kvb_config(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     group = parser.add_argument_group("ttt_kvb_prequential")
     group.add_argument("--ttt_active_environment_manifest", type=str, required=False)
+    group.add_argument("--ttt_environment_key", type=str, default="mu_index")
+    group.add_argument("--ttt_action_key", type=str, default="action_id")
+    group.add_argument(
+        "--ttt_distinct_actions",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+    )
     group.add_argument("--ttt_sequence_length", type=int, default=6)
     group.add_argument("--ttt_environments_per_rank", type=int, default=1)
     group.add_argument("--ttt_layers", type=str, default="uniform:8")
@@ -140,6 +147,9 @@ def main() -> None:
         active_environment_manifest=args.ttt_active_environment_manifest,
         seed=args.seed,
         sequence_length=args.ttt_sequence_length,
+        environment_key=args.ttt_environment_key,
+        action_key=args.ttt_action_key,
+        distinct_actions=args.ttt_distinct_actions,
     )
     model_class = (
         OneMinuteTTTWanTrainingModule
@@ -160,6 +170,7 @@ def main() -> None:
         preset_lora_model=args.preset_lora_model,
         use_gradient_checkpointing=args.use_gradient_checkpointing,
         use_gradient_checkpointing_offload=args.use_gradient_checkpointing_offload,
+        allow_disabled_gradient_checkpointing=True,
         extra_inputs=args.extra_inputs,
         modules=runtime_config["modules"],
         fp8_models=args.fp8_models,
@@ -243,6 +254,7 @@ def main() -> None:
             f"protocol={args.ttt_protocol} updates_per_chunk={updates_per_chunk} "
             f"layer_local_updates_per_stream=dynamic "
             f"gate_init={args.ttt_gate_init} base_inner_lr={args.ttt_base_inner_lr} "
+            f"gradient_checkpointing={accelerator.unwrap_model(model).use_gradient_checkpointing} "
             f"saved_tensor_cpu_offload={args.ttt_saved_tensor_cpu_offload}",
             flush=True,
         )

@@ -58,6 +58,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", type=Path, default=DEFAULT_SOURCE)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--main-view-only", action="store_true")
     args = parser.parse_args()
 
     source_root = args.source_root.resolve()
@@ -87,6 +88,10 @@ def main() -> None:
 
     train_rows = build_rows(source_root, train_episodes, train_metadata)
     test_rows = build_rows(source_root, test_episodes, test_metadata)
+    video_keys = VIDEO_KEYS[:1] if args.main_view_only else VIDEO_KEYS
+    if args.main_view_only:
+        for row in [*train_rows, *test_rows]:
+            row["video"] = row["video"][:1]
     train_counts = Counter(float(row["mass_ratio"]) for row in train_rows)
     test_counts = Counter(float(row["mass_ratio"]) for row in test_rows)
     if len(train_counts) != 20 or set(train_counts.values()) != {45}:
@@ -125,7 +130,8 @@ def main() -> None:
         "model_frames": 41,
         "temporal_padding": "repeat each window's final sampled frame once",
         "required_late_windows_per_six": 4,
-        "video_keys": list(VIDEO_KEYS),
+        "video_keys": list(video_keys),
+        "main_view_only": bool(args.main_view_only),
         "action_stats_scope": "training 20 ratios only",
     }
     (output_dir / "manifest_summary.json").write_text(

@@ -31,4 +31,4 @@ methods:
   history_conditioned_wm: methods/history_conditioned_wm/step_26200/seed_20260708
   ttt_kqv: methods/ttt_kqv/step_12400/seed_20260708
   joint_model_latent_training: methods/joint_model_latent_training/step_5200/seed_20260708
-  all_active_joint_no_curriculum: methods/all_active_joint_no_curriculum/step_5200/seed_20260708
+  all_active_iterative_no_curriculum: methods/all_active_iterative_no_curriculum/step_7000/seed_20260821

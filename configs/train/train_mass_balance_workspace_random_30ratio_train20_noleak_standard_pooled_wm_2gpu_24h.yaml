@@ -1,7 +1,8 @@
-# Leakage-free standard pooled baseline trained on the annotated 20/30 mass ratios.
+# Leakage-free standard pooled baseline on the workspace-random 30-ratio dataset.
+# Training is restricted to the original 20 ratios; 10 interpolated ratios are held out.
 dataset:
-  dataset_base_path: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass_balance/libero_mass_balance_fixed_pose_30ratio_15support_450eps_combined_train20_test10_nominal_z_absolute_eef_lerobot_2026-09-02_hai-machine
-  dataset_metadata_path: data/mass_balance_fixed_pose_30ratio_train20_mainview_stride2_41f_20260902/train.jsonl
+  dataset_base_path: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass_balance/libero_mass_balance_workspace_random_30ratio_15support_450eps_combined_train20_test10_nominal_z_absolute_eef_lerobot_2026-09-02_hai-machine
+  dataset_metadata_path: data/mass_balance_workspace_random_30ratio_train20_mainview_stride2_41f_20260902/train.jsonl
   dataset_repeat: 1
   dataset_num_workers: 0
   data_file_keys: video,action
@@ -34,7 +35,7 @@ model:
   action_mode: adaln
 action:
   action_type: eef_delta
-  action_stat_path: data/mass_balance_fixed_pose_30ratio_train20_mainview_stride2_41f_20260902/action_stats.json
+  action_stat_path: data/mass_balance_workspace_random_30ratio_train20_mainview_stride2_41f_20260902/action_stats.json
   action_dim: 14
 physical_context:
   physical_context_mode: none
@@ -60,7 +61,7 @@ training:
   min_timestep_boundary: 0.0
   batch_size: 32
 output:
-  output_path: ./outputs/method_benchmarks/mass_balance_fixed_pose_30ratio_train20_noleak/standard_pooled_wm/job___JOB_ID__/checkpoints
+  output_path: ./outputs/method_benchmarks/mass_balance_workspace_random_30ratio_train20_noleak/standard_pooled_wm/job___JOB_ID__/checkpoints
   remove_prefix_in_ckpt: pipe.dit.
   save_steps: 500
   checkpoint_save_minutes: 60

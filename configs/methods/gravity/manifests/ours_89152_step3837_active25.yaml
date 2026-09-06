@@ -1,0 +1,45 @@
+benchmark: gravity80
+
+source:
+  method: ours_random_c32
+  job_id: 89152
+  checkpoint_step: 3837
+  checkpoint: outputs/gravity80_full61_c32_oldrandom_s1_89152/step-3837.safetensors
+  metadata: data/gravity_bwm_full61_20260710/train_active25_89152_step3837.jsonl
+
+selection:
+  environment_key: gravity_index
+  physical_value_key: gravity_mps2
+  action_key: action_id
+  total_environment_count: 80
+  active_environment_count: 25
+  held_out_environment_count: 55
+  active_environment_ids:
+    - 0
+    - 5
+    - 10
+    - 15
+    - 20
+    - 23
+    - 25
+    - 28
+    - 30
+    - 33
+    - 35
+    - 38
+    - 40
+    - 42
+    - 44
+    - 46
+    - 49
+    - 51
+    - 54
+    - 56
+    - 59
+    - 64
+    - 69
+    - 74
+    - 79
+  camera_protocol: observation.images.image and observation.images.wrist_image
+  actions_per_environment: 10
+  chunks_sampled_per_update: 4

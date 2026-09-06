@@ -37,6 +37,13 @@ def add_dinov2_config(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
     group = parser.add_argument_group("dinov2_amortized_context")
     group.add_argument("--dinov2_model_path", type=str, required=False)
     group.add_argument("--dinov2_active_environment_manifest", type=str, required=False)
+    group.add_argument("--dinov2_environment_key", type=str, default="mu_index")
+    group.add_argument("--dinov2_action_key", type=str, default="action_id")
+    group.add_argument(
+        "--dinov2_distinct_actions",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+    )
     group.add_argument("--dinov2_sampled_frames", type=int, default=11)
     group.add_argument("--dinov2_temporal_stride", type=int, default=4)
     group.add_argument("--dinov2_hidden_dim", type=int, default=256)
@@ -126,6 +133,9 @@ def main() -> None:
         active_environment_manifest=args.dinov2_active_environment_manifest,
         seed=args.seed,
         queries_per_environment=args.dinov2_queries_per_environment,
+        environment_key=args.dinov2_environment_key,
+        action_key=args.dinov2_action_key,
+        distinct_actions=args.dinov2_distinct_actions,
     )
     wan = WanTrainingModule(
         model_paths=json.dumps(runtime_config["model_paths_list"]),

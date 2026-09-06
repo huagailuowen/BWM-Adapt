@@ -50,6 +50,8 @@ def _decorate(frame: np.ndarray, label: str, *, border: tuple[int, int, int] | N
 
 def _prediction_dir(root: Path, source_index: int) -> Path:
     matches = sorted(path for path in root.glob(f"source{source_index:04d}_*") if path.is_dir())
+    if not matches and any(root.glob("sample*.mp4")):
+        return root
     if len(matches) != 1:
         raise RuntimeError(f"Expected one prediction directory for source={source_index}, found {matches}")
     return matches[0]

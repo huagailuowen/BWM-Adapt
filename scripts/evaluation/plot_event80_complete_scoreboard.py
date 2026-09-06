@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROWS = [
     ("Ours", 31.976, 0.9513, 0.0495, 3.85, 7.59, 68.0),
     ("Joint Model + Latent", 31.737, 0.9494, 0.0587, 4.35, 8.95, 64.0),
-    ("No-Curriculum Joint", 31.697, 0.9507, 0.0547, 5.62, 12.04, 60.0),
+    ("No-Curriculum Iterative", 31.799, 0.9514, 0.0549, 6.17, 12.81, 56.0),
     ("History-Conditioned WM", 30.936, 0.9519, 0.0658, 12.33, 27.54, 44.0),
     ("LoRA TTA", 32.031, 0.9535, 0.0582, 8.19, 19.19, 40.0),
     ("Standard Pooled WM", 31.113, 0.9513, 0.0667, 11.06, 24.41, 32.0),

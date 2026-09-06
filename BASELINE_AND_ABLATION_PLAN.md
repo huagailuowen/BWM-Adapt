@@ -1,6 +1,6 @@
 # Baseline and Ablation Plan
 
-This file is the repository-local mirror of the authoritative ablation plan in the Google Doc, updated on 2026-09-03.
+This file is the repository-local mirror of the authoritative ablation plan in the Google Doc, updated on 2026-09-05.
 
 ## Baselines
 
@@ -176,7 +176,7 @@ Use the full Ours implementation and vary only the environment-code dimension:
 | Bottleneck | 4 |
 | Reference | 32 |
 | Medium-capacity | 128 |
-| High-capacity | 1024 |
+| Direct environment token, without the projection MLP | 3072 |
 
 Initialize every environment code independently from `Uniform(0, 1)` in every
 dimension. Keep the Event80 data, `65-105` window, grouped batch, progressive

@@ -1,0 +1,44 @@
+benchmark: mass_collision_noleak_original20
+
+source:
+  dataset: libero_two_box_collision_9speed_30mass_linear_theory_distance_noleak_270eps_lerobot_2026-08-27_hai-machine
+  metadata: data/mass_collision_noleak_original20_mainview_bwm_full61_20260827/train.jsonl
+  selection: the 20 physical mass values matching the original 20-mass dataset
+
+selection:
+  environment_key: target_mass_index
+  physical_value_key: target_mass_kg
+  action_key: action_id
+  total_environment_count: 20
+  active_environment_count: 20
+  active_environment_ids:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    - 17
+    - 18
+    - 19
+  environment_sampling_weights:
+    15: 2.0
+    16: 2.0
+    17: 2.0
+    18: 2.0
+    19: 2.0
+  sampling_note: target masses at or above 0.25 kg receive 2x environment sampling weight
+  camera_protocol: observation.images.image only
+  actions_per_environment: 9
+  chunks_sampled_per_update: 8

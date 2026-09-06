@@ -212,7 +212,7 @@ def main() -> None:
 
     support_by_environment: dict[int, int] = {}
     for support_index in _parse_sample_indices(args.support_indices):
-        environment_id = int(dataset[support_index]["mu_index"])
+        environment_id = int(dataset[support_index][args.ttt_environment_key])
         if environment_id in support_by_environment:
             raise ValueError(
                 "One-Minute K=1 inference received multiple supports for "
@@ -222,7 +222,7 @@ def main() -> None:
 
     queries_by_environment: dict[int, list[int]] = defaultdict(list)
     for sample_index in _parse_sample_indices(args.sample_indices):
-        environment_id = int(dataset[sample_index]["mu_index"])
+        environment_id = int(dataset[sample_index][args.ttt_environment_key])
         queries_by_environment[environment_id].append(int(sample_index))
 
     records = []

@@ -15,6 +15,8 @@ import torch.nn.functional as F
 import yaml
 from transformers import AutoModel
 
+from .environment_sampling import weighted_sample_without_replacement
+
 
 @dataclass(frozen=True)
 class SupportQueryEpisodeIndices:
@@ -35,36 +37,69 @@ class Event80K1Sampler:
         queries_per_environment: int = 0,
         environment_key: str = "mu_index",
         action_key: str = "action_id",
+        distinct_actions: bool = False,
     ) -> None:
         self.metadata_path = Path(metadata_path)
         self.environment_key = str(environment_key)
         self.action_key = str(action_key)
         self.seed = int(seed)
         self.queries_per_environment = int(queries_per_environment)
+        self.distinct_actions = bool(distinct_actions)
         if self.queries_per_environment < 0:
             raise ValueError("queries_per_environment must be non-negative.")
         with self.metadata_path.open("r", encoding="utf-8") as handle:
             self.rows = [json.loads(line) for line in handle if line.strip()]
         with Path(active_environment_manifest).open("r", encoding="utf-8") as handle:
             manifest = yaml.safe_load(handle)
+        selection = manifest["selection"]
         self.active_environment_ids = tuple(
             int(value)
-            for value in manifest["selection"]["active_environment_ids"]
+            for value in selection["active_environment_ids"]
         )
+        raw_weights = selection.get("environment_sampling_weights", {})
+        self.environment_weights = {
+            environment_id: float(
+                raw_weights.get(
+                    environment_id,
+                    raw_weights.get(str(environment_id), 1.0),
+                )
+            )
+            for environment_id in self.active_environment_ids
+        }
         grouped: dict[int, list[int]] = {value: [] for value in self.active_environment_ids}
         for index, row in enumerate(self.rows):
             environment_id = int(row[self.environment_key])
             if environment_id in grouped:
                 grouped[environment_id].append(index)
+        grouped_by_action: dict[int, dict[int, list[int]]] = {}
         for environment_id, indices in grouped.items():
             indices.sort(key=lambda index: (int(self.rows[index][self.action_key]), index))
             actions = [int(self.rows[index][self.action_key]) for index in indices]
-            if len(indices) < 2 or len(actions) != len(set(actions)):
+            by_action: dict[int, list[int]] = {}
+            for index, action_id in zip(indices, actions):
+                by_action.setdefault(action_id, []).append(index)
+            grouped_by_action[environment_id] = by_action
+            if len(indices) < 2:
                 raise ValueError(
                     f"Environment {environment_id} needs at least two unique actions; "
                     f"got actions={actions}."
                 )
+            if self.distinct_actions:
+                required = 1 + self.queries_per_environment
+                if self.queries_per_environment == 0:
+                    required = 2
+                if len(by_action) < required:
+                    raise ValueError(
+                        f"Environment {environment_id} has {len(by_action)} unique "
+                        f"actions; need {required}."
+                    )
+            elif len(actions) != len(set(actions)):
+                raise ValueError(
+                    f"Environment {environment_id} contains duplicate action ids; "
+                    "enable dinov2_distinct_actions for repeated windows."
+                )
         self.grouped_indices = grouped
+        self.grouped_indices_by_action = grouped_by_action
 
     def sample(
         self,
@@ -81,22 +116,45 @@ class Event80K1Sampler:
                 f"{len(self.active_environment_ids)} active environments."
             )
         rng = random.Random(self.seed + int(step) * 104729)
-        selected = rng.sample(list(self.active_environment_ids), global_count)
+        selected = weighted_sample_without_replacement(
+            rng,
+            self.active_environment_ids,
+            global_count,
+            self.environment_weights,
+        )
         episodes = []
         for environment_id in selected:
             indices = self.grouped_indices[environment_id]
-            support_index = indices[rng.randrange(len(indices))]
-            remaining_queries = [index for index in indices if index != support_index]
+            if self.distinct_actions:
+                by_action = self.grouped_indices_by_action[environment_id]
+                action_ids = sorted(by_action)
+                support_action = rng.choice(action_ids)
+                support_index = rng.choice(by_action[support_action])
+                remaining_actions = [
+                    action_id for action_id in action_ids if action_id != support_action
+                ]
+                if self.queries_per_environment:
+                    remaining_actions = rng.sample(
+                        remaining_actions, self.queries_per_environment
+                    )
+                remaining_actions.sort()
+                remaining_queries = [
+                    rng.choice(by_action[action_id]) for action_id in remaining_actions
+                ]
+            else:
+                support_index = indices[rng.randrange(len(indices))]
+                remaining_queries = [index for index in indices if index != support_index]
             if self.queries_per_environment:
-                if self.queries_per_environment > len(remaining_queries):
+                if not self.distinct_actions and self.queries_per_environment > len(remaining_queries):
                     raise ValueError(
                         f"Environment {environment_id} has only {len(remaining_queries)} "
                         f"disjoint queries, but {self.queries_per_environment} were requested."
                     )
-                remaining_queries = rng.sample(
-                    remaining_queries,
-                    self.queries_per_environment,
-                )
+                if not self.distinct_actions:
+                    remaining_queries = rng.sample(
+                        remaining_queries,
+                        self.queries_per_environment,
+                    )
                 remaining_queries.sort(
                     key=lambda index: (int(self.rows[index][self.action_key]), index)
                 )

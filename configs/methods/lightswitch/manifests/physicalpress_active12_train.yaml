@@ -1,0 +1,33 @@
+benchmark: lightswitch_physicalpress33_noleak
+
+source:
+  method: ours_random_c32
+  checkpoint_step: 3100
+  metadata: data/lightswitch_randominitial_absolute_eef_physicalpress33jitter11to22_maincam_group20_20260827/physical_press_event_active12_train.jsonl
+  selection: the 12 context groups activated by the formal three-wave curriculum
+
+selection:
+  environment_key: friction_mu
+  physical_value_key: context_group_id
+  stratify_key: causal_class
+  action_key: action_id
+  total_environment_count: 20
+  active_environment_count: 12
+  held_out_environment_count: 8
+  active_environment_ids:
+    - 0
+    - 1
+    - 2
+    - 6
+    - 7
+    - 9
+    - 11
+    - 12
+    - 13
+    - 17
+    - 18
+    - 19
+  camera_protocol: observation.images.image only
+  actions_per_environment: 8
+  chunks_sampled_per_update: 8
+  sampling_mode: independent_windows
