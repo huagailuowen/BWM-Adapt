@@ -1,5 +1,5 @@
 {
-  "action_order_field": null,
+  "action_order_field": "speed_index",
   "candidate_count_is_protocol_defined": true,
   "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/standard_pooled_wm/mass_collision_noleak_step8000_id5_ood5_balanced_v4.yaml",
   "method": "standard_pooled_wm",
@@ -34,6 +34,7 @@
     {
       "id": "long_displacement",
       "kind": "point_rectangle",
+      "max_action_steps_above_minimum": 1,
       "object_index": 0,
       "object_role": "struck_object",
       "region": {
@@ -41,7 +42,9 @@
         "x_min": 0.42,
         "y_max": 1.0,
         "y_min": 0.92
-      }
+      },
+      "selection_strategy": "first_reaching",
+      "success_policy": "minimum_reaching"
     }
   ],
   "task": "mass_collision",

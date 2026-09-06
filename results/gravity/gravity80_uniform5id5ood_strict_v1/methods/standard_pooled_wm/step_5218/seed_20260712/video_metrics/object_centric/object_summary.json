@@ -58,7 +58,7 @@
       {
         "centroid_ade_normalized": 0.07089211154439917,
         "centroid_ade_px": 22.457475176943646,
-        "centroid_fde_normalized": 0.11816296577460508,
+        "centroid_fde_normalized": 0.11816296577460511,
         "centroid_fde_px": 37.432117804183065,
         "count": 9,
         "domain": "id",
@@ -66,7 +66,7 @@
         "method": "standard_pooled_wm",
         "object_centroid_ade_normalized": 0.07089211154439917,
         "object_centroid_ade_px": 22.457475176943646,
-        "object_centroid_fde_normalized": 0.11816296577460508,
+        "object_centroid_fde_normalized": 0.11816296577460511,
         "object_centroid_fde_px": 37.432117804183065,
         "object_missing_rate": 0.0,
         "seed": 20260712,

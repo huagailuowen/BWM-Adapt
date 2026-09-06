@@ -39,7 +39,7 @@
 <rect x="1770" y="257" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="1880.0" y="302.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">24.41 px</text>
 <rect x="1990" y="257" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="2100.0" y="302.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">40.0%</text>
+<text x="2100.0" y="302.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">32.0%</text>
 <rect x="2210" y="257" width="330" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="2375.0" y="302.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">24.41</text>
 <rect x="60" y="333" width="520" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
@@ -82,25 +82,25 @@
 <text x="2100.0" y="454.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">—</text>
 <rect x="2210" y="409" width="330" height="76" fill="#fff4cf" stroke="#c8d2dc"/>
 <text x="2375.0" y="454.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">—</text>
-<rect x="60" y="485" width="520" height="76" fill="#fff4cf" stroke="#c8d2dc"/>
+<rect x="60" y="485" width="520" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
 <text x="72" y="530.0" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">Multi-background friction</text>
-<rect x="580" y="485" width="330" height="76" fill="#fff4cf" stroke="#c8d2dc"/>
+<rect x="580" y="485" width="330" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
 <text x="592" y="530.0" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#0b5a75">Ours (mis-resume)</text>
-<rect x="910" y="485" width="100" height="76" fill="#fff4cf" stroke="#c8d2dc"/>
+<rect x="910" y="485" width="100" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
 <text x="960.0" y="530.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">90</text>
-<rect x="1010" y="485" width="180" height="76" fill="#fff4cf" stroke="#c8d2dc"/>
+<rect x="1010" y="485" width="180" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
 <text x="1100.0" y="530.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">28.77</text>
-<rect x="1190" y="485" width="180" height="76" fill="#fff4cf" stroke="#c8d2dc"/>
+<rect x="1190" y="485" width="180" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
 <text x="1280.0" y="530.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">0.820</text>
-<rect x="1370" y="485" width="180" height="76" fill="#fff4cf" stroke="#c8d2dc"/>
-<text x="1460.0" y="530.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">—</text>
-<rect x="1550" y="485" width="220" height="76" fill="#fff4cf" stroke="#c8d2dc"/>
+<rect x="1370" y="485" width="180" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
+<text x="1460.0" y="530.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">0.089</text>
+<rect x="1550" y="485" width="220" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
 <text x="1660.0" y="530.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">3.44 px</text>
-<rect x="1770" y="485" width="220" height="76" fill="#fff4cf" stroke="#c8d2dc"/>
+<rect x="1770" y="485" width="220" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
 <text x="1880.0" y="530.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">5.80 px</text>
-<rect x="1990" y="485" width="220" height="76" fill="#fff4cf" stroke="#c8d2dc"/>
+<rect x="1990" y="485" width="220" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
 <text x="2100.0" y="530.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">65.4%</text>
-<rect x="2210" y="485" width="330" height="76" fill="#fff4cf" stroke="#c8d2dc"/>
+<rect x="2210" y="485" width="330" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
 <text x="2375.0" y="530.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">5.80</text>
 <rect x="60" y="561" width="520" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="72" y="606.0" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">Gravity</text>
@@ -135,9 +135,9 @@
 <rect x="1370" y="637" width="180" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="1460.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">0.020</text>
 <rect x="1550" y="637" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1660.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">9.34 px</text>
+<text x="1660.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">7.34 px</text>
 <rect x="1770" y="637" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1880.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">13.41 px</text>
+<text x="1880.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">11.07 px</text>
 <rect x="1990" y="637" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="2100.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">82.4%</text>
 <rect x="2210" y="637" width="330" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
@@ -169,19 +169,19 @@
 <rect x="910" y="789" width="100" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
 <text x="960.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">80</text>
 <rect x="1010" y="789" width="180" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
-<text x="1100.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">31.27</text>
+<text x="1100.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">31.15</text>
 <rect x="1190" y="789" width="180" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
-<text x="1280.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">0.964</text>
+<text x="1280.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">0.963</text>
 <rect x="1370" y="789" width="180" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
-<text x="1460.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">0.048</text>
+<text x="1460.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">0.054</text>
 <rect x="1550" y="789" width="220" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
-<text x="1660.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">5.21 px</text>
+<text x="1660.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">6.45 px</text>
 <rect x="1770" y="789" width="220" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
-<text x="1880.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">6.70 px</text>
+<text x="1880.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">8.13 px</text>
 <rect x="1990" y="789" width="220" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
 <text x="2100.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">61.1%</text>
 <rect x="2210" y="789" width="330" height="76" fill="#eef4f7" stroke="#c8d2dc"/>
-<text x="2375.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">6.56</text>
+<text x="2375.0" y="834.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">7.88</text>
 <rect x="60" y="865" width="520" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="72" y="910.0" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">Mass balance (fixed pose)</text>
 <rect x="580" y="865" width="330" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
@@ -267,41 +267,41 @@
 <rect x="580" y="1169" width="330" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="592" y="1214.0" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">Standard pooled WM</text>
 <rect x="910" y="1169" width="100" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="960.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">48</text>
+<text x="960.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">80</text>
 <rect x="1010" y="1169" width="180" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1100.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">31.39</text>
+<text x="1100.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">31.08</text>
 <rect x="1190" y="1169" width="180" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1280.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">0.966</text>
+<text x="1280.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">0.965</text>
 <rect x="1370" y="1169" width="180" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1460.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">0.056</text>
+<text x="1460.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">0.061</text>
 <rect x="1550" y="1169" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1660.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">12.52 px</text>
+<text x="1660.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">16.02 px</text>
 <rect x="1770" y="1169" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1880.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">21.68 px</text>
+<text x="1880.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">29.25 px</text>
 <rect x="1990" y="1169" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="2100.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">50.0%</text>
+<text x="2100.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">29.2%</text>
 <rect x="2210" y="1169" width="330" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="2375.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">21.56</text>
+<text x="2375.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">29.05</text>
 <rect x="60" y="1245" width="520" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="72" y="1290.0" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">Mass × friction</text>
 <rect x="580" y="1245" width="330" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="592" y="1290.0" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#0b5a75">Ours</text>
 <rect x="910" y="1245" width="100" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="960.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">48</text>
+<text x="960.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">80</text>
 <rect x="1010" y="1245" width="180" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1100.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">30.95</text>
+<text x="1100.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">30.67</text>
 <rect x="1190" y="1245" width="180" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1280.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">0.964</text>
+<text x="1280.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">0.963</text>
 <rect x="1370" y="1245" width="180" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1460.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">0.051</text>
+<text x="1460.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">0.050</text>
 <rect x="1550" y="1245" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1660.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">8.27 px</text>
+<text x="1660.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">8.15 px</text>
 <rect x="1770" y="1245" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1880.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">13.24 px</text>
+<text x="1880.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">13.72 px</text>
 <rect x="1990" y="1245" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="2100.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">75.0%</text>
+<text x="2100.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">54.2%</text>
 <rect x="2210" y="1245" width="330" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="2375.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">13.08</text>
+<text x="2375.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">13.57</text>
 <text x="60" y="1364" font-family="Georgia,serif" font-size="17" fill="#52606d">Task-specific metric: endpoint error (Event80/multi-background), final displacement error (gravity/collision/mass×friction), bar tilt MAE (balance), and yellow-light score MAE.</text>
 <text x="60" y="1404" font-family="Georgia,serif" font-size="17" fill="#7a4b00">All reported LPIPS values use the official AlexNet network; blank cells indicate unavailable or withheld metrics.</text>
 </svg>
