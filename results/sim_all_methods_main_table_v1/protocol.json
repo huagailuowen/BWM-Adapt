@@ -78,9 +78,9 @@
           "action_success": 0.4705882353
         },
         "dino": {
-          "lpips": 0.016860399,
-          "object": 4.10562302,
-          "action_success": 0.7058823529
+          "lpips": null,
+          "object": null,
+          "action_success": null
         },
         "ttt_kqv": {
           "lpips": 0.029088736,
@@ -114,9 +114,9 @@
           "marker": "prior_protocol"
         },
         "dino": {
-          "lpips": 0.040230864,
-          "object": 5.58221423,
-          "action_success": 0.5
+          "lpips": null,
+          "object": null,
+          "action_success": null
         },
         "ttt_kqv": {
           "lpips": 0.084207404,
@@ -171,6 +171,9 @@
       "label": "Mass Balance",
       "object_metric": "Bar Tilt MAE",
       "object_unit": "deg",
+      "unranked_metrics": [
+        "lpips"
+      ],
       "dino_variant": "concat_mlp",
       "values": {
         "standard": {
@@ -240,7 +243,7 @@
   ],
   "notes": [
     "Lower is better for LPIPS and the task-specific object/physical metric; higher is better for Action Success.",
-    "DINOv2 uses Transformer fusion for Push-box Friction, Gravity, and Mass Collision, and concat-MLP fusion for Light Switch and Mass Balance.",
+    "DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Light Switch and Mass Balance; Gravity and Mass Collision are withheld pending final reruns.",
     "Mass Balance Ours values marked with an asterisk are an ID-only fixed-pose placeholder under nearest-unbalanced support; available values participate in column ranking.",
     "Mass Collision LoRA values marked with a dagger come from the earlier compatible no-leak balanced-support run rather than the high-mass-2x result root.",
     "A double dash denotes an unfinished or unavailable evaluation, not zero performance."

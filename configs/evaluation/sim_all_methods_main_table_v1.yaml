@@ -28,7 +28,7 @@ tasks:
     values:
       standard: {lpips: 0.0344998174, object: 21.4246314, action_success: 0.2352941176}
       lora: {lpips: 0.0230583210, object: 7.90046979, action_success: 0.4705882353}
-      dino: {lpips: 0.0168603990, object: 4.10562302, action_success: 0.7058823529}
+      dino: {lpips: null, object: null, action_success: null}
       ttt_kqv: {lpips: 0.0290887360, object: 18.95723597, action_success: 0.3529411765}
       ours: {lpips: 0.0202085289, object: 7.34081366, action_success: 0.8235294118}
     source: results/gravity/gravity80_uniform5id5ood_strict_v1
@@ -40,7 +40,7 @@ tasks:
     values:
       standard: {lpips: 0.0904242676, object: 21.9328527, action_success: 0.3888888889}
       lora: {lpips: 0.0691103390, object: 15.87042263, action_success: 0.3333333333, marker: prior_protocol}
-      dino: {lpips: 0.0402308640, object: 5.58221423, action_success: 0.50}
+      dino: {lpips: null, object: null, action_success: null}
       ttt_kqv: {lpips: 0.0842074040, object: 20.97531743, action_success: 0.5555555556}
       ours: {lpips: 0.0537618943, object: 6.45219353, action_success: 0.6111111111}
     source: results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1
@@ -60,6 +60,7 @@ tasks:
     label: Mass Balance
     object_metric: Bar Tilt MAE
     object_unit: deg
+    unranked_metrics: [lpips]
     dino_variant: concat_mlp
     values:
       standard: {lpips: 0.0247937470, object: 1.2440945434, action_success: 0.40}
@@ -82,7 +83,7 @@ tasks:
     source: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1
 notes:
   - Lower is better for LPIPS and the task-specific object/physical metric; higher is better for Action Success.
-  - DINOv2 uses Transformer fusion for Push-box Friction, Gravity, and Mass Collision, and concat-MLP fusion for Light Switch and Mass Balance.
+  - DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Light Switch and Mass Balance; Gravity and Mass Collision are withheld pending final reruns.
   - Mass Balance Ours values marked with an asterisk are an ID-only fixed-pose placeholder under nearest-unbalanced support; available values participate in column ranking.
   - Mass Collision LoRA values marked with a dagger come from the earlier compatible no-leak balanced-support run rather than the high-mass-2x result root.
   - A double dash denotes an unfinished or unavailable evaluation, not zero performance.

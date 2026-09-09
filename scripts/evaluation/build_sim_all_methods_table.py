@@ -51,6 +51,8 @@ def ranking(tasks: list[dict], methods: list[dict]) -> dict[tuple[str, str, str]
     ranks: dict[tuple[str, str, str], int] = {}
     for task in tasks:
         for metric, _, direction in METRICS:
+            if metric in task.get("unranked_metrics", []):
+                continue
             eligible = []
             for method in methods:
                 item = task["values"][method["id"]]
@@ -189,12 +191,6 @@ def render(config: dict, output_dir: Path) -> None:
                 font = fonts["body_bold" if rank == 1 else "body"]
                 color = "#111827" if value is not None else "#8a919e"
                 draw.text((x, y), text_value, font=font, fill=color, anchor="mm")
-                if rank == 2:
-                    bbox = draw.textbbox((x, y), text_value, font=font, anchor="mm")
-                    underline_y = bbox[3] + 3
-                    svg.append(f'<line x1="{bbox[0]}" y1="{underline_y}" x2="{bbox[2]}" y2="{underline_y}" stroke="#111827" stroke-width="2"/>')
-                    draw.line((bbox[0], underline_y, bbox[2], underline_y), fill="#111827", width=2)
-
     rules = (
         (left, table_top, right, table_top, 5),
         (left, group_bottom, right, group_bottom, 2),
@@ -211,10 +207,10 @@ def render(config: dict, output_dir: Path) -> None:
         draw.line((x, table_top, x, table_bottom), fill="#9aa2af", width=2)
 
     notes = [
-        "Bold: best; underline: second-best. Object/physical metrics are task-specific and listed in each header.",
+        "Bold: best. Object/physical metrics are task-specific and listed in each header.",
         "* Mass Balance Ours is an ID-only fixed-pose placeholder; available values participate in column ranking.",
         "\u2020 Mass Collision LoRA uses the earlier compatible no-leak balanced-support protocol. -- indicates pending/unavailable.",
-        "DINOv2 fusion: Transformer for Friction/Gravity/Collision; concat-MLP for Light/Balance. Mass x Friction DINO and TTT-KQV are pending.",
+        "DINOv2: Transformer for Friction; concat-MLP for Light/Balance. Gravity, Collision, and Mass x Friction DINO are pending.",
     ]
     note_y = table_bottom + 48
     for index, note in enumerate(notes):

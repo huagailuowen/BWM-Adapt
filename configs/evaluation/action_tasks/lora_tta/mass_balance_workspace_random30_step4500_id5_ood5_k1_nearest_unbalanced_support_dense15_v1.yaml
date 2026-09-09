@@ -1,0 +1,56 @@
+version: 1
+task: mass_balance
+method_name: lora_tta
+seed: 20260902
+support_size: 1
+metadata_jsonl: results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_dense15_v1/protocol/combined_train_test.jsonl
+dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass_balance/libero_mass_balance_workspace_random_30ratio_15support_450eps_combined_train20_test10_nominal_z_absolute_eef_lerobot_2026-09-02_hai-machine
+output_dir: results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/lora_tta/pooled_step_4500/seed_20260902/action_evaluation
+transfer_plans:
+  - path: results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/lora_tta/pooled_step_4500/seed_20260902/transfer/transfer_plan.json
+    domain_by_source:
+      4: id
+      241: id
+      481: id
+      673: id
+      895: id
+      907: ood
+      1006: ood
+      1105: ood
+      1258: ood
+      1342: ood
+action_field: action_id
+action_order_field: sampled_support_offset_m
+selection_strategy: boundary_crossing
+environment_report_fields: [ratio_index, mass_ratio]
+action_report_fields: [action_id, support_bin_index, sampled_support_offset_m]
+minimum_actions: 15
+extractor: {main_view_width: 224, fps: 10.0}
+outcome: {terminal_window: 5}
+targets:
+  - {id: balanced, kind: scalar_interval, min: -3.0, max: 3.0}
+inference:
+  train_config: configs/train/train_mass_balance_workspace_random_30ratio_train20_noleak_standard_pooled_wm_2gpu_24h.yaml
+  checkpoint: outputs/method_benchmarks/mass_balance_workspace_random_30ratio_train20_noleak/standard_pooled_wm/job_112174/checkpoints/step-4500.safetensors
+  cache_key: mass-balance-workspace-random30-standard-pooled-step4500
+  source_transfer_plans:
+    - results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ttt_kqv/step_1673/seed_20260902/input_support_query_manifest.json
+  method_output_root: results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/lora_tta/pooled_step_4500/seed_20260902
+  flat_dir_name: flat
+  num_inference_steps: 25
+  cfg_scale: 1.0
+  fps: 10
+  quality: 6
+  seed: 20260902
+lora_tta:
+  rank: 8
+  alpha: 8.0
+  target_modules: [q, k, v, o]
+  steps: 50
+  optimizer: AdamW
+  learning_rate: 1.0e-4
+  weight_decay: 0.0
+  gradient_clip_norm: 1.0
+  adapter_seed: 20260708
+  reset_per_environment: true
+  query_updates_lora: false
