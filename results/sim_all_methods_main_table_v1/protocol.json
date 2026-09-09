@@ -1,0 +1,248 @@
+{
+  "version": 1,
+  "title": "Simulation benchmark across adaptation methods",
+  "output_dir": "results/sim_all_methods_main_table_v1",
+  "methods": [
+    {
+      "id": "standard",
+      "label": "Standard Pooled WM"
+    },
+    {
+      "id": "lora",
+      "label": "LoRA TTA"
+    },
+    {
+      "id": "dino",
+      "label": "DINOv2 Context"
+    },
+    {
+      "id": "ttt_kqv",
+      "label": "TTT-KQV"
+    },
+    {
+      "id": "ours",
+      "label": "Ours"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "event80",
+      "label": "Push-box Friction",
+      "object_metric": "Centroid ADE",
+      "object_unit": "px",
+      "dino_variant": "transformer_fusion",
+      "values": {
+        "standard": {
+          "lpips": 0.066700095,
+          "object": 11.0626324,
+          "action_success": 0.32
+        },
+        "lora": {
+          "lpips": 0.0581931916,
+          "object": 8.19015242,
+          "action_success": 0.4
+        },
+        "dino": {
+          "lpips": 0.0681499333,
+          "object": 11.8141519,
+          "action_success": 0.48
+        },
+        "ttt_kqv": {
+          "lpips": 0.0648913885,
+          "object": 10.8136638,
+          "action_success": 0.32
+        },
+        "ours": {
+          "lpips": 0.0495121968,
+          "object": 3.85398252,
+          "action_success": 0.68
+        }
+      },
+      "source": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv"
+    },
+    {
+      "id": "gravity",
+      "label": "Gravity",
+      "object_metric": "Centroid ADE",
+      "object_unit": "px",
+      "dino_variant": "transformer_fusion",
+      "values": {
+        "standard": {
+          "lpips": 0.0344998174,
+          "object": 21.4246314,
+          "action_success": 0.2352941176
+        },
+        "lora": {
+          "lpips": 0.023058321,
+          "object": 7.90046979,
+          "action_success": 0.4705882353
+        },
+        "dino": {
+          "lpips": 0.016860399,
+          "object": 4.10562302,
+          "action_success": 0.7058823529
+        },
+        "ttt_kqv": {
+          "lpips": 0.029088736,
+          "object": 18.95723597,
+          "action_success": 0.3529411765
+        },
+        "ours": {
+          "lpips": 0.0202085289,
+          "object": 7.34081366,
+          "action_success": 0.8235294118
+        }
+      },
+      "source": "results/gravity/gravity80_uniform5id5ood_strict_v1"
+    },
+    {
+      "id": "mass_collision",
+      "label": "Mass Collision",
+      "object_metric": "Centroid ADE",
+      "object_unit": "px",
+      "dino_variant": "transformer_fusion",
+      "values": {
+        "standard": {
+          "lpips": 0.0904242676,
+          "object": 21.9328527,
+          "action_success": 0.3888888889
+        },
+        "lora": {
+          "lpips": 0.069110339,
+          "object": 15.87042263,
+          "action_success": 0.3333333333,
+          "marker": "prior_protocol"
+        },
+        "dino": {
+          "lpips": 0.040230864,
+          "object": 5.58221423,
+          "action_success": 0.5
+        },
+        "ttt_kqv": {
+          "lpips": 0.084207404,
+          "object": 20.97531743,
+          "action_success": 0.5555555556
+        },
+        "ours": {
+          "lpips": 0.0537618943,
+          "object": 6.45219353,
+          "action_success": 0.6111111111
+        }
+      },
+      "source": "results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1"
+    },
+    {
+      "id": "light_switch",
+      "label": "Light Switch",
+      "object_metric": "Lamp MAE",
+      "object_unit": "score",
+      "dino_variant": "concat_mlp",
+      "values": {
+        "standard": {
+          "lpips": 0.0186951045,
+          "object": 0.1034960864,
+          "action_success": 0.5
+        },
+        "lora": {
+          "lpips": 0.013379099,
+          "object": 0.0381124189,
+          "action_success": 0.875
+        },
+        "dino": {
+          "lpips": 0.016034239,
+          "object": 0.1000418959,
+          "action_success": 0.5
+        },
+        "ttt_kqv": {
+          "lpips": 0.016106703,
+          "object": 0.1045886648,
+          "action_success": 0.5
+        },
+        "ours": {
+          "lpips": 0.0149639813,
+          "object": 0.0358176758,
+          "action_success": 0.875
+        }
+      },
+      "source": "results/lightswitch/physicalpress33_all4env_support8_query15_v1"
+    },
+    {
+      "id": "mass_balance",
+      "label": "Mass Balance",
+      "object_metric": "Bar Tilt MAE",
+      "object_unit": "deg",
+      "dino_variant": "concat_mlp",
+      "values": {
+        "standard": {
+          "lpips": 0.024793747,
+          "object": 1.2440945434,
+          "action_success": 0.4
+        },
+        "lora": {
+          "lpips": null,
+          "object": null,
+          "action_success": null
+        },
+        "dino": {
+          "lpips": 0.023964699,
+          "object": 1.2733094998,
+          "action_success": 0.4
+        },
+        "ttt_kqv": {
+          "lpips": 0.030535396,
+          "object": 2.3578835273,
+          "action_success": 0.3
+        },
+        "ours": {
+          "lpips": null,
+          "object": 0.934977137,
+          "action_success": 0.7,
+          "marker": "id_placeholder"
+        }
+      },
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1"
+    },
+    {
+      "id": "mass_friction",
+      "label": "Mass x Friction",
+      "object_metric": "Centroid ADE",
+      "object_unit": "px",
+      "dino_variant": "pending",
+      "values": {
+        "standard": {
+          "lpips": 0.0609880909,
+          "object": 16.0218932,
+          "action_success": 0.2916666667
+        },
+        "lora": {
+          "lpips": 0.070110374,
+          "object": 16.82824858,
+          "action_success": 0.1666666667
+        },
+        "dino": {
+          "lpips": null,
+          "object": null,
+          "action_success": null
+        },
+        "ttt_kqv": {
+          "lpips": null,
+          "object": null,
+          "action_success": null
+        },
+        "ours": {
+          "lpips": 0.0499914565,
+          "object": 8.14806081,
+          "action_success": 0.5416666667
+        }
+      },
+      "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1"
+    }
+  ],
+  "notes": [
+    "Lower is better for LPIPS and the task-specific object/physical metric; higher is better for Action Success.",
+    "DINOv2 uses Transformer fusion for Push-box Friction, Gravity, and Mass Collision, and concat-MLP fusion for Light Switch and Mass Balance.",
+    "Mass Balance Ours values marked with an asterisk are an ID-only fixed-pose placeholder under nearest-unbalanced support; available values participate in column ranking.",
+    "Mass Collision LoRA values marked with a dagger come from the earlier compatible no-leak balanced-support run rather than the high-mass-2x result root.",
+    "A double dash denotes an unfinished or unavailable evaluation, not zero performance."
+  ]
+}
