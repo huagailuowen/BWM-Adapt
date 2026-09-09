@@ -51,7 +51,15 @@ def add_dinov2_config(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
     group.add_argument("--dinov2_output_dim", type=int, default=32)
     group.add_argument("--dinov2_temporal_layers", type=int, default=2)
     group.add_argument("--dinov2_temporal_heads", type=int, default=8)
+    group.add_argument(
+        "--dinov2_aggregation_mode",
+        choices=("transformer", "concat_mlp"),
+        default="transformer",
+    )
+    group.add_argument("--dinov2_mlp_hidden_dim", type=int, default=1024)
     group.add_argument("--dinov2_support_k", type=int, default=1)
+    group.add_argument("--dinov2_support_k_choices", type=str, default=None)
+    group.add_argument("--dinov2_trajectories_per_environment", type=int, default=0)
     group.add_argument("--dinov2_environments_per_rank", type=int, default=2)
     group.add_argument("--dinov2_queries_per_environment", type=int, default=0)
     group.add_argument("--dinov2_head_learning_rate", type=float, default=1e-4)
@@ -77,12 +85,20 @@ class DINOv2WanTrainingModule(nn.Module):
         support_frame_indices,
         support_frame_count,
     ):
-        code = self.support_encoder.project_support(
-            visual_features=support_visual_features,
-            action=support_action,
-            frame_indices=support_frame_indices,
-            frame_count=support_frame_count,
-        )
+        if isinstance(support_visual_features, tuple):
+            code = self.support_encoder.project_supports(
+                visual_features=support_visual_features,
+                actions=support_action,
+                frame_indices=support_frame_indices,
+                frame_counts=support_frame_count,
+            )
+        else:
+            code = self.support_encoder.project_support(
+                visual_features=support_visual_features,
+                action=support_action,
+                frame_indices=support_frame_indices,
+                frame_count=support_frame_count,
+            )
         conditioned_query = query_data.copy()
         conditioned_query["physical_context"] = code
         return self.wan(conditioned_query)
@@ -110,8 +126,19 @@ def main() -> None:
     args = parser.parse_args()
     if args.config is not None:
         args = merge_yaml_and_args(args.config, parser, args)
-    if int(args.dinov2_support_k) != 1:
-        raise ValueError("The locked Event80 DINO baseline currently supports K=1 only.")
+    if int(args.dinov2_support_k) < 1:
+        raise ValueError("dinov2_support_k must be positive.")
+    support_k_choices = None
+    if args.dinov2_support_k_choices:
+        support_k_choices = tuple(
+            int(value.strip())
+            for value in str(args.dinov2_support_k_choices).split(",")
+            if value.strip()
+        )
+        if not support_k_choices or min(support_k_choices) < 1:
+            raise ValueError(
+                "dinov2_support_k_choices must be a comma-separated list of positive integers."
+            )
     if not args.dinov2_model_path or not args.dinov2_active_environment_manifest:
         raise ValueError("DINO model path and active-environment manifest are required.")
 
@@ -132,6 +159,9 @@ def main() -> None:
         metadata_path=args.dataset_metadata_path,
         active_environment_manifest=args.dinov2_active_environment_manifest,
         seed=args.seed,
+        support_k=args.dinov2_support_k,
+        support_k_choices=support_k_choices,
+        trajectories_per_environment=args.dinov2_trajectories_per_environment,
         queries_per_environment=args.dinov2_queries_per_environment,
         environment_key=args.dinov2_environment_key,
         action_key=args.dinov2_action_key,
@@ -173,6 +203,8 @@ def main() -> None:
         output_dim=args.dinov2_output_dim,
         temporal_layers=args.dinov2_temporal_layers,
         temporal_heads=args.dinov2_temporal_heads,
+        aggregation_mode=args.dinov2_aggregation_mode,
+        mlp_hidden_dim=args.dinov2_mlp_hidden_dim,
     )
     model = DINOv2WanTrainingModule(wan=wan, support_encoder=support_encoder)
     wan_parameters = [parameter for parameter in model.wan.parameters() if parameter.requires_grad]
@@ -223,6 +255,8 @@ def main() -> None:
             f"global_environments={global_environments} "
             f"environments_per_rank={args.dinov2_environments_per_rank} "
             f"support_k={args.dinov2_support_k} "
+            f"support_k_choices={support_k_choices} "
+            f"trajectories_per_environment={args.dinov2_trajectories_per_environment} "
             f"queries_per_environment={query_label}",
             flush=True,
         )
@@ -240,15 +274,29 @@ def main() -> None:
             environments_per_rank=args.dinov2_environments_per_rank,
         )
         total_queries = sum(len(episode.query_indices) for episode in episodes)
+        environment_count = len(episodes)
+        if environment_count < 1 or total_queries < 1:
+            raise RuntimeError("Every rank must receive at least one environment and query.")
         optimizer.zero_grad(set_to_none=True)
         detached_loss = torch.zeros((), device=accelerator.device, dtype=torch.float32)
         query_counter = 0
         for episode in episodes:
-            support = dataset[episode.support_index]
+            query_count = len(episode.query_indices)
+            if query_count < 1:
+                raise RuntimeError(
+                    f"Environment {episode.environment_id} has no disjoint query."
+                )
+            query_weight = 1.0 / float(environment_count * query_count)
+            supports = tuple(dataset[index] for index in episode.support_indices)
             unwrapped = accelerator.unwrap_model(model)
-            visual_features, frame_indices, frame_count = unwrapped.extract_support_visual(
-                support["video"]
+            support_visual = tuple(
+                unwrapped.extract_support_visual(support["video"])
+                for support in supports
             )
+            visual_features = tuple(item[0] for item in support_visual)
+            frame_indices = tuple(item[1] for item in support_visual)
+            frame_counts = tuple(item[2] for item in support_visual)
+            support_actions = tuple(support["action"] for support in supports)
             for query_index in episode.query_indices:
                 query_counter += 1
                 sync_context = (
@@ -260,12 +308,12 @@ def main() -> None:
                     loss = model(
                         query_data=dataset[query_index],
                         support_visual_features=visual_features,
-                        support_action=support["action"],
+                        support_action=support_actions,
                         support_frame_indices=frame_indices,
-                        support_frame_count=frame_count,
+                        support_frame_count=frame_counts,
                     )
-                    accelerator.backward(loss / float(total_queries))
-                detached_loss += loss.detach().float() / float(total_queries)
+                    accelerator.backward(loss * query_weight)
+                detached_loss += loss.detach().float() * query_weight
         if args.max_grad_norm is not None and args.max_grad_norm > 0:
             accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
         optimizer.step()

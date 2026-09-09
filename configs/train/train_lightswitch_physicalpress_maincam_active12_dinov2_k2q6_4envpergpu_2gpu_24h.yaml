@@ -50,18 +50,20 @@ dinov2_amortized_context:
   dinov2_environment_key: "friction_mu"
   dinov2_action_key: "action_id"
   dinov2_distinct_actions: true
-  dinov2_sampled_frames: 9
-  dinov2_temporal_stride: 4
+  dinov2_sampled_frames: 8
+  dinov2_temporal_stride: 1
   dinov2_hidden_dim: 256
   dinov2_action_hidden_dim: 128
   dinov2_output_dim: 32
   dinov2_temporal_layers: 2
   dinov2_temporal_heads: 8
+  dinov2_aggregation_mode: "concat_mlp"
+  dinov2_mlp_hidden_dim: 1024
   dinov2_support_k: 2
   dinov2_environments_per_rank: 4
   dinov2_queries_per_environment: 6
   dinov2_head_learning_rate: 1.0e-4
-  dinov2_max_updates: 50000
+  dinov2_max_updates: 4500
 training:
   learning_rate: 1.0e-5
   stage1_warmup_steps: 100
@@ -76,7 +78,7 @@ training:
   min_timestep_boundary: 0.0
   batch_size: 1
 output:
-  output_path: "./outputs/method_benchmarks/lightswitch_physicalpress33_maincam/dinov2_k2q6_4envpergpu/seed_20260801/checkpoints"
+  output_path: "./outputs/method_benchmarks/lightswitch_physicalpress33_maincam/dinov2_concat_mlp_k2q6_4envpergpu/seed_20260801/checkpoints"
   remove_prefix_in_ckpt: "pipe.dit."
   save_steps: 500
   checkpoint_save_minutes: 60

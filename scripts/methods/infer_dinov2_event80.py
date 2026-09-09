@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""K=1 DINOv2 amortized-context grid inference for Event80."""
+"""Grouped-support DINOv2 amortized-context inference."""
 
 from __future__ import annotations
 
 import argparse
+from collections import defaultdict
 import json
 import os
 from pathlib import Path
@@ -39,6 +40,12 @@ def parse_args():
     parser.add_argument("--skip_existing", action="store_true", default=False)
     parser.add_argument("--sample_indices", type=str, required=True)
     parser.add_argument("--support_indices", type=str, required=True)
+    parser.add_argument(
+        "--expected_supports_per_environment",
+        type=int,
+        default=0,
+        help="Require this many pooled support trajectories per environment when positive.",
+    )
     parser.add_argument("--dinov2_checkpoint_path", type=str, required=True)
     parser.add_argument("--wan_checkpoint_output", type=str, required=True)
     args = parser.parse_args()
@@ -76,6 +83,8 @@ def load_support_encoder(args, device: torch.device):
         output_dim=args.dinov2_output_dim,
         temporal_layers=args.dinov2_temporal_layers,
         temporal_heads=args.dinov2_temporal_heads,
+        aggregation_mode=args.dinov2_aggregation_mode,
+        mlp_hidden_dim=args.dinov2_mlp_hidden_dim,
     )
     state = {}
     with safe_open(
@@ -98,6 +107,19 @@ def load_support_encoder(args, device: torch.device):
     return encoder
 
 
+def canonical_environment_id(value):
+    """Keep continuous environment values distinct while making scalar keys stable."""
+    if isinstance(value, torch.Tensor):
+        if value.numel() != 1:
+            raise ValueError(f"Environment key must be scalar, got {tuple(value.shape)}.")
+        value = value.detach().cpu().item()
+    elif not isinstance(value, (str, int, float, bool)) and hasattr(value, "item"):
+        value = value.item()
+    if not isinstance(value, (str, int, float, bool)):
+        value = str(value)
+    return value
+
+
 def main() -> None:
     args = parse_args()
     materialize_wan_checkpoint(
@@ -109,25 +131,67 @@ def main() -> None:
     pipe = build_pipeline(args)
     encoder = load_support_encoder(args, pipe.device)
 
-    support_codes = {}
+    grouped_supports = defaultdict(list)
     support_records = []
     with torch.no_grad():
         for support_index in _parse_sample_indices(args.support_indices):
             support = dataset[support_index]
-            environment_id = int(support[args.dinov2_environment_key])
-            code = encoder(support["video"], support["action"])[0].detach().cpu()
+            environment_id = canonical_environment_id(
+                support[args.dinov2_environment_key]
+            )
+            visual_features, frame_indices, frame_count = (
+                encoder.extract_visual_features(support["video"])
+            )
+            grouped_supports[environment_id].append(
+                {
+                    "support_index": int(support_index),
+                    "visual_features": visual_features,
+                    "action": support["action"],
+                    "frame_indices": frame_indices,
+                    "frame_count": frame_count,
+                }
+            )
+
+        support_codes = {}
+        expected = int(args.expected_supports_per_environment)
+        for environment_id, records in grouped_supports.items():
+            if expected > 0 and len(records) != expected:
+                raise ValueError(
+                    f"Environment {environment_id} has {len(records)} supports; "
+                    f"expected {expected}."
+                )
+            code = encoder.project_supports(
+                visual_features=tuple(row["visual_features"] for row in records),
+                actions=tuple(row["action"] for row in records),
+                frame_indices=tuple(row["frame_indices"] for row in records),
+                frame_counts=tuple(row["frame_count"] for row in records),
+            )[0].detach().cpu()
+            support_indices = [row["support_index"] for row in records]
             support_codes[environment_id] = code
             support_records.append(
                 {
                     "environment_id": environment_id,
-                    "support_index": int(support_index),
+                    "support_index": support_indices[0],
+                    "support_indices": support_indices,
+                    "support_count": len(support_indices),
+                    "aggregation": "mean_support_summary_before_output_head",
                     "context": code.float().tolist(),
                 }
             )
     with (Path(args.output_path).parent / "support_codes.json").open(
         "w", encoding="utf-8"
     ) as handle:
-        json.dump({"records": support_records}, handle, indent=2)
+        json.dump(
+            {
+                "aggregation": "mean_support_summary_before_output_head",
+                "expected_supports_per_environment": int(
+                    args.expected_supports_per_environment
+                ),
+                "records": support_records,
+            },
+            handle,
+            indent=2,
+        )
     del encoder
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
@@ -135,7 +199,9 @@ def main() -> None:
     for sample_index in _parse_sample_indices(args.sample_indices):
         sample = dataset[sample_index]
         sample = prepare_sample_for_rollout(sample, sample_index, pipe, args)
-        environment_id = int(sample[args.dinov2_environment_key])
+        environment_id = canonical_environment_id(
+            sample[args.dinov2_environment_key]
+        )
         if environment_id not in support_codes:
             raise KeyError(f"No DINO support code for environment {environment_id}.")
         sample["physical_context"] = support_codes[environment_id].to(

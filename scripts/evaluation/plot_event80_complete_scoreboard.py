@@ -13,12 +13,17 @@ from PIL import Image, ImageDraw, ImageFont
 ROWS = [
     ("Ours", 31.976, 0.9513, 0.0495, 3.85, 7.59, 68.0),
     ("Joint Model + Latent", 31.737, 0.9494, 0.0587, 4.35, 8.95, 64.0),
+    ("Joint Model + Latent (700-cycle)", 31.203, 0.9465, 0.0657, 7.03, 15.66, 64.0),
     ("No-Curriculum Iterative", 31.799, 0.9514, 0.0549, 6.17, 12.81, 56.0),
     ("History-Conditioned WM", 30.936, 0.9519, 0.0658, 12.33, 27.54, 44.0),
     ("LoRA TTA", 32.031, 0.9535, 0.0582, 8.19, 19.19, 40.0),
     ("Standard Pooled WM", 31.113, 0.9513, 0.0667, 11.06, 24.41, 32.0),
     ("DINOv2 Context Encoder", 30.697, 0.9495, 0.0681, 11.81, 26.17, 48.0),
     ("TTT-KQV", 30.779, 0.9488, 0.0649, 10.81, 23.87, 32.0),
+    ("C1 Ordered (original schedule)", 31.177, 0.9481, 0.0542, 4.68, 9.36, 72.0),
+    ("C1 Ordered (C32 inference schedule)", 31.129, 0.9482, 0.0544, 4.46, 8.06, 68.0),
+    ("C32 Shared Initialization", 30.638, 0.9466, 0.0631, 7.94, 15.98, 56.0),
+    ("C32 Small-Jitter Initialization", 32.172, 0.9509, 0.0495, 4.81, 9.73, 60.0),
 ]
 HEADERS = [
     "Method", "PSNR (MV) ↑", "SSIM (MV) ↑", "LPIPS (MV) ↓",
@@ -29,8 +34,8 @@ FORMATTED = [
      f"{ade:.2f}", f"{fde:.2f}", f"{success:.0f}%"]
     for name, psnr, ssim, lpips, ade, fde, success in ROWS
 ]
-BEST = {(4, 1), (4, 2), (0, 3), (0, 4), (0, 5), (0, 6)}
-WIDTH, HEIGHT = 4560, 1710
+BEST = {(12, 1), (5, 2), (12, 3), (0, 4), (0, 5), (9, 6)}
+WIDTH, HEIGHT = 4560, 2320
 LEFT = 135
 COL_WIDTHS = [1260, 500, 500, 500, 500, 500, 630]
 STARTS = [LEFT]

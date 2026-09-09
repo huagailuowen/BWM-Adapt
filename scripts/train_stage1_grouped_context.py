@@ -331,6 +331,7 @@ class GroupedContextStage1Module(WanTrainingModule):
     def _prepare_pipeline_inputs(self, data):
         inputs = self.get_pipeline_inputs(data)
         inputs = self.transfer_data_to_device(inputs, self.pipe.device, self.pipe.torch_dtype)
+        inputs = self.apply_video_light_augmentation(inputs)
         for unit in self.pipe.units:
             inputs = self.pipe.unit_runner(unit, self.pipe, *inputs)
         return inputs
@@ -2784,8 +2785,20 @@ def _build_fixed_validation_indices(
     accelerator,
     actions_per_group: int,
     seed: int,
+    args=None,
 ) -> tuple[list[int], list]:
     all_values = sorted(grouped_indices)
+    if args is not None and args.grouped_context_sampling_mode == "uniform_episode_then_window":
+        # Episode identifiers need not overlap across environments. Keep the
+        # forward count identical on both DDP ranks, even for odd env counts.
+        rng = random.Random(int(seed) + int(accelerator.process_index))
+        values = rng.sample(all_values, int(args.grouped_context_friction_groups_per_update))
+        indices, selected_actions = [], []
+        for value in values:
+            episodes = rng.sample(sorted(grouped_indices[value]), int(actions_per_group))
+            selected_actions.extend(episodes)
+            indices.extend(rng.choice(grouped_indices[value][episode]) for episode in episodes)
+        return indices, selected_actions
     common_actions = set(grouped_indices[all_values[0]])
     for value in all_values[1:]:
         common_actions.intersection_update(grouped_indices[value])
@@ -2876,6 +2889,42 @@ def _protect_paired_checkpoint(accelerator, model_logger, step: int) -> None:
         marker.write_text(f"protected_step={int(step)}\n", encoding="utf-8")
         print(f"[checkpoint] permanently protected step={step} at {protected_root}", flush=True)
     accelerator.wait_for_everyone()
+
+
+def _save_wallclock_paired_checkpoint(
+    accelerator,
+    model,
+    model_logger,
+    step: int,
+    phase: str,
+    freeze_background: bool,
+) -> None:
+    """Save a complete model/current-C pair at a safe optimizer boundary."""
+    original_requires_grad = [parameter.requires_grad for parameter in model.parameters()]
+    try:
+        # Context-only phases intentionally mark the backbone frozen. Temporarily
+        # expose the normal model-phase parameters so export_trainable_state_dict
+        # writes a complete inference checkpoint; no optimizer update occurs here.
+        _set_curriculum_requires_grad(
+            model,
+            "model",
+            freeze_background=freeze_background,
+        )
+        model_logger.save_model(accelerator, model, f"step-{int(step)}.safetensors")
+    finally:
+        for parameter, requires_grad in zip(model.parameters(), original_requires_grad):
+            parameter.requires_grad_(requires_grad)
+
+    _log_context_table(accelerator, model, step, phase, "wallclock_checkpoint")
+    _save_phase_context_table(
+        accelerator,
+        model,
+        model_logger,
+        step,
+        phase,
+        "wallclock_checkpoint",
+    )
+    _protect_paired_checkpoint(accelerator, model_logger, step)
 
 
 def _log_context_table(accelerator, model, step: int, phase: str | None, reason: str) -> None:
@@ -4466,10 +4515,30 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
             accelerator,
             actions_per_update,
             validation_seed,
+            args=args,
         )
     protected_checkpoint_steps = _parse_step_set(
         getattr(args, "grouped_context_protected_checkpoint_steps", None)
     )
+    wallclock_request_file_raw = os.environ.get(
+        "BWM_WALLCLOCK_CHECKPOINT_REQUEST_FILE",
+        "",
+    ).strip()
+    wallclock_request_file = (
+        Path(wallclock_request_file_raw) if wallclock_request_file_raw else None
+    )
+    wallclock_checkpoint_done = False
+    wallclock_deadline = float(os.environ.get("BWM_WALLCLOCK_CHECKPOINT_AT", "0") or 0)
+    wallclock_armed = wallclock_deadline > 0 or wallclock_request_file is not None
+    wallclock_flag = torch.zeros((), dtype=torch.int32, device=accelerator.device)
+    if accelerator.is_main_process and wallclock_deadline > 0:
+        print(f"[wallclock_checkpoint] allocation deadline epoch={wallclock_deadline:.0f}; save at the first safe optimizer boundary", flush=True)
+    if accelerator.is_main_process and wallclock_request_file is not None:
+        print(
+            "[wallclock_checkpoint] armed request_file="
+            f"{wallclock_request_file} trigger=slurm_time_limit_minus_00:30:00",
+            flush=True,
+        )
     joint_focus_steps = int(
         getattr(args, "grouped_context_curriculum_joint_new_focus_steps", 0) or 0
     )
@@ -4805,6 +4874,66 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                 )
         mean_loss = torch.stack([loss.float() for loss in detached_losses]).mean()
         model_logger.on_step_end(accelerator, model, args.save_steps, loss=mean_loss)
+        wallclock_due = False
+        if wallclock_armed and not wallclock_checkpoint_done:
+            if accelerator.is_main_process:
+                requested = (
+                    time.time() >= wallclock_deadline if wallclock_deadline > 0
+                    else wallclock_request_file.is_file()
+                )
+                wallclock_flag.fill_(int(requested))
+            if accelerator.num_processes > 1:
+                torch.distributed.broadcast(wallclock_flag, src=0)
+            wallclock_due = bool(wallclock_flag.item())
+        if wallclock_due:
+            if accelerator.is_main_process:
+                print(
+                    "[wallclock_checkpoint] request observed; forcing complete "
+                    f"model/C save after optimizer step={step} phase={phase}",
+                    flush=True,
+                )
+            if last_forced_model_step != step:
+                _save_wallclock_paired_checkpoint(
+                    accelerator,
+                    model,
+                    model_logger,
+                    step,
+                    phase,
+                    freeze_background,
+                )
+            else:
+                _log_context_table(
+                    accelerator,
+                    model,
+                    step,
+                    phase,
+                    "wallclock_checkpoint_existing_pair",
+                )
+                _save_phase_context_table(
+                    accelerator,
+                    model,
+                    model_logger,
+                    step,
+                    phase,
+                    "wallclock_checkpoint_existing_pair",
+                )
+                _protect_paired_checkpoint(accelerator, model_logger, step)
+            last_forced_model_step = step
+            wallclock_checkpoint_done = True
+            accelerator.wait_for_everyone()
+            if accelerator.is_main_process and wallclock_request_file is not None:
+                consumed = wallclock_request_file.with_name(
+                    f"{wallclock_request_file.name}.consumed-step-{int(step)}"
+                )
+                try:
+                    os.replace(wallclock_request_file, consumed)
+                except FileNotFoundError:
+                    pass
+                print(
+                    f"[wallclock_checkpoint] protected paired checkpoint step={step}",
+                    flush=True,
+                )
+            accelerator.wait_for_everyone()
         if (
             step == int(phase_info["phase_end"])
             and phase in ("model", "joint")
@@ -4839,6 +4968,16 @@ def main() -> None:
     if args.config is not None:
         args = merge_yaml_and_args(args.config, parser, args)
 
+    require_cuda = os.environ.get("BWM_REQUIRE_CUDA", "0") == "1"
+    expected_world_size = int(os.environ.get("BWM_EXPECTED_WORLD_SIZE", "2"))
+    if require_cuda:
+        if not torch.cuda.is_available():
+            raise RuntimeError("This run requires CUDA; refusing silent CPU fallback.")
+        if torch.cuda.device_count() != expected_world_size:
+            raise RuntimeError(
+                f"Expected {expected_world_size} visible GPUs, got {torch.cuda.device_count()}."
+            )
+
     set_global_seed(args.seed)
     runtime_config = prepare_runtime_config(args)
     friction_values = _unique_friction_values(args.dataset_metadata_path)
@@ -4859,6 +4998,16 @@ def main() -> None:
             InitProcessGroupKwargs(timeout=timedelta(hours=1)),
         ],
     )
+
+    if require_cuda and (
+        accelerator.device.type != "cuda"
+        or accelerator.num_processes != expected_world_size
+    ):
+        raise RuntimeError(
+            "Incorrect accelerator topology: "
+            f"device={accelerator.device}, processes={accelerator.num_processes}; "
+            f"expected CUDA with {expected_world_size} ranks."
+        )
 
     dataset = build_dataset(args, runtime_config)
     model = GroupedContextStage1Module(

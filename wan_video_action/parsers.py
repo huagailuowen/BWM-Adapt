@@ -116,6 +116,21 @@ def add_video_size_config(parser: argparse.ArgumentParser):
     group.add_argument("--spatial_division_factor", type=int, default=32, help="[OPTIONAL] Spatial size divisor used to align frame height and width.")
     group.add_argument("--chunk_mode", type=str, default="static", choices=["static", "dynamic"], help="[OPTIONAL] Sampling mode for video chunks, static uses dataset bounds and dynamic uses random crop.")
     group.add_argument("--pad_short_chunks", action="store_true", default=False, help="[KEY] Repeat-pad video/action chunks that run past episode end instead of shortening them.")
+    group.add_argument("--video_light_augmentation_enabled", action="store_true", default=False, help="[OPTIONAL] Apply temporally coherent online light/shadow augmentation before VAE encoding.")
+    group.add_argument("--video_light_augmentation_probability", type=float, default=0.70, help="[OPTIONAL] Probability of augmenting a training video; the remainder stays exactly original.")
+    group.add_argument("--video_light_augmentation_view_indices", type=str, default="all", help="[OPTIONAL] Views to augment: 'all' or comma-separated zero-based indices.")
+    group.add_argument("--video_light_augmentation_gain_min", type=float, default=0.88)
+    group.add_argument("--video_light_augmentation_gain_max", type=float, default=1.12)
+    group.add_argument("--video_light_augmentation_contrast_min", type=float, default=0.90)
+    group.add_argument("--video_light_augmentation_contrast_max", type=float, default=1.10)
+    group.add_argument("--video_light_augmentation_gamma_min", type=float, default=0.90)
+    group.add_argument("--video_light_augmentation_gamma_max", type=float, default=1.10)
+    group.add_argument("--video_light_augmentation_tint_min", type=float, default=0.97)
+    group.add_argument("--video_light_augmentation_tint_max", type=float, default=1.03)
+    group.add_argument("--video_light_augmentation_offset_min", type=float, default=-0.015)
+    group.add_argument("--video_light_augmentation_offset_max", type=float, default=0.015)
+    group.add_argument("--video_light_augmentation_gradient_abs_max", type=float, default=0.08)
+    group.add_argument("--video_light_augmentation_noise_std", type=float, default=0.004)
     return parser
 
 
@@ -139,7 +154,7 @@ def add_model_config(parser: argparse.ArgumentParser):
 
 def add_action_config(parser: argparse.ArgumentParser):
     group = parser.add_argument_group("action")
-    group.add_argument("--action_type", type=str, choices=["joint_abs", "eef_abs", "joint_delta", "eef_delta", "joint_state_action", "eef_observed_state", "eef_state_action", "eef_swing_angle"], default="eef_delta", help='[KEY] Action/state representation, including joint_state_action=[state[:7], action[:7]], eef_observed_state=observation.eef_state, eef_state_action=[eef_state[t], eef_state[t+1]], and eef_swing_angle=[normalized roll_x, zero x13].')
+    group.add_argument("--action_type", type=str, choices=["joint_abs", "eef_abs", "joint_delta", "eef_delta", "joint_state_action", "eef_observed_state", "eef_state_action", "eef_swing_angle", "joint_target", "joint_target_export", "eef_target"], default="eef_delta", help='[KEY] Action/state representation. joint_target reads recorded commanded joints; joint_target_export reads target_joint_action[:7]; eef_target reads an explicitly target-EEF action export. Legacy representations remain available.')
     group.add_argument("--action_stat_path", type=str, default=None, help="[OPTIONAL] Path to robot normalization stats (stat.json).")
     group.add_argument("--action_dim", type=int, default=14, help="[OPTIONAL] Action dimension.")
     return parser

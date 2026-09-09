@@ -271,6 +271,17 @@ Action 的 oracle-reachable 子集上，Action8 Ours 为 44.4%，pooled 为 38.9
 | 评测输出 | `/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/infer_mass_balance_fixed_pose_91441_stage1_stage2_grid_92059` |
 | 覆盖范围 | GT、Stage1、Stage2、ratio PCA、同 ratio 的 8-support transfer grid |
 
+### F.3 新版 action selector 的跨数据集临时参考
+
+下表仅用于早期判断方法趋势，不进入同协议主结果表。两项评测都使用新版 `boundary_crossing` action selector：先根据模型预测的最终横杆倾角划分正负区域，在相邻动作的符号交界处线性估计零点，再选择最接近该交界点的离散动作。选择过程不读取 query GT；GT 只用于最终判断动作是否使横杆进入 `[-3°, 3°]` 平衡区间。
+
+| 方法与数据 | Support / query 协议 | 环境覆盖 | Action success | Random success | Mean regret |
+|---|---|---:|---:|---:|---:|
+| Ours，fixed-pose no-leak，`step3900` | K=1；support 为 GT 动作空间中最靠近平衡动作、但位于平衡区间外的离散动作；其余 14 actions 为 disjoint queries | 10 ID ratios | **70% (7/10)** | 16% | 1.371 |
+| TTT-KQV，workspace-random no-leak，`step1673` | K=1；采用相同的 near-boundary informative-support 选择原则；其余 14 actions 为 disjoint queries | 5 ID + 5 OOD ratios | 30% (3/10)；ID 40%，OOD 20% | 16% | 2.416 |
+
+Ours 结果位于 `results/mass_balance/fixed_pose_30ratio_noleak_nearest_unbalanced_center_support_dense15_v1/methods/ours/step_3900/seed_20260723/action_evaluation/`；TTT-KQV 结果位于 `results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ttt_kqv/step_1673/seed_20260902/`。两者的数据集、场景随机性、训练 checkpoint 及 ID/OOD 构成都不同，因此 `70%` 与 `30%` 只能作为暂时的趋势参照，不能据此宣称公平的跨方法优势。最终论文比较必须在同一 workspace-random no-leak 数据、相同环境集合、相同 support/query 对和相同 action selector 下重新汇总。
+
 ## G. Joint mass-friction
 
 ### G.1 失败配置

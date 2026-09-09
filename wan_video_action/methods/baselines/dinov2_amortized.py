@@ -20,13 +20,19 @@ from .environment_sampling import weighted_sample_without_replacement
 
 @dataclass(frozen=True)
 class SupportQueryEpisodeIndices:
-    environment_id: int
+    environment_id: Any
     support_index: int
     query_indices: tuple[int, ...]
+    additional_support_indices: tuple[int, ...] = ()
+
+    @property
+    def support_indices(self) -> tuple[int, ...]:
+        """All support indices while preserving the legacy K=1 interface."""
+        return (self.support_index, *self.additional_support_indices)
 
 
 class Event80K1Sampler:
-    """Samples one support and every remaining action as read-only queries."""
+    """Samples disjoint support and read-only query trajectories per environment."""
 
     def __init__(
         self,
@@ -34,6 +40,9 @@ class Event80K1Sampler:
         metadata_path: str | Path,
         active_environment_manifest: str | Path,
         seed: int,
+        support_k: int = 1,
+        support_k_choices: tuple[int, ...] | None = None,
+        trajectories_per_environment: int = 0,
         queries_per_environment: int = 0,
         environment_key: str = "mu_index",
         action_key: str = "action_id",
@@ -43,8 +52,32 @@ class Event80K1Sampler:
         self.environment_key = str(environment_key)
         self.action_key = str(action_key)
         self.seed = int(seed)
+        self.support_k = int(support_k)
+        self.support_k_choices = (
+            (self.support_k,)
+            if support_k_choices is None
+            else tuple(int(value) for value in support_k_choices)
+        )
+        self.trajectories_per_environment = int(trajectories_per_environment)
         self.queries_per_environment = int(queries_per_environment)
         self.distinct_actions = bool(distinct_actions)
+        if self.support_k < 1:
+            raise ValueError("support_k must be positive.")
+        if not self.support_k_choices or min(self.support_k_choices) < 1:
+            raise ValueError("support_k_choices must contain positive integers.")
+        if self.trajectories_per_environment < 0:
+            raise ValueError("trajectories_per_environment must be non-negative.")
+        if self.trajectories_per_environment:
+            if self.queries_per_environment:
+                raise ValueError(
+                    "Set queries_per_environment=0 when trajectories_per_environment is used; "
+                    "queries are all non-support trajectories in the sampled set."
+                )
+            if self.trajectories_per_environment <= max(self.support_k_choices):
+                raise ValueError(
+                    "trajectories_per_environment must exceed every support K so at least "
+                    "one disjoint query remains."
+                )
         if self.queries_per_environment < 0:
             raise ValueError("queries_per_environment must be non-negative.")
         with self.metadata_path.open("r", encoding="utf-8") as handle:
@@ -52,10 +85,7 @@ class Event80K1Sampler:
         with Path(active_environment_manifest).open("r", encoding="utf-8") as handle:
             manifest = yaml.safe_load(handle)
         selection = manifest["selection"]
-        self.active_environment_ids = tuple(
-            int(value)
-            for value in selection["active_environment_ids"]
-        )
+        self.active_environment_ids = tuple(selection["active_environment_ids"])
         raw_weights = selection.get("environment_sampling_weights", {})
         self.environment_weights = {
             environment_id: float(
@@ -66,12 +96,14 @@ class Event80K1Sampler:
             )
             for environment_id in self.active_environment_ids
         }
-        grouped: dict[int, list[int]] = {value: [] for value in self.active_environment_ids}
+        grouped: dict[Any, list[int]] = {
+            value: [] for value in self.active_environment_ids
+        }
         for index, row in enumerate(self.rows):
-            environment_id = int(row[self.environment_key])
+            environment_id = row[self.environment_key]
             if environment_id in grouped:
                 grouped[environment_id].append(index)
-        grouped_by_action: dict[int, dict[int, list[int]]] = {}
+        grouped_by_action: dict[Any, dict[int, list[int]]] = {}
         for environment_id, indices in grouped.items():
             indices.sort(key=lambda index: (int(self.rows[index][self.action_key]), index))
             actions = [int(self.rows[index][self.action_key]) for index in indices]
@@ -79,15 +111,19 @@ class Event80K1Sampler:
             for index, action_id in zip(indices, actions):
                 by_action.setdefault(action_id, []).append(index)
             grouped_by_action[environment_id] = by_action
-            if len(indices) < 2:
+            minimum_trajectories = (
+                self.trajectories_per_environment
+                if self.trajectories_per_environment
+                else max(self.support_k_choices) + max(self.queries_per_environment, 1)
+            )
+            if len(indices) < minimum_trajectories:
                 raise ValueError(
-                    f"Environment {environment_id} needs at least two unique actions; "
-                    f"got actions={actions}."
+                    f"Environment {environment_id} has {len(indices)} trajectories; "
+                    f"need at least {minimum_trajectories} for K={self.support_k_choices} and "
+                    f"Q={self.queries_per_environment or 'all remaining'}."
                 )
             if self.distinct_actions:
-                required = 1 + self.queries_per_environment
-                if self.queries_per_environment == 0:
-                    required = 2
+                required = minimum_trajectories
                 if len(by_action) < required:
                     raise ValueError(
                         f"Environment {environment_id} has {len(by_action)} unique "
@@ -125,14 +161,38 @@ class Event80K1Sampler:
         episodes = []
         for environment_id in selected:
             indices = self.grouped_indices[environment_id]
+            episode_support_k = (
+                self.support_k_choices[0]
+                if len(self.support_k_choices) == 1
+                else rng.choice(self.support_k_choices)
+            )
             if self.distinct_actions:
                 by_action = self.grouped_indices_by_action[environment_id]
                 action_ids = sorted(by_action)
-                support_action = rng.choice(action_ids)
-                support_index = rng.choice(by_action[support_action])
-                remaining_actions = [
-                    action_id for action_id in action_ids if action_id != support_action
+                if self.trajectories_per_environment:
+                    candidate_actions = rng.sample(
+                        action_ids, self.trajectories_per_environment
+                    )
+                    support_actions = rng.sample(candidate_actions, episode_support_k)
+                    remaining_actions = [
+                        action_id
+                        for action_id in candidate_actions
+                        if action_id not in support_actions
+                    ]
+                else:
+                    if episode_support_k == 1:
+                        support_actions = [rng.choice(action_ids)]
+                    else:
+                        support_actions = rng.sample(action_ids, episode_support_k)
+                    remaining_actions = [
+                        action_id
+                        for action_id in action_ids
+                        if action_id not in support_actions
+                    ]
+                support_indices = [
+                    rng.choice(by_action[action_id]) for action_id in support_actions
                 ]
+                support_index = support_indices[0]
                 if self.queries_per_environment:
                     remaining_actions = rng.sample(
                         remaining_actions, self.queries_per_environment
@@ -142,8 +202,25 @@ class Event80K1Sampler:
                     rng.choice(by_action[action_id]) for action_id in remaining_actions
                 ]
             else:
-                support_index = indices[rng.randrange(len(indices))]
-                remaining_queries = [index for index in indices if index != support_index]
+                if self.trajectories_per_environment:
+                    candidate_indices = rng.sample(
+                        indices, self.trajectories_per_environment
+                    )
+                    support_indices = rng.sample(candidate_indices, episode_support_k)
+                    support_index_set = set(support_indices)
+                    remaining_queries = [
+                        index for index in candidate_indices if index not in support_index_set
+                    ]
+                else:
+                    if episode_support_k == 1:
+                        support_indices = [indices[rng.randrange(len(indices))]]
+                    else:
+                        support_indices = rng.sample(indices, episode_support_k)
+                    support_index_set = set(support_indices)
+                    remaining_queries = [
+                        index for index in indices if index not in support_index_set
+                    ]
+                support_index = support_indices[0]
             if self.queries_per_environment:
                 if not self.distinct_actions and self.queries_per_environment > len(remaining_queries):
                     raise ValueError(
@@ -164,6 +241,7 @@ class Event80K1Sampler:
                     environment_id=environment_id,
                     support_index=support_index,
                     query_indices=query_indices,
+                    additional_support_indices=tuple(support_indices[1:]),
                 )
             )
         start = int(process_index) * int(environments_per_rank)
@@ -210,6 +288,8 @@ class DINOv2AmortizedContextEncoder(nn.Module):
         output_dim: int = 32,
         temporal_layers: int = 2,
         temporal_heads: int = 8,
+        aggregation_mode: str = "transformer",
+        mlp_hidden_dim: int = 1024,
     ) -> None:
         super().__init__()
         self.model_path = str(Path(model_path).expanduser())
@@ -217,12 +297,20 @@ class DINOv2AmortizedContextEncoder(nn.Module):
         self.temporal_stride = int(temporal_stride)
         self.action_dim = int(action_dim)
         self.output_dim = int(output_dim)
+        self.aggregation_mode = str(aggregation_mode)
         if self.sampled_frames < 2:
             raise ValueError("sampled_frames must be at least two.")
         if self.temporal_stride < 1:
             raise ValueError("temporal_stride must be positive.")
-        if hidden_dim % int(temporal_heads):
+        if self.aggregation_mode not in {"transformer", "concat_mlp"}:
+            raise ValueError(
+                "aggregation_mode must be 'transformer' or 'concat_mlp', "
+                f"got {self.aggregation_mode!r}."
+            )
+        if self.aggregation_mode == "transformer" and hidden_dim % int(temporal_heads):
             raise ValueError("hidden_dim must be divisible by temporal_heads.")
+        if int(mlp_hidden_dim) < 1:
+            raise ValueError("mlp_hidden_dim must be positive.")
         self.dino = AutoModel.from_pretrained(self.model_path, local_files_only=True)
         self.dino.requires_grad_(False)
         self.dino.eval()
@@ -254,34 +342,53 @@ class DINOv2AmortizedContextEncoder(nn.Module):
             nn.GELU(),
         )
         self.action_encoder = ActionChunkEncoder(self.action_dim, action_hidden_dim)
-        self.transition_projection = nn.Sequential(
-            nn.Linear(hidden_dim * 2 + action_hidden_dim, hidden_dim),
-            nn.GELU(),
-            nn.LayerNorm(hidden_dim),
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.GELU(),
-        )
-        self.summary_token = nn.Parameter(torch.zeros(1, 1, hidden_dim))
-        self.temporal_position = nn.Parameter(
-            torch.randn(self.sampled_frames - 1, hidden_dim) / math.sqrt(hidden_dim)
-        )
-        temporal_layer = nn.TransformerEncoderLayer(
-            d_model=hidden_dim,
-            nhead=int(temporal_heads),
-            dim_feedforward=4 * hidden_dim,
-            dropout=0.0,
-            activation="gelu",
-            batch_first=True,
-            norm_first=True,
-        )
-        self.temporal_aggregator = nn.TransformerEncoder(
-            temporal_layer,
-            num_layers=int(temporal_layers),
-            norm=nn.LayerNorm(hidden_dim),
-        )
+        segment_dim = hidden_dim * 2 + action_hidden_dim
+        if self.aggregation_mode == "transformer":
+            self.transition_projection = nn.Sequential(
+                nn.Linear(segment_dim, hidden_dim),
+                nn.GELU(),
+                nn.LayerNorm(hidden_dim),
+                nn.Linear(hidden_dim, hidden_dim),
+                nn.GELU(),
+            )
+            self.summary_token = nn.Parameter(torch.zeros(1, 1, hidden_dim))
+            self.temporal_position = nn.Parameter(
+                torch.randn(self.sampled_frames - 1, hidden_dim) / math.sqrt(hidden_dim)
+            )
+            temporal_layer = nn.TransformerEncoderLayer(
+                d_model=hidden_dim,
+                nhead=int(temporal_heads),
+                dim_feedforward=4 * hidden_dim,
+                dropout=0.0,
+                activation="gelu",
+                batch_first=True,
+                norm_first=True,
+            )
+            self.temporal_aggregator = nn.TransformerEncoder(
+                temporal_layer,
+                num_layers=int(temporal_layers),
+                norm=nn.LayerNorm(hidden_dim),
+            )
+            self.concat_mlp = None
+            summary_dim = hidden_dim
+        else:
+            self.transition_projection = None
+            self.summary_token = None
+            self.temporal_position = None
+            self.temporal_aggregator = None
+            concatenated_dim = (self.sampled_frames - 1) * segment_dim
+            self.concat_mlp = nn.Sequential(
+                nn.LayerNorm(concatenated_dim),
+                nn.Linear(concatenated_dim, int(mlp_hidden_dim)),
+                nn.GELU(),
+                nn.LayerNorm(int(mlp_hidden_dim)),
+                nn.Linear(int(mlp_hidden_dim), int(mlp_hidden_dim)),
+                nn.GELU(),
+            )
+            summary_dim = int(mlp_hidden_dim)
         self.output_head = nn.Sequential(
-            nn.LayerNorm(hidden_dim),
-            nn.Linear(hidden_dim, output_dim),
+            nn.LayerNorm(summary_dim),
+            nn.Linear(summary_dim, output_dim),
         )
         nn.init.zeros_(self.output_head[-1].weight)
         nn.init.zeros_(self.output_head[-1].bias)
@@ -313,11 +420,20 @@ class DINOv2AmortizedContextEncoder(nn.Module):
         indices_tensor = torch.arange(0, frame_count, self.temporal_stride, dtype=torch.long)
         if int(indices_tensor[-1]) != frame_count - 1:
             indices_tensor = torch.cat((indices_tensor, torch.tensor([frame_count - 1])))
-        if int(torch.unique(indices_tensor).numel()) != self.sampled_frames:
+        aligned_anchor_count = int(torch.unique(indices_tensor).numel())
+        if aligned_anchor_count < self.sampled_frames:
             raise ValueError(
-                f"Expected {self.sampled_frames} Wan-aligned anchors for T={frame_count} "
+                f"Need at least {self.sampled_frames} Wan-aligned anchors for T={frame_count} "
                 f"and stride={self.temporal_stride}, got {indices_tensor.tolist()}."
             )
+        if aligned_anchor_count > self.sampled_frames:
+            sample_positions = torch.linspace(
+                0,
+                aligned_anchor_count - 1,
+                steps=self.sampled_frames,
+                dtype=torch.float64,
+            ).round().to(dtype=torch.long)
+            indices_tensor = indices_tensor.index_select(0, sample_positions)
         indices = tuple(int(value) for value in indices_tensor.tolist())
         device = next(self.dino.parameters()).device
         frames = video_tensor[:, indices].permute(1, 0, 2, 3).to(device=device)
@@ -354,7 +470,7 @@ class DINOv2AmortizedContextEncoder(nn.Module):
             )
         return tensor
 
-    def project_support(
+    def _summarize_support(
         self,
         *,
         visual_features: torch.Tensor,
@@ -374,8 +490,18 @@ class DINOv2AmortizedContextEncoder(nn.Module):
             chunks.append(actions[start:end])
         frame_features = self.visual_projection(visual_features)
         action_features = self.action_encoder(chunks)
-        transition_features = self.transition_projection(
-            torch.cat(
+        if self.aggregation_mode == "concat_mlp":
+            segment_features = torch.cat(
+                (
+                    frame_features[:-1],
+                    frame_features[1:],
+                    action_features,
+                ),
+                dim=-1,
+            )
+            summary = self.concat_mlp(segment_features.reshape(1, -1))
+        else:
+            segment_features = torch.cat(
                 (
                     frame_features[:-1],
                     frame_features[1:] - frame_features[:-1],
@@ -383,23 +509,76 @@ class DINOv2AmortizedContextEncoder(nn.Module):
                 ),
                 dim=-1,
             )
+            transition_features = self.transition_projection(segment_features)
+            transitions = transition_features + self.temporal_position.to(
+                device=transition_features.device,
+                dtype=transition_features.dtype,
+            )
+            sequence = torch.cat(
+                (
+                    self.summary_token.to(
+                        device=transitions.device, dtype=transitions.dtype
+                    ).expand(1, -1, -1),
+                    transitions.unsqueeze(0),
+                ),
+                dim=1,
+            )
+            summary = self.temporal_aggregator(sequence)[:, 0]
+        return summary
+
+    def project_support(
+        self,
+        *,
+        visual_features: torch.Tensor,
+        action: Any,
+        frame_indices: tuple[int, ...],
+        frame_count: int,
+    ) -> torch.Tensor:
+        summary = self._summarize_support(
+            visual_features=visual_features,
+            action=action,
+            frame_indices=frame_indices,
+            frame_count=frame_count,
         )
-        transitions = transition_features + self.temporal_position.to(
-            device=transition_features.device,
-            dtype=transition_features.dtype,
-        )
-        sequence = torch.cat(
-            (
-                self.summary_token.to(
-                    device=transitions.device, dtype=transitions.dtype
-                ).expand(1, -1, -1),
-                transitions.unsqueeze(0),
-            ),
-            dim=1,
-        )
-        summary = self.temporal_aggregator(sequence)[:, 0]
-        code = self.output_head(summary)
-        return torch.sigmoid(code)
+        return torch.sigmoid(self.output_head(summary))
+
+    def project_supports(
+        self,
+        *,
+        visual_features: tuple[torch.Tensor, ...],
+        actions: tuple[Any, ...],
+        frame_indices: tuple[tuple[int, ...], ...],
+        frame_counts: tuple[int, ...],
+    ) -> torch.Tensor:
+        support_count = len(visual_features)
+        if support_count < 1:
+            raise ValueError("At least one support trajectory is required.")
+        if not (
+            len(actions) == support_count
+            and len(frame_indices) == support_count
+            and len(frame_counts) == support_count
+        ):
+            raise ValueError("Support feature/action/frame metadata lengths must match.")
+        if support_count == 1:
+            return self.project_support(
+                visual_features=visual_features[0],
+                action=actions[0],
+                frame_indices=frame_indices[0],
+                frame_count=frame_counts[0],
+            )
+        summaries = [
+            self._summarize_support(
+                visual_features=features,
+                action=action,
+                frame_indices=indices,
+                frame_count=count,
+            )
+            for features, action, indices, count in zip(
+                visual_features, actions, frame_indices, frame_counts
+            )
+        ]
+        pooled_summary = torch.cat(summaries, dim=0).mean(dim=0, keepdim=True)
+        return torch.sigmoid(self.output_head(pooled_summary))
 
     def forward(self, video: Any, action: Any) -> torch.Tensor:
         features, indices, frame_count = self.extract_visual_features(video)

@@ -163,6 +163,14 @@ def main() -> None:
             if source_row is None:
                 raise KeyError(f"Missing source metadata row {source_index}.")
             source_id = _sample_id(source_row, source_index)
+            support_indices = tuple(map(
+                int,
+                environment.get("support_indices", (source_index,)),
+            ))
+            support_ids = tuple(
+                _sample_id(rows[support_index], support_index)
+                for support_index in support_indices
+            )
             domain = _domain(plan, source_index)
             for target_index in map(int, environment["target_indices"]):
                 row = rows[target_index]
@@ -224,11 +232,11 @@ def main() -> None:
                     method=method,
                     split="evaluation",
                     domain=domain,
-                    support_size=1,
+                    support_size=support_size,
                     seed=int(config.get("seed", 0)),
                     gt_video_path=str(_video_path(row, dataset_root)),
                     pred_video_path=str(prediction_path),
-                    support_ids=(source_id,),
+                    support_ids=support_ids,
                     gt_start_frame=int(row.get("start_frame", 0)),
                     pred_start_frame=0,
                     num_frames=count,

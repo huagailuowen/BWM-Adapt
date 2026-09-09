@@ -60,10 +60,12 @@ dinov2_amortized_context:
   dinov2_aggregation_mode: "concat_mlp"
   dinov2_mlp_hidden_dim: 1024
   dinov2_support_k: 1
+  dinov2_support_k_choices: "1,2"
+  dinov2_trajectories_per_environment: 8
   dinov2_environments_per_rank: 4
-  dinov2_queries_per_environment: 7
+  dinov2_queries_per_environment: 0
   dinov2_head_learning_rate: 1.0e-4
-  dinov2_max_updates: 50000
+  dinov2_max_updates: 4500
 training:
   learning_rate: 1.0e-5
   stage1_warmup_steps: 100
@@ -78,7 +80,7 @@ training:
   min_timestep_boundary: 0.0
   batch_size: 1
 output:
-  output_path: "./outputs/method_benchmarks/mass_balance_workspace_random_30ratio_train20/dinov2_concat_mlp_k1q7_4envpergpu/seed_20260902/checkpoints"
+  output_path: "./outputs/method_benchmarks/mass_balance_workspace_random_30ratio_train20/dinov2_concat_mlp_random_k1k2_total8_4envpergpu/seed_20260902/checkpoints"
   remove_prefix_in_ckpt: "pipe.dit."
   save_steps: 500
   checkpoint_save_minutes: 60

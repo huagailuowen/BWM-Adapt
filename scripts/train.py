@@ -1,4 +1,5 @@
 import glob
+import random
 import time
 from contextlib import nullcontext
 import torch, os, argparse, accelerate, warnings, json
@@ -241,6 +242,78 @@ class WanTrainingModule(DiffusionTrainingModule):
         self.max_timestep_boundary = max_timestep_boundary
         self.min_timestep_boundary = min_timestep_boundary
         self.num_history_frames = num_history_frames
+        self.video_light_augmentation_enabled = bool(
+            getattr(args, "video_light_augmentation_enabled", False)
+        )
+        self.video_light_augmentation_probability = float(
+            getattr(args, "video_light_augmentation_probability", 0.70)
+        )
+        if not 0.0 <= self.video_light_augmentation_probability <= 1.0:
+            raise ValueError("video_light_augmentation_probability must lie in [0, 1].")
+        self.video_light_augmentation_view_indices = _parse_spatial_loss_view_indices(
+            getattr(args, "video_light_augmentation_view_indices", "all")
+        )
+        self.video_light_augmentation_ranges = {
+            "gain": (
+                float(getattr(args, "video_light_augmentation_gain_min", 0.88)),
+                float(getattr(args, "video_light_augmentation_gain_max", 1.12)),
+            ),
+            "contrast": (
+                float(getattr(args, "video_light_augmentation_contrast_min", 0.90)),
+                float(getattr(args, "video_light_augmentation_contrast_max", 1.10)),
+            ),
+            "gamma": (
+                float(getattr(args, "video_light_augmentation_gamma_min", 0.90)),
+                float(getattr(args, "video_light_augmentation_gamma_max", 1.10)),
+            ),
+            "tint": (
+                float(getattr(args, "video_light_augmentation_tint_min", 0.97)),
+                float(getattr(args, "video_light_augmentation_tint_max", 1.03)),
+            ),
+            "offset": (
+                float(getattr(args, "video_light_augmentation_offset_min", -0.015)),
+                float(getattr(args, "video_light_augmentation_offset_max", 0.015)),
+            ),
+        }
+        for name, (lower, upper) in self.video_light_augmentation_ranges.items():
+            if lower > upper:
+                raise ValueError(
+                    f"video_light_augmentation_{name}_min must not exceed max."
+                )
+        self.video_light_augmentation_gradient_abs_max = float(
+            getattr(args, "video_light_augmentation_gradient_abs_max", 0.08)
+        )
+        self.video_light_augmentation_noise_std = float(
+            getattr(args, "video_light_augmentation_noise_std", 0.004)
+        )
+        if self.video_light_augmentation_gradient_abs_max < 0.0:
+            raise ValueError("video_light_augmentation_gradient_abs_max must be non-negative.")
+        if self.video_light_augmentation_noise_std < 0.0:
+            raise ValueError("video_light_augmentation_noise_std must be non-negative.")
+        augmentation_seed = int(getattr(args, "seed", 0)) + 104729 * (
+            int(os.environ.get("RANK", "0")) + 1
+        )
+        self._video_light_augmentation_rng = random.Random(augmentation_seed)
+        self._video_light_augmentation_grid_cache = {}
+        if self.video_light_augmentation_enabled:
+            augmentation_views = (
+                "all"
+                if self.video_light_augmentation_view_indices is None
+                else ",".join(str(index) for index in self.video_light_augmentation_view_indices)
+            )
+            print(
+                "[video_light_augmentation] "
+                f"probability={self.video_light_augmentation_probability:g} "
+                f"views={augmentation_views} temporal_parameters=shared "
+                f"temporal_noise=fixed gain={self.video_light_augmentation_ranges['gain']} "
+                f"contrast={self.video_light_augmentation_ranges['contrast']} "
+                f"gamma={self.video_light_augmentation_ranges['gamma']} "
+                f"tint={self.video_light_augmentation_ranges['tint']} "
+                f"offset={self.video_light_augmentation_ranges['offset']} "
+                f"gradient_abs_max={self.video_light_augmentation_gradient_abs_max:g} "
+                f"noise_std={self.video_light_augmentation_noise_std:g}",
+                flush=True,
+            )
         self.spatial_loss_mode = str(
             getattr(args, "spatial_loss_mode", "none") or "none"
         ).strip().lower()
@@ -288,6 +361,82 @@ class WanTrainingModule(DiffusionTrainingModule):
                 f"roi_area_fraction_per_selected_view={float(self.spatial_loss_roi_mask.mean()):.6f}",
                 flush=True,
             )
+
+    def apply_video_light_augmentation(self, inputs):
+        """Apply temporally coherent, online photometric augmentation before VAE encoding."""
+        if not self.video_light_augmentation_enabled or not self.training:
+            return inputs
+        rng = self._video_light_augmentation_rng
+        if rng.random() >= self.video_light_augmentation_probability:
+            return inputs
+
+        inputs_shared, inputs_posi, inputs_nega = inputs
+        video = inputs_shared.get("input_video")
+        if not torch.is_tensor(video) or video.ndim != 5:
+            raise ValueError(
+                "Online video light augmentation expects input_video shaped (V,C,T,H,W)."
+            )
+        if int(video.shape[1]) != 3:
+            raise ValueError(
+                f"Online video light augmentation requires RGB video, got C={video.shape[1]}."
+            )
+        if self.video_light_augmentation_view_indices is None:
+            view_indices = tuple(range(int(video.shape[0])))
+        else:
+            view_indices = self.video_light_augmentation_view_indices
+        invalid = [index for index in view_indices if index >= int(video.shape[0])]
+        if invalid:
+            raise IndexError(
+                f"video_light_augmentation_view_indices={invalid} outside "
+                f"num_views={video.shape[0]}."
+            )
+
+        def sample(name):
+            lower, upper = self.video_light_augmentation_ranges[name]
+            return rng.uniform(lower, upper)
+
+        gain = sample("gain")
+        contrast = sample("contrast")
+        gamma = sample("gamma")
+        tint_values = [sample("tint") for _ in range(3)]
+        offset = sample("offset")
+        gradient_limit = self.video_light_augmentation_gradient_abs_max
+        gx = rng.uniform(-gradient_limit, gradient_limit)
+        gy = rng.uniform(-gradient_limit, gradient_limit)
+
+        height, width = int(video.shape[-2]), int(video.shape[-1])
+        grid_key = (video.device.type, video.device.index, height, width)
+        cached_grid = self._video_light_augmentation_grid_cache.get(grid_key)
+        if cached_grid is None:
+            yy = torch.linspace(-1.0, 1.0, height, device=video.device, dtype=torch.float32)
+            xx = torch.linspace(-1.0, 1.0, width, device=video.device, dtype=torch.float32)
+            cached_grid = (xx.view(1, 1, 1, 1, width), yy.view(1, 1, 1, height, 1))
+            self._video_light_augmentation_grid_cache[grid_key] = cached_grid
+        xx, yy = cached_grid
+
+        with torch.no_grad():
+            x = video[list(view_indices)].float().add(1.0).mul(0.5).clamp_(0.0, 1.0)
+            x = x.pow(gamma)
+            x = (x - 0.5) * contrast + 0.5
+            tint = torch.tensor(
+                tint_values,
+                device=video.device,
+                dtype=torch.float32,
+            ).view(1, 3, 1, 1, 1)
+            illumination_field = 1.0 + gx * xx + gy * yy
+            x = x * gain * tint * illumination_field + offset
+            if self.video_light_augmentation_noise_std > 0.0:
+                # Fixed across T: no synthetic frame-to-frame sensor flicker.
+                noise = torch.randn(
+                    (len(view_indices), 3, 1, height, width),
+                    device=video.device,
+                    dtype=torch.float32,
+                ) * self.video_light_augmentation_noise_std
+                x = x + noise
+            # Match the requested uint8 round-trip without leaving the GPU.
+            x = x.clamp_(0.0, 1.0).mul_(255.0).round_().div_(255.0)
+            video[list(view_indices)] = x.mul(2.0).sub(1.0).to(dtype=video.dtype)
+        return inputs_shared, inputs_posi, inputs_nega
 
     def spatial_flow_mse(self, prediction, target):
         prediction_float = prediction.float()
@@ -473,6 +622,7 @@ class WanTrainingModule(DiffusionTrainingModule):
     def forward(self, data, inputs=None):
         if inputs is None: inputs = self.get_pipeline_inputs(data)
         inputs = self.transfer_data_to_device(inputs, self.pipe.device, self.pipe.torch_dtype)
+        inputs = self.apply_video_light_augmentation(inputs)
         for unit in self.pipe.units:
             inputs = self.pipe.unit_runner(unit, self.pipe, *inputs)
         loss = self.task_to_loss[self.task](self.pipe, *inputs)

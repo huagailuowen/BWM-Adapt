@@ -1,0 +1,26 @@
+schema_version: 1
+
+benchmark_root: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1
+protocol_path: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json
+metadata_path: data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl
+dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine
+output_root: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/joint_model_latent_training_curriculum700/step_4200/seed_20260708/metrics/complete_v1
+action_target_config: configs/evaluation/action_targets/event80_pushbox_image_space.yaml
+
+require_slurm_for_lpips: true
+required_slurm_partition: yejin-lo
+
+future_start_frame: 1
+terminal_window: 5
+
+metrics:
+  global: [psnr, ssim]
+  object: [centroid_ade, centroid_fde]
+  lpips:
+    enabled: true
+    network: alex
+    batch_size: 8
+    device: cuda
+
+methods:
+  joint_model_latent_training_curriculum700_step4200: methods/joint_model_latent_training_curriculum700/step_4200/seed_20260708

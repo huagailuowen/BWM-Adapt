@@ -470,8 +470,15 @@ def main() -> None:
                 )
                 gt_outcome = _outcome(task, gt_state, outcome_settings)
                 is_support = index in support_index_set
-                prediction_path = None if is_support else predictions.get((source_index, index))
-                if is_support:
+                use_model_predictions_for_support = bool(
+                    config.get("use_model_predictions_for_support", False)
+                )
+                prediction_path = (
+                    predictions.get((source_index, index))
+                    if (not is_support or use_model_predictions_for_support)
+                    else None
+                )
+                if is_support and not use_model_predictions_for_support:
                     selection_outcome = gt_outcome
                     selection_source = "observed_support"
                 elif prediction_path is not None:

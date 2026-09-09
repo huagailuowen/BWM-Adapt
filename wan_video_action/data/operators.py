@@ -466,6 +466,9 @@ class LoadCobotAction(DataProcessingOperator):
             "eef_observed_state",
             "eef_state_action",
             "eef_swing_angle",
+            "joint_target",
+            "joint_target_export",
+            "eef_target",
         ):
             raise ValueError(f"Unsupported action type: {action_type}")
         self.base_path = base_path
@@ -635,6 +638,9 @@ class LoadCobotAction(DataProcessingOperator):
         clip_frames = end_frame - start_frame + 1
         available_frames = (clip_frames - 1) // self.frame_stride + 1
         num_frames = self.get_num_frames(available_frames)
+        if self.action_type in ("joint_target", "joint_target_export", "eef_target"):
+            from .recorded_targets import load_target_chunk
+            return load_target_chunk(self, parquet_path, start_frame, end_frame, num_frames)
         raw_num_frames = min(clip_frames, max(1, (num_frames - 1) * self.frame_stride + 1))
 
         def read_aligned_column(column: str, frame_offset: int = 0) -> np.ndarray:

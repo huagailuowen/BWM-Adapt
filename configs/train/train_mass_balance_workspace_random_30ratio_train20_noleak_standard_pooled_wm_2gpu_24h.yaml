@@ -50,7 +50,7 @@ physical_context:
 training:
   learning_rate: 1.0e-05
   stage1_warmup_steps: 100
-  num_epochs: 100000
+  num_epochs: 300
   trainable_models: dit,action_encoder
   find_unused_parameters: false
   weight_decay: 0.01
