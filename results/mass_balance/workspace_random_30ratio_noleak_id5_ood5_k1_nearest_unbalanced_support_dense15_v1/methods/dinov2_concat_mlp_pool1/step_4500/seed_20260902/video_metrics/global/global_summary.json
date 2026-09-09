@@ -1,0 +1,170 @@
+{
+  "environment": [
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0004",
+      "lpips": 0.025190118168081557,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 33.22063228062221,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9617433258257676,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0241",
+      "lpips": 0.022443694727761403,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 33.453793389456614,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9632228564094583,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0481",
+      "lpips": 0.018290919916970388,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 34.19382449558803,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9675681025101331,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0673",
+      "lpips": 0.02036446625632899,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 33.965279715401785,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9660477903038783,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0895",
+      "lpips": 0.02104359945016248,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 33.77778570992606,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9648810973981531,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source0907",
+      "lpips": 0.03105313330888748,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 32.22842720576695,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9566124735808955,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1006",
+      "lpips": 0.02581572173429387,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 32.838628087724956,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9596179921037227,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1105",
+      "lpips": 0.024741620091455325,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 32.93770245143345,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9602346465978059,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1258",
+      "lpips": 0.024808564090303013,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 32.984034402029856,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9605974357717962,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1342",
+      "lpips": 0.025895153571452414,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 32.91913972582136,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9600512812154217,
+      "support_size": 1
+    }
+  ],
+  "seed": [
+    {
+      "count": 5,
+      "domain": "id",
+      "lpips": 0.021466559703860966,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 33.72226311819894,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9646926344894782,
+      "support_size": 1
+    },
+    {
+      "count": 5,
+      "domain": "ood",
+      "lpips": 0.026462838559278425,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 32.78158637455532,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9594227658539284,
+      "support_size": 1
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "lpips": 0.021466559703860966,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 33.72226311819894,
+      "split": "evaluation",
+      "ssim": 0.9646926344894782,
+      "support_size": 1
+    },
+    {
+      "count": 1,
+      "domain": "ood",
+      "lpips": 0.026462838559278425,
+      "method": "dinov2_concat_mlp_pool1",
+      "psnr": 32.78158637455532,
+      "split": "evaluation",
+      "ssim": 0.9594227658539284,
+      "support_size": 1
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "method_count": 8,
+  "methods": [
+    {
+      "method": "all_active_joint_no_curriculum",
+      "new_long": 0.75,
+      "new_overall": 0.6,
+      "new_random_long": 0.25,
+      "new_random_overall": 0.172,
+      "old_long": 0.75,
+      "old_overall": 0.6
+    },
+    {
+      "method": "dinov2_amortized_context",
+      "new_long": 0.25,
+      "new_overall": 0.32,
+      "new_random_long": 0.25,
+      "new_random_overall": 0.172,
+      "old_long": 0.5,
+      "old_overall": 0.4
+    },
+    {
+      "method": "history_conditioned_wm",
+      "new_long": 0.25,
+      "new_overall": 0.44,
+      "new_random_long": 0.25,
+      "new_random_overall": 0.172,
+      "old_long": 0.75,
+      "old_overall": 0.6
+    },
+    {
+      "method": "joint_model_latent_training",
+      "new_long": 0.75,
+      "new_overall": 0.64,
+      "new_random_long": 0.25,
+      "new_random_overall": 0.172,
+      "old_long": 0.75,
+      "old_overall": 0.64
+    },
+    {
+      "method": "lora_tta",
+      "new_long": 0.75,
+      "new_overall": 0.4,
+      "new_random_long": 0.25,
+      "new_random_overall": 0.172,
+      "old_long": 0.75,
+      "old_overall": 0.4
+    },
+    {
+      "method": "ours",
+      "new_long": 0.625,
+      "new_overall": 0.68,
+      "new_random_long": 0.25,
+      "new_random_overall": 0.172,
+      "old_long": 0.625,
+      "old_overall": 0.68
+    },
+    {
+      "method": "standard_pooled_wm",
+      "new_long": 0.25,
+      "new_overall": 0.32,
+      "new_random_long": 0.25,
+      "new_random_overall": 0.172,
+      "old_long": 0.5,
+      "old_overall": 0.4
+    },
+    {
+      "method": "ttt_kqv",
+      "new_long": 0.25,
+      "new_overall": 0.24,
+      "new_random_long": 0.25,
+      "new_random_overall": 0.172,
+      "old_long": 0.25,
+      "old_overall": 0.24
+    }
+  ],
+  "target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml"
+}

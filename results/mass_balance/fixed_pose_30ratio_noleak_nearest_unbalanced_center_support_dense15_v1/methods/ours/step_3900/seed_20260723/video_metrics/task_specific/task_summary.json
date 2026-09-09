@@ -1,0 +1,157 @@
+{
+  "aggregation": {
+    "environment": [
+      {
+        "bar_angular_velocity_mae_deg_s": 0.9199466637629969,
+        "bar_tilt_final_error_deg": 1.2869786872374775,
+        "bar_tilt_mae_deg": 0.35568741039275487,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0004",
+        "method": "ours",
+        "seed": 0,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 1.7434027171421531,
+        "bar_tilt_final_error_deg": 4.750813382789597,
+        "bar_tilt_mae_deg": 1.125006516234046,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0097",
+        "method": "ours",
+        "seed": 0,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.3354929234137103,
+        "bar_tilt_final_error_deg": 6.144966364258033,
+        "bar_tilt_mae_deg": 1.74741634490664,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0181",
+        "method": "ours",
+        "seed": 0,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 1.9037952522346138,
+        "bar_tilt_final_error_deg": 4.107631096343334,
+        "bar_tilt_mae_deg": 1.1758295496842444,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0277",
+        "method": "ours",
+        "seed": 0,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 1.9133933953882738,
+        "bar_tilt_final_error_deg": 4.346463707170759,
+        "bar_tilt_mae_deg": 1.1885996330373758,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0373",
+        "method": "ours",
+        "seed": 0,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.242475753903418,
+        "bar_tilt_final_error_deg": 2.083192633213957,
+        "bar_tilt_mae_deg": 0.5658820141251896,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0481",
+        "method": "ours",
+        "seed": 0,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 3.1089224575861403,
+        "bar_tilt_final_error_deg": 3.051493665111064,
+        "bar_tilt_mae_deg": 0.9778594863182238,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0565",
+        "method": "ours",
+        "seed": 0,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.364155197589972,
+        "bar_tilt_final_error_deg": 2.02662770064442,
+        "bar_tilt_mae_deg": 0.7714676081232311,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0673",
+        "method": "ours",
+        "seed": 0,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 3.23996289848493,
+        "bar_tilt_final_error_deg": 1.7697086160854318,
+        "bar_tilt_mae_deg": 0.7291946728992971,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0757",
+        "method": "ours",
+        "seed": 0,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 3.405070006221759,
+        "bar_tilt_final_error_deg": 1.3950648283572673,
+        "bar_tilt_mae_deg": 0.7128281340916639,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0895",
+        "method": "ours",
+        "seed": 0,
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ],
+    "seed": [
+      {
+        "bar_angular_velocity_mae_deg_s": 2.317661726572797,
+        "bar_tilt_final_error_deg": 3.096294068121134,
+        "bar_tilt_mae_deg": 0.9349771369812666,
+        "count": 10,
+        "domain": "id",
+        "method": "ours",
+        "seed": 0,
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ],
+    "summary": [
+      {
+        "bar_angular_velocity_mae_deg_s": 2.317661726572797,
+        "bar_tilt_final_error_deg": 3.096294068121134,
+        "bar_tilt_mae_deg": 0.9349771369812666,
+        "count": 1,
+        "domain": "id",
+        "method": "ours",
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ]
+  },
+  "metric_names": [
+    "bar_angular_velocity_mae_deg_s",
+    "bar_tilt_final_error_deg",
+    "bar_tilt_mae_deg"
+  ],
+  "task": "mass_balance"
+}

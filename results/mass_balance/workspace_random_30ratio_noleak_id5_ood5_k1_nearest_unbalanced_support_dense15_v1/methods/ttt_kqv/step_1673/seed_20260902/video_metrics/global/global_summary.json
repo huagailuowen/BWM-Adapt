@@ -1,0 +1,170 @@
+{
+  "environment": [
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0004",
+      "lpips": 0.03092351303036724,
+      "method": "ttt_kqv",
+      "psnr": 32.14683723449707,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9563540744656887,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0241",
+      "lpips": 0.029507301348660673,
+      "method": "ttt_kqv",
+      "psnr": 32.26927294049944,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9573659528215587,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0481",
+      "lpips": 0.02762709930539131,
+      "method": "ttt_kqv",
+      "psnr": 32.49656254904611,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9592179041290947,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0673",
+      "lpips": 0.02595873562885182,
+      "method": "ttt_kqv",
+      "psnr": 32.78558840070452,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9607347882375484,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0895",
+      "lpips": 0.022223482706717083,
+      "method": "ttt_kqv",
+      "psnr": 33.27852290017264,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9638073489018018,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source0907",
+      "lpips": 0.040708232804068496,
+      "method": "ttt_kqv",
+      "psnr": 31.086367743355886,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9500904394774485,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1006",
+      "lpips": 0.03605585092944758,
+      "method": "ttt_kqv",
+      "psnr": 31.420555932181223,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9516663031087936,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1105",
+      "lpips": 0.03649837563612631,
+      "method": "ttt_kqv",
+      "psnr": 31.503705160958425,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9525022335376475,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1258",
+      "lpips": 0.026980053899543627,
+      "method": "ttt_kqv",
+      "psnr": 32.40559468950544,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9588250505384253,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1342",
+      "lpips": 0.028871319389769008,
+      "method": "ttt_kqv",
+      "psnr": 32.27784470149449,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9577819920998417,
+      "support_size": 1
+    }
+  ],
+  "seed": [
+    {
+      "count": 5,
+      "domain": "id",
+      "lpips": 0.02724802640399763,
+      "method": "ttt_kqv",
+      "psnr": 32.59535680498395,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9594960137111384,
+      "support_size": 1
+    },
+    {
+      "count": 5,
+      "domain": "ood",
+      "lpips": 0.033822766531791004,
+      "method": "ttt_kqv",
+      "psnr": 31.73881364549909,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9541732037524314,
+      "support_size": 1
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "lpips": 0.02724802640399763,
+      "method": "ttt_kqv",
+      "psnr": 32.59535680498395,
+      "split": "evaluation",
+      "ssim": 0.9594960137111384,
+      "support_size": 1
+    },
+    {
+      "count": 1,
+      "domain": "ood",
+      "lpips": 0.033822766531791004,
+      "method": "ttt_kqv",
+      "psnr": 31.73881364549909,
+      "split": "evaluation",
+      "ssim": 0.9541732037524314,
+      "support_size": 1
+    }
+  ]
+}

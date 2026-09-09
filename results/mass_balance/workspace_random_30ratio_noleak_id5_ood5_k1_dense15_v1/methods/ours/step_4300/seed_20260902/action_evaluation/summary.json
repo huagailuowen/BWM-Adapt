@@ -1,0 +1,44 @@
+{
+  "all_valid_decisions": {
+    "count": 10,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 7.481071203462468,
+    "selected_is_oracle_rate": 0.3,
+    "task_success_rate": 0.3,
+    "uniform_random_success_rate": 0.16
+  },
+  "by_domain_and_target": {
+    "id/balanced": {
+      "count": 5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 7.52239056538875,
+      "selected_is_oracle_rate": 0.4,
+      "task_success_rate": 0.4,
+      "uniform_random_success_rate": 0.14666666666666667
+    },
+    "ood/balanced": {
+      "count": 5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 7.439751841536188,
+      "selected_is_oracle_rate": 0.2,
+      "task_success_rate": 0.2,
+      "uniform_random_success_rate": 0.17333333333333334
+    }
+  },
+  "complete_candidate_set_decisions": {
+    "count": 10,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 7.481071203462468,
+    "selected_is_oracle_rate": 0.3,
+    "task_success_rate": 0.3,
+    "uniform_random_success_rate": 0.16
+  },
+  "headline_oracle_reachable_complete_decisions": {
+    "count": 10,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 7.481071203462468,
+    "selected_is_oracle_rate": 0.3,
+    "task_success_rate": 0.3,
+    "uniform_random_success_rate": 0.16
+  }
+}

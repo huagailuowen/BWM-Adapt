@@ -1,0 +1,77 @@
+{
+  "environment": [
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source0066",
+      "lpips": 0.01745555140078068,
+      "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+      "psnr": 32.71381505330404,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9506789032859033,
+      "support_size": 2
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source0372",
+      "lpips": 0.017248072971900303,
+      "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+      "psnr": 32.60129610697428,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9510862352872135,
+      "support_size": 2
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source0594",
+      "lpips": 0.008815861058731873,
+      "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+      "psnr": 35.605063374837236,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9591366773903971,
+      "support_size": 2
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source0705",
+      "lpips": 0.020617471945782503,
+      "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+      "psnr": 31.37542355855306,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9482798205481635,
+      "support_size": 2
+    }
+  ],
+  "seed": [
+    {
+      "count": 4,
+      "domain": "id",
+      "lpips": 0.01603423934429884,
+      "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+      "psnr": 33.073899523417154,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9522954091279193,
+      "support_size": 2
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "lpips": 0.01603423934429884,
+      "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+      "psnr": 33.073899523417154,
+      "split": "evaluation",
+      "ssim": 0.9522954091279193,
+      "support_size": 2
+    }
+  ]
+}

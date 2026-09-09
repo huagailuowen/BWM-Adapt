@@ -1,0 +1,113 @@
+{
+  "aggregation": {
+    "environment": [
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source0171",
+        "light_final_state_accuracy": 1.0,
+        "light_state_accuracy": 0.993939393939394,
+        "light_transition_exact_rate": 0.8,
+        "light_transition_time_abs_error_frames": 0.2,
+        "light_yellow_score_final_abs_error": 0.020928215137714153,
+        "light_yellow_score_mae": 0.022571847295334603,
+        "light_yellow_score_rmse": 0.0320612683578052,
+        "method": "lora_tta",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source1211",
+        "light_final_state_accuracy": 0.6666666666666666,
+        "light_state_accuracy": 0.8444444444444444,
+        "light_transition_exact_rate": 0.5333333333333333,
+        "light_transition_time_abs_error_frames": 11.133333333333333,
+        "light_yellow_score_final_abs_error": 0.16011711125569292,
+        "light_yellow_score_mae": 0.08552341896518866,
+        "light_yellow_score_rmse": 0.11906577183303399,
+        "method": "lora_tta",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source1221",
+        "light_final_state_accuracy": 1.0,
+        "light_state_accuracy": 0.991919191919192,
+        "light_transition_exact_rate": 0.7333333333333333,
+        "light_transition_time_abs_error_frames": 0.26666666666666666,
+        "light_yellow_score_final_abs_error": 0.021101713294296238,
+        "light_yellow_score_mae": 0.024323258610831806,
+        "light_yellow_score_rmse": 0.035206820482005304,
+        "method": "lora_tta",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source1448",
+        "light_final_state_accuracy": 1.0,
+        "light_state_accuracy": 1.0,
+        "light_transition_exact_rate": 1.0,
+        "light_transition_time_abs_error_frames": 0.0,
+        "light_yellow_score_final_abs_error": 0.021513771416178704,
+        "light_yellow_score_mae": 0.020031150805386328,
+        "light_yellow_score_rmse": 0.020360391427557054,
+        "method": "lora_tta",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ],
+    "seed": [
+      {
+        "count": 4,
+        "domain": "id",
+        "light_final_state_accuracy": 0.9166666666666666,
+        "light_state_accuracy": 0.9575757575757576,
+        "light_transition_exact_rate": 0.7666666666666667,
+        "light_transition_time_abs_error_frames": 2.9,
+        "light_yellow_score_final_abs_error": 0.05591520277597051,
+        "light_yellow_score_mae": 0.038112418919185355,
+        "light_yellow_score_rmse": 0.051673563025100386,
+        "method": "lora_tta",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ],
+    "summary": [
+      {
+        "count": 1,
+        "domain": "id",
+        "light_final_state_accuracy": 0.9166666666666666,
+        "light_state_accuracy": 0.9575757575757576,
+        "light_transition_exact_rate": 0.7666666666666667,
+        "light_transition_time_abs_error_frames": 2.9,
+        "light_yellow_score_final_abs_error": 0.05591520277597051,
+        "light_yellow_score_mae": 0.038112418919185355,
+        "light_yellow_score_rmse": 0.051673563025100386,
+        "method": "lora_tta",
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ]
+  },
+  "metric_names": [
+    "light_final_state_accuracy",
+    "light_state_accuracy",
+    "light_transition_exact_rate",
+    "light_transition_time_abs_error_frames",
+    "light_yellow_score_final_abs_error",
+    "light_yellow_score_mae",
+    "light_yellow_score_rmse"
+  ],
+  "task": "lightswitch"
+}

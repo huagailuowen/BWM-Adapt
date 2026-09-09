@@ -1,0 +1,11 @@
+{
+  "checkpoint": "outputs/mass_balance_fixed_pose_30ratio_train20_mainview_4env8chunk_c32_oldrandom_stage1_4300_110422/step-3900.safetensors",
+  "context_table": "outputs/mass_balance_fixed_pose_30ratio_train20_mainview_4env8chunk_c32_oldrandom_stage1_4300_110422/step-3900.context_table.json",
+  "initial_context": "active_table_mean",
+  "inner_schedule": "3.0:10,1.5:10,0.5:10,0.15:10",
+  "context_dtype": "fp32",
+  "support_size": 1,
+  "id_environments": 5,
+  "ood_environments": 5,
+  "queries_per_environment": 14
+}

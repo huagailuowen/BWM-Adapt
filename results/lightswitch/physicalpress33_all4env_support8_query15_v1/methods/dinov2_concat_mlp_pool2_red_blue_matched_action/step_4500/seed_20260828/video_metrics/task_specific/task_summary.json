@@ -1,0 +1,113 @@
+{
+  "aggregation": {
+    "environment": [
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source0066",
+        "light_final_state_accuracy": 0.5333333333333333,
+        "light_state_accuracy": 0.7676767676767677,
+        "light_transition_exact_rate": 0.4666666666666667,
+        "light_transition_time_abs_error_frames": 15.466666666666667,
+        "light_yellow_score_final_abs_error": 0.2089568423335502,
+        "light_yellow_score_mae": 0.11449629673442296,
+        "light_yellow_score_rmse": 0.15515227520139113,
+        "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 2
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source0372",
+        "light_final_state_accuracy": 0.5333333333333333,
+        "light_state_accuracy": 0.7717171717171719,
+        "light_transition_exact_rate": 0.5333333333333333,
+        "light_transition_time_abs_error_frames": 15.4,
+        "light_yellow_score_final_abs_error": 0.21121231836911733,
+        "light_yellow_score_mae": 0.1136136905818103,
+        "light_yellow_score_rmse": 0.1512920870134867,
+        "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 2
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source0594",
+        "light_final_state_accuracy": 1.0,
+        "light_state_accuracy": 1.0,
+        "light_transition_exact_rate": 1.0,
+        "light_transition_time_abs_error_frames": 0.0,
+        "light_yellow_score_final_abs_error": 0.019149859032747782,
+        "light_yellow_score_mae": 0.01763832206252506,
+        "light_yellow_score_rmse": 0.017976632478977662,
+        "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 2
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source0705",
+        "light_final_state_accuracy": 0.3333333333333333,
+        "light_state_accuracy": 0.6747474747474749,
+        "light_transition_exact_rate": 0.26666666666666666,
+        "light_transition_time_abs_error_frames": 22.066666666666666,
+        "light_yellow_score_final_abs_error": 0.29538061158100193,
+        "light_yellow_score_mae": 0.15441927406794026,
+        "light_yellow_score_rmse": 0.21178533014067982,
+        "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 2
+      }
+    ],
+    "seed": [
+      {
+        "count": 4,
+        "domain": "id",
+        "light_final_state_accuracy": 0.6,
+        "light_state_accuracy": 0.8035353535353535,
+        "light_transition_exact_rate": 0.5666666666666667,
+        "light_transition_time_abs_error_frames": 13.233333333333334,
+        "light_yellow_score_final_abs_error": 0.1836749078291043,
+        "light_yellow_score_mae": 0.10004189586167464,
+        "light_yellow_score_rmse": 0.13405158120863384,
+        "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+        "seed": 20260828,
+        "split": "evaluation",
+        "support_size": 2
+      }
+    ],
+    "summary": [
+      {
+        "count": 1,
+        "domain": "id",
+        "light_final_state_accuracy": 0.6,
+        "light_state_accuracy": 0.8035353535353535,
+        "light_transition_exact_rate": 0.5666666666666667,
+        "light_transition_time_abs_error_frames": 13.233333333333334,
+        "light_yellow_score_final_abs_error": 0.1836749078291043,
+        "light_yellow_score_mae": 0.10004189586167464,
+        "light_yellow_score_rmse": 0.13405158120863384,
+        "method": "dinov2_concat_mlp_pool2_red_blue_matched_action",
+        "split": "evaluation",
+        "support_size": 2
+      }
+    ]
+  },
+  "metric_names": [
+    "light_final_state_accuracy",
+    "light_state_accuracy",
+    "light_transition_exact_rate",
+    "light_transition_time_abs_error_frames",
+    "light_yellow_score_final_abs_error",
+    "light_yellow_score_mae",
+    "light_yellow_score_rmse"
+  ],
+  "task": "lightswitch"
+}

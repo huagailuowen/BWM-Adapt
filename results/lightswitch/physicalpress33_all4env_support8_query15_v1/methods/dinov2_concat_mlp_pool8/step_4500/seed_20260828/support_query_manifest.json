@@ -1,0 +1,282 @@
+[
+  {
+    "causal_class": "neither",
+    "context_group_id": 4.0,
+    "query_condition_counts": {
+      "blue_lamp0": 7,
+      "blue_lamp1": 0,
+      "red_lamp0": 8,
+      "red_lamp1": 0
+    },
+    "query_episode_indices": [
+      181,
+      137,
+      181,
+      137,
+      137,
+      137,
+      137,
+      137,
+      181,
+      137,
+      181,
+      137,
+      181,
+      181,
+      181
+    ],
+    "query_indices": [
+      1450,
+      1097,
+      1453,
+      1099,
+      1098,
+      1096,
+      1101,
+      1100,
+      1449,
+      1102,
+      1451,
+      1103,
+      1452,
+      1455,
+      1454
+    ],
+    "source_episode_index": 181,
+    "source_index": 1448,
+    "support_episode_indices": [
+      40,
+      45,
+      74,
+      81,
+      141,
+      172,
+      182,
+      184
+    ],
+    "support_indices": [
+      1379,
+      1459,
+      594,
+      649,
+      364,
+      1130,
+      327,
+      1479
+    ],
+    "unique_query_episode_indices": [
+      137,
+      181
+    ]
+  },
+  {
+    "causal_class": "red_only",
+    "context_group_id": 8.0,
+    "query_condition_counts": {
+      "blue_lamp0": 4,
+      "blue_lamp1": 4,
+      "red_lamp0": 3,
+      "red_lamp1": 4
+    },
+    "query_episode_indices": [
+      193,
+      193,
+      151,
+      151,
+      193,
+      151,
+      151,
+      193,
+      151,
+      151,
+      193,
+      193,
+      193,
+      151,
+      193
+    ],
+    "query_indices": [
+      1549,
+      1544,
+      1209,
+      1208,
+      1545,
+      1215,
+      1214,
+      1550,
+      1213,
+      1210,
+      1547,
+      1551,
+      1548,
+      1212,
+      1546
+    ],
+    "source_episode_index": 151,
+    "source_index": 1211,
+    "support_episode_indices": [
+      7,
+      46,
+      77,
+      104,
+      107,
+      128,
+      145,
+      146
+    ],
+    "support_indices": [
+      372,
+      1170,
+      1163,
+      1025,
+      623,
+      834,
+      60,
+      860
+    ],
+    "unique_query_episode_indices": [
+      151,
+      193
+    ]
+  },
+  {
+    "causal_class": "blue_only",
+    "context_group_id": 12.0,
+    "query_condition_counts": {
+      "blue_lamp0": 6,
+      "blue_lamp1": 4,
+      "red_lamp0": 1,
+      "red_lamp1": 4
+    },
+    "query_episode_indices": [
+      21,
+      21,
+      27,
+      27,
+      21,
+      21,
+      21,
+      27,
+      21,
+      27,
+      27,
+      21,
+      27,
+      27,
+      27
+    ],
+    "query_indices": [
+      168,
+      169,
+      217,
+      218,
+      172,
+      173,
+      170,
+      221,
+      175,
+      222,
+      216,
+      174,
+      220,
+      223,
+      219
+    ],
+    "source_episode_index": 21,
+    "source_index": 171,
+    "support_episode_indices": [
+      12,
+      19,
+      58,
+      70,
+      88,
+      114,
+      187,
+      199
+    ],
+    "support_indices": [
+      705,
+      564,
+      102,
+      913,
+      471,
+      156,
+      1496,
+      1593
+    ],
+    "unique_query_episode_indices": [
+      21,
+      27
+    ]
+  },
+  {
+    "causal_class": "both",
+    "context_group_id": 19.0,
+    "query_condition_counts": {
+      "blue_lamp0": 3,
+      "blue_lamp1": 1,
+      "red_lamp0": 4,
+      "red_lamp1": 7
+    },
+    "query_episode_indices": [
+      188,
+      152,
+      188,
+      152,
+      188,
+      188,
+      188,
+      152,
+      152,
+      188,
+      188,
+      188,
+      152,
+      152,
+      152
+    ],
+    "query_indices": [
+      1510,
+      1217,
+      1507,
+      1222,
+      1504,
+      1506,
+      1505,
+      1223,
+      1219,
+      1509,
+      1508,
+      1511,
+      1218,
+      1216,
+      1220
+    ],
+    "source_episode_index": 152,
+    "source_index": 1221,
+    "support_episode_indices": [
+      0,
+      8,
+      28,
+      101,
+      105,
+      110,
+      112,
+      159
+    ],
+    "support_indices": [
+      880,
+      815,
+      66,
+      229,
+      901,
+      1273,
+      2,
+      845
+    ],
+    "unique_query_episode_indices": [
+      152,
+      188
+    ]
+  }
+]

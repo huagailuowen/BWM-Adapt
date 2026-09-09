@@ -1,0 +1,11 @@
+{
+  "adaptation": "none",
+  "checkpoint": "/tmp/cyzhou05/bwm_shared_cache/trained_ckpts/lightswitch-physicalpress-pooled-step-3289.safetensors",
+  "method": "standard_pooled_wm",
+  "query_count": 60,
+  "query_state_policy": "none",
+  "source_transfer_plan": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/lightswitch/physicalpress33_all4env_support8_query15_v1/protocol/transfer_plan.json",
+  "support_is_ignored_by_generator": true,
+  "train_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/train/train_lightswitch_physicalpress33jitter11to22_maincam_active12_standard_pooled_wm_2gpu_24h.yaml",
+  "transfer_plan": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/standard_pooled_wm/step_3289/seed_20260828/transfer/transfer_plan.json"
+}

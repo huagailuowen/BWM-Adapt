@@ -1,0 +1,98 @@
+[
+  {
+    "source_index": 594,
+    "environment": "neither",
+    "support_size": 2,
+    "support_action": "blue",
+    "query_indices": [
+      1450,
+      1097,
+      1453,
+      1099,
+      1098,
+      1096,
+      1101,
+      1100,
+      1449,
+      1102,
+      1451,
+      1103,
+      1452,
+      1455,
+      1454
+    ],
+    "output": "results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/dinov2_concat_mlp_pool2_red_blue_matched_action/step_4500/seed_20260828/grids_support_plus_queries/source0594_neither_support2_plus_15queries_gt_DINOv2-red-blue-pool-2-query.mp4"
+  },
+  {
+    "source_index": 372,
+    "environment": "red_only",
+    "support_size": 2,
+    "support_action": "blue",
+    "query_indices": [
+      1549,
+      1544,
+      1209,
+      1208,
+      1545,
+      1215,
+      1214,
+      1550,
+      1213,
+      1210,
+      1547,
+      1551,
+      1548,
+      1212,
+      1546
+    ],
+    "output": "results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/dinov2_concat_mlp_pool2_red_blue_matched_action/step_4500/seed_20260828/grids_support_plus_queries/source0372_red_only_support2_plus_15queries_gt_DINOv2-red-blue-pool-2-query.mp4"
+  },
+  {
+    "source_index": 705,
+    "environment": "blue_only",
+    "support_size": 2,
+    "support_action": "blue",
+    "query_indices": [
+      168,
+      169,
+      217,
+      218,
+      172,
+      173,
+      170,
+      221,
+      175,
+      222,
+      216,
+      174,
+      220,
+      223,
+      219
+    ],
+    "output": "results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/dinov2_concat_mlp_pool2_red_blue_matched_action/step_4500/seed_20260828/grids_support_plus_queries/source0705_blue_only_support2_plus_15queries_gt_DINOv2-red-blue-pool-2-query.mp4"
+  },
+  {
+    "source_index": 66,
+    "environment": "both",
+    "support_size": 2,
+    "support_action": "blue",
+    "query_indices": [
+      1510,
+      1217,
+      1507,
+      1222,
+      1504,
+      1506,
+      1505,
+      1223,
+      1219,
+      1509,
+      1508,
+      1511,
+      1218,
+      1216,
+      1220
+    ],
+    "output": "results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/dinov2_concat_mlp_pool2_red_blue_matched_action/step_4500/seed_20260828/grids_support_plus_queries/source0066_both_support2_plus_15queries_gt_DINOv2-red-blue-pool-2-query.mp4"
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "action_order_field": "sampled_support_offset_m",
+  "candidate_count_is_protocol_defined": true,
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/mass_balance/fixed_pose_30ratio_noleak_k2_bracket_dense15_model_predictions_v1/methods/ours/step_3900/seed_20260723/action_evaluation.yaml",
+  "method": "ours_k2_bracket_model_predictions",
+  "observed_support_is_selectable": true,
+  "selection_strategy": "boundary_crossing",
+  "selection_uses_query_ground_truth": false,
+  "targets": [
+    {
+      "id": "balanced",
+      "kind": "scalar_interval",
+      "max": 3.0,
+      "min": -3.0
+    }
+  ],
+  "task": "mass_balance",
+  "transfer_plans": [
+    {
+      "domain": "id",
+      "path": "results/mass_balance/fixed_pose_30ratio_noleak_k2_bracket_dense15_model_predictions_v1/methods/ours/step_3900/seed_20260723/transfer/transfer_plan.json"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "dataset": "workspace_random_30ratio_noleak",
+  "id_ratio_indices": [
+    0,
+    5,
+    10,
+    14,
+    19
+  ],
+  "method_checkpoint_training_dataset": "workspace_random_20ratio_2026-07-22",
+  "ood_ratio_indices": [
+    20,
+    22,
+    24,
+    27,
+    29
+  ],
+  "queries_per_environment": 14,
+  "query_action_bins": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "query_ground_truth_used_for_selection": false,
+  "query_window_raw_frames": [
+    40,
+    120
+  ],
+  "support_action_bin": 7,
+  "support_size": 1,
+  "support_window_raw_frames": [
+    40,
+    120
+  ],
+  "task": "mass_balance",
+  "version": 1
+}

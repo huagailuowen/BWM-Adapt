@@ -1,0 +1,24 @@
+{
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/mass_balance/fixed_pose_30ratio_noleak_nearest_unbalanced_center_support_dense15_v1/methods/ours/step_3900/seed_20260723/action_evaluation_dense15_boundary.yaml",
+  "extractor": "sim_rgb_v1",
+  "extractor_settings": {
+    "max_tracking_jump_px": 64.0,
+    "offscreen_centroid": "hold_last_observed_position"
+  },
+  "global_metrics": [
+    "psnr",
+    "ssim"
+  ],
+  "method": "ours",
+  "object_primary_indices": [
+    0
+  ],
+  "query_ground_truth_used_for_selection": false,
+  "task": "mass_balance",
+  "transfer_plans": [
+    {
+      "domain": "id",
+      "path": "results/mass_balance/fixed_pose_30ratio_noleak_nearest_unbalanced_center_support_dense15_v1/methods/ours/step_3900/seed_20260723/same_ratio_other_supports/transfer_plan.json"
+    }
+  ]
+}

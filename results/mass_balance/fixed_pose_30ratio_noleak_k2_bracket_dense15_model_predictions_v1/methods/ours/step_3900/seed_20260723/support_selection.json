@@ -1,0 +1,382 @@
+[
+  {
+    "mass_ratio": 0.125,
+    "prediction_targets": [
+      1,
+      4,
+      7,
+      10,
+      13,
+      16,
+      19,
+      22,
+      25,
+      28,
+      31,
+      34,
+      37,
+      40,
+      43
+    ],
+    "ratio_index": 0,
+    "selection_rule": "right_edge_balanced_and_nearest_right",
+    "support_action_ids": [
+      "0",
+      "1"
+    ],
+    "support_action_orders": [
+      -0.10300049544984875,
+      -0.08086924378254481
+    ],
+    "support_gt_tilts_deg": [
+      -0.14584179168631167,
+      25.402339774049043
+    ],
+    "support_indices": [
+      1,
+      4
+    ]
+  },
+  {
+    "mass_ratio": 0.2,
+    "prediction_targets": [
+      91,
+      94,
+      97,
+      100,
+      103,
+      106,
+      109,
+      112,
+      115,
+      118,
+      121,
+      124,
+      127,
+      130,
+      133
+    ],
+    "ratio_index": 2,
+    "selection_rule": "right_edge_balanced_and_nearest_right",
+    "support_action_ids": [
+      "1",
+      "2"
+    ],
+    "support_action_orders": [
+      -0.0827040864522244,
+      -0.06410476066053365
+    ],
+    "support_gt_tilts_deg": [
+      -0.029699304488053985,
+      17.972605136519913
+    ],
+    "support_indices": [
+      94,
+      97
+    ]
+  },
+  {
+    "mass_ratio": 0.3333333333,
+    "prediction_targets": [
+      181,
+      184,
+      187,
+      190,
+      193,
+      196,
+      199,
+      202,
+      205,
+      208,
+      211,
+      214,
+      217,
+      220,
+      223
+    ],
+    "ratio_index": 4,
+    "selection_rule": "nearest_unbalanced_left_and_right",
+    "support_action_ids": [
+      "0",
+      "4"
+    ],
+    "support_action_orders": [
+      -0.09195882222403065,
+      -0.043366327640639586
+    ],
+    "support_gt_tilts_deg": [
+      -5.7375744744447905,
+      13.232226120287981
+    ],
+    "support_indices": [
+      181,
+      193
+    ]
+  },
+  {
+    "mass_ratio": 0.5,
+    "prediction_targets": [
+      271,
+      274,
+      277,
+      280,
+      283,
+      286,
+      289,
+      292,
+      295,
+      298,
+      301,
+      304,
+      307,
+      310,
+      313
+    ],
+    "ratio_index": 6,
+    "selection_rule": "nearest_unbalanced_left_and_right",
+    "support_action_ids": [
+      "2",
+      "6"
+    ],
+    "support_action_orders": [
+      -0.06613710443994816,
+      -0.00979349425993164
+    ],
+    "support_gt_tilts_deg": [
+      -6.233738442677476,
+      10.499918561816754
+    ],
+    "support_indices": [
+      277,
+      289
+    ]
+  },
+  {
+    "mass_ratio": 0.8,
+    "prediction_targets": [
+      361,
+      364,
+      367,
+      370,
+      373,
+      376,
+      379,
+      382,
+      385,
+      388,
+      391,
+      394,
+      397,
+      400,
+      403
+    ],
+    "ratio_index": 8,
+    "selection_rule": "nearest_unbalanced_left_and_right",
+    "support_action_ids": [
+      "4",
+      "8"
+    ],
+    "support_action_orders": [
+      -0.045441183798179074,
+      0.017101377641059633
+    ],
+    "support_gt_tilts_deg": [
+      -7.358928727570663,
+      8.576198586938546
+    ],
+    "support_indices": [
+      373,
+      385
+    ]
+  },
+  {
+    "mass_ratio": 1.25,
+    "prediction_targets": [
+      451,
+      454,
+      457,
+      460,
+      463,
+      466,
+      469,
+      472,
+      475,
+      478,
+      481,
+      484,
+      487,
+      490,
+      493
+    ],
+    "ratio_index": 10,
+    "selection_rule": "nearest_unbalanced_left_and_right",
+    "support_action_ids": [
+      "6",
+      "10"
+    ],
+    "support_action_orders": [
+      -0.020418939473909967,
+      0.03959056045758274
+    ],
+    "support_gt_tilts_deg": [
+      -8.575242603186856,
+      6.923416245768519
+    ],
+    "support_indices": [
+      469,
+      481
+    ]
+  },
+  {
+    "mass_ratio": 2.0,
+    "prediction_targets": [
+      541,
+      544,
+      547,
+      550,
+      553,
+      556,
+      559,
+      562,
+      565,
+      568,
+      571,
+      574,
+      577,
+      580,
+      583
+    ],
+    "ratio_index": 12,
+    "selection_rule": "nearest_unbalanced_left_and_right",
+    "support_action_ids": [
+      "8",
+      "12"
+    ],
+    "support_action_orders": [
+      0.01408008625870042,
+      0.07548075539458993
+    ],
+    "support_gt_tilts_deg": [
+      -11.02321795006807,
+      5.923934422298145
+    ],
+    "support_indices": [
+      565,
+      577
+    ]
+  },
+  {
+    "mass_ratio": 3.0,
+    "prediction_targets": [
+      631,
+      634,
+      637,
+      640,
+      643,
+      646,
+      649,
+      652,
+      655,
+      658,
+      661,
+      664,
+      667,
+      670,
+      673
+    ],
+    "ratio_index": 14,
+    "selection_rule": "nearest_unbalanced_left_and_right",
+    "support_action_ids": [
+      "10",
+      "14"
+    ],
+    "support_action_orders": [
+      0.038858822336207875,
+      0.09308454957144309
+    ],
+    "support_gt_tilts_deg": [
+      -13.822766132391182,
+      5.541219881852339
+    ],
+    "support_indices": [
+      661,
+      673
+    ]
+  },
+  {
+    "mass_ratio": 5.0,
+    "prediction_targets": [
+      721,
+      724,
+      727,
+      730,
+      733,
+      736,
+      739,
+      742,
+      745,
+      748,
+      751,
+      754,
+      757,
+      760,
+      763
+    ],
+    "ratio_index": 16,
+    "selection_rule": "nearest_left_and_left_edge_balanced",
+    "support_action_ids": [
+      "12",
+      "13"
+    ],
+    "support_action_orders": [
+      0.06785687758138692,
+      0.08947801746821635
+    ],
+    "support_gt_tilts_deg": [
+      -20.34240871177503,
+      -0.07815842109095632
+    ],
+    "support_indices": [
+      757,
+      760
+    ]
+  },
+  {
+    "mass_ratio": 8.0,
+    "prediction_targets": [
+      856,
+      859,
+      862,
+      865,
+      868,
+      871,
+      874,
+      877,
+      880,
+      883,
+      886,
+      889,
+      892,
+      895,
+      898
+    ],
+    "ratio_index": 19,
+    "selection_rule": "nearest_left_and_left_edge_balanced",
+    "support_action_ids": [
+      "13",
+      "14"
+    ],
+    "support_action_orders": [
+      0.07898017612977085,
+      0.09099333192016981
+    ],
+    "support_gt_tilts_deg": [
+      -27.24464799773299,
+      -0.3678632295493843
+    ],
+    "support_indices": [
+      895,
+      898
+    ]
+  }
+]

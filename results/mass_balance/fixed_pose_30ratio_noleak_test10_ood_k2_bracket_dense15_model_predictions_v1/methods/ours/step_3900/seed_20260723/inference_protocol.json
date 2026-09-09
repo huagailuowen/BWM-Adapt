@@ -1,0 +1,14 @@
+{
+  "domain": "ood",
+  "environment_count": 10,
+  "method": "ours_k2_bracket_model_predictions",
+  "checkpoint_step": 3900,
+  "support_size": 2,
+  "support_ground_truth_usage": "inner-loop optimization only",
+  "action_selection_source": "model rollout for all 15 actions, including supports",
+  "video_metric_queries_per_environment": 13,
+  "inner_steps": 40,
+  "inner_lr_schedule": "3.0:10,1.5:10,0.5:10,0.15:10",
+  "context_dtype": "float32",
+  "model_loads_for_adaptation_and_rollout": 1
+}

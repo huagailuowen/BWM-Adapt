@@ -1,0 +1,53 @@
+{
+  "dataset_split": {
+    "id": "training",
+    "ood": "test"
+  },
+  "environment_count": 10,
+  "id_mass_ratios": [
+    0.125,
+    0.4,
+    1.25,
+    3.0,
+    8.0
+  ],
+  "ood_mass_ratios": [
+    0.1538930517,
+    0.3535533906,
+    0.8122523964,
+    2.8284271247,
+    6.4980191708
+  ],
+  "queries_per_environment": 14,
+  "query_count": 140,
+  "query_policy": "all other support bins in the same environment and same temporal window",
+  "selection": {
+    "id": [
+      0,
+      5,
+      10,
+      14,
+      19
+    ],
+    "ood": [
+      20,
+      22,
+      24,
+      27,
+      29
+    ]
+  },
+  "selection_rule": "five approximately uniform ratio ranks from each 20-ID and 10-OOD split",
+  "support_bin_index": 7,
+  "support_size": 1,
+  "support_window": {
+    "raw_frames": [
+      40,
+      120
+    ],
+    "stride": 2,
+    "window_index": 1
+  },
+  "task": "mass_balance",
+  "version": 1
+}

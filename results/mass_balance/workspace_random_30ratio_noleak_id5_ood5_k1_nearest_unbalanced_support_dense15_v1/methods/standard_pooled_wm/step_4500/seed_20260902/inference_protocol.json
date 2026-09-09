@@ -1,0 +1,15 @@
+{
+  "adaptation": "none",
+  "checkpoint": "/tmp/cyzhou05/bwm_shared_cache/trained_ckpts/mass-balance-random30-pooled-job112174-step4500.safetensors",
+  "method": "standard_pooled_wm",
+  "query_count": 140,
+  "query_state_policy": "none",
+  "source_transfer_plans": [
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ttt_kqv/step_1673/seed_20260902/input_support_query_manifest.json"
+  ],
+  "support_is_ignored_by_generator": true,
+  "train_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/train/train_mass_balance_workspace_random_30ratio_train20_noleak_standard_pooled_wm_2gpu_24h.yaml",
+  "transfer_plans": [
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/standard_pooled_wm/step_4500/seed_20260902/transfer/transfer_plan.json"
+  ]
+}

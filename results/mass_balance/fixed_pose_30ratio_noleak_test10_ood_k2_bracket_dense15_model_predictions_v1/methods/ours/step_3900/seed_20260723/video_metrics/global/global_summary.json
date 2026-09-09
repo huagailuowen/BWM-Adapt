@@ -1,0 +1,137 @@
+{
+  "environment": [
+    {
+      "count": 13,
+      "domain": "ood",
+      "environment_id": "source0004",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.770760169396034,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9652394804453538,
+      "support_size": 1
+    },
+    {
+      "count": 13,
+      "domain": "ood",
+      "environment_id": "source0052",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.80447329007662,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.965548421831113,
+      "support_size": 1
+    },
+    {
+      "count": 13,
+      "domain": "ood",
+      "environment_id": "source0094",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.770353463979866,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9660448326849802,
+      "support_size": 1
+    },
+    {
+      "count": 13,
+      "domain": "ood",
+      "environment_id": "source0145",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.73785635141226,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9660228480764894,
+      "support_size": 1
+    },
+    {
+      "count": 13,
+      "domain": "ood",
+      "environment_id": "source0193",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.5060800405649,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9638031555608781,
+      "support_size": 1
+    },
+    {
+      "count": 13,
+      "domain": "ood",
+      "environment_id": "source0244",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.340070284329926,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9630371842107004,
+      "support_size": 1
+    },
+    {
+      "count": 13,
+      "domain": "ood",
+      "environment_id": "source0295",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.811347227830154,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.965548145167152,
+      "support_size": 1
+    },
+    {
+      "count": 13,
+      "domain": "ood",
+      "environment_id": "source0346",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.39462793790377,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9632067473475974,
+      "support_size": 1
+    },
+    {
+      "count": 13,
+      "domain": "ood",
+      "environment_id": "source0394",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.771194164569565,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9653278239225134,
+      "support_size": 1
+    },
+    {
+      "count": 13,
+      "domain": "ood",
+      "environment_id": "source0442",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.85696528508113,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9652674288731803,
+      "support_size": 1
+    }
+  ],
+  "seed": [
+    {
+      "count": 10,
+      "domain": "ood",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.67637282151442,
+      "seed": 0,
+      "split": "evaluation",
+      "ssim": 0.9649046068119957,
+      "support_size": 1
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "ood",
+      "method": "ours_k2_bracket_model_predictions",
+      "psnr": 33.67637282151442,
+      "split": "evaluation",
+      "ssim": 0.9649046068119957,
+      "support_size": 1
+    }
+  ]
+}

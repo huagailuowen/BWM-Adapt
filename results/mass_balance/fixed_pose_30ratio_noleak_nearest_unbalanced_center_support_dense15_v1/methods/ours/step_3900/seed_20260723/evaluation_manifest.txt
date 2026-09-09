@@ -1,0 +1,15 @@
+training_job=110422
+dataset_protocol=fixed_pose_30ratio_train20_noleak_mainview
+checkpoint=outputs/mass_balance_fixed_pose_30ratio_train20_mainview_4env8chunk_c32_oldrandom_stage1_4300_110422/step-3900.safetensors
+context_table=outputs/mass_balance_fixed_pose_30ratio_train20_mainview_4env8chunk_c32_oldrandom_stage1_4300_110422/step-3900.context_table.json
+config=configs/train/train_mass_balance_fixed_pose_30ratio_train20_mainview_4env8chunk_stride2_curriculum_c32_old_random_stage1_4300.yaml
+source_indices=4,97,181,277,373,481,565,673,757,895
+support_selection=oracle_gt_nearest_unbalanced_to_beam_center_tilt_outside_3deg
+source_support_bins=1,2,0,2,4,10,8,14,12,13
+source_window=40-120
+stage2_initial_context=active_table_mean
+stage2_schedule=3.0:10,1.5:10,0.5:10,0.15:10
+stage2_context_dtype=fp32
+transfer_support_bins=0,1,2,3,4,5,6,8,9,10,11,12,13,14
+transfer_window=40-120
+video_fps=10

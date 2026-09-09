@@ -1,0 +1,77 @@
+{
+  "environment": [
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source0372",
+      "lpips": 0.017224031935135522,
+      "method": "dinov2_concat_mlp_pool8",
+      "psnr": 32.60999946594238,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9511208156142573,
+      "support_size": 8
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source0705",
+      "lpips": 0.020589032396674155,
+      "method": "dinov2_concat_mlp_pool8",
+      "psnr": 31.404233805338542,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9483038409791812,
+      "support_size": 8
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source0880",
+      "lpips": 0.01738879152884086,
+      "method": "dinov2_concat_mlp_pool8",
+      "psnr": 32.708652369181316,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.950746045570181,
+      "support_size": 8
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source1379",
+      "lpips": 0.00881605048974355,
+      "method": "dinov2_concat_mlp_pool8",
+      "psnr": 35.60140711466472,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9591535534521546,
+      "support_size": 8
+    }
+  ],
+  "seed": [
+    {
+      "count": 4,
+      "domain": "id",
+      "lpips": 0.016004476587598522,
+      "method": "dinov2_concat_mlp_pool8",
+      "psnr": 33.08107318878174,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9523310639039435,
+      "support_size": 8
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "lpips": 0.016004476587598522,
+      "method": "dinov2_concat_mlp_pool8",
+      "psnr": 33.08107318878174,
+      "split": "evaluation",
+      "ssim": 0.9523310639039435,
+      "support_size": 8
+    }
+  ]
+}

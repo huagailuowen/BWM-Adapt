@@ -1,0 +1,113 @@
+{
+  "aggregation": {
+    "environment": [
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source0372",
+        "light_final_state_accuracy": 0.5333333333333333,
+        "light_state_accuracy": 0.7737373737373738,
+        "light_transition_exact_rate": 0.5333333333333333,
+        "light_transition_time_abs_error_frames": 15.4,
+        "light_yellow_score_final_abs_error": 0.2152244632400781,
+        "light_yellow_score_mae": 0.11687138134763378,
+        "light_yellow_score_rmse": 0.1545557263013121,
+        "method": "ttt_kqv",
+        "seed": 20260801,
+        "split": "evaluation",
+        "support_size": 8
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source0705",
+        "light_final_state_accuracy": 0.3333333333333333,
+        "light_state_accuracy": 0.6767676767676768,
+        "light_transition_exact_rate": 0.26666666666666666,
+        "light_transition_time_abs_error_frames": 22.066666666666666,
+        "light_yellow_score_final_abs_error": 0.29954456733897206,
+        "light_yellow_score_mae": 0.15824806293251317,
+        "light_yellow_score_rmse": 0.2145492122282457,
+        "method": "ttt_kqv",
+        "seed": 20260801,
+        "split": "evaluation",
+        "support_size": 8
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source0880",
+        "light_final_state_accuracy": 0.5333333333333333,
+        "light_state_accuracy": 0.7676767676767677,
+        "light_transition_exact_rate": 0.4666666666666667,
+        "light_transition_time_abs_error_frames": 15.466666666666667,
+        "light_yellow_score_final_abs_error": 0.21400997614400347,
+        "light_yellow_score_mae": 0.12000683477586534,
+        "light_yellow_score_rmse": 0.15929237303124072,
+        "method": "ttt_kqv",
+        "seed": 20260801,
+        "split": "evaluation",
+        "support_size": 8
+      },
+      {
+        "count": 15,
+        "domain": "id",
+        "environment_id": "source1379",
+        "light_final_state_accuracy": 1.0,
+        "light_state_accuracy": 1.0,
+        "light_transition_exact_rate": 1.0,
+        "light_transition_time_abs_error_frames": 0.0,
+        "light_yellow_score_final_abs_error": 0.02541747993927564,
+        "light_yellow_score_mae": 0.023228380092400913,
+        "light_yellow_score_rmse": 0.023563114561309093,
+        "method": "ttt_kqv",
+        "seed": 20260801,
+        "split": "evaluation",
+        "support_size": 8
+      }
+    ],
+    "seed": [
+      {
+        "count": 4,
+        "domain": "id",
+        "light_final_state_accuracy": 0.6,
+        "light_state_accuracy": 0.8045454545454546,
+        "light_transition_exact_rate": 0.5666666666666667,
+        "light_transition_time_abs_error_frames": 13.233333333333334,
+        "light_yellow_score_final_abs_error": 0.18854912166558235,
+        "light_yellow_score_mae": 0.1045886647871033,
+        "light_yellow_score_rmse": 0.1379901065305269,
+        "method": "ttt_kqv",
+        "seed": 20260801,
+        "split": "evaluation",
+        "support_size": 8
+      }
+    ],
+    "summary": [
+      {
+        "count": 1,
+        "domain": "id",
+        "light_final_state_accuracy": 0.6,
+        "light_state_accuracy": 0.8045454545454546,
+        "light_transition_exact_rate": 0.5666666666666667,
+        "light_transition_time_abs_error_frames": 13.233333333333334,
+        "light_yellow_score_final_abs_error": 0.18854912166558235,
+        "light_yellow_score_mae": 0.1045886647871033,
+        "light_yellow_score_rmse": 0.1379901065305269,
+        "method": "ttt_kqv",
+        "split": "evaluation",
+        "support_size": 8
+      }
+    ]
+  },
+  "metric_names": [
+    "light_final_state_accuracy",
+    "light_state_accuracy",
+    "light_transition_exact_rate",
+    "light_transition_time_abs_error_frames",
+    "light_yellow_score_final_abs_error",
+    "light_yellow_score_mae",
+    "light_yellow_score_rmse"
+  ],
+  "task": "lightswitch"
+}

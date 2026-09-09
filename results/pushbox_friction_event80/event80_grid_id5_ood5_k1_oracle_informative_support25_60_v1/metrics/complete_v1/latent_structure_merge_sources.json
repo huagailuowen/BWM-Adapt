@@ -1,0 +1,9 @@
+{
+  "policy": "Temporary merge of completed latent-structure ablations into the complete Event80 table.",
+  "rows": {
+    "latent_c1_ordered_88821": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/latent_structure_ablation_v1/scoreboard.json",
+    "latent_c1_ordered_88821_c32schedule": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/latent_structure_ablation_c1_c32schedule_v2/scoreboard.json",
+    "latent_c32_jitter005_89030": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/latent_structure_ablation_c1_c32schedule_v2/scoreboard.json",
+    "latent_c32_shared_88822": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/latent_structure_ablation_c1_c32schedule_v2/scoreboard.json"
+  }
+}

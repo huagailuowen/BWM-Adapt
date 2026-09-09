@@ -1,0 +1,9 @@
+dataset_protocol=workspace_random_30ratio_train20_test10_noleak_mainview
+domains=5_id_5_ood
+support_size=1
+queries_per_environment=14
+support_selection=gt_nearest_unbalanced_to_balanced_action_set
+balanced_threshold_deg=[-3,3]
+support_window=40-120_stride2
+query_window=40-120_stride2
+candidate_gt_source=existing_dataset_ground_truth_only

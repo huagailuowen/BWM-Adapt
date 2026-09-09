@@ -1,0 +1,16 @@
+{
+  "checkpoint": "outputs/mass_balance_c32_oldrandom_stride2_stage1_4300_91401/step-4300.safetensors",
+  "context_table": "outputs/mass_balance_c32_oldrandom_stride2_stage1_4300_91401/step-4300.context_table.json",
+  "evaluation_dataset": "/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass_balance/libero_mass_balance_workspace_random_30ratio_15support_450eps_combined_train20_test10_nominal_z_absolute_eef_lerobot_2026-09-02_hai-machine",
+  "initial_context": "active_table_mean",
+  "inner_schedule": "3.0:10,1.5:10,0.5:10,0.15:10",
+  "context_dtype": "fp32",
+  "support_size": 1,
+  "support_action_bin": 7,
+  "support_window": "40-120",
+  "id_environments": 5,
+  "ood_environments": 5,
+  "queries_per_environment": 14,
+  "model_loads_for_generation": 1,
+  "resumable": true
+}

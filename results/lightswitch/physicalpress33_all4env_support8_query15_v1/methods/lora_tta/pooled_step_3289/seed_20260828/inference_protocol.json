@@ -1,0 +1,39 @@
+{
+  "adapter_parameter_count": 11796480,
+  "destination_transfer_plans": [
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/lora_tta/pooled_step_3289/seed_20260828/transfer/transfer_plan.json"
+  ],
+  "environment_count": 4,
+  "evaluation_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/lora_tta/lightswitch_physicalpress_step3289_all4env_support8_query15_v1.yaml",
+  "lora": {
+    "adapter_seed": 20260708,
+    "alpha": 8.0,
+    "gradient_clip_norm": 1.0,
+    "learning_rate": 0.0001,
+    "optimizer": "AdamW",
+    "query_updates_lora": false,
+    "rank": 8,
+    "reset_per_environment": true,
+    "steps": 50,
+    "target_modules": [
+      "q",
+      "k",
+      "v",
+      "o"
+    ],
+    "weight_decay": 0.0
+  },
+  "method": "lora_tta",
+  "optimizer": "AdamW",
+  "query_count": 60,
+  "query_state_policy": "read_only",
+  "reset_adapter_per_environment": true,
+  "source_checkpoint": "/tmp/cyzhou05/bwm_shared_cache/trained_ckpts/lightswitch-physicalpress-standard-pooled-step3289.safetensors",
+  "source_model": "standard_pooled_wm",
+  "source_transfer_plans": [
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/lightswitch/physicalpress33_all4env_support8_query15_v1/protocol/transfer_plan.json"
+  ],
+  "support_query_disjoint": true,
+  "train_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/train/train_lightswitch_physicalpress33jitter11to22_maincam_active12_standard_pooled_wm_2gpu_24h.yaml",
+  "weight_decay": 0.0
+}

@@ -1,0 +1,170 @@
+{
+  "environment": [
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0022",
+      "lpips": 0.04535307974687645,
+      "method": "ours",
+      "psnr": 27.733743803841726,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9192220638230288,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0247",
+      "lpips": 0.03902961499989033,
+      "method": "ours",
+      "psnr": 28.34453841618129,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9237840008444902,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0472",
+      "lpips": 0.037759058975747654,
+      "method": "ours",
+      "psnr": 28.7044495173863,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9267415661845055,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0652",
+      "lpips": 0.04265283686774118,
+      "method": "ours",
+      "psnr": 28.14716761452811,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9222113444414705,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0877",
+      "lpips": 0.05200993003589766,
+      "method": "ours",
+      "psnr": 27.559394427708217,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9159396875403069,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source0922",
+      "lpips": 0.044141855356948714,
+      "method": "ours",
+      "psnr": 28.038439341953822,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9225210080163404,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1012",
+      "lpips": 0.03876853308507374,
+      "method": "ours",
+      "psnr": 28.52916935511998,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9252264610774009,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1102",
+      "lpips": 0.0397149712911674,
+      "method": "ours",
+      "psnr": 28.47333267756871,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.924281647500261,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1237",
+      "lpips": 0.04550651194793837,
+      "method": "ours",
+      "psnr": 27.892057827540807,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9189828225129155,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1327",
+      "lpips": 0.04861798829266003,
+      "method": "ours",
+      "psnr": 27.890736716134207,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.919583935770839,
+      "support_size": 1
+    }
+  ],
+  "seed": [
+    {
+      "count": 5,
+      "domain": "id",
+      "lpips": 0.04336090412523065,
+      "method": "ours",
+      "psnr": 28.097858755929128,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9215797325667603,
+      "support_size": 1
+    },
+    {
+      "count": 5,
+      "domain": "ood",
+      "lpips": 0.04334997199475765,
+      "method": "ours",
+      "psnr": 28.164747183663508,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.9221191749755514,
+      "support_size": 1
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "lpips": 0.04336090412523065,
+      "method": "ours",
+      "psnr": 28.097858755929128,
+      "split": "evaluation",
+      "ssim": 0.9215797325667603,
+      "support_size": 1
+    },
+    {
+      "count": 1,
+      "domain": "ood",
+      "lpips": 0.04334997199475765,
+      "method": "ours",
+      "psnr": 28.164747183663508,
+      "split": "evaluation",
+      "ssim": 0.9221191749755514,
+      "support_size": 1
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "additional_method_rows": {
+    "joint_model_latent_training_curriculum700_step4200": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/joint_model_latent_training_curriculum700/step_4200/seed_20260708/metrics/complete_v1/scoreboard.json"
+  },
+  "method_mapping": {
+    "dinov2_amortized_context": "dinov2_temporal_attention_repaired",
+    "ttt_kqv": "ttt_kqv_uniform8_repaired"
+  },
+  "policy": "Replace only DINOv2 and TTT-KQV with repaired runs; retain the original History Context row.",
+  "source_scoreboard": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/repaired_baselines_v1/scoreboard.json"
+}

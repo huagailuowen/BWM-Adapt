@@ -1,0 +1,19 @@
+version: 1
+task: mass_balance
+method_name: ours_k2_bracket_model_predictions
+metadata_jsonl: data/mass_balance_fixed_pose_30ratio_train20_mainview_stride2_41f_20260902/train.jsonl
+dataset_root: /afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass_balance/libero_mass_balance_fixed_pose_30ratio_15support_450eps_combined_train20_test10_nominal_z_absolute_eef_lerobot_2026-09-02_hai-machine
+output_dir: results/mass_balance/fixed_pose_30ratio_noleak_k2_bracket_dense15_model_predictions_v1/methods/ours/step_3900/seed_20260723/action_evaluation
+transfer_plans:
+  - {path: results/mass_balance/fixed_pose_30ratio_noleak_k2_bracket_dense15_model_predictions_v1/methods/ours/step_3900/seed_20260723/transfer/transfer_plan.json, domain: id}
+action_field: action_id
+action_order_field: sampled_support_offset_m
+selection_strategy: boundary_crossing
+use_model_predictions_for_support: true
+environment_report_fields: [ratio_index, mass_ratio]
+action_report_fields: [action_id, support_bin_index, sampled_support_offset_m]
+minimum_actions: 15
+extractor: {main_view_width: 224, fps: 10.0}
+outcome: {terminal_window: 5}
+targets:
+  - {id: balanced, kind: scalar_interval, min: -3.0, max: 3.0}

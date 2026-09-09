@@ -1,0 +1,36 @@
+{
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_tasks/ttt_kqv/mass_balance_workspace_random30_step1673_id5_ood5_k1_dense15_v1.yaml",
+  "extractor": "sim_rgb_v1",
+  "extractor_settings": {
+    "max_tracking_jump_px": 64.0,
+    "offscreen_centroid": "hold_last_observed_position"
+  },
+  "global_metrics": [
+    "psnr",
+    "ssim",
+    "lpips"
+  ],
+  "method": "ttt_kqv",
+  "object_primary_indices": [
+    0
+  ],
+  "query_ground_truth_used_for_selection": false,
+  "task": "mass_balance",
+  "transfer_plans": [
+    {
+      "domain_by_source": {
+        "22": "id",
+        "247": "id",
+        "472": "id",
+        "652": "id",
+        "877": "id",
+        "922": "ood",
+        "1012": "ood",
+        "1102": "ood",
+        "1237": "ood",
+        "1327": "ood"
+      },
+      "path": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_dense15_v1/methods/ttt_kqv/step_1673/seed_20260902/transfer/transfer_plan.json"
+    }
+  ]
+}

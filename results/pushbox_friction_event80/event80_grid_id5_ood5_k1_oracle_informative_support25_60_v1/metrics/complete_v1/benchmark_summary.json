@@ -787,6 +787,991 @@
       "query_count": 90
     }
   },
+  "joint_model_latent_training_curriculum700_step4200": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.6923076923076923,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.02806948374496356,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.5384615384615384,
+          "uniform_random_success_rate": 0.16923076923076924,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.5833333333333334,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.02789175548012394,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.4166666666666667,
+          "uniform_random_success_rate": 0.17500000000000002,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 1.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.4,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.06933184821309572,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.4,
+          "uniform_random_success_rate": 0.12000000000000002,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.004561011904761908,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0023149536532170167,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.25,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.07797537615121011,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "uniform_random_success_rate": 0.125,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.003384936635944691,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.875,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0011574768266085084,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.375,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.3333333333333333,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.073173416185591,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.3333333333333333,
+          "uniform_random_success_rate": 0.12222222222222223,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.003972974270353299,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.75,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.64,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.02798417417784054,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.48,
+        "uniform_random_success_rate": 0.172,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.021812531767074542,
+          "centroid_ade_px": 6.909857529050737,
+          "centroid_fde_normalized": 0.0488274915415779,
+          "centroid_fde_px": 15.467760169065581,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.06606579290495979,
+          "psnr_main": 34.14889873928494,
+          "psnr_multiview": 31.15596228705512,
+          "psnr_wrist": 31.311195119222003,
+          "query_count": 45,
+          "ssim_main": 0.9680453289879694,
+          "ssim_multiview": 0.94618649939696,
+          "ssim_wrist": 0.9230958784951104
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.022572997519180453,
+          "centroid_ade_px": 7.150760788648787,
+          "centroid_fde_normalized": 0.050055132534982394,
+          "centroid_fde_px": 15.85665699460749,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.06536954757240084,
+          "psnr_main": 34.04982087877062,
+          "psnr_multiview": 31.25098720126682,
+          "psnr_wrist": 31.58439534505208,
+          "query_count": 45,
+          "ssim_main": 0.9678672043482462,
+          "ssim_multiview": 0.946820287141535,
+          "ssim_wrist": 0.9245607520474328
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.022192764643127496,
+        "centroid_ade_px": 7.030309158849763,
+        "centroid_fde_normalized": 0.04944131203828015,
+        "centroid_fde_px": 15.662208581836534,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.06571767023868032,
+        "psnr_main": 34.099359809027774,
+        "psnr_multiview": 31.203474744160967,
+        "psnr_wrist": 31.447795232137043,
+        "ssim_main": 0.9679562666681077,
+        "ssim_multiview": 0.9465033932692475,
+        "ssim_wrist": 0.9238283152712716
+      },
+      "query_count": 90
+    }
+  },
+  "latent_c1_ordered_88821": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.6923076923076923,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.026618388785579154,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.5384615384615384,
+          "uniform_random_success_rate": 0.16923076923076924,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.014292259723085204,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.17500000000000002,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.015333758503401351,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.6,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.05630885959534029,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.6,
+          "uniform_random_success_rate": 0.12000000000000002,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007899305555555403,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 1.0,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0421329326441591,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.125,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007438465250965143,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.875,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.007666879251700676,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.375,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.5555555555555556,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.05000844761703754,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.5555555555555556,
+          "uniform_random_success_rate": 0.12222222222222223,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007668885403260273,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.625,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.72,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.020701846835582058,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.52,
+        "uniform_random_success_rate": 0.172,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.014957951077729289,
+          "centroid_ade_px": 4.738437150594114,
+          "centroid_fde_normalized": 0.030700319588020792,
+          "centroid_fde_px": 9.725365066047095,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.055817508945862446,
+          "psnr_main": 33.954036458333334,
+          "psnr_multiview": 31.12778010898166,
+          "psnr_wrist": 31.089441765679254,
+          "query_count": 45,
+          "ssim_main": 0.9683003880580265,
+          "ssim_multiview": 0.9473899161484507,
+          "ssim_wrist": 0.9252516720030043
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.014565434235661808,
+          "centroid_ade_px": 4.6140941588954965,
+          "centroid_fde_normalized": 0.02840457506541571,
+          "centroid_fde_px": 8.998110305174041,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.052673548335830364,
+          "psnr_main": 34.03181550767687,
+          "psnr_multiview": 31.225955624050563,
+          "psnr_wrist": 31.183445485432948,
+          "query_count": 45,
+          "ssim_main": 0.9684585145115852,
+          "ssim_multiview": 0.948801589442624,
+          "ssim_wrist": 0.927954993877146
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.014761692656695549,
+        "centroid_ade_px": 4.676265654744806,
+        "centroid_fde_normalized": 0.029552447326718252,
+        "centroid_fde_px": 9.361737685610569,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.054245528640846405,
+        "psnr_main": 33.9929259830051,
+        "psnr_multiview": 31.176867866516112,
+        "psnr_wrist": 31.136443625556097,
+        "ssim_main": 0.968379451284806,
+        "ssim_multiview": 0.9480957527955371,
+        "ssim_wrist": 0.9266033329400752
+      },
+      "query_count": 90
+    }
+  },
+  "latent_c1_ordered_88821_c32schedule": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.6923076923076923,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.02379469462259927,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.46153846153846156,
+          "uniform_random_success_rate": 0.16923076923076924,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.6666666666666666,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.017784966920467975,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.17500000000000002,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.03688456632653059,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.6,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.03172660851308919,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.6,
+          "uniform_random_success_rate": 0.12000000000000002,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007899305555555403,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0023149536532170167,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.05029610058309039,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.125,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007438465250965143,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.019599759989873802,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.375,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.5555555555555556,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.039979716099756396,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.5555555555555556,
+          "uniform_random_success_rate": 0.12222222222222223,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007668885403260273,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.68,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.020910025325576245,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.48,
+        "uniform_random_success_rate": 0.172,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.013509292223041817,
+          "centroid_ade_px": 4.279525438694714,
+          "centroid_fde_normalized": 0.02384343178291482,
+          "centroid_fde_px": 7.55321383060515,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.05256777343650659,
+          "psnr_main": 34.06346219380696,
+          "psnr_multiview": 31.248674858940973,
+          "psnr_wrist": 31.090029907226562,
+          "query_count": 45,
+          "ssim_main": 0.9685661505328284,
+          "ssim_multiview": 0.9491700127389695,
+          "ssim_wrist": 0.9285933720403248
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.014668227435087083,
+          "centroid_ade_px": 4.646657383126813,
+          "centroid_fde_normalized": 0.02704909296925765,
+          "centroid_fde_px": 8.568715484451339,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.056191377465923634,
+          "psnr_main": 33.980528598361545,
+          "psnr_multiview": 31.00960405137804,
+          "psnr_wrist": 30.861810345119903,
+          "query_count": 45,
+          "ssim_main": 0.9682476422852939,
+          "ssim_multiview": 0.9472749363382658,
+          "ssim_wrist": 0.9250711511241064
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.014088759829064452,
+        "centroid_ade_px": 4.463091410910764,
+        "centroid_fde_normalized": 0.025446262376086236,
+        "centroid_fde_px": 8.060964657528244,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.05437957545121511,
+        "psnr_main": 34.02199539608425,
+        "psnr_multiview": 31.129139455159503,
+        "psnr_wrist": 30.97592012617323,
+        "ssim_main": 0.9684068964090612,
+        "ssim_multiview": 0.9482224745386176,
+        "ssim_wrist": 0.9268322615822158
+      },
+      "query_count": 90
+    }
+  },
+  "latent_c32_jitter005_89030": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.6153846153846154,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.025165305924234486,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.5384615384615384,
+          "uniform_random_success_rate": 0.16923076923076924,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.5833333333333334,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.02902752644427749,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.17500000000000002,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.015333758503401351,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.4,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.05253084415584415,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.4,
+          "uniform_random_success_rate": 0.12000000000000002,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007899305555555403,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.03637745365321701,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.04996127915451895,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.125,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007438465250965143,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.75,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.625,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.025855606078309182,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.375,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.4444444444444444,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.05138881526636628,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.4444444444444444,
+          "uniform_random_success_rate": 0.12222222222222223,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0007668885403260273,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.75,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.6,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.027019171773855127,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.52,
+        "uniform_random_success_rate": 0.172,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.015900809582982338,
+          "centroid_ade_px": 5.037119486552316,
+          "centroid_fde_normalized": 0.03284445433763046,
+          "centroid_fde_px": 10.404592301156665,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.04900276843044493,
+          "psnr_main": 35.12184562683105,
+          "psnr_multiview": 32.288767411973744,
+          "psnr_wrist": 32.833886210123694,
+          "query_count": 45,
+          "ssim_main": 0.9710045477416781,
+          "ssim_multiview": 0.9513818968666925,
+          "ssim_wrist": 0.9306410015953912
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.014462512249690663,
+          "centroid_ade_px": 4.5814901371679,
+          "centroid_fde_normalized": 0.028601960787021773,
+          "centroid_fde_px": 9.0606389116252,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.04999624370700783,
+          "psnr_main": 35.10255474514431,
+          "psnr_multiview": 32.05558268229167,
+          "psnr_wrist": 32.594246588812936,
+          "query_count": 45,
+          "ssim_main": 0.9710938531491491,
+          "ssim_multiview": 0.9503559580776427,
+          "ssim_wrist": 0.928470722105768
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.015181660916336498,
+        "centroid_ade_px": 4.809304811860108,
+        "centroid_fde_normalized": 0.030723207562326115,
+        "centroid_fde_px": 9.732615606390933,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.049499506068726384,
+        "psnr_main": 35.11220018598768,
+        "psnr_multiview": 32.172175047132704,
+        "psnr_wrist": 32.714066399468315,
+        "ssim_main": 0.9710492004454135,
+        "ssim_multiview": 0.9508689274721676,
+        "ssim_wrist": 0.9295558618505796
+      },
+      "query_count": 90
+    }
+  },
+  "latent_c32_shared_88822": {
+    "action_selection": {
+      "by_domain": {
+        "id": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.5384615384615384,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.042154419817007335,
+          "oracle_reachable_complete_count": 13,
+          "selected_is_oracle_rate": 0.3076923076923077,
+          "uniform_random_success_rate": 0.16923076923076924,
+          "valid_decision_count": 15
+        },
+        "ood": {
+          "complete_decision_count": 15,
+          "decision_count": 15,
+          "headline_task_success_rate": 0.5833333333333334,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.02511749611788903,
+          "oracle_reachable_complete_count": 12,
+          "selected_is_oracle_rate": 0.4166666666666667,
+          "uniform_random_success_rate": 0.17500000000000002,
+          "valid_decision_count": 15
+        }
+      },
+      "by_domain_and_target": {
+        "id/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.03560083762886598,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.0,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "id/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.4,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.07684006745287233,
+          "oracle_reachable_complete_count": 5,
+          "selected_is_oracle_rate": 0.4,
+          "uniform_random_success_rate": 0.12000000000000002,
+          "valid_decision_count": 5
+        },
+        "id/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.005350942460317448,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 5
+        },
+        "ood/long_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0023149536532170167,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.25,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 5
+        },
+        "ood/medium_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.06890875153940887,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.125,
+          "valid_decision_count": 5
+        },
+        "ood/short_push": {
+          "complete_decision_count": 5,
+          "decision_count": 5,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.004128783161041205,
+          "oracle_reachable_complete_count": 4,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 5
+        }
+      },
+      "by_target": {
+        "long_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.75,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.0189578956410415,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.125,
+          "uniform_random_success_rate": 0.25,
+          "valid_decision_count": 10
+        },
+        "medium_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.4444444444444444,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.07331503815799968,
+          "oracle_reachable_complete_count": 9,
+          "selected_is_oracle_rate": 0.4444444444444444,
+          "uniform_random_success_rate": 0.12222222222222223,
+          "valid_decision_count": 10
+        },
+        "short_push": {
+          "complete_decision_count": 10,
+          "decision_count": 10,
+          "headline_task_success_rate": 0.5,
+          "mean_action_coverage": 1.0,
+          "mean_regret": 0.004739862810679327,
+          "oracle_reachable_complete_count": 8,
+          "selected_is_oracle_rate": 0.5,
+          "uniform_random_success_rate": 0.15,
+          "valid_decision_count": 10
+        }
+      },
+      "headline_subset": "complete candidate sets with a GT-reachable target",
+      "overall": {
+        "complete_decision_count": 30,
+        "decision_count": 30,
+        "headline_task_success_rate": 0.56,
+        "mean_action_coverage": 1.0,
+        "mean_regret": 0.03397669644143055,
+        "oracle_reachable_complete_count": 25,
+        "selected_is_oracle_rate": 0.36,
+        "uniform_random_success_rate": 0.172,
+        "valid_decision_count": 30
+      },
+      "selection_protocol": "observed support endpoint plus model-predicted query endpoints; query GT is read only after action selection"
+    },
+    "video_object": {
+      "aggregation": "query mean within environment, then equal-weight environment mean",
+      "by_domain": {
+        "id": {
+          "centroid_ade_normalized": 0.025948625309022966,
+          "centroid_ade_px": 8.220105115478598,
+          "centroid_fde_normalized": 0.05168376932783362,
+          "centroid_fde_px": 16.372582808508614,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.0641385273800956,
+          "psnr_main": 33.94593777126736,
+          "psnr_multiview": 30.545557445949974,
+          "psnr_wrist": 31.00237087673611,
+          "query_count": 45,
+          "ssim_main": 0.9688324862387445,
+          "ssim_multiview": 0.9463450783822271,
+          "ssim_wrist": 0.9226004324356716
+        },
+        "ood": {
+          "centroid_ade_normalized": 0.024167244365264642,
+          "centroid_ade_px": 7.655792423225412,
+          "centroid_fde_normalized": 0.049212336324240234,
+          "centroid_fde_px": 15.589672776340688,
+          "centroid_prediction_missing_rate": 0.0,
+          "environment_count": 5,
+          "lpips_multiview": 0.062102742989858,
+          "psnr_main": 34.010624694824216,
+          "psnr_multiview": 30.73102450900608,
+          "psnr_wrist": 31.294014697604705,
+          "query_count": 45,
+          "ssim_main": 0.9690172117617395,
+          "ssim_multiview": 0.9467570154865582,
+          "ssim_wrist": 0.9232535111573007
+        }
+      },
+      "environment_count": 10,
+      "overall": {
+        "centroid_ade_normalized": 0.025057934837143803,
+        "centroid_ade_px": 7.937948769352005,
+        "centroid_fde_normalized": 0.05044805282603693,
+        "centroid_fde_px": 15.981127792424653,
+        "centroid_prediction_missing_rate": 0.0,
+        "lpips_multiview": 0.06312063518497679,
+        "psnr_main": 33.97828123304579,
+        "psnr_multiview": 30.63829097747803,
+        "psnr_wrist": 31.14819278717041,
+        "ssim_main": 0.968924849000242,
+        "ssim_multiview": 0.9465510469343927,
+        "ssim_wrist": 0.9229269717964861
+      },
+      "query_count": 90
+    }
+  },
   "lora_tta": {
     "action_selection": {
       "by_domain": {

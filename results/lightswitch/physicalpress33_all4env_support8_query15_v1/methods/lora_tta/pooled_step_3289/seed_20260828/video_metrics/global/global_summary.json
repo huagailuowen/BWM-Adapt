@@ -1,0 +1,77 @@
+{
+  "environment": [
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source0171",
+      "lpips": 0.011878673049310843,
+      "method": "lora_tta",
+      "psnr": 34.933685048421225,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9536729675350767,
+      "support_size": 8
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source1211",
+      "lpips": 0.017477752702931563,
+      "method": "lora_tta",
+      "psnr": 32.95461629231771,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9485330263773601,
+      "support_size": 8
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source1221",
+      "lpips": 0.012297993401686351,
+      "method": "lora_tta",
+      "psnr": 34.815911356608076,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9524196683758438,
+      "support_size": 8
+    },
+    {
+      "count": 15,
+      "domain": "id",
+      "environment_id": "source1448",
+      "lpips": 0.011861976546545824,
+      "method": "lora_tta",
+      "psnr": 34.81885299682617,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9542887331259372,
+      "support_size": 8
+    }
+  ],
+  "seed": [
+    {
+      "count": 4,
+      "domain": "id",
+      "lpips": 0.013379098925118646,
+      "method": "lora_tta",
+      "psnr": 34.38076642354329,
+      "seed": 20260828,
+      "split": "evaluation",
+      "ssim": 0.9522285988535545,
+      "support_size": 8
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "lpips": 0.013379098925118646,
+      "method": "lora_tta",
+      "psnr": 34.38076642354329,
+      "split": "evaluation",
+      "ssim": 0.9522285988535545,
+      "support_size": 8
+    }
+  ]
+}

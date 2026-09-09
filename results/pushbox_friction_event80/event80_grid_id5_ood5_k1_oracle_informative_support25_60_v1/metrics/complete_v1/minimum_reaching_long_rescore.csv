@@ -1,0 +1,9 @@
+method,old_overall,new_overall,old_long,new_long,new_random_overall,new_random_long
+all_active_joint_no_curriculum,0.6,0.6,0.75,0.75,0.172,0.25
+dinov2_amortized_context,0.4,0.32,0.5,0.25,0.172,0.25
+history_conditioned_wm,0.6,0.44,0.75,0.25,0.172,0.25
+joint_model_latent_training,0.64,0.64,0.75,0.75,0.172,0.25
+lora_tta,0.4,0.4,0.75,0.75,0.172,0.25
+ours,0.68,0.68,0.625,0.625,0.172,0.25
+standard_pooled_wm,0.4,0.32,0.5,0.25,0.172,0.25
+ttt_kqv,0.24,0.24,0.25,0.25,0.172,0.25

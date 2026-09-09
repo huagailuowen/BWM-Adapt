@@ -1,0 +1,1 @@
+outputs/method_benchmarks/lightswitch_physicalpress33_maincam/dinov2_concat_mlp_k2q6_4envpergpu/seed_20260801_job_112771/checkpoints/step-4500.safetensors

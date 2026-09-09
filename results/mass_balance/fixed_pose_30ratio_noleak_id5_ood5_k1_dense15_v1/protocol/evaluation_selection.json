@@ -1,0 +1,92 @@
+[
+  {
+    "domain": "id",
+    "mass_ratio": 0.125,
+    "query_count": 14,
+    "ratio_index": 0,
+    "source_index": 22,
+    "source_sample_id": "mass_balance:ratio00:ep000007:frames0040-0120",
+    "source_support_bin_index": 7
+  },
+  {
+    "domain": "id",
+    "mass_ratio": 0.4,
+    "query_count": 14,
+    "ratio_index": 5,
+    "source_index": 247,
+    "source_sample_id": "mass_balance:ratio05:ep000082:frames0040-0120",
+    "source_support_bin_index": 7
+  },
+  {
+    "domain": "id",
+    "mass_ratio": 1.25,
+    "query_count": 14,
+    "ratio_index": 10,
+    "source_index": 472,
+    "source_sample_id": "mass_balance:ratio10:ep000157:frames0040-0120",
+    "source_support_bin_index": 7
+  },
+  {
+    "domain": "id",
+    "mass_ratio": 3.0,
+    "query_count": 14,
+    "ratio_index": 14,
+    "source_index": 652,
+    "source_sample_id": "mass_balance:ratio14:ep000217:frames0040-0120",
+    "source_support_bin_index": 7
+  },
+  {
+    "domain": "id",
+    "mass_ratio": 8.0,
+    "query_count": 14,
+    "ratio_index": 19,
+    "source_index": 877,
+    "source_sample_id": "mass_balance:ratio19:ep000292:frames0040-0120",
+    "source_support_bin_index": 7
+  },
+  {
+    "domain": "ood",
+    "mass_ratio": 0.1538930517,
+    "query_count": 14,
+    "ratio_index": 20,
+    "source_index": 922,
+    "source_sample_id": "mass_balance:ratio20:ep000307:frames0040-0120",
+    "source_support_bin_index": 7
+  },
+  {
+    "domain": "ood",
+    "mass_ratio": 0.3535533906,
+    "query_count": 14,
+    "ratio_index": 22,
+    "source_index": 1012,
+    "source_sample_id": "mass_balance:ratio22:ep000337:frames0040-0120",
+    "source_support_bin_index": 7
+  },
+  {
+    "domain": "ood",
+    "mass_ratio": 0.8122523964,
+    "query_count": 14,
+    "ratio_index": 24,
+    "source_index": 1102,
+    "source_sample_id": "mass_balance:ratio24:ep000367:frames0040-0120",
+    "source_support_bin_index": 7
+  },
+  {
+    "domain": "ood",
+    "mass_ratio": 2.8284271247,
+    "query_count": 14,
+    "ratio_index": 27,
+    "source_index": 1237,
+    "source_sample_id": "mass_balance:ratio27:ep000412:frames0040-0120",
+    "source_support_bin_index": 7
+  },
+  {
+    "domain": "ood",
+    "mass_ratio": 6.4980191708,
+    "query_count": 14,
+    "ratio_index": 29,
+    "source_index": 1327,
+    "source_sample_id": "mass_balance:ratio29:ep000442:frames0040-0120",
+    "source_support_bin_index": 7
+  }
+]
