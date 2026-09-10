@@ -1,0 +1,44 @@
+{
+  "all_valid_decisions": {
+    "count": 10,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 0.8274555531407237,
+    "selected_is_oracle_rate": 0.7,
+    "task_success_rate": 0.7,
+    "uniform_random_success_rate": 0.16
+  },
+  "by_domain_and_target": {
+    "id/balanced": {
+      "count": 5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.2277511348110318,
+      "selected_is_oracle_rate": 0.8,
+      "task_success_rate": 0.8,
+      "uniform_random_success_rate": 0.14666666666666667
+    },
+    "ood/balanced": {
+      "count": 5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 1.427159971470416,
+      "selected_is_oracle_rate": 0.6,
+      "task_success_rate": 0.6,
+      "uniform_random_success_rate": 0.17333333333333334
+    }
+  },
+  "complete_candidate_set_decisions": {
+    "count": 10,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 0.8274555531407237,
+    "selected_is_oracle_rate": 0.7,
+    "task_success_rate": 0.7,
+    "uniform_random_success_rate": 0.16
+  },
+  "headline_oracle_reachable_complete_decisions": {
+    "count": 10,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 0.8274555531407237,
+    "selected_is_oracle_rate": 0.7,
+    "task_success_rate": 0.7,
+    "uniform_random_success_rate": 0.16
+  }
+}

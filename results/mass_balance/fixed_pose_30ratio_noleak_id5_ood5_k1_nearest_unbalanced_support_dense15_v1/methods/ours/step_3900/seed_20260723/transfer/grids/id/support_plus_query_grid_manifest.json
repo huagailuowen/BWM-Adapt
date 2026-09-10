@@ -1,0 +1,117 @@
+[
+  {
+    "source_index": 4,
+    "environment": 4,
+    "support_size": 1,
+    "support_action": "1",
+    "query_indices": [
+      1,
+      7,
+      10,
+      13,
+      16,
+      19,
+      22,
+      25,
+      28,
+      31,
+      34,
+      37,
+      40,
+      43
+    ],
+    "output": "results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ours/step_3900/seed_20260723/transfer/grids/id/source0004_4_support1_plus_14queries_gt_Ours-K1-ID.mp4"
+  },
+  {
+    "source_index": 241,
+    "environment": 241,
+    "support_size": 1,
+    "support_action": "5",
+    "query_indices": [
+      226,
+      229,
+      232,
+      235,
+      238,
+      244,
+      247,
+      250,
+      253,
+      256,
+      259,
+      262,
+      265,
+      268
+    ],
+    "output": "results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ours/step_3900/seed_20260723/transfer/grids/id/source0241_241_support1_plus_14queries_gt_Ours-K1-ID.mp4"
+  },
+  {
+    "source_index": 481,
+    "environment": 481,
+    "support_size": 1,
+    "support_action": "10",
+    "query_indices": [
+      451,
+      454,
+      457,
+      460,
+      463,
+      466,
+      469,
+      472,
+      475,
+      478,
+      484,
+      487,
+      490,
+      493
+    ],
+    "output": "results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ours/step_3900/seed_20260723/transfer/grids/id/source0481_481_support1_plus_14queries_gt_Ours-K1-ID.mp4"
+  },
+  {
+    "source_index": 673,
+    "environment": 673,
+    "support_size": 1,
+    "support_action": "14",
+    "query_indices": [
+      631,
+      634,
+      637,
+      640,
+      643,
+      646,
+      649,
+      652,
+      655,
+      658,
+      661,
+      664,
+      667,
+      670
+    ],
+    "output": "results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ours/step_3900/seed_20260723/transfer/grids/id/source0673_673_support1_plus_14queries_gt_Ours-K1-ID.mp4"
+  },
+  {
+    "source_index": 895,
+    "environment": 895,
+    "support_size": 1,
+    "support_action": "13",
+    "query_indices": [
+      856,
+      859,
+      862,
+      865,
+      868,
+      871,
+      874,
+      877,
+      880,
+      883,
+      886,
+      889,
+      892,
+      898
+    ],
+    "output": "results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ours/step_3900/seed_20260723/transfer/grids/id/source0895_895_support1_plus_14queries_gt_Ours-K1-ID.mp4"
+  }
+]

@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1040" viewBox="0 0 1680 1040">
+<defs>
+<linearGradient id="fric"><stop offset="0%" stop-color="#2463eb"/><stop offset="24%" stop-color="#1d829d"/><stop offset="44%" stop-color="#1da348"/><stop offset="68%" stop-color="#8ba029"/><stop offset="83%" stop-color="#f59c0b"/><stop offset="100%" stop-color="#dc2626"/></linearGradient>
+<marker id="phase-arrow-0" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/></marker>
+<marker id="phase-arrow-1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 z" fill="#f59e0b"/></marker>
+<marker id="phase-arrow-2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 z" fill="#168a80"/></marker>
+<marker id="phase-arrow-3" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 z" fill="#2563eb"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#fbfaf6"/>
+<text x="840.0" y="42" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="650" fill="#17212b">Fixed-pose no-leak mass balance: ID/OOD nearest-unbalanced K1</text>
+<text x="840.0" y="75" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="15" fill="#6c675f">PCA basis is fitted on active C-table entries | full 40-step metrics retained | displayed steps: 0, 2, 5, 8, 10, 15, 20, 30, 40</text>
+<rect x="70" y="140" width="1540" height="750" rx="10" fill="#fffdf8" stroke="#d9d3c7" stroke-width="1.2"/>
+<text x="94" y="171" font-family="DejaVu Sans,sans-serif" font-size="18" font-weight="600" fill="#25313a">Global view: C table, shared start and endpoints</text>
+<line x1="128.00" y1="198" x2="128.00" y2="822" stroke="#ded9ce" opacity=".7"/>
+<text x="128.00" y="845" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-0.845</text>
+<line x1="491.00" y1="198" x2="491.00" y2="822" stroke="#ded9ce" opacity=".7"/>
+<text x="491.00" y="845" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-0.439</text>
+<line x1="854.00" y1="198" x2="854.00" y2="822" stroke="#ded9ce" opacity=".7"/>
+<text x="854.00" y="845" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-0.0324</text>
+<line x1="1217.00" y1="198" x2="1217.00" y2="822" stroke="#ded9ce" opacity=".7"/>
+<text x="1217.00" y="845" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">0.374</text>
+<line x1="1580.00" y1="198" x2="1580.00" y2="822" stroke="#ded9ce" opacity=".7"/>
+<text x="1580.00" y="845" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">0.781</text>
+<line x1="128" y1="822.00" x2="1580" y2="822.00" stroke="#ded9ce" opacity=".7"/>
+<text x="118" y="826.00" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-0.733</text>
+<line x1="128" y1="666.00" x2="1580" y2="666.00" stroke="#ded9ce" opacity=".7"/>
+<text x="118" y="670.00" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-0.196</text>
+<line x1="128" y1="510.00" x2="1580" y2="510.00" stroke="#ded9ce" opacity=".7"/>
+<text x="118" y="514.00" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">0.342</text>
+<line x1="128" y1="354.00" x2="1580" y2="354.00" stroke="#ded9ce" opacity=".7"/>
+<text x="118" y="358.00" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">0.88</text>
+<line x1="128" y1="198.00" x2="1580" y2="198.00" stroke="#ded9ce" opacity=".7"/>
+<text x="118" y="202.00" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">1.42</text>
+<line x1="128" y1="822" x2="1580" y2="822" stroke="#27323a" stroke-width="1.25"/>
+<line x1="128" y1="198" x2="128" y2="822" stroke="#27323a" stroke-width="1.25"/>
+<polyline points="1140.71,440.29 1159.07,502.17 1221.59,537.21 1272.04,525.24 1427.20,567.24 1191.62,664.04 1133.72,682.26 1459.00,619.16 1149.59,693.07 1083.20,698.59 1039.33,673.04 817.10,770.00 782.24,670.69 705.02,617.06 540.45,625.59 284.88,575.18 369.36,580.57 299.58,585.84 333.89,590.94 249.00,566.87" fill="none" stroke="#8b857b" stroke-width="1.05" stroke-dasharray="4 5" opacity=".42"/>
+<circle cx="1140.71" cy="440.29" r="4.5" fill="#2463eb" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=0.125</title></circle>
+<circle cx="1159.07" cy="502.17" r="4.5" fill="#2463eb" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=0.166667</title></circle>
+<circle cx="1221.59" cy="537.21" r="4.5" fill="#2463eb" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=0.2</title></circle>
+<circle cx="1272.04" cy="525.24" r="4.5" fill="#2368df" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=0.25</title></circle>
+<circle cx="1427.20" cy="567.24" r="4.5" fill="#2368df" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=0.333333</title></circle>
+<circle cx="1191.62" cy="664.04" r="4.5" fill="#2368df" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=0.4</title></circle>
+<circle cx="1133.72" cy="682.26" r="4.5" fill="#226bd7" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=0.5</title></circle>
+<circle cx="1459.00" cy="619.16" r="4.5" fill="#226bd7" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=0.666667</title></circle>
+<circle cx="1149.59" cy="693.07" r="4.5" fill="#216fcc" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=0.8</title></circle>
+<circle cx="1083.20" cy="698.59" r="4.5" fill="#2173c4" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=1</title></circle>
+<circle cx="1039.33" cy="673.04" r="4.5" fill="#2077b8" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=1.25</title></circle>
+<circle cx="817.10" cy="770.00" r="4.5" fill="#1f7ab0" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=1.5</title></circle>
+<circle cx="782.24" cy="670.69" r="4.5" fill="#1d829d" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=2</title></circle>
+<circle cx="705.02" cy="617.06" r="4.5" fill="#1c8a89" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=2.5</title></circle>
+<circle cx="540.45" cy="625.59" r="4.5" fill="#1a9276" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=3</title></circle>
+<circle cx="284.88" cy="575.18" r="4.5" fill="#2ea243" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=4</title></circle>
+<circle cx="369.36" cy="580.57" r="4.5" fill="#60a135" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=5</title></circle>
+<circle cx="299.58" cy="585.84" r="4.5" fill="#b59f1d" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=6</title></circle>
+<circle cx="333.89" cy="590.94" r="4.5" fill="#f08511" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=7</title></circle>
+<circle cx="249.00" cy="566.87" r="4.5" fill="#dc2626" stroke="#fffdf8" stroke-width="1"><title>table mass_ratio=8</title></circle>
+<polyline points="882.93,609.25 943.26,584.96 977.66,573.17 1004.24,563.86 1027.06,556.99 1062.98,542.67 1179.07,467.53 1172.57,470.71 1169.29,472.94" fill="none" stroke="#2463eb" stroke-width="2.1" opacity=".62"/>
+<circle cx="1169.29" cy="472.94" r="6.2" fill="#2463eb" stroke="#17212b" stroke-width="1.2"><title>ID sample=4 mu=0.125</title></circle>
+<circle cx="1140.71" cy="440.29" r="9" fill="none" stroke="#2463eb" stroke-width="2.2" opacity=".85"/>
+<polyline points="882.93,609.25 994.07,588.73 1075.51,579.67 1102.73,578.39 1142.12,571.30 1161.64,572.84 1162.33,577.48 1187.37,564.54 1186.63,567.61" fill="none" stroke="#2368df" stroke-width="2.1" opacity=".62"/>
+<circle cx="1186.63" cy="567.61" r="6.2" fill="#2368df" stroke="#17212b" stroke-width="1.2"><title>ID sample=241 mu=0.4</title></circle>
+<circle cx="1191.62" cy="664.04" r="9" fill="none" stroke="#2368df" stroke-width="2.2" opacity=".85"/>
+<polyline points="882.93,609.25 897.30,613.36 1013.92,603.25 1005.26,611.91 1008.64,616.47 1022.86,618.69 1025.62,623.43 1030.99,624.88 1033.56,625.29" fill="none" stroke="#2077b8" stroke-width="2.1" opacity=".62"/>
+<circle cx="1033.56" cy="625.29" r="6.2" fill="#2077b8" stroke="#17212b" stroke-width="1.2"><title>ID sample=481 mu=1.25</title></circle>
+<circle cx="1039.33" cy="673.04" r="9" fill="none" stroke="#2077b8" stroke-width="2.2" opacity=".85"/>
+<polyline points="882.93,609.25 878.09,613.19 865.00,617.98 857.13,621.82 851.09,623.93 847.17,626.27 834.87,629.93 833.84,631.20 832.88,631.62" fill="none" stroke="#1a9276" stroke-width="2.1" opacity=".62"/>
+<circle cx="832.88" cy="631.62" r="6.2" fill="#1a9276" stroke="#17212b" stroke-width="1.2"><title>ID sample=673 mu=3</title></circle>
+<circle cx="540.45" cy="625.59" r="9" fill="none" stroke="#1a9276" stroke-width="2.2" opacity=".85"/>
+<polyline points="882.93,609.25 803.56,611.89 718.23,613.17 572.41,599.22 503.97,595.05 472.42,593.98 446.44,591.91 419.63,590.58 418.31,590.92" fill="none" stroke="#dc2626" stroke-width="2.1" opacity=".62"/>
+<circle cx="418.31" cy="590.92" r="6.2" fill="#dc2626" stroke="#17212b" stroke-width="1.2"><title>ID sample=895 mu=8</title></circle>
+<circle cx="249.00" cy="566.87" r="9" fill="none" stroke="#dc2626" stroke-width="2.2" opacity=".85"/>
+<polyline points="882.93,609.25 909.12,599.96 1445.78,250.00 1444.50,260.07 1432.88,273.61 1434.54,282.94 1432.40,290.00 1428.16,296.97 1427.27,299.21" fill="none" stroke="#2463eb" stroke-width="2.1" opacity=".62" stroke-dasharray="7 5"/>
+<circle cx="1427.27" cy="299.21" r="6.2" fill="#2463eb" stroke="#17212b" stroke-width="1.2"><title>OOD sample=907 mu=0.153893</title></circle>
+<polyline points="882.93,609.25 902.53,608.92 1267.66,477.16 1262.93,499.69 1241.94,510.83 1236.86,522.13 1225.21,528.59 1222.22,530.62 1224.10,530.56" fill="none" stroke="#2368df" stroke-width="2.1" opacity=".62" stroke-dasharray="7 5"/>
+<circle cx="1224.10" cy="530.56" r="6.2" fill="#2368df" stroke="#17212b" stroke-width="1.2"><title>OOD sample=1006 mu=0.353553</title></circle>
+<polyline points="882.93,609.25 1061.73,602.79 1177.99,586.02 1159.57,598.01 1146.93,604.83 1173.02,603.37 1157.71,613.62 1151.85,617.49 1151.05,618.12" fill="none" stroke="#216fcc" stroke-width="2.1" opacity=".62" stroke-dasharray="7 5"/>
+<circle cx="1151.05" cy="618.12" r="6.2" fill="#216fcc" stroke="#17212b" stroke-width="1.2"><title>OOD sample=1105 mu=0.812252</title></circle>
+<polyline points="882.93,609.25 867.83,613.04 865.26,616.53 855.55,620.66 854.13,623.27 844.98,625.88 841.89,627.34 840.11,628.45 838.44,628.81" fill="none" stroke="#1a9276" stroke-width="2.1" opacity=".62" stroke-dasharray="7 5"/>
+<circle cx="838.44" cy="628.81" r="6.2" fill="#1a9276" stroke="#17212b" stroke-width="1.2"><title>OOD sample=1258 mu=2.82843</title></circle>
+<polyline points="882.93,609.25 591.67,603.19 559.83,598.70 541.70,597.89 536.09,598.46 505.69,598.65 480.70,600.26 472.84,599.38 470.97,599.29" fill="none" stroke="#f59c0b" stroke-width="2.1" opacity=".62" stroke-dasharray="7 5"/>
+<circle cx="470.97" cy="599.29" r="6.2" fill="#f59c0b" stroke="#17212b" stroke-width="1.2"><title>OOD sample=1342 mu=6.49802</title></circle>
+<polygon points="882.93,601.25 890.93,609.25 882.93,617.25 874.93,609.25" fill="#111827" stroke="#fffdf8" stroke-width="1.3"/>
+<text x="840.0" y="870" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#25313a">PC1 (56.0% active variance)</text>
+<text x="87" y="515.0" transform="rotate(-90 87 515.0)" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="13" fill="#25313a">PC2 (19.5% active variance)</text>
+<text x="70" y="936" font-family="DejaVu Sans,sans-serif" font-size="13" font-weight="650" fill="#25313a">Update schedule and direction:</text>
+<line x1="285" y1="932" x2="335" y2="932" stroke="#dc2626" stroke-width="4" marker-end="url(#phase-arrow-0)"/><text x="345" y="937" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#4b5359">steps 1-10 | LR 3.0</text>
+<line x1="545" y1="932" x2="595" y2="932" stroke="#f59e0b" stroke-width="4" marker-end="url(#phase-arrow-1)"/><text x="605" y="937" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#4b5359">steps 11-20 | LR 1.5</text>
+<line x1="805" y1="932" x2="855" y2="932" stroke="#168a80" stroke-width="4" marker-end="url(#phase-arrow-2)"/><text x="865" y="937" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#4b5359">steps 21-30 | LR 0.5</text>
+<line x1="1065" y1="932" x2="1115" y2="932" stroke="#2563eb" stroke-width="4" marker-end="url(#phase-arrow-3)"/><text x="1125" y="937" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#4b5359">steps 31-40 | LR 0.15</text>
+<polygon points="76,982 84,990 76,998 68,990" fill="#111827"/><text x="94" y="995" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#4b5359">shared START (step 0)</text>
+<circle cx="310" cy="990" r="6.5" fill="#fffdf8" stroke="#2563eb" stroke-width="3"/><text x="324" y="995" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#4b5359">END (step 40)</text>
+<line x1="500" y1="990" x2="542" y2="990" stroke="#27323a" stroke-width="2"/><text x="552" y="995" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#4b5359">ID</text>
+<line x1="620" y1="990" x2="662" y2="990" stroke="#27323a" stroke-width="2" stroke-dasharray="7 5"/><text x="672" y="995" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#4b5359">OOD / held-out</text>
+<rect x="1260" y="982" width="280" height="15" rx="2" fill="url(#fric)" stroke="#8b857b" stroke-width=".6"/>
+<text x="1248" y="995" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">low mass_ratio</text>
+<text x="1550" y="995" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">high mass_ratio (linear scale)</text>
+</svg>

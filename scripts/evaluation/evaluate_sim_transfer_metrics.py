@@ -118,6 +118,24 @@ def _sample_id(row: Mapping[str, Any], index: int) -> str:
     return str(row.get("sample_id", row.get("id", f"sample{index:04d}")))
 
 
+def _support_indices_by_source(config: Mapping[str, Any]) -> dict[int, tuple[int, ...]]:
+    manifest_value = config.get("support_query_manifest")
+    if manifest_value is None:
+        inference = config.get("inference", {})
+        if isinstance(inference, Mapping):
+            manifest_value = inference.get("support_query_manifest")
+    if manifest_value is None:
+        return {}
+    output: dict[int, tuple[int, ...]] = {}
+    for row in _read_json(_resolve(str(manifest_value))):
+        source_index = int(row["source_index"])
+        support_indices = tuple(map(int, row.get("support_indices", (source_index,))))
+        if source_index in output:
+            raise ValueError(f"Duplicate source_index={source_index} in support/query manifest.")
+        output[source_index] = support_indices
+    return output
+
+
 def main() -> None:
     args = parse_args()
     if args.state_metrics_only and args.lpips:
@@ -141,6 +159,7 @@ def main() -> None:
     main_view_width = int(extractor.get("main_view_width", 224))
     task_settings = _task_settings(task, config)
     support_size = int(config.get("support_size", 1))
+    support_indices_by_source = _support_indices_by_source(config)
     lpips = (
         LPIPSEvaluator(net=args.lpips_net, device=args.lpips_device)
         if args.lpips
@@ -165,7 +184,10 @@ def main() -> None:
             source_id = _sample_id(source_row, source_index)
             support_indices = tuple(map(
                 int,
-                environment.get("support_indices", (source_index,)),
+                environment.get(
+                    "support_indices",
+                    support_indices_by_source.get(source_index, (source_index,)),
+                ),
             ))
             support_ids = tuple(
                 _sample_id(rows[support_index], support_index)

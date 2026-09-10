@@ -1,0 +1,178 @@
+{
+  "aggregation": {
+    "environment": [
+      {
+        "bar_angular_velocity_mae_deg_s": 3.119212195396264,
+        "bar_tilt_final_error_deg": 11.285548716640008,
+        "bar_tilt_mae_deg": 2.7489929374703412,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0004",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.227227591158247,
+        "bar_tilt_final_error_deg": 6.407074337798678,
+        "bar_tilt_mae_deg": 1.6767798034521524,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0241",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.3354827710002817,
+        "bar_tilt_final_error_deg": 5.147436269973126,
+        "bar_tilt_mae_deg": 1.4825586582896193,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0481",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 3.426317347466631,
+        "bar_tilt_final_error_deg": 7.201194192245166,
+        "bar_tilt_mae_deg": 1.6600666089493328,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0673",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 3.961668766760222,
+        "bar_tilt_final_error_deg": 10.347403378733711,
+        "bar_tilt_mae_deg": 2.4912471285020246,
+        "count": 14,
+        "domain": "id",
+        "environment_id": "source0895",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.871568366309493,
+        "bar_tilt_final_error_deg": 9.492066021202746,
+        "bar_tilt_mae_deg": 2.357954404666227,
+        "count": 14,
+        "domain": "ood",
+        "environment_id": "source0907",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.0808941014065425,
+        "bar_tilt_final_error_deg": 6.406970576208944,
+        "bar_tilt_mae_deg": 1.6489674283531879,
+        "count": 14,
+        "domain": "ood",
+        "environment_id": "source1006",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.355702264908893,
+        "bar_tilt_final_error_deg": 5.392868522429252,
+        "bar_tilt_mae_deg": 1.513819256253742,
+        "count": 14,
+        "domain": "ood",
+        "environment_id": "source1105",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 3.4746355789908376,
+        "bar_tilt_final_error_deg": 7.09288313414671,
+        "bar_tilt_mae_deg": 1.6561710351866126,
+        "count": 14,
+        "domain": "ood",
+        "environment_id": "source1258",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 3.722763296997281,
+        "bar_tilt_final_error_deg": 9.054140720114917,
+        "bar_tilt_mae_deg": 2.0088456282035696,
+        "count": 14,
+        "domain": "ood",
+        "environment_id": "source1342",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ],
+    "seed": [
+      {
+        "bar_angular_velocity_mae_deg_s": 3.013981734356329,
+        "bar_tilt_final_error_deg": 8.077731379078138,
+        "bar_tilt_mae_deg": 2.0119290273326937,
+        "count": 5,
+        "domain": "id",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.901112721722609,
+        "bar_tilt_final_error_deg": 7.487785794820513,
+        "bar_tilt_mae_deg": 1.8371515505326677,
+        "count": 5,
+        "domain": "ood",
+        "method": "lora_tta",
+        "seed": 20260902,
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ],
+    "summary": [
+      {
+        "bar_angular_velocity_mae_deg_s": 3.013981734356329,
+        "bar_tilt_final_error_deg": 8.077731379078138,
+        "bar_tilt_mae_deg": 2.0119290273326937,
+        "count": 1,
+        "domain": "id",
+        "method": "lora_tta",
+        "split": "evaluation",
+        "support_size": 1
+      },
+      {
+        "bar_angular_velocity_mae_deg_s": 2.901112721722609,
+        "bar_tilt_final_error_deg": 7.487785794820513,
+        "bar_tilt_mae_deg": 1.8371515505326677,
+        "count": 1,
+        "domain": "ood",
+        "method": "lora_tta",
+        "split": "evaluation",
+        "support_size": 1
+      }
+    ]
+  },
+  "metric_names": [
+    "bar_angular_velocity_mae_deg_s",
+    "bar_tilt_final_error_deg",
+    "bar_tilt_mae_deg"
+  ],
+  "task": "mass_balance"
+}

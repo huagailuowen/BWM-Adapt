@@ -40,7 +40,7 @@ def display_value(metric: str, value: float | None) -> str:
 
 
 def marker_suffix(marker: str | None) -> str:
-    if marker == "id_placeholder":
+    if marker in {"id_placeholder", "cross_dataset"}:
         return "*"
     if marker == "prior_protocol":
         return "\u2020"
@@ -77,8 +77,12 @@ def write_csv(config: dict, output_dir: Path) -> None:
     for task in config["tasks"]:
         fields.extend(
             [
+                f"{task['id']}_psnr",
+                f"{task['id']}_ssim",
                 f"{task['id']}_lpips",
-                f"{task['id']}_{task['object_metric'].lower().replace(' ', '_')}",
+                f"{task['id']}_object_metric_value",
+                f"{task['id']}_object_metric_name",
+                f"{task['id']}_object_metric_unit",
                 f"{task['id']}_action_success",
             ]
         )
@@ -89,10 +93,49 @@ def write_csv(config: dict, output_dir: Path) -> None:
             row = {"method": method["label"]}
             for task in config["tasks"]:
                 values = task["values"][method["id"]]
+                row[f"{task['id']}_psnr"] = values.get("psnr")
+                row[f"{task['id']}_ssim"] = values.get("ssim")
                 row[f"{task['id']}_lpips"] = values.get("lpips")
-                row[f"{task['id']}_{task['object_metric'].lower().replace(' ', '_')}"] = values.get("object")
+                row[f"{task['id']}_object_metric_value"] = values.get("object")
+                row[f"{task['id']}_object_metric_name"] = task["object_metric"]
+                row[f"{task['id']}_object_metric_unit"] = task["object_unit"]
                 row[f"{task['id']}_action_success"] = values.get("action_success")
             writer.writerow(row)
+
+    long_fields = [
+        "task_id",
+        "task",
+        "method_id",
+        "method",
+        "psnr",
+        "ssim",
+        "lpips",
+        "object_metric_name",
+        "object_metric_unit",
+        "object_metric_value",
+        "action_success",
+    ]
+    with (output_dir / "sim_all_methods_main_table_detailed.csv").open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=long_fields)
+        writer.writeheader()
+        for task in config["tasks"]:
+            for method in config["methods"]:
+                values = task["values"][method["id"]]
+                writer.writerow(
+                    {
+                        "task_id": task["id"],
+                        "task": task["label"],
+                        "method_id": method["id"],
+                        "method": method["label"],
+                        "psnr": values.get("psnr"),
+                        "ssim": values.get("ssim"),
+                        "lpips": values.get("lpips"),
+                        "object_metric_name": task["object_metric"],
+                        "object_metric_unit": task["object_unit"],
+                        "object_metric_value": values.get("object"),
+                        "action_success": values.get("action_success"),
+                    }
+                )
 
 
 def load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
@@ -208,7 +251,7 @@ def render(config: dict, output_dir: Path) -> None:
 
     notes = [
         "Bold: best. Object/physical metrics are task-specific and listed in each header.",
-        "* Mass Balance Ours is an ID-only fixed-pose placeholder; available values participate in column ranking.",
+        "* Mass Balance Ours uses the completed fixed-pose 5-ID/5-OOD test; baseline rows use workspace-random data.",
         "\u2020 Mass Collision LoRA uses the earlier compatible no-leak balanced-support protocol. -- indicates pending/unavailable.",
         "DINOv2: Transformer for Friction; concat-MLP for Light/Balance. Gravity, Collision, and Mass x Friction DINO are pending.",
     ]

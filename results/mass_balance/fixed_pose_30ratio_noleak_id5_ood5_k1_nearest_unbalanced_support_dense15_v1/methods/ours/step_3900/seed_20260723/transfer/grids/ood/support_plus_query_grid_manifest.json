@@ -1,0 +1,117 @@
+[
+  {
+    "source_index": 907,
+    "environment": 907,
+    "support_size": 1,
+    "support_action": "2",
+    "query_indices": [
+      901,
+      904,
+      910,
+      913,
+      916,
+      919,
+      922,
+      925,
+      928,
+      931,
+      934,
+      937,
+      940,
+      943
+    ],
+    "output": "results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ours/step_3900/seed_20260723/transfer/grids/ood/source0907_907_support1_plus_14queries_gt_Ours-K1-OOD.mp4"
+  },
+  {
+    "source_index": 1006,
+    "environment": 1006,
+    "support_size": 1,
+    "support_action": "5",
+    "query_indices": [
+      991,
+      994,
+      997,
+      1000,
+      1003,
+      1009,
+      1012,
+      1015,
+      1018,
+      1021,
+      1024,
+      1027,
+      1030,
+      1033
+    ],
+    "output": "results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ours/step_3900/seed_20260723/transfer/grids/ood/source1006_1006_support1_plus_14queries_gt_Ours-K1-OOD.mp4"
+  },
+  {
+    "source_index": 1105,
+    "environment": 1105,
+    "support_size": 1,
+    "support_action": "8",
+    "query_indices": [
+      1081,
+      1084,
+      1087,
+      1090,
+      1093,
+      1096,
+      1099,
+      1102,
+      1108,
+      1111,
+      1114,
+      1117,
+      1120,
+      1123
+    ],
+    "output": "results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ours/step_3900/seed_20260723/transfer/grids/ood/source1105_1105_support1_plus_14queries_gt_Ours-K1-OOD.mp4"
+  },
+  {
+    "source_index": 1258,
+    "environment": 1258,
+    "support_size": 1,
+    "support_action": "14",
+    "query_indices": [
+      1216,
+      1219,
+      1222,
+      1225,
+      1228,
+      1231,
+      1234,
+      1237,
+      1240,
+      1243,
+      1246,
+      1249,
+      1252,
+      1255
+    ],
+    "output": "results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ours/step_3900/seed_20260723/transfer/grids/ood/source1258_1258_support1_plus_14queries_gt_Ours-K1-OOD.mp4"
+  },
+  {
+    "source_index": 1342,
+    "environment": 1342,
+    "support_size": 1,
+    "support_action": "12",
+    "query_indices": [
+      1306,
+      1309,
+      1312,
+      1315,
+      1318,
+      1321,
+      1324,
+      1327,
+      1330,
+      1333,
+      1336,
+      1339,
+      1345,
+      1348
+    ],
+    "output": "results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ours/step_3900/seed_20260723/transfer/grids/ood/source1342_1342_support1_plus_14queries_gt_Ours-K1-OOD.mp4"
+  }
+]

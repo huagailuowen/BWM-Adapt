@@ -1,0 +1,43 @@
+{
+  "checkpoint_step": 3900,
+  "dataset": "fixed_pose_30ratio_noleak",
+  "environment_selection": {
+    "id_ratio_indices": [
+      0,
+      5,
+      10,
+      14,
+      19
+    ],
+    "ood_ratio_indices": [
+      20,
+      22,
+      24,
+      27,
+      29
+    ]
+  },
+  "method": "ours",
+  "query_policy": "all 14 remaining actions from the same environment and window",
+  "stage2": {
+    "clamp": [
+      0.0,
+      1.0
+    ],
+    "context_dtype": "float32",
+    "gradient_clip": 1.0,
+    "initial_context": "active training-table mean",
+    "learning_rate_schedule": "3.0:10,1.5:10,0.5:10,0.15:10",
+    "regularization_weight": 0.001,
+    "steps": 40
+  },
+  "support_policy": "GT-nearest unbalanced action to the balanced interval",
+  "support_size": 1,
+  "support_window_raw_frames": [
+    40,
+    120
+  ],
+  "support_window_stride": 2,
+  "task": "mass_balance",
+  "version": 1
+}

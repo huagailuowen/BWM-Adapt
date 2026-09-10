@@ -1,0 +1,170 @@
+{
+  "environment": [
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0004",
+      "lpips": 0.0658406846757446,
+      "method": "lora_tta",
+      "psnr": 24.91149847848075,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.8869743872602641,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0241",
+      "lpips": 0.061978792771697044,
+      "method": "lora_tta",
+      "psnr": 24.97920867374965,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.8859593939905797,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0481",
+      "lpips": 0.058625154197216034,
+      "method": "lora_tta",
+      "psnr": 25.15524959564209,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.8871190797161143,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0673",
+      "lpips": 0.06194957771471569,
+      "method": "lora_tta",
+      "psnr": 25.08015332903181,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.8869743548619207,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "id",
+      "environment_id": "source0895",
+      "lpips": 0.06759456757988248,
+      "method": "lora_tta",
+      "psnr": 24.96875994546073,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.8848975197986445,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source0907",
+      "lpips": 0.06327207359884467,
+      "method": "lora_tta",
+      "psnr": 24.90811538696289,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.8873383278215389,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1006",
+      "lpips": 0.06125583952026708,
+      "method": "lora_tta",
+      "psnr": 25.041387830461776,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.887016267518964,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1105",
+      "lpips": 0.058275633092437475,
+      "method": "lora_tta",
+      "psnr": 25.124715941292898,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.8875505529629645,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1258",
+      "lpips": 0.06307644077709743,
+      "method": "lora_tta",
+      "psnr": 25.028987884521484,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.886252768259846,
+      "support_size": 1
+    },
+    {
+      "count": 14,
+      "domain": "ood",
+      "environment_id": "source1342",
+      "lpips": 0.06646836682089738,
+      "method": "lora_tta",
+      "psnr": 24.97381033216204,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.8852595836443352,
+      "support_size": 1
+    }
+  ],
+  "seed": [
+    {
+      "count": 5,
+      "domain": "id",
+      "lpips": 0.06319775538785118,
+      "method": "lora_tta",
+      "psnr": 25.018974004473005,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.8863849471255045,
+      "support_size": 1
+    },
+    {
+      "count": 5,
+      "domain": "ood",
+      "lpips": 0.062469670761908805,
+      "method": "lora_tta",
+      "psnr": 25.015403475080216,
+      "seed": 20260902,
+      "split": "evaluation",
+      "ssim": 0.8866835000415296,
+      "support_size": 1
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "lpips": 0.06319775538785118,
+      "method": "lora_tta",
+      "psnr": 25.018974004473005,
+      "split": "evaluation",
+      "ssim": 0.8863849471255045,
+      "support_size": 1
+    },
+    {
+      "count": 1,
+      "domain": "ood",
+      "lpips": 0.062469670761908805,
+      "method": "lora_tta",
+      "psnr": 25.015403475080216,
+      "split": "evaluation",
+      "ssim": 0.8866835000415296,
+      "support_size": 1
+    }
+  ]
+}

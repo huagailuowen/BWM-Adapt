@@ -1,0 +1,227 @@
+[
+  {
+    "domain": "ood",
+    "source_friction_mu": 0.1538930517,
+    "source_index": 907,
+    "source_inner_step": 40,
+    "source_sample_id": "mass_balance:ratio20:ep000302:frames0040-0120",
+    "support_indices": [
+      907
+    ],
+    "support_sample_ids": [
+      "mass_balance:ratio20:ep000302:frames0040-0120"
+    ],
+    "target_indices": [
+      901,
+      904,
+      910,
+      913,
+      916,
+      919,
+      922,
+      925,
+      928,
+      931,
+      934,
+      937,
+      940,
+      943
+    ],
+    "target_sample_ids": [
+      "mass_balance:ratio20:ep000300:frames0040-0120",
+      "mass_balance:ratio20:ep000301:frames0040-0120",
+      "mass_balance:ratio20:ep000303:frames0040-0120",
+      "mass_balance:ratio20:ep000304:frames0040-0120",
+      "mass_balance:ratio20:ep000305:frames0040-0120",
+      "mass_balance:ratio20:ep000306:frames0040-0120",
+      "mass_balance:ratio20:ep000307:frames0040-0120",
+      "mass_balance:ratio20:ep000308:frames0040-0120",
+      "mass_balance:ratio20:ep000309:frames0040-0120",
+      "mass_balance:ratio20:ep000310:frames0040-0120",
+      "mass_balance:ratio20:ep000311:frames0040-0120",
+      "mass_balance:ratio20:ep000312:frames0040-0120",
+      "mass_balance:ratio20:ep000313:frames0040-0120",
+      "mass_balance:ratio20:ep000314:frames0040-0120"
+    ]
+  },
+  {
+    "domain": "ood",
+    "source_friction_mu": 0.3535533906,
+    "source_index": 1006,
+    "source_inner_step": 40,
+    "source_sample_id": "mass_balance:ratio22:ep000335:frames0040-0120",
+    "support_indices": [
+      1006
+    ],
+    "support_sample_ids": [
+      "mass_balance:ratio22:ep000335:frames0040-0120"
+    ],
+    "target_indices": [
+      991,
+      994,
+      997,
+      1000,
+      1003,
+      1009,
+      1012,
+      1015,
+      1018,
+      1021,
+      1024,
+      1027,
+      1030,
+      1033
+    ],
+    "target_sample_ids": [
+      "mass_balance:ratio22:ep000330:frames0040-0120",
+      "mass_balance:ratio22:ep000331:frames0040-0120",
+      "mass_balance:ratio22:ep000332:frames0040-0120",
+      "mass_balance:ratio22:ep000333:frames0040-0120",
+      "mass_balance:ratio22:ep000334:frames0040-0120",
+      "mass_balance:ratio22:ep000336:frames0040-0120",
+      "mass_balance:ratio22:ep000337:frames0040-0120",
+      "mass_balance:ratio22:ep000338:frames0040-0120",
+      "mass_balance:ratio22:ep000339:frames0040-0120",
+      "mass_balance:ratio22:ep000340:frames0040-0120",
+      "mass_balance:ratio22:ep000341:frames0040-0120",
+      "mass_balance:ratio22:ep000342:frames0040-0120",
+      "mass_balance:ratio22:ep000343:frames0040-0120",
+      "mass_balance:ratio22:ep000344:frames0040-0120"
+    ]
+  },
+  {
+    "domain": "ood",
+    "source_friction_mu": 0.8122523964,
+    "source_index": 1105,
+    "source_inner_step": 40,
+    "source_sample_id": "mass_balance:ratio24:ep000368:frames0040-0120",
+    "support_indices": [
+      1105
+    ],
+    "support_sample_ids": [
+      "mass_balance:ratio24:ep000368:frames0040-0120"
+    ],
+    "target_indices": [
+      1081,
+      1084,
+      1087,
+      1090,
+      1093,
+      1096,
+      1099,
+      1102,
+      1108,
+      1111,
+      1114,
+      1117,
+      1120,
+      1123
+    ],
+    "target_sample_ids": [
+      "mass_balance:ratio24:ep000360:frames0040-0120",
+      "mass_balance:ratio24:ep000361:frames0040-0120",
+      "mass_balance:ratio24:ep000362:frames0040-0120",
+      "mass_balance:ratio24:ep000363:frames0040-0120",
+      "mass_balance:ratio24:ep000364:frames0040-0120",
+      "mass_balance:ratio24:ep000365:frames0040-0120",
+      "mass_balance:ratio24:ep000366:frames0040-0120",
+      "mass_balance:ratio24:ep000367:frames0040-0120",
+      "mass_balance:ratio24:ep000369:frames0040-0120",
+      "mass_balance:ratio24:ep000370:frames0040-0120",
+      "mass_balance:ratio24:ep000371:frames0040-0120",
+      "mass_balance:ratio24:ep000372:frames0040-0120",
+      "mass_balance:ratio24:ep000373:frames0040-0120",
+      "mass_balance:ratio24:ep000374:frames0040-0120"
+    ]
+  },
+  {
+    "domain": "ood",
+    "source_friction_mu": 2.8284271247,
+    "source_index": 1258,
+    "source_inner_step": 40,
+    "source_sample_id": "mass_balance:ratio27:ep000419:frames0040-0120",
+    "support_indices": [
+      1258
+    ],
+    "support_sample_ids": [
+      "mass_balance:ratio27:ep000419:frames0040-0120"
+    ],
+    "target_indices": [
+      1216,
+      1219,
+      1222,
+      1225,
+      1228,
+      1231,
+      1234,
+      1237,
+      1240,
+      1243,
+      1246,
+      1249,
+      1252,
+      1255
+    ],
+    "target_sample_ids": [
+      "mass_balance:ratio27:ep000405:frames0040-0120",
+      "mass_balance:ratio27:ep000406:frames0040-0120",
+      "mass_balance:ratio27:ep000407:frames0040-0120",
+      "mass_balance:ratio27:ep000408:frames0040-0120",
+      "mass_balance:ratio27:ep000409:frames0040-0120",
+      "mass_balance:ratio27:ep000410:frames0040-0120",
+      "mass_balance:ratio27:ep000411:frames0040-0120",
+      "mass_balance:ratio27:ep000412:frames0040-0120",
+      "mass_balance:ratio27:ep000413:frames0040-0120",
+      "mass_balance:ratio27:ep000414:frames0040-0120",
+      "mass_balance:ratio27:ep000415:frames0040-0120",
+      "mass_balance:ratio27:ep000416:frames0040-0120",
+      "mass_balance:ratio27:ep000417:frames0040-0120",
+      "mass_balance:ratio27:ep000418:frames0040-0120"
+    ]
+  },
+  {
+    "domain": "ood",
+    "source_friction_mu": 6.4980191708,
+    "source_index": 1342,
+    "source_inner_step": 40,
+    "source_sample_id": "mass_balance:ratio29:ep000447:frames0040-0120",
+    "support_indices": [
+      1342
+    ],
+    "support_sample_ids": [
+      "mass_balance:ratio29:ep000447:frames0040-0120"
+    ],
+    "target_indices": [
+      1306,
+      1309,
+      1312,
+      1315,
+      1318,
+      1321,
+      1324,
+      1327,
+      1330,
+      1333,
+      1336,
+      1339,
+      1345,
+      1348
+    ],
+    "target_sample_ids": [
+      "mass_balance:ratio29:ep000435:frames0040-0120",
+      "mass_balance:ratio29:ep000436:frames0040-0120",
+      "mass_balance:ratio29:ep000437:frames0040-0120",
+      "mass_balance:ratio29:ep000438:frames0040-0120",
+      "mass_balance:ratio29:ep000439:frames0040-0120",
+      "mass_balance:ratio29:ep000440:frames0040-0120",
+      "mass_balance:ratio29:ep000441:frames0040-0120",
+      "mass_balance:ratio29:ep000442:frames0040-0120",
+      "mass_balance:ratio29:ep000443:frames0040-0120",
+      "mass_balance:ratio29:ep000444:frames0040-0120",
+      "mass_balance:ratio29:ep000445:frames0040-0120",
+      "mass_balance:ratio29:ep000446:frames0040-0120",
+      "mass_balance:ratio29:ep000448:frames0040-0120",
+      "mass_balance:ratio29:ep000449:frames0040-0120"
+    ]
+  }
+]
