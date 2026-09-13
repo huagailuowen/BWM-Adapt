@@ -1,0 +1,73 @@
+{
+  "evaluation_id": "real97_train_support_train_test_query_v1",
+  "release": "first_reach_pair_overlap_20260913_v1",
+  "task": "ball",
+  "source_scoring_config": "configs/evaluation/real97_ball_door_scores_20260912_v2.json",
+  "source_tracking_status": "train_gt_calibrated_pending_heldout_overlay_audit",
+  "publication_status": "archived_computed_metrics_not_a_claim_of_completed_heldout_tracking_audit",
+  "action_selection": {
+    "base_reach_protocol": {
+      "split": "test",
+      "position": "farthest reached horizontal ball-center position",
+      "target": "right blue marker x from the shared GT initial frame",
+      "tolerance_original_pixels": 30,
+      "reach_test": "peak_center_x >= blue_marker_x - 30",
+      "level_scan": "ascending numerical levels; first predicted reaching level, without consulting GT",
+      "gt_selection": "same ascending scan and threshold applied independently to GT",
+      "offscreen": "reuse confirmed-exit last-visible position; never assume a new offscreen position",
+      "coordinate_system": "native crop pixels; the original camera x-offset cancels in the comparison",
+      "no_reach": "None; no fallback to highest level",
+      "missing_measurement": "explicitly unscorable; never silently ignore a lower unknown level",
+      "aggregation": "equal weight per environment; reachable-GT accuracy and correct abstention reported separately",
+      "inference_rerun": false,
+      "legacy_results_preserved": true
+    },
+    "gt_pair": "[first_reaching_level, first_reaching_level + 1]",
+    "pred_pair": "[first_reaching_level, first_reaching_level + 1]",
+    "score": "cardinality(intersection(gt_pair, pred_pair)) / 2",
+    "no_reach": "empty pair, score zero; never substitute highest level",
+    "unknown_selection": "unscorable; explicitly reported",
+    "maximum_level_policy": "For first level 10, retain the formal pair [10, 11] exactly as requested. Level 11 is an extrapolated label, not an observed or evaluated rollout. Never clip or duplicate the last level.",
+    "successor_reach_check": "Not required: successor is added arithmetically, not tested for reach.",
+    "aggregation": "equal weight per environment",
+    "inference_rerun": false,
+    "legacy_results_preserved": true
+  },
+  "image_metrics": [
+    "PSNR",
+    "SSIM",
+    "LPIPS-AlexNet"
+  ],
+  "object_metrics": [
+    "ADE_px",
+    "FDE_px",
+    "missing_penalized_ADE_px",
+    "tracking_coverage",
+    "farthest_x_error_px"
+  ],
+  "task_geometry": {
+    "native_size": [
+      560,
+      248
+    ],
+    "original_camera_crop_x": 80,
+    "ours": "outputs/infer_real97_ball_ours_reference_job114807",
+    "standard": "outputs/infer_real97_ball_standard_step5500_reference_job115189",
+    "dino": "outputs/infer_real97_ball_dino_step5500_reference_job115190"
+  },
+  "frame_policy": "Recorded evaluation_frame_indices; exclude conditioning frame and repeated tail padding",
+  "image_geometry": "Exclude letterbox bars; compare corresponding content crops",
+  "object_geometry": "Inverse-letterboxed native image pixels; Door uses tracked door edge, not a physical angle",
+  "ball_exit_policy": "Retain last-visible position only after confirmed right-side exit",
+  "aggregation": "Report train and test separately; scoreboard uses test environment macro means",
+  "paired_gt_only": true,
+  "counterfactual_action_sweeps_scored": false,
+  "checkpoint_steps": {
+    "ours": 5500,
+    "standard": 5500,
+    "dino": 5500
+  },
+  "fairness_note": "Ours Stage2 uses the existing customized supports and initializations, including near-environment-table starts. This is not an equal-information or equal-training-step benchmark.",
+  "media_included": false,
+  "new_inference_or_metric_recomputation": false
+}

@@ -1,0 +1,735 @@
+{
+  "metric": "ball_first_reach_successor_pair_overlap",
+  "source": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/ball_action_first_reach_blue_minus30.json",
+  "source_sha256": "55abbe92fb52e9af54a6357bb27e9205a7a5cadd21e9b32b276f41538c5ad135",
+  "protocol": {
+    "base_reach_protocol": {
+      "split": "test",
+      "position": "farthest reached horizontal ball-center position",
+      "target": "right blue marker x from the shared GT initial frame",
+      "tolerance_original_pixels": 30,
+      "reach_test": "peak_center_x >= blue_marker_x - 30",
+      "level_scan": "ascending numerical levels; first predicted reaching level, without consulting GT",
+      "gt_selection": "same ascending scan and threshold applied independently to GT",
+      "offscreen": "reuse confirmed-exit last-visible position; never assume a new offscreen position",
+      "coordinate_system": "native crop pixels; the original camera x-offset cancels in the comparison",
+      "no_reach": "None; no fallback to highest level",
+      "missing_measurement": "explicitly unscorable; never silently ignore a lower unknown level",
+      "aggregation": "equal weight per environment; reachable-GT accuracy and correct abstention reported separately",
+      "inference_rerun": false,
+      "legacy_results_preserved": true
+    },
+    "gt_pair": "[first_reaching_level, first_reaching_level + 1]",
+    "pred_pair": "[first_reaching_level, first_reaching_level + 1]",
+    "score": "cardinality(intersection(gt_pair, pred_pair)) / 2",
+    "no_reach": "empty pair, score zero; never substitute highest level",
+    "unknown_selection": "unscorable; explicitly reported",
+    "maximum_level_policy": "For first level 10, retain the formal pair [10, 11] exactly as requested. Level 11 is an extrapolated label, not an observed or evaluated rollout. Never clip or duplicate the last level.",
+    "successor_reach_check": "Not required: successor is added arithmetically, not tested for reach.",
+    "aggregation": "equal weight per environment",
+    "inference_rerun": false,
+    "legacy_results_preserved": true
+  },
+  "methods": [
+    {
+      "method": "standard",
+      "environments": 8,
+      "scorable_environments": 8,
+      "total_score": 3.0,
+      "mean_overlap_score": 0.375,
+      "full_overlap_count": 0,
+      "half_overlap_count": 6,
+      "zero_overlap_count": 2
+    },
+    {
+      "method": "dino",
+      "environments": 8,
+      "scorable_environments": 8,
+      "total_score": 3.0,
+      "mean_overlap_score": 0.375,
+      "full_overlap_count": 0,
+      "half_overlap_count": 6,
+      "zero_overlap_count": 2
+    },
+    {
+      "method": "ours_stage1",
+      "environments": 8,
+      "scorable_environments": 8,
+      "total_score": 5.5,
+      "mean_overlap_score": 0.6875,
+      "full_overlap_count": 5,
+      "half_overlap_count": 1,
+      "zero_overlap_count": 2
+    },
+    {
+      "method": "ours_stage2",
+      "environments": 8,
+      "scorable_environments": 8,
+      "total_score": 4.5,
+      "mean_overlap_score": 0.5625,
+      "full_overlap_count": 3,
+      "half_overlap_count": 3,
+      "zero_overlap_count": 2
+    }
+  ],
+  "rows": [
+    {
+      "environment": "ball-0",
+      "method": "standard",
+      "gt_first_reaching_level": 3,
+      "pred_first_reaching_level": 4,
+      "gt_pair": [
+        3,
+        4
+      ],
+      "pred_pair": [
+        4,
+        5
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        4
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-0",
+      "method": "dino",
+      "gt_first_reaching_level": 3,
+      "pred_first_reaching_level": 4,
+      "gt_pair": [
+        3,
+        4
+      ],
+      "pred_pair": [
+        4,
+        5
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        4
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-0",
+      "method": "ours_stage1",
+      "gt_first_reaching_level": 3,
+      "pred_first_reaching_level": 3,
+      "gt_pair": [
+        3,
+        4
+      ],
+      "pred_pair": [
+        3,
+        4
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        3,
+        4
+      ],
+      "score": 1.0,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-0",
+      "method": "ours_stage2",
+      "gt_first_reaching_level": 3,
+      "pred_first_reaching_level": 4,
+      "gt_pair": [
+        3,
+        4
+      ],
+      "pred_pair": [
+        4,
+        5
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        4
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-1",
+      "method": "standard",
+      "gt_first_reaching_level": 4,
+      "pred_first_reaching_level": 3,
+      "gt_pair": [
+        4,
+        5
+      ],
+      "pred_pair": [
+        3,
+        4
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        4
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-1",
+      "method": "dino",
+      "gt_first_reaching_level": 4,
+      "pred_first_reaching_level": 3,
+      "gt_pair": [
+        4,
+        5
+      ],
+      "pred_pair": [
+        3,
+        4
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        4
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-1",
+      "method": "ours_stage1",
+      "gt_first_reaching_level": 4,
+      "pred_first_reaching_level": 4,
+      "gt_pair": [
+        4,
+        5
+      ],
+      "pred_pair": [
+        4,
+        5
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        4,
+        5
+      ],
+      "score": 1.0,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-1",
+      "method": "ours_stage2",
+      "gt_first_reaching_level": 4,
+      "pred_first_reaching_level": 4,
+      "gt_pair": [
+        4,
+        5
+      ],
+      "pred_pair": [
+        4,
+        5
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        4,
+        5
+      ],
+      "score": 1.0,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-1dot5",
+      "method": "standard",
+      "gt_first_reaching_level": 5,
+      "pred_first_reaching_level": 4,
+      "gt_pair": [
+        5,
+        6
+      ],
+      "pred_pair": [
+        4,
+        5
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        5
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-1dot5",
+      "method": "dino",
+      "gt_first_reaching_level": 5,
+      "pred_first_reaching_level": 4,
+      "gt_pair": [
+        5,
+        6
+      ],
+      "pred_pair": [
+        4,
+        5
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        5
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-1dot5",
+      "method": "ours_stage1",
+      "gt_first_reaching_level": 5,
+      "pred_first_reaching_level": 4,
+      "gt_pair": [
+        5,
+        6
+      ],
+      "pred_pair": [
+        4,
+        5
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        5
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-1dot5",
+      "method": "ours_stage2",
+      "gt_first_reaching_level": 5,
+      "pred_first_reaching_level": 4,
+      "gt_pair": [
+        5,
+        6
+      ],
+      "pred_pair": [
+        4,
+        5
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        5
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-2",
+      "method": "standard",
+      "gt_first_reaching_level": 6,
+      "pred_first_reaching_level": 5,
+      "gt_pair": [
+        6,
+        7
+      ],
+      "pred_pair": [
+        5,
+        6
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        6
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-2",
+      "method": "dino",
+      "gt_first_reaching_level": 6,
+      "pred_first_reaching_level": 5,
+      "gt_pair": [
+        6,
+        7
+      ],
+      "pred_pair": [
+        5,
+        6
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        6
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-2",
+      "method": "ours_stage1",
+      "gt_first_reaching_level": 6,
+      "pred_first_reaching_level": 6,
+      "gt_pair": [
+        6,
+        7
+      ],
+      "pred_pair": [
+        6,
+        7
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        6,
+        7
+      ],
+      "score": 1.0,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-2",
+      "method": "ours_stage2",
+      "gt_first_reaching_level": 6,
+      "pred_first_reaching_level": 6,
+      "gt_pair": [
+        6,
+        7
+      ],
+      "pred_pair": [
+        6,
+        7
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        6,
+        7
+      ],
+      "score": 1.0,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-3",
+      "method": "standard",
+      "gt_first_reaching_level": 8,
+      "pred_first_reaching_level": 6,
+      "gt_pair": [
+        8,
+        9
+      ],
+      "pred_pair": [
+        6,
+        7
+      ],
+      "selection_identifiable": true,
+      "intersection": [],
+      "score": 0.0,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-3",
+      "method": "dino",
+      "gt_first_reaching_level": 8,
+      "pred_first_reaching_level": 6,
+      "gt_pair": [
+        8,
+        9
+      ],
+      "pred_pair": [
+        6,
+        7
+      ],
+      "selection_identifiable": true,
+      "intersection": [],
+      "score": 0.0,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-3",
+      "method": "ours_stage1",
+      "gt_first_reaching_level": 8,
+      "pred_first_reaching_level": 6,
+      "gt_pair": [
+        8,
+        9
+      ],
+      "pred_pair": [
+        6,
+        7
+      ],
+      "selection_identifiable": true,
+      "intersection": [],
+      "score": 0.0,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-3",
+      "method": "ours_stage2",
+      "gt_first_reaching_level": 8,
+      "pred_first_reaching_level": 6,
+      "gt_pair": [
+        8,
+        9
+      ],
+      "pred_pair": [
+        6,
+        7
+      ],
+      "selection_identifiable": true,
+      "intersection": [],
+      "score": 0.0,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-4",
+      "method": "standard",
+      "gt_first_reaching_level": 9,
+      "pred_first_reaching_level": 8,
+      "gt_pair": [
+        9,
+        10
+      ],
+      "pred_pair": [
+        8,
+        9
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        9
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-4",
+      "method": "dino",
+      "gt_first_reaching_level": 9,
+      "pred_first_reaching_level": 8,
+      "gt_pair": [
+        9,
+        10
+      ],
+      "pred_pair": [
+        8,
+        9
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        9
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-4",
+      "method": "ours_stage1",
+      "gt_first_reaching_level": 9,
+      "pred_first_reaching_level": 9,
+      "gt_pair": [
+        9,
+        10
+      ],
+      "pred_pair": [
+        9,
+        10
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        9,
+        10
+      ],
+      "score": 1.0,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-4",
+      "method": "ours_stage2",
+      "gt_first_reaching_level": 9,
+      "pred_first_reaching_level": 8,
+      "gt_pair": [
+        9,
+        10
+      ],
+      "pred_pair": [
+        8,
+        9
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        9
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": false,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-7",
+      "method": "standard",
+      "gt_first_reaching_level": 10,
+      "pred_first_reaching_level": 8,
+      "gt_pair": [
+        10,
+        11
+      ],
+      "pred_pair": [
+        8,
+        9
+      ],
+      "selection_identifiable": true,
+      "intersection": [],
+      "score": 0.0,
+      "gt_pair_contains_unobserved_level": true,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-7",
+      "method": "dino",
+      "gt_first_reaching_level": 10,
+      "pred_first_reaching_level": 8,
+      "gt_pair": [
+        10,
+        11
+      ],
+      "pred_pair": [
+        8,
+        9
+      ],
+      "selection_identifiable": true,
+      "intersection": [],
+      "score": 0.0,
+      "gt_pair_contains_unobserved_level": true,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-7",
+      "method": "ours_stage1",
+      "gt_first_reaching_level": 10,
+      "pred_first_reaching_level": 10,
+      "gt_pair": [
+        10,
+        11
+      ],
+      "pred_pair": [
+        10,
+        11
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        10,
+        11
+      ],
+      "score": 1.0,
+      "gt_pair_contains_unobserved_level": true,
+      "pred_pair_contains_unobserved_level": true
+    },
+    {
+      "environment": "ball-7",
+      "method": "ours_stage2",
+      "gt_first_reaching_level": 10,
+      "pred_first_reaching_level": 10,
+      "gt_pair": [
+        10,
+        11
+      ],
+      "pred_pair": [
+        10,
+        11
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        10,
+        11
+      ],
+      "score": 1.0,
+      "gt_pair_contains_unobserved_level": true,
+      "pred_pair_contains_unobserved_level": true
+    },
+    {
+      "environment": "ball-9",
+      "method": "standard",
+      "gt_first_reaching_level": 10,
+      "pred_first_reaching_level": 9,
+      "gt_pair": [
+        10,
+        11
+      ],
+      "pred_pair": [
+        9,
+        10
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        10
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": true,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-9",
+      "method": "dino",
+      "gt_first_reaching_level": 10,
+      "pred_first_reaching_level": 9,
+      "gt_pair": [
+        10,
+        11
+      ],
+      "pred_pair": [
+        9,
+        10
+      ],
+      "selection_identifiable": true,
+      "intersection": [
+        10
+      ],
+      "score": 0.5,
+      "gt_pair_contains_unobserved_level": true,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-9",
+      "method": "ours_stage1",
+      "gt_first_reaching_level": 10,
+      "pred_first_reaching_level": null,
+      "gt_pair": [
+        10,
+        11
+      ],
+      "pred_pair": [],
+      "selection_identifiable": true,
+      "intersection": [],
+      "score": 0.0,
+      "gt_pair_contains_unobserved_level": true,
+      "pred_pair_contains_unobserved_level": false
+    },
+    {
+      "environment": "ball-9",
+      "method": "ours_stage2",
+      "gt_first_reaching_level": 10,
+      "pred_first_reaching_level": null,
+      "gt_pair": [
+        10,
+        11
+      ],
+      "pred_pair": [],
+      "selection_identifiable": true,
+      "intersection": [],
+      "score": 0.0,
+      "gt_pair_contains_unobserved_level": true,
+      "pred_pair_contains_unobserved_level": false
+    }
+  ]
+}

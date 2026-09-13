@@ -1,0 +1,1072 @@
+{
+  "source_directory": "outputs/eval_real97_ball_door_scores_20260912_v2",
+  "source_files": {
+    "summary_provisional.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/summary_provisional.json",
+      "sha256": "d9b3267d5bbac8005c254f989e92d57cc9835351172ca33be10879a7700c5821",
+      "bytes": 84041
+    },
+    "manifest.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/manifest.json",
+      "sha256": "862e48ae145a7922944f510c4e64192d66aaa1221a9b1dad3d7a790e033bd268",
+      "bytes": 1177017
+    },
+    "protocol.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/protocol.json",
+      "sha256": "f8166b872de8baf88e044c6d66984dae5434a2bc9def801b8261cdc92388c568",
+      "bytes": 2729
+    },
+    "ball_action_first_reach_successor_pair_overlap.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/ball_action_first_reach_successor_pair_overlap.json",
+      "sha256": "8c51fa32265de968bb9c0ebac005cf08c5353d7a2c01b74373c5c669e9fb10f4",
+      "bytes": 17506
+    },
+    "ball_action_first_reach_blue_minus30.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/ball_action_first_reach_blue_minus30.json",
+      "sha256": "55abbe92fb52e9af54a6357bb27e9205a7a5cadd21e9b32b276f41538c5ad135",
+      "bytes": 177873
+    },
+    "ball_action_top2_overlap.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/ball_action_top2_overlap.json",
+      "sha256": "7e148edd5ce8b31fe243f5f3165e4bf8e706533bfbde65a78c7833297f01d86e",
+      "bytes": 23106
+    },
+    "door_calibration_audit.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/door_calibration_audit.json",
+      "sha256": "41111acc982e65b0751156ad2f0799c386b508ffd89b00bf258cf0fd48769b39",
+      "bytes": 28527
+    },
+    "cpu_complete.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/cpu_complete.json",
+      "sha256": "c41cfd2bd3172de98d350282cb0aec95f5aaef32ba72ab45bfbb00a67e8af7dd",
+      "bytes": 975
+    },
+    "lpips_complete.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips_complete.json",
+      "sha256": "9ec59111e490359222eb59c76b1c476a8842976f7c6b031bb9f9076c6904cbcc",
+      "bytes": 38
+    },
+    "queries/ball/q0000_ball-0_train_L08_ep000027.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0000_ball-0_train_L08_ep000027.json",
+      "sha256": "0af4ecbe9ba8541f8be1535c2c8ece9628553f2c1ac6996e64cb8b2df0337a9d",
+      "bytes": 28483
+    },
+    "lpips/ball/q0000_ball-0_train_L08_ep000027.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0000_ball-0_train_L08_ep000027.json",
+      "sha256": "c27c97c50c043c9f194aface170824aa8c5a5904f10b04ccb68a8c84ffaf36a1",
+      "bytes": 5483
+    },
+    "queries/ball/q0001_ball-0_train_L04_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0001_ball-0_train_L04_ep000015.json",
+      "sha256": "2421a845f738e0d619044451136d862b069366917b8ce08e470da9f0103f0764",
+      "bytes": 46448
+    },
+    "lpips/ball/q0001_ball-0_train_L04_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0001_ball-0_train_L04_ep000015.json",
+      "sha256": "d2ba2b06006e5443e649f8470e8c67123906a45271c111d8acc58833328a7ed3",
+      "bytes": 9449
+    },
+    "queries/ball/q0002_ball-0_test_L01_ep000000.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0002_ball-0_test_L01_ep000000.json",
+      "sha256": "60150251b3bb8a5db7f66fce4ab529e806a315c76b76b23c4bc7023bef756c69",
+      "bytes": 46395
+    },
+    "lpips/ball/q0002_ball-0_test_L01_ep000000.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0002_ball-0_test_L01_ep000000.json",
+      "sha256": "03c303a48974b0333821e43261bef0754b06cc9203d865ae4fec84be07f1b60e",
+      "bytes": 9385
+    },
+    "queries/ball/q0003_ball-0_test_L10_ep000001.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0003_ball-0_test_L10_ep000001.json",
+      "sha256": "a5b796f3c699cd369a34800f39b912bdaada828bbe52b40cbe9e947c4345254c",
+      "bytes": 30524
+    },
+    "lpips/ball/q0003_ball-0_test_L10_ep000001.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0003_ball-0_test_L10_ep000001.json",
+      "sha256": "ce2b1f396ec839eb6aa98b22d934563bce8190cb6523105d7b182bd955546bd9",
+      "bytes": 5921
+    },
+    "queries/ball/q0004_ball-0_test_L05_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0004_ball-0_test_L05_ep000008.json",
+      "sha256": "a2f42f48a4d5ec2030c7171d50769c016f9f3e52f343bdf83ef611cc2c2c0547",
+      "bytes": 41047
+    },
+    "lpips/ball/q0004_ball-0_test_L05_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0004_ball-0_test_L05_ep000008.json",
+      "sha256": "a6872382aa5df894e092cc41c5457f5f8c2415a514f15cf9eee448e6552ae092",
+      "bytes": 8176
+    },
+    "queries/ball/q0005_ball-0_test_L06_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0005_ball-0_test_L06_ep000017.json",
+      "sha256": "9d74db97daf3083ad9b6714e7eaac0703c0a37e4affc1abb7236cbd12cf79168",
+      "bytes": 39539
+    },
+    "lpips/ball/q0005_ball-0_test_L06_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0005_ball-0_test_L06_ep000017.json",
+      "sha256": "5861efd1b8cb8ef3008d33ea36ffdba978594625ef605e423154e3f94da6a71c",
+      "bytes": 7857
+    },
+    "queries/ball/q0006_ball-0_test_L07_ep000018.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0006_ball-0_test_L07_ep000018.json",
+      "sha256": "6461f589706ce700b2536a0bdb834db743569d5908a954bdfd96ca9236ce4af3",
+      "bytes": 33298
+    },
+    "lpips/ball/q0006_ball-0_test_L07_ep000018.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0006_ball-0_test_L07_ep000018.json",
+      "sha256": "1d340024fa374c9d70125a5090929a9a2dc9c6503cdf3beddb474ef2fc9ce823",
+      "bytes": 6537
+    },
+    "queries/ball/q0007_ball-0_test_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0007_ball-0_test_L03_ep000022.json",
+      "sha256": "988d83796a90724ee2f25b84f063a8bd1ef60b32e01d1da6c389b5b0d2c29abb",
+      "bytes": 46366
+    },
+    "lpips/ball/q0007_ball-0_test_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0007_ball-0_test_L03_ep000022.json",
+      "sha256": "cb0505d133f8a556fb6ec4720edefb9ddbc1e966babc905613096d3c7e7d53b3",
+      "bytes": 9288
+    },
+    "queries/ball/q0008_ball-0_test_L04_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0008_ball-0_test_L04_ep000023.json",
+      "sha256": "9374c283c90a44e4fbae30be7d78ef3a9a6ef1c490575a2cd6c03e22468ad2fa",
+      "bytes": 46430
+    },
+    "lpips/ball/q0008_ball-0_test_L04_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0008_ball-0_test_L04_ep000023.json",
+      "sha256": "2d7a3a5981f870b9a63f6e3b2c143d7b2394968b919314e71e0d14127873d541",
+      "bytes": 9431
+    },
+    "queries/ball/q0009_ball-0_test_L09_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0009_ball-0_test_L09_ep000028.json",
+      "sha256": "97b796ae88c29fdaeffddb965f5bbec5564055c3e05dda421513346ed32f18a8",
+      "bytes": 25153
+    },
+    "lpips/ball/q0009_ball-0_test_L09_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0009_ball-0_test_L09_ep000028.json",
+      "sha256": "7094a5d3fe103b3a65f03619e9ef4df5cc70b5dd330f589f2e22973e85b410f1",
+      "bytes": 4746
+    },
+    "queries/ball/q0010_ball-0_test_L02_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0010_ball-0_test_L02_ep000031.json",
+      "sha256": "fa7b37883d50fd37506ab0f7518e3afb1b3898d3ca83c574fba921db92fd003c",
+      "bytes": 46552
+    },
+    "lpips/ball/q0010_ball-0_test_L02_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0010_ball-0_test_L02_ep000031.json",
+      "sha256": "1391e54651fc4483a0598f3881182a9d7ae02417a42fde1f7cb9762a34d4d547",
+      "bytes": 9326
+    },
+    "queries/ball/q0011_ball-0_test_L08_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0011_ball-0_test_L08_ep000037.json",
+      "sha256": "d34f1c78d3189505976c3c7a83673e3e6e1575d7030542cf04711d4d916f324e",
+      "bytes": 28483
+    },
+    "lpips/ball/q0011_ball-0_test_L08_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0011_ball-0_test_L08_ep000037.json",
+      "sha256": "163ee944409c2b36b155d6d9df56caef690f7cd2e8cea102b4dafd118bbae948",
+      "bytes": 5460
+    },
+    "queries/ball/q0012_ball-1_train_L10_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0012_ball-1_train_L10_ep000028.json",
+      "sha256": "61ba4522a667f289b9a6bd13244a15dedace03b70dd800fd73d7c7a543b64dcc",
+      "bytes": 26370
+    },
+    "lpips/ball/q0012_ball-1_train_L10_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0012_ball-1_train_L10_ep000028.json",
+      "sha256": "ed3456a747eb19d675aff40444f149450c9d130d86c4643b2069238e08c684a6",
+      "bytes": 5056
+    },
+    "queries/ball/q0013_ball-1_train_L04_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0013_ball-1_train_L04_ep000013.json",
+      "sha256": "131b8db317dae0770e0cd86ab130b90919fa1e453b8a1e7ed0896fa64f5eda05",
+      "bytes": 46444
+    },
+    "lpips/ball/q0013_ball-1_train_L04_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0013_ball-1_train_L04_ep000013.json",
+      "sha256": "8391ac7f43bd58024f1599d1a54ff91708cd001c999589c923914e8c1dec271f",
+      "bytes": 9403
+    },
+    "queries/ball/q0014_ball-1_test_L10_ep000000.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0014_ball-1_test_L10_ep000000.json",
+      "sha256": "6244a66d033d78a26b52bcc6a4aa570b13e85ee72121a17413f4c6c16358cc11",
+      "bytes": 24995
+    },
+    "lpips/ball/q0014_ball-1_test_L10_ep000000.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0014_ball-1_test_L10_ep000000.json",
+      "sha256": "9895841c7927c741f26324c939283ad54dfbc26f81045b4ce87d2e7901456583",
+      "bytes": 4722
+    },
+    "queries/ball/q0015_ball-1_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0015_ball-1_test_L02_ep000003.json",
+      "sha256": "3976c008961972baabbd1b4c58c4c81467d75f7e34b88d2f011cf8a4823d8479",
+      "bytes": 44506
+    },
+    "lpips/ball/q0015_ball-1_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0015_ball-1_test_L02_ep000003.json",
+      "sha256": "e75e7efba605e579069f7735592315bc3655bc904f25a564cd2dacb001200677",
+      "bytes": 8956
+    },
+    "queries/ball/q0016_ball-1_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0016_ball-1_test_L04_ep000007.json",
+      "sha256": "7fefec7f3fd23712274622232185909ef90d585cf7d6757bdd60c95734d9b40b",
+      "bytes": 46390
+    },
+    "lpips/ball/q0016_ball-1_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0016_ball-1_test_L04_ep000007.json",
+      "sha256": "295130a7b46ee44253ba87d5801d643f21d0056d631c332cf11f56b876513c01",
+      "bytes": 9409
+    },
+    "queries/ball/q0017_ball-1_test_L06_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0017_ball-1_test_L06_ep000008.json",
+      "sha256": "9fc74b8a166e5faf62ea2a468d667098e9b5d04c0318588ceeb864852e15c0d1",
+      "bytes": 40157
+    },
+    "lpips/ball/q0017_ball-1_test_L06_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0017_ball-1_test_L06_ep000008.json",
+      "sha256": "a71235f2a1903e3d1e81c24253dade7dff2df26402528a3d429e9e494e17482b",
+      "bytes": 7979
+    },
+    "queries/ball/q0018_ball-1_test_L08_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0018_ball-1_test_L08_ep000017.json",
+      "sha256": "cee60ebb7dc75118612050f502a8d7fa117eebfd6c3801d564f765c8c4b8865c",
+      "bytes": 32594
+    },
+    "lpips/ball/q0018_ball-1_test_L08_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0018_ball-1_test_L08_ep000017.json",
+      "sha256": "93435f6c15567a0962c1f36a003b9ff23687f2530e9e450812a1c154ec5806fe",
+      "bytes": 6349
+    },
+    "queries/ball/q0019_ball-1_test_L01_ep000020.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0019_ball-1_test_L01_ep000020.json",
+      "sha256": "ac2d06e7dfcfeeca4262d3f6d585121eb8d9d18736f1bf8b8711cf2333980441",
+      "bytes": 39521
+    },
+    "lpips/ball/q0019_ball-1_test_L01_ep000020.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0019_ball-1_test_L01_ep000020.json",
+      "sha256": "d567913dec0bdefb796d7e23bdc52a329a392f6820de808b4a3c99ca62defc4e",
+      "bytes": 7941
+    },
+    "queries/ball/q0020_ball-1_test_L05_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0020_ball-1_test_L05_ep000023.json",
+      "sha256": "2b25a1679a136a76e60b87cda1e89baefb44b8969fb7033dfd2440e44b18b05a",
+      "bytes": 46570
+    },
+    "lpips/ball/q0020_ball-1_test_L05_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0020_ball-1_test_L05_ep000023.json",
+      "sha256": "bd800475cacad9c73f7bac921de9de0e56935edcf64908ec15383d18f1c476e8",
+      "bytes": 9336
+    },
+    "queries/ball/q0021_ball-1_test_L07_ep000025.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0021_ball-1_test_L07_ep000025.json",
+      "sha256": "44183e6468bddc7d41f5907b0c12e1b6043832edbab2498036237bb3421ef86d",
+      "bytes": 45001
+    },
+    "lpips/ball/q0021_ball-1_test_L07_ep000025.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0021_ball-1_test_L07_ep000025.json",
+      "sha256": "438a38e4cfa8ea5049fd0eea9bec1a45d495765fad296fead4a4954b9d5b1025",
+      "bytes": 9053
+    },
+    "queries/ball/q0022_ball-1_test_L09_ep000032.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0022_ball-1_test_L09_ep000032.json",
+      "sha256": "b2be4e810eead0a9bd10f0b88a0ecb5fd969f7af8f187ad76bda16cae6d58181",
+      "bytes": 27257
+    },
+    "lpips/ball/q0022_ball-1_test_L09_ep000032.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0022_ball-1_test_L09_ep000032.json",
+      "sha256": "27dce2709832eea854ec9059a5f6c6cb1bbbfaff1b4634ec6b1fa8d44e6717b7",
+      "bytes": 5149
+    },
+    "queries/ball/q0023_ball-1_test_L03_ep000038.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0023_ball-1_test_L03_ep000038.json",
+      "sha256": "7bf25e530460771c37a3f3a977e514644acf76147333d86faac4da20382acd82",
+      "bytes": 46399
+    },
+    "lpips/ball/q0023_ball-1_test_L03_ep000038.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0023_ball-1_test_L03_ep000038.json",
+      "sha256": "8cacbe1b574b08665170e0816a834575e86bc604d1fd198fe8c5bc24251a2f38",
+      "bytes": 9366
+    },
+    "queries/ball/q0024_ball-1dot5_train_L02_ep000011.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0024_ball-1dot5_train_L02_ep000011.json",
+      "sha256": "7b0ce1ca8ae2ad3ceef58f2845cc315fc2179f1926bcb7d03a400431701ddba6",
+      "bytes": 40870
+    },
+    "lpips/ball/q0024_ball-1dot5_train_L02_ep000011.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0024_ball-1dot5_train_L02_ep000011.json",
+      "sha256": "510bb039c4ff08da95cfa0d00283dd57906af9d4ad835562fce63600befc21de",
+      "bytes": 8221
+    },
+    "queries/ball/q0025_ball-1dot5_train_L05_ep000014.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0025_ball-1dot5_train_L05_ep000014.json",
+      "sha256": "ab7b3c3cc79fdc12583d91d6a5e13e1486fb5894a0a9a240c0a383817aae4131",
+      "bytes": 40930
+    },
+    "lpips/ball/q0025_ball-1dot5_train_L05_ep000014.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0025_ball-1dot5_train_L05_ep000014.json",
+      "sha256": "5941e3f4e47d450c6d284831f72a7541e68bb7ce57b9415c085919cb8d8e2dbc",
+      "bytes": 8197
+    },
+    "queries/ball/q0026_ball-1dot5_test_L09_ep000002.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0026_ball-1dot5_test_L09_ep000002.json",
+      "sha256": "30930e895e6dd44a70c9ef38be821fe6694088bb0b89dcfbca9f81d3504ef4a6",
+      "bytes": 31446
+    },
+    "lpips/ball/q0026_ball-1dot5_test_L09_ep000002.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0026_ball-1dot5_test_L09_ep000002.json",
+      "sha256": "19248b3847f82dd004fa4f1a8686dbc915f6774636f9e47696066cbbe49a4c30",
+      "bytes": 6103
+    },
+    "queries/ball/q0027_ball-1dot5_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0027_ball-1dot5_test_L02_ep000003.json",
+      "sha256": "b23399d25cd14aec1eb12df554d4ab5ad35a8bb00fccb4f17c66dfba43b80792",
+      "bytes": 32763
+    },
+    "lpips/ball/q0027_ball-1dot5_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0027_ball-1dot5_test_L02_ep000003.json",
+      "sha256": "6fc69f24f4e8305193185a0b4f3bca885a695039272bc0226f868b2e0857649c",
+      "bytes": 6400
+    },
+    "queries/ball/q0028_ball-1dot5_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0028_ball-1dot5_test_L04_ep000007.json",
+      "sha256": "32b7b36b2a1bab9e8bef94e3089194c9c579eeac3ecf51c9b96f8bc13e25512c",
+      "bytes": 42955
+    },
+    "lpips/ball/q0028_ball-1dot5_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0028_ball-1dot5_test_L04_ep000007.json",
+      "sha256": "5bc14a8f63097cb60408219aef743f9d22f2b8cd6c006761b88aabd2c82d883b",
+      "bytes": 8615
+    },
+    "queries/ball/q0029_ball-1dot5_test_L06_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0029_ball-1dot5_test_L06_ep000008.json",
+      "sha256": "af5a946100f72d41f031955ee10491bbcc483704c3382981792e27d4733e15cc",
+      "bytes": 46440
+    },
+    "lpips/ball/q0029_ball-1dot5_test_L06_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0029_ball-1dot5_test_L06_ep000008.json",
+      "sha256": "7e8093c1ee58be047fa03605a651efd45a2d5a050d59ea955c4f31d244aa8eea",
+      "bytes": 9411
+    },
+    "queries/ball/q0030_ball-1dot5_test_L05_ep000009.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0030_ball-1dot5_test_L05_ep000009.json",
+      "sha256": "7c487fb34ff0080cc4965d8572c8e8004ab20fe85c7ad8f5634b3164896da272",
+      "bytes": 43138
+    },
+    "lpips/ball/q0030_ball-1dot5_test_L05_ep000009.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0030_ball-1dot5_test_L05_ep000009.json",
+      "sha256": "acf68e805f088d79ab6f436202784913625d24d3c49a014b624acca0be6963db",
+      "bytes": 8606
+    },
+    "queries/ball/q0031_ball-1dot5_test_L10_ep000019.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0031_ball-1dot5_test_L10_ep000019.json",
+      "sha256": "e40819ca28a39172f0ae6bda6f6d11ffb7826e02f19870a94033affca07d320b",
+      "bytes": 25091
+    },
+    "lpips/ball/q0031_ball-1dot5_test_L10_ep000019.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0031_ball-1dot5_test_L10_ep000019.json",
+      "sha256": "870d94679d9a721c6c6b854a6ad94e782596f1c7491cc11f0ff4b9f3d1bc3d6e",
+      "bytes": 4733
+    },
+    "queries/ball/q0032_ball-1dot5_test_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0032_ball-1dot5_test_L03_ep000022.json",
+      "sha256": "2b1aadec65f66c6c40bb2e664da44166979dec660f3b19f129ecaef922528898",
+      "bytes": 46426
+    },
+    "lpips/ball/q0032_ball-1dot5_test_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0032_ball-1dot5_test_L03_ep000022.json",
+      "sha256": "72d98bd0c269d321578b5c939e6dc64d7617a3fa004e1d6747506fed925c6683",
+      "bytes": 9398
+    },
+    "queries/ball/q0033_ball-1dot5_test_L01_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0033_ball-1dot5_test_L01_ep000031.json",
+      "sha256": "4a3c4a4a1f78c9e666b28efeb884e9a18cdf7cdafdf35e0d00037642917cb355",
+      "bytes": 36041
+    },
+    "lpips/ball/q0033_ball-1dot5_test_L01_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0033_ball-1dot5_test_L01_ep000031.json",
+      "sha256": "4b6b9faf34b00e012900d3cb587c5a62f71dcef8d1d7a8a07dd038128e5c9f5c",
+      "bytes": 7181
+    },
+    "queries/ball/q0034_ball-1dot5_test_L08_ep000034.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0034_ball-1dot5_test_L08_ep000034.json",
+      "sha256": "daadfcc7feef524c1b7fb20bf3f5db38dc5b7bab14b0fd338347d0000c93c3d0",
+      "bytes": 31244
+    },
+    "lpips/ball/q0034_ball-1dot5_test_L08_ep000034.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0034_ball-1dot5_test_L08_ep000034.json",
+      "sha256": "a0eada888426edb51482368e597b4ae1210929508399f4abab9f4539a09d9156",
+      "bytes": 6095
+    },
+    "queries/ball/q0035_ball-1dot5_test_L07_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0035_ball-1dot5_test_L07_ep000036.json",
+      "sha256": "52a68ac86b26bf0ddd1ba6774c0df922b2a63cf7910d5ff3af6b7cba0d4f4d7d",
+      "bytes": 38131
+    },
+    "lpips/ball/q0035_ball-1dot5_test_L07_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0035_ball-1dot5_test_L07_ep000036.json",
+      "sha256": "7911b2b48f018a15d07bdf57fec0dda3f1cbfcaa51d6c833946127abd0783be8",
+      "bytes": 7565
+    },
+    "queries/ball/q0036_ball-2_train_L08_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0036_ball-2_train_L08_ep000004.json",
+      "sha256": "047d477ac37f4a148d485cfb24a9cbc462ce277c4440ee828780efb76b1d1962",
+      "bytes": 34669
+    },
+    "lpips/ball/q0036_ball-2_train_L08_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0036_ball-2_train_L08_ep000004.json",
+      "sha256": "a2491c8b1b15396db45632d451e9ca6943be1197a5e834472f0d391fdd121b56",
+      "bytes": 6779
+    },
+    "queries/ball/q0037_ball-2_train_L04_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0037_ball-2_train_L04_ep000023.json",
+      "sha256": "d097ccf7fadc9bbbe82c06a0f4c0e8e67a7bf3214e884710552a3efaa3d0fc02",
+      "bytes": 42938
+    },
+    "lpips/ball/q0037_ball-2_train_L04_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0037_ball-2_train_L04_ep000023.json",
+      "sha256": "fb93884709c02bc0d05768652fa954f85f31e21cbd5acc2ff023859e759ec360",
+      "bytes": 8657
+    },
+    "queries/ball/q0038_ball-2_test_L01_ep000001.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0038_ball-2_test_L01_ep000001.json",
+      "sha256": "c0368b7d21de9a5d4ba157a734076e7ef27f6177852f7bcf2a03c1bc82e5a429",
+      "bytes": 39547
+    },
+    "lpips/ball/q0038_ball-2_test_L01_ep000001.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0038_ball-2_test_L01_ep000001.json",
+      "sha256": "1ca05e9b244584f0636307edffb9e6ff359d62197ec23e69fde30667b8275249",
+      "bytes": 7957
+    },
+    "queries/ball/q0039_ball-2_test_L03_ep000005.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0039_ball-2_test_L03_ep000005.json",
+      "sha256": "60ecd296ceedc38403f1b11bb83ff80159511ee347c5c80f8749b7b139cfa2be",
+      "bytes": 38813
+    },
+    "lpips/ball/q0039_ball-2_test_L03_ep000005.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0039_ball-2_test_L03_ep000005.json",
+      "sha256": "10d9b5ad44c8e47a3872dd49daa4c355155cb13178daa2a13c75914607ad0270",
+      "bytes": 7704
+    },
+    "queries/ball/q0040_ball-2_test_L10_ep000010.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0040_ball-2_test_L10_ep000010.json",
+      "sha256": "ea3a02507a7392f915bac0fb66db97a9066fc228c8384fda14bc95de5f0808a6",
+      "bytes": 25696
+    },
+    "lpips/ball/q0040_ball-2_test_L10_ep000010.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0040_ball-2_test_L10_ep000010.json",
+      "sha256": "881d3eb5550091b7cdde8931df3d6e3493b0c4a3dbab8351f54c0109e746da9d",
+      "bytes": 4886
+    },
+    "queries/ball/q0041_ball-2_test_L05_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0041_ball-2_test_L05_ep000015.json",
+      "sha256": "c5949695b253a2749890bcfe356d2a666e0d6829290a50f7d8827a78d0f2839a",
+      "bytes": 39675
+    },
+    "lpips/ball/q0041_ball-2_test_L05_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0041_ball-2_test_L05_ep000015.json",
+      "sha256": "d6d88bd072d940359245abab40083c0f4f5ddcae33fa3eb0253e5f8ba66fe94f",
+      "bytes": 7849
+    },
+    "queries/ball/q0042_ball-2_test_L04_ep000016.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0042_ball-2_test_L04_ep000016.json",
+      "sha256": "f748f8d9b7b6f3ec686818bc5ca78b1b43bfb8d65546c576caf0a39a8b480253",
+      "bytes": 39486
+    },
+    "lpips/ball/q0042_ball-2_test_L04_ep000016.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0042_ball-2_test_L04_ep000016.json",
+      "sha256": "4605b42b73fd2a7341a7475eb55eeaf15327a59f0a7cd79c3c6ec95dc303db7b",
+      "bytes": 7853
+    },
+    "queries/ball/q0043_ball-2_test_L07_ep000025.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0043_ball-2_test_L07_ep000025.json",
+      "sha256": "55f6b1af4481c6c6b6dcb5eeafd61ae6b526a530dbbbe06fc9c974af2a229d73",
+      "bytes": 42938
+    },
+    "lpips/ball/q0043_ball-2_test_L07_ep000025.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0043_ball-2_test_L07_ep000025.json",
+      "sha256": "46807776c6368457b3c85860404467e69a5337a1c89e465463d12944e0e87628",
+      "bytes": 8602
+    },
+    "queries/ball/q0044_ball-2_test_L02_ep000030.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0044_ball-2_test_L02_ep000030.json",
+      "sha256": "15a8b8d6bcfd391d611ad98e420526fe037a921816335254b8e952435cc2aa0d",
+      "bytes": 34132
+    },
+    "lpips/ball/q0044_ball-2_test_L02_ep000030.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0044_ball-2_test_L02_ep000030.json",
+      "sha256": "2e0d4417378cb7cc0db22709d956c2300aa735366fce5a5fcc35369cb7d4e9ae",
+      "bytes": 6689
+    },
+    "queries/ball/q0045_ball-2_test_L06_ep000034.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0045_ball-2_test_L06_ep000034.json",
+      "sha256": "a095bc31396e8902739c35c3532eb07012ff19439d94dfffd52fd82bd5a90231",
+      "bytes": 46363
+    },
+    "lpips/ball/q0045_ball-2_test_L06_ep000034.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0045_ball-2_test_L06_ep000034.json",
+      "sha256": "246984bd1cc321204369c65550f0a6fa07beb86d9cda9a038af8ff661aa014b9",
+      "bytes": 9320
+    },
+    "queries/ball/q0046_ball-2_test_L08_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0046_ball-2_test_L08_ep000036.json",
+      "sha256": "8ccf7f654976e0c963f0d2e0932421925440112fc5ae67d624b9815ac7b76a81",
+      "bytes": 38102
+    },
+    "lpips/ball/q0046_ball-2_test_L08_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0046_ball-2_test_L08_ep000036.json",
+      "sha256": "68de5915268275911fda271c46b858f6732a751769ec576560078d92a8660b3f",
+      "bytes": 7516
+    },
+    "queries/ball/q0047_ball-2_test_L09_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0047_ball-2_test_L09_ep000037.json",
+      "sha256": "c6770a45923f3b269f351a7c1880f1dcdd85be9dcefbf25e378f458409c4eb4f",
+      "bytes": 35460
+    },
+    "lpips/ball/q0047_ball-2_test_L09_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0047_ball-2_test_L09_ep000037.json",
+      "sha256": "1c9a1b3222836b9866875ff945f1c90ebaabf00acb436eff415ed27eb10dfdd5",
+      "bytes": 6960
+    },
+    "queries/ball/q0048_ball-3_train_L06_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0048_ball-3_train_L06_ep000008.json",
+      "sha256": "d4a8620e4098b52540b05cec602aeaaae5ef0a3197dacdd06dc3a170e1c5c7d3",
+      "bytes": 30539
+    },
+    "lpips/ball/q0048_ball-3_train_L06_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0048_ball-3_train_L06_ep000008.json",
+      "sha256": "22cd7ceb1d571c777028bc01e7a7e741fcdbf41eca74479ab1124973cd3b17b8",
+      "bytes": 5937
+    },
+    "queries/ball/q0049_ball-3_train_L01_ep000001.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0049_ball-3_train_L01_ep000001.json",
+      "sha256": "50514dd1fd4a0d139adc8c183e5414dc89c947a2dbbb6da6ea6717a677959f0e",
+      "bytes": 39477
+    },
+    "lpips/ball/q0049_ball-3_train_L01_ep000001.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0049_ball-3_train_L01_ep000001.json",
+      "sha256": "58c81b88097f75a7a4a13d38fddc14daeaf29d0c95c0d2256f775be5198dfdbc",
+      "bytes": 7929
+    },
+    "queries/ball/q0050_ball-3_test_L01_ep000020.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0050_ball-3_test_L01_ep000020.json",
+      "sha256": "3961edccc8bffbad244933a215b549612ca8a5926f285e176cfebb7cd29c9925",
+      "bytes": 37453
+    },
+    "lpips/ball/q0050_ball-3_test_L01_ep000020.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0050_ball-3_test_L01_ep000020.json",
+      "sha256": "5c3d0ad9dcd47c35ad3ee6ef84e84594ca8d171c57587a58417866c636294e99",
+      "bytes": 7490
+    },
+    "queries/ball/q0051_ball-3_test_L05_ep000024.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0051_ball-3_test_L05_ep000024.json",
+      "sha256": "f9bc6473fdf492aca61a09881124a3be058a510e441e58b65bb14f8bfd75adb5",
+      "bytes": 28636
+    },
+    "lpips/ball/q0051_ball-3_test_L05_ep000024.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0051_ball-3_test_L05_ep000024.json",
+      "sha256": "df654ad09e9a363a451367afced6d6c56bbfb2b79f1a155aa9b90310de67f40e",
+      "bytes": 5499
+    },
+    "queries/ball/q0052_ball-3_test_L07_ep000026.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0052_ball-3_test_L07_ep000026.json",
+      "sha256": "e4c249d10ee3c12283c9404354c320073d80d4b4e6beff455550bf7d721d9f07",
+      "bytes": 29790
+    },
+    "lpips/ball/q0052_ball-3_test_L07_ep000026.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0052_ball-3_test_L07_ep000026.json",
+      "sha256": "fb5270a978f1d87012eb746a840e5e3da8d67059ee569634a59351ae86c27174",
+      "bytes": 5776
+    },
+    "queries/ball/q0053_ball-3_test_L09_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0053_ball-3_test_L09_ep000028.json",
+      "sha256": "46cac414f430298fc20eca9157c87749afab8599b9cff4ab35bc333c4d91a193",
+      "bytes": 41032
+    },
+    "lpips/ball/q0053_ball-3_test_L09_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0053_ball-3_test_L09_ep000028.json",
+      "sha256": "511bc1567218d3cba51bb4f1493bdad606419a9432380c89f4c04d38a359856e",
+      "bytes": 8118
+    },
+    "queries/ball/q0054_ball-3_test_L10_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0054_ball-3_test_L10_ep000029.json",
+      "sha256": "d0aa224afde48e6dfdce492b1de5b6228a79f3ca68f1783c7099c2ba33491fdf",
+      "bytes": 30544
+    },
+    "lpips/ball/q0054_ball-3_test_L10_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0054_ball-3_test_L10_ep000029.json",
+      "sha256": "62ec33c3c8e2a476edb7e043482e9f2f077bc34dcf0b352534eb41a9fc6ce73a",
+      "bytes": 5964
+    },
+    "queries/ball/q0055_ball-3_test_L02_ep000032.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0055_ball-3_test_L02_ep000032.json",
+      "sha256": "7cfba7002bc534b7f56e865d1bb7f10d4ddeca6281d93f3fc06f4471cc9b9246",
+      "bytes": 30010
+    },
+    "lpips/ball/q0055_ball-3_test_L02_ep000032.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0055_ball-3_test_L02_ep000032.json",
+      "sha256": "b70177d2013a377dc079755757f8342f22e29ef266489ede7c1a95d777fb6e3b",
+      "bytes": 5805
+    },
+    "queries/ball/q0056_ball-3_test_L03_ep000034.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0056_ball-3_test_L03_ep000034.json",
+      "sha256": "5bad59c4fac52da49cf4e87511e562848bd22c52b7980a53264284717864ad25",
+      "bytes": 28467
+    },
+    "lpips/ball/q0056_ball-3_test_L03_ep000034.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0056_ball-3_test_L03_ep000034.json",
+      "sha256": "5fab53727fa4f4266e7fa0b2ca2bea9a401594d2d391ffc20053e9f420cfa7d7",
+      "bytes": 5480
+    },
+    "queries/ball/q0057_ball-3_test_L08_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0057_ball-3_test_L08_ep000036.json",
+      "sha256": "2bc8d27e5e28ca4b40c75e56568cb2ee38bdc8fa39d25bc08be50406e187b7bb",
+      "bytes": 34654
+    },
+    "lpips/ball/q0057_ball-3_test_L08_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0057_ball-3_test_L08_ep000036.json",
+      "sha256": "4684e0a8c7e6a1d8cb48d79ed56b8e78c71847cd7b2f3be5da8399de6e2b92eb",
+      "bytes": 6820
+    },
+    "queries/ball/q0058_ball-3_test_L04_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0058_ball-3_test_L04_ep000037.json",
+      "sha256": "a8c6e43672e09ee9e9f1cd007c9fd08518c5828a12975a6aea5873310cf4886f",
+      "bytes": 29128
+    },
+    "lpips/ball/q0058_ball-3_test_L04_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0058_ball-3_test_L04_ep000037.json",
+      "sha256": "5849881299daa382660450bdf9f762c28deaf0c9c7d6e32fcbeee53a772117ca",
+      "bytes": 5653
+    },
+    "queries/ball/q0059_ball-3_test_L06_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0059_ball-3_test_L06_ep000039.json",
+      "sha256": "fb464c144c5a4030149ef33e73665af676bcd60ee265747f649999153546f285",
+      "bytes": 33263
+    },
+    "lpips/ball/q0059_ball-3_test_L06_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0059_ball-3_test_L06_ep000039.json",
+      "sha256": "be6c582800343b9814b52e28d9ed5d4f2bd4bcd028e92942c83d12b896fe2794",
+      "bytes": 6474
+    },
+    "queries/ball/q0060_ball-4_train_L03_ep000035.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0060_ball-4_train_L03_ep000035.json",
+      "sha256": "bbeb6701b3f66b403a45c24200b23b9c4c269f2e76d0d0721f04eafb02da8606",
+      "bytes": 27784
+    },
+    "lpips/ball/q0060_ball-4_train_L03_ep000035.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0060_ball-4_train_L03_ep000035.json",
+      "sha256": "7aec870fb71fab010d3e16b993e81ce2aa59e24a6bb30b6fab4cf3542b63a167",
+      "bytes": 5347
+    },
+    "queries/ball/q0061_ball-4_train_L08_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0061_ball-4_train_L08_ep000004.json",
+      "sha256": "e3a93c372cb9ac997d645b73f459cbdaf196ce459df27c4627d05b2519ed5b22",
+      "bytes": 29837
+    },
+    "lpips/ball/q0061_ball-4_train_L08_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0061_ball-4_train_L08_ep000004.json",
+      "sha256": "f7ded5547179bc66d5b3846c0ca9e6d2d31c727a4850dfedfccc81d2a03aa48a",
+      "bytes": 5777
+    },
+    "queries/ball/q0062_ball-4_test_L01_ep000001.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0062_ball-4_test_L01_ep000001.json",
+      "sha256": "044be4c235343fef23478e29ae6abe5cd5d994e90101f5eaacd7c0d692399607",
+      "bytes": 35362
+    },
+    "lpips/ball/q0062_ball-4_test_L01_ep000001.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0062_ball-4_test_L01_ep000001.json",
+      "sha256": "10170337e436cade8d042152ccb4b2c316f9d7670d5145468f6c7f4ac2592c82",
+      "bytes": 7039
+    },
+    "queries/ball/q0063_ball-4_test_L07_ep000006.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0063_ball-4_test_L07_ep000006.json",
+      "sha256": "1a981045613e46db6a9f1d3a320b11a3ce19b28634acfc5b92d1013c9497c4bc",
+      "bytes": 27800
+    },
+    "lpips/ball/q0063_ball-4_test_L07_ep000006.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0063_ball-4_test_L07_ep000006.json",
+      "sha256": "4fab9f85f5f0c5e2cd37504599b39cab9239feb38d071499a0229cc8c47e7c16",
+      "bytes": 5352
+    },
+    "queries/ball/q0064_ball-4_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0064_ball-4_test_L04_ep000007.json",
+      "sha256": "202a252374bbe928c933ed59d932732ce8fbaa2bbaee748ef9d2bcd5ab1a15cc",
+      "bytes": 25689
+    },
+    "lpips/ball/q0064_ball-4_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0064_ball-4_test_L04_ep000007.json",
+      "sha256": "1ba0d010d0e0fb1a847a110821b31d2fb320bf0ab1841e3a79fdd3cc7ac84e2a",
+      "bytes": 4891
+    },
+    "queries/ball/q0065_ball-4_test_L10_ep000010.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0065_ball-4_test_L10_ep000010.json",
+      "sha256": "2cb6757b059739c51979c3ae251c4622674915c094858f2a31bd0ff83e7ff897",
+      "bytes": 33964
+    },
+    "lpips/ball/q0065_ball-4_test_L10_ep000010.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0065_ball-4_test_L10_ep000010.json",
+      "sha256": "545c05a32178b06f0e9e5e45a37a87e6713c75d3153fa15788727cbf0f54abbc",
+      "bytes": 6685
+    },
+    "queries/ball/q0066_ball-4_test_L06_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0066_ball-4_test_L06_ep000017.json",
+      "sha256": "a76c98b215d4e27fcf3a15c00c6adb3d10a8567b82b22381593fb04203a691eb",
+      "bytes": 28449
+    },
+    "lpips/ball/q0066_ball-4_test_L06_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0066_ball-4_test_L06_ep000017.json",
+      "sha256": "d0412be651674f50f062e8b7079283334c268417758ae937ef4732ebb1619e87",
+      "bytes": 5468
+    },
+    "queries/ball/q0067_ball-4_test_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0067_ball-4_test_L03_ep000022.json",
+      "sha256": "044221501b89002909fddfabd93cff9dae3722a34228184fdd336e7a4d4d5808",
+      "bytes": 27736
+    },
+    "lpips/ball/q0067_ball-4_test_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0067_ball-4_test_L03_ep000022.json",
+      "sha256": "3d8ca06d9691ab6b297b8e2953b956aec9d4b4b69d384a7b860d84a6ae76f05c",
+      "bytes": 5336
+    },
+    "queries/ball/q0068_ball-4_test_L08_ep000027.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0068_ball-4_test_L08_ep000027.json",
+      "sha256": "53df51ed56898077df2f1532448d6f9a6710b55d200699399799d2f033080fae",
+      "bytes": 29772
+    },
+    "lpips/ball/q0068_ball-4_test_L08_ep000027.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0068_ball-4_test_L08_ep000027.json",
+      "sha256": "f66bdd8bec8353845be08cc7edceff25ed951bd8156e7eea64c6a3cbc2a8dad8",
+      "bytes": 5768
+    },
+    "queries/ball/q0069_ball-4_test_L09_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0069_ball-4_test_L09_ep000028.json",
+      "sha256": "0a6c861e7e6892ee5ffaa7b17412cc20314b2c2aed61881731a40fc646d38bbd",
+      "bytes": 33489
+    },
+    "lpips/ball/q0069_ball-4_test_L09_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0069_ball-4_test_L09_ep000028.json",
+      "sha256": "3c7ceac7a8d29f206f47c2b87f946da1faf5142065c750d9e2a9e92b211984a0",
+      "bytes": 6534
+    },
+    "queries/ball/q0070_ball-4_test_L02_ep000033.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0070_ball-4_test_L02_ep000033.json",
+      "sha256": "ce8958e7d4b6846283170d0a1410db21c866dc24f0a631004d2069ecc6df9547",
+      "bytes": 27265
+    },
+    "lpips/ball/q0070_ball-4_test_L02_ep000033.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0070_ball-4_test_L02_ep000033.json",
+      "sha256": "3b3ae398cdbfb48696a2a4f0722b33263eee8a294d880b95d9397f00ccc09f20",
+      "bytes": 5216
+    },
+    "queries/ball/q0071_ball-4_test_L05_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0071_ball-4_test_L05_ep000039.json",
+      "sha256": "9deb70109ffa37442db83e3312c71f942daeb98a2fb009a5166d776398e0d732",
+      "bytes": 28634
+    },
+    "lpips/ball/q0071_ball-4_test_L05_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0071_ball-4_test_L05_ep000039.json",
+      "sha256": "f9fc201138a7d365d6038f718d8aa0c66f84fd8013fc585ad846244933b45217",
+      "bytes": 5490
+    },
+    "queries/ball/q0072_ball-7_train_L03_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0072_ball-7_train_L03_ep000017.json",
+      "sha256": "542f13158ebbc0e5fa0af4f476733f18e8267c40b23c781e4b19528946a75d1f",
+      "bytes": 24337
+    },
+    "lpips/ball/q0072_ball-7_train_L03_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0072_ball-7_train_L03_ep000017.json",
+      "sha256": "d24895b55578f4297d57bf761063e03b3b6cedb0d386e22777b95c88d39d6e3d",
+      "bytes": 4626
+    },
+    "queries/ball/q0073_ball-7_train_L02_ep000018.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0073_ball-7_train_L02_ep000018.json",
+      "sha256": "53f0826b1a0c0c84c90cbea069a826bc57a5b8999b1f1e1a185a31611376c91e",
+      "bytes": 27088
+    },
+    "lpips/ball/q0073_ball-7_train_L02_ep000018.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0073_ball-7_train_L02_ep000018.json",
+      "sha256": "e53c3b362a653c2613567d9f0ee34d1a6cbbfa7b363521094ab6846daca959ed",
+      "bytes": 5219
+    },
+    "queries/ball/q0074_ball-7_test_L08_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0074_ball-7_test_L08_ep000004.json",
+      "sha256": "db293c19838aebcc47e513f6f458e3207142dc8f6e8ca0104f47935a9f65738f",
+      "bytes": 29846
+    },
+    "lpips/ball/q0074_ball-7_test_L08_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0074_ball-7_test_L08_ep000004.json",
+      "sha256": "748164792f9be853cc8b8848eb7218d1ddbddb8a5b20c248e4294b52e20762e7",
+      "bytes": 5744
+    },
+    "queries/ball/q0075_ball-7_test_L05_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0075_ball-7_test_L05_ep000007.json",
+      "sha256": "62d13b514c75ea15d3384d00db902d19b02e0349d6d4dcb4ecb4ba66d865d7d4",
+      "bytes": 25203
+    },
+    "lpips/ball/q0075_ball-7_test_L05_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0075_ball-7_test_L05_ep000007.json",
+      "sha256": "7fff9257c0316dbdd34136b060f37be4cb68a00e962bf8504aac2f6240db15d5",
+      "bytes": 4753
+    },
+    "queries/ball/q0076_ball-7_test_L06_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0076_ball-7_test_L06_ep000008.json",
+      "sha256": "7bf22422c80a43b9596a55cc4a552620194af971a65e5a7692e801281f267211",
+      "bytes": 25711
+    },
+    "lpips/ball/q0076_ball-7_test_L06_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0076_ball-7_test_L06_ep000008.json",
+      "sha256": "0ff87a4f7c7986c5462948d68fac14f7ed7fab6fe1d9aeace349515c4edb9f3d",
+      "bytes": 4908
+    },
+    "queries/ball/q0077_ball-7_test_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0077_ball-7_test_L03_ep000022.json",
+      "sha256": "fef3e27c40d81327502410e74006d9e8409e041de5fa1c6df91808183f1c899e",
+      "bytes": 27767
+    },
+    "lpips/ball/q0077_ball-7_test_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0077_ball-7_test_L03_ep000022.json",
+      "sha256": "938b8fb6e11ded0a1d911251bbb6764e66ee7399b7599eeb9d5fed379a4bf41b",
+      "bytes": 5366
+    },
+    "queries/ball/q0078_ball-7_test_L04_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0078_ball-7_test_L04_ep000023.json",
+      "sha256": "d6230413f06afee3f86ab331374f824d010da42d68f6c022e99d2305f24aaddf",
+      "bytes": 25703
+    },
+    "lpips/ball/q0078_ball-7_test_L04_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0078_ball-7_test_L04_ep000023.json",
+      "sha256": "e7c21fcdef88fab3299aa67bbaa92607ef00629555b163c74231ae79c93e4037",
+      "bytes": 4909
+    },
+    "queries/ball/q0079_ball-7_test_L10_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0079_ball-7_test_L10_ep000029.json",
+      "sha256": "d4d7b5f0053479209ca24e0b79e60a8f266b7dbfe75b39b84bebdc0bb1a7af7a",
+      "bytes": 43648
+    },
+    "lpips/ball/q0079_ball-7_test_L10_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0079_ball-7_test_L10_ep000029.json",
+      "sha256": "b74a7f72b9069111c207194dfec516c69785daa8ce9c5d1c0fb6bcf8c68b52aa",
+      "bytes": 8850
+    },
+    "queries/ball/q0080_ball-7_test_L09_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0080_ball-7_test_L09_ep000031.json",
+      "sha256": "770477782e0593739a7fa02d363d4290ed4e558c2f1fe2501c9a15435415a87a",
+      "bytes": 25890
+    },
+    "lpips/ball/q0080_ball-7_test_L09_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0080_ball-7_test_L09_ep000031.json",
+      "sha256": "e502c42bca7f529675623607ca2030aad3bf4e2db12e73727223868c5e5846ed",
+      "bytes": 4898
+    },
+    "queries/ball/q0081_ball-7_test_L07_ep000033.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0081_ball-7_test_L07_ep000033.json",
+      "sha256": "9268e166e20f24988c6e4b30d3de932f66dee7eda294eefc97c088a85be176a0",
+      "bytes": 22272
+    },
+    "lpips/ball/q0081_ball-7_test_L07_ep000033.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0081_ball-7_test_L07_ep000033.json",
+      "sha256": "d857860a658a50f27345cb6b6d19787c8c887ed9ac8356332f56266879381be8",
+      "bytes": 4146
+    },
+    "queries/ball/q0082_ball-7_test_L02_ep000038.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0082_ball-7_test_L02_ep000038.json",
+      "sha256": "55970cd616dec86cf1a63b64e3d28a29bfb0c96c030c91746d8745de7a9fde3b",
+      "bytes": 27253
+    },
+    "lpips/ball/q0082_ball-7_test_L02_ep000038.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0082_ball-7_test_L02_ep000038.json",
+      "sha256": "aee2ec97c0d084bd7d70c6195df2cc83955164370340a070f314ee2e66338883",
+      "bytes": 5224
+    },
+    "queries/ball/q0083_ball-7_test_L01_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0083_ball-7_test_L01_ep000039.json",
+      "sha256": "fd9c27475136c7b5709659373a47c3d147efddb049895df2ebf4ce943b4b765b",
+      "bytes": 32638
+    },
+    "lpips/ball/q0083_ball-7_test_L01_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0083_ball-7_test_L01_ep000039.json",
+      "sha256": "00d32d974dcc01ac4fbbc17134cbb7e921126f123dd31efb95fc6ad759582dc0",
+      "bytes": 6433
+    },
+    "queries/ball/q0084_ball-9_train_L02_ep000021.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0084_ball-9_train_L02_ep000021.json",
+      "sha256": "c6976f58aa56f6e5274f5ea074b065de5e77e164f7442430cc864f226ce2023d",
+      "bytes": 27071
+    },
+    "lpips/ball/q0084_ball-9_train_L02_ep000021.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0084_ball-9_train_L02_ep000021.json",
+      "sha256": "3e730cedc566bfaf1b46ec7424b7fb022db758edefbd24900293587c60f9974c",
+      "bytes": 5233
+    },
+    "queries/ball/q0085_ball-9_train_L09_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0085_ball-9_train_L09_ep000031.json",
+      "sha256": "7ccb41e2d212615e551b946f0f6560a7dad131128848db3498b22cee07fe9153",
+      "bytes": 20864
+    },
+    "lpips/ball/q0085_ball-9_train_L09_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0085_ball-9_train_L09_ep000031.json",
+      "sha256": "418a37d904327b7672237e301d2ab3f6ba29cfa6b212e1606524849cc5c81d28",
+      "bytes": 3832
+    },
+    "queries/ball/q0086_ball-9_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0086_ball-9_test_L04_ep000007.json",
+      "sha256": "749196dc07940e3d126713025de2b58361bcba93d7430cda6adbb3b3459b8379",
+      "bytes": 24999
+    },
+    "lpips/ball/q0086_ball-9_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0086_ball-9_test_L04_ep000007.json",
+      "sha256": "02fc94b468fa3fb6a52c65678d9eb767f4b02093bda22378612d544e724cce1a",
+      "bytes": 4753
+    },
+    "queries/ball/q0087_ball-9_test_L06_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0087_ball-9_test_L06_ep000008.json",
+      "sha256": "bbaa9a9e2c21941e139998183a14fb5f1ebaa476f14e25d21781d445b53a367a",
+      "bytes": 23614
+    },
+    "lpips/ball/q0087_ball-9_test_L06_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0087_ball-9_test_L06_ep000008.json",
+      "sha256": "5ae64aa7a82b3a47762d14981398eb03d440194f066de01bbfdd583d52d5bc4b",
+      "bytes": 4465
+    },
+    "queries/ball/q0088_ball-9_test_L08_ep000012.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0088_ball-9_test_L08_ep000012.json",
+      "sha256": "b56399374d4e49007de1c6d029667b202febfba67e3ce9ba09498fd11557cd99",
+      "bytes": 31931
+    },
+    "lpips/ball/q0088_ball-9_test_L08_ep000012.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0088_ball-9_test_L08_ep000012.json",
+      "sha256": "b3f0cc3b36dadeecdf05b558cafcffc07481728351fc56df150f5cad83797f43",
+      "bytes": 6213
+    },
+    "queries/ball/q0089_ball-9_test_L07_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0089_ball-9_test_L07_ep000013.json",
+      "sha256": "eb196297b486c24f39199a88d59b0425ce75f3bdc24b64d952c8c5b72ba1f58f",
+      "bytes": 27764
+    },
+    "lpips/ball/q0089_ball-9_test_L07_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0089_ball-9_test_L07_ep000013.json",
+      "sha256": "cb06af4e392c573712aa4717a2cdbbafa7f3cce5890402c529f86a1dbec5a9a8",
+      "bytes": 5357
+    },
+    "queries/ball/q0090_ball-9_test_L02_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0090_ball-9_test_L02_ep000017.json",
+      "sha256": "6e36465f96d7a4c164af082ebe61bf51937142882a0729880b081c946e82aba5",
+      "bytes": 26594
+    },
+    "lpips/ball/q0090_ball-9_test_L02_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0090_ball-9_test_L02_ep000017.json",
+      "sha256": "ddc80dd0aeb6f7a10b06be9d93225fafca827f335f00bd15e486d185cf26d188",
+      "bytes": 5079
+    },
+    "queries/ball/q0091_ball-9_test_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0091_ball-9_test_L03_ep000022.json",
+      "sha256": "2cd73b7390c278e07df6d0affba86b838e36a160166a04ebde2ddf35201ce777",
+      "bytes": 27128
+    },
+    "lpips/ball/q0091_ball-9_test_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0091_ball-9_test_L03_ep000022.json",
+      "sha256": "ebea0fdd4b7f1620340847c5b0c39ebd270f868179aad8e953891780a75dd1d3",
+      "bytes": 5222
+    },
+    "queries/ball/q0092_ball-9_test_L05_ep000024.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0092_ball-9_test_L05_ep000024.json",
+      "sha256": "6b66a611a03e7d929987488abdea6a696184e3347a06da0660a4bcd7e4f08ed0",
+      "bytes": 25133
+    },
+    "lpips/ball/q0092_ball-9_test_L05_ep000024.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0092_ball-9_test_L05_ep000024.json",
+      "sha256": "31fa0cad97152b7c2078d7ab0448cc1b08f367110766abc2f62e63d3c0c153b4",
+      "bytes": 4740
+    },
+    "queries/ball/q0093_ball-9_test_L09_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0093_ball-9_test_L09_ep000028.json",
+      "sha256": "26272391abffae3a354b6327f16cfa66598d0d5f4071608ef864e99dfe9f5fe4",
+      "bytes": 25858
+    },
+    "lpips/ball/q0093_ball-9_test_L09_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0093_ball-9_test_L09_ep000028.json",
+      "sha256": "3b86ea1daebdf33023bac94d27cb0c9a8961186eb4ef1f7213df7f99b284aa1f",
+      "bytes": 4850
+    },
+    "queries/ball/q0094_ball-9_test_L10_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0094_ball-9_test_L10_ep000029.json",
+      "sha256": "7ae9a980153b8dbf2c4cde5fe056098ec30be7db29c04e86cff9c62039ac4f5a",
+      "bytes": 24377
+    },
+    "lpips/ball/q0094_ball-9_test_L10_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0094_ball-9_test_L10_ep000029.json",
+      "sha256": "7afe728e3d14283e2b1b903cdff3fe4dce44475040a8c34c36b08bcfd500a856",
+      "bytes": 4582
+    },
+    "queries/ball/q0095_ball-9_test_L01_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/ball/q0095_ball-9_test_L01_ep000039.json",
+      "sha256": "61e5e455016deafbf4d3ad14d390392862574979ab4d1d3e5f93502c0ffa0602",
+      "bytes": 31926
+    },
+    "lpips/ball/q0095_ball-9_test_L01_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/ball/q0095_ball-9_test_L01_ep000039.json",
+      "sha256": "3a1176b9ca2c53587731db24fa7c9045a6a010ccd245674bf932f3ad89b30d2b",
+      "bytes": 6271
+    }
+  },
+  "completion_records": {
+    "cpu_complete.json": {
+      "queries": 216,
+      "reused_image_metrics": true,
+      "door_closure": {
+        "policy": "one_sided_edge_gap",
+        "minimum_plausible_gap_px": -5,
+        "closed_max_gap_px": 18,
+        "open_min_gap_px": 22,
+        "calibration_split": "train",
+        "calibration_source": "outputs/eval_real97_ball_door_scores_20260912_v1/closure_calibration_audit",
+        "training_closed_observed_range_px": [
+          1,
+          16
+        ],
+        "training_open_observed_range_px": [
+          23,
+          152
+        ],
+        "training_visual_labels_by_query_index": {
+          "0": true,
+          "1": true,
+          "12": true,
+          "13": false,
+          "24": false,
+          "25": false,
+          "36": true,
+          "37": true,
+          "48": true,
+          "49": true,
+          "60": true,
+          "61": true,
+          "72": false,
+          "73": true,
+          "84": false,
+          "85": true,
+          "96": true,
+          "97": false,
+          "108": false,
+          "109": true
+        }
+      },
+      "training_visual_label_matches": 20,
+      "training_visual_label_count": 20
+    },
+    "lpips_complete.json": {
+      "queries": 216,
+      "net": "alex"
+    }
+  },
+  "frozen_inference_outputs": {
+    "native_size": [
+      560,
+      248
+    ],
+    "original_camera_crop_x": 80,
+    "ours": "outputs/infer_real97_ball_ours_reference_job114807",
+    "standard": "outputs/infer_real97_ball_standard_step5500_reference_job115189",
+    "dino": "outputs/infer_real97_ball_dino_step5500_reference_job115190"
+  },
+  "all_videos_remain_in_original_output_directories": true,
+  "training_weights_dataset_files_and_logs_included": false
+}

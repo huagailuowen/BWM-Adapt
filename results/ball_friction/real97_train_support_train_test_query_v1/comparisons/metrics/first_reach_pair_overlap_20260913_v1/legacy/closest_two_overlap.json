@@ -1,0 +1,954 @@
+{
+  "metric": "ball_action_top2_overlap",
+  "source": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/summary_provisional.json",
+  "source_sha256": "d9b3267d5bbac8005c254f989e92d57cc9835351172ca33be10879a7700c5821",
+  "protocol": {
+    "gt_top_k": 2,
+    "prediction_top_k": 2,
+    "score": "len(set(predicted_top2) & set(gt_top2)) / 2",
+    "require_adjacent_levels": false,
+    "distance": "Existing Euclidean distance from farthest-reached visible ball center to the right blue marker; confirmed exits retain the last visible center.",
+    "split": "test",
+    "aggregation": "equal weight per environment",
+    "tie_break": "smaller numerical action level",
+    "inference_or_tracking_rerun": false
+  },
+  "methods": [
+    {
+      "method": "standard",
+      "environments": 8,
+      "mean_overlap_score": 0.5625,
+      "score_sum": 4.5,
+      "fully_matched_environments": 3,
+      "partially_matched_environments": 3,
+      "unmatched_environments": 2,
+      "decisions": [
+        {
+          "environment": "ball-0",
+          "gt_top2": [
+            2,
+            3
+          ],
+          "predicted_top2": [
+            10,
+            7
+          ],
+          "intersection": [],
+          "score": 0.0,
+          "gt_top2_distances_px": [
+            79.1361814028937,
+            86.76652134704278
+          ],
+          "predicted_top2_distances_px": [
+            43.51736552226544,
+            47.88245566008061
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            126.3197960220948,
+            122.55600933728655
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-1",
+          "gt_top2": [
+            4,
+            3
+          ],
+          "predicted_top2": [
+            9,
+            3
+          ],
+          "intersection": [
+            3
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            37.96582768418937,
+            79.36496373189692
+          ],
+          "predicted_top2_distances_px": [
+            37.72159554441469,
+            38.04011985220221
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            124.58023644774504,
+            79.36496373189692
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-1dot5",
+          "gt_top2": [
+            5,
+            4
+          ],
+          "predicted_top2": [
+            4,
+            7
+          ],
+          "intersection": [
+            4
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            34.90478032796067,
+            52.125699674964395
+          ],
+          "predicted_top2_distances_px": [
+            38.146755746513215,
+            41.68358899756368
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            52.125699674964395,
+            125.06041876208826
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-2",
+          "gt_top2": [
+            6,
+            5
+          ],
+          "predicted_top2": [
+            9,
+            8
+          ],
+          "intersection": [],
+          "score": 0.0,
+          "gt_top2_distances_px": [
+            46.727632107464515,
+            73.51239592363629
+          ],
+          "predicted_top2_distances_px": [
+            39.48063516617989,
+            74.43981792841541
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            126.19280591507491,
+            125.55438844592227
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-3",
+          "gt_top2": [
+            8,
+            7
+          ],
+          "predicted_top2": [
+            6,
+            8
+          ],
+          "intersection": [
+            8
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            36.82814602663981,
+            57.40266117781918
+          ],
+          "predicted_top2_distances_px": [
+            63.95686769601364,
+            67.66188233134184
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            92.32373946186136,
+            36.82814602663981
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-4",
+          "gt_top2": [
+            9,
+            8
+          ],
+          "predicted_top2": [
+            8,
+            9
+          ],
+          "intersection": [
+            8,
+            9
+          ],
+          "score": 1.0,
+          "gt_top2_distances_px": [
+            44.25078268695406,
+            58.7919303620217
+          ],
+          "predicted_top2_distances_px": [
+            45.02789912931762,
+            56.98165834058632
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            58.7919303620217,
+            44.25078268695406
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-7",
+          "gt_top2": [
+            10,
+            9
+          ],
+          "predicted_top2": [
+            10,
+            9
+          ],
+          "intersection": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "gt_top2_distances_px": [
+            37.54448110006143,
+            81.92910495633296
+          ],
+          "predicted_top2_distances_px": [
+            40.48234023274711,
+            71.81201929883078
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            37.54448110006143,
+            81.92910495633296
+          ],
+          "legacy_top1_score": 1.0
+        },
+        {
+          "environment": "ball-9",
+          "gt_top2": [
+            10,
+            9
+          ],
+          "predicted_top2": [
+            10,
+            9
+          ],
+          "intersection": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "gt_top2_distances_px": [
+            40.34148885441273,
+            73.05350232064855
+          ],
+          "predicted_top2_distances_px": [
+            38.72136072943353,
+            126.408021125748
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            40.34148885441273,
+            73.05350232064855
+          ],
+          "legacy_top1_score": 1.0
+        }
+      ]
+    },
+    {
+      "method": "dino",
+      "environments": 8,
+      "mean_overlap_score": 0.625,
+      "score_sum": 5.0,
+      "fully_matched_environments": 3,
+      "partially_matched_environments": 4,
+      "unmatched_environments": 1,
+      "decisions": [
+        {
+          "environment": "ball-0",
+          "gt_top2": [
+            2,
+            3
+          ],
+          "predicted_top2": [
+            8,
+            10
+          ],
+          "intersection": [],
+          "score": 0.0,
+          "gt_top2_distances_px": [
+            79.1361814028937,
+            86.76652134704278
+          ],
+          "predicted_top2_distances_px": [
+            41.65772901217893,
+            44.66577231570007
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            123.32059695888698,
+            126.3197960220948
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-1",
+          "gt_top2": [
+            4,
+            3
+          ],
+          "predicted_top2": [
+            9,
+            3
+          ],
+          "intersection": [
+            3
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            37.96582768418937,
+            79.36496373189692
+          ],
+          "predicted_top2_distances_px": [
+            37.89102698582964,
+            37.944453417954655
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            124.58023644774504,
+            79.36496373189692
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-1dot5",
+          "gt_top2": [
+            5,
+            4
+          ],
+          "predicted_top2": [
+            4,
+            7
+          ],
+          "intersection": [
+            4
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            34.90478032796067,
+            52.125699674964395
+          ],
+          "predicted_top2_distances_px": [
+            39.63137108381442,
+            43.860659155896826
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            52.125699674964395,
+            125.06041876208826
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-2",
+          "gt_top2": [
+            6,
+            5
+          ],
+          "predicted_top2": [
+            5,
+            9
+          ],
+          "intersection": [
+            5
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            46.727632107464515,
+            73.51239592363629
+          ],
+          "predicted_top2_distances_px": [
+            38.12944497558924,
+            38.92545276014927
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            73.51239592363629,
+            126.19280591507491
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-3",
+          "gt_top2": [
+            8,
+            7
+          ],
+          "predicted_top2": [
+            8,
+            7
+          ],
+          "intersection": [
+            7,
+            8
+          ],
+          "score": 1.0,
+          "gt_top2_distances_px": [
+            36.82814602663981,
+            57.40266117781918
+          ],
+          "predicted_top2_distances_px": [
+            40.67743011904654,
+            61.5195861130087
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            36.82814602663981,
+            57.40266117781918
+          ],
+          "legacy_top1_score": 1.0
+        },
+        {
+          "environment": "ball-4",
+          "gt_top2": [
+            9,
+            8
+          ],
+          "predicted_top2": [
+            8,
+            9
+          ],
+          "intersection": [
+            8,
+            9
+          ],
+          "score": 1.0,
+          "gt_top2_distances_px": [
+            44.25078268695406,
+            58.7919303620217
+          ],
+          "predicted_top2_distances_px": [
+            35.92761330730425,
+            56.07415974387713
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            58.7919303620217,
+            44.25078268695406
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-7",
+          "gt_top2": [
+            10,
+            9
+          ],
+          "predicted_top2": [
+            10,
+            8
+          ],
+          "intersection": [
+            10
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            37.54448110006143,
+            81.92910495633296
+          ],
+          "predicted_top2_distances_px": [
+            40.31062040993062,
+            124.87894798147273
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            37.54448110006143,
+            121.09353543938464
+          ],
+          "legacy_top1_score": 1.0
+        },
+        {
+          "environment": "ball-9",
+          "gt_top2": [
+            10,
+            9
+          ],
+          "predicted_top2": [
+            10,
+            9
+          ],
+          "intersection": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "gt_top2_distances_px": [
+            40.34148885441273,
+            73.05350232064855
+          ],
+          "predicted_top2_distances_px": [
+            38.58987029700285,
+            124.95412479896679
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            40.34148885441273,
+            73.05350232064855
+          ],
+          "legacy_top1_score": 1.0
+        }
+      ]
+    },
+    {
+      "method": "ours_stage1",
+      "environments": 8,
+      "mean_overlap_score": 0.5625,
+      "score_sum": 4.5,
+      "fully_matched_environments": 2,
+      "partially_matched_environments": 5,
+      "unmatched_environments": 1,
+      "decisions": [
+        {
+          "environment": "ball-0",
+          "gt_top2": [
+            2,
+            3
+          ],
+          "predicted_top2": [
+            3,
+            5
+          ],
+          "intersection": [
+            3
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            79.1361814028937,
+            86.76652134704278
+          ],
+          "predicted_top2_distances_px": [
+            38.601385046501925,
+            120.46414934183117
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            86.76652134704278,
+            128.5091862816413
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-1",
+          "gt_top2": [
+            4,
+            3
+          ],
+          "predicted_top2": [
+            9,
+            4
+          ],
+          "intersection": [
+            4
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            37.96582768418937,
+            79.36496373189692
+          ],
+          "predicted_top2_distances_px": [
+            39.34760392034691,
+            72.66313644792882
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            124.58023644774504,
+            37.96582768418937
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-1dot5",
+          "gt_top2": [
+            5,
+            4
+          ],
+          "predicted_top2": [
+            4,
+            5
+          ],
+          "intersection": [
+            4,
+            5
+          ],
+          "score": 1.0,
+          "gt_top2_distances_px": [
+            34.90478032796067,
+            52.125699674964395
+          ],
+          "predicted_top2_distances_px": [
+            41.26246769344715,
+            61.80395339855795
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            52.125699674964395,
+            34.90478032796067
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-2",
+          "gt_top2": [
+            6,
+            5
+          ],
+          "predicted_top2": [
+            9,
+            8
+          ],
+          "intersection": [],
+          "score": 0.0,
+          "gt_top2_distances_px": [
+            46.727632107464515,
+            73.51239592363629
+          ],
+          "predicted_top2_distances_px": [
+            82.04181409596117,
+            94.8694641126934
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            126.19280591507491,
+            125.55438844592227
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-3",
+          "gt_top2": [
+            8,
+            7
+          ],
+          "predicted_top2": [
+            6,
+            8
+          ],
+          "intersection": [
+            8
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            36.82814602663981,
+            57.40266117781918
+          ],
+          "predicted_top2_distances_px": [
+            35.431070425832054,
+            38.33718812617216
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            92.32373946186136,
+            36.82814602663981
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-4",
+          "gt_top2": [
+            9,
+            8
+          ],
+          "predicted_top2": [
+            10,
+            9
+          ],
+          "intersection": [
+            9
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            44.25078268695406,
+            58.7919303620217
+          ],
+          "predicted_top2_distances_px": [
+            63.297234530173,
+            85.86209144024613
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            72.88965715204641,
+            44.25078268695406
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-7",
+          "gt_top2": [
+            10,
+            9
+          ],
+          "predicted_top2": [
+            10,
+            9
+          ],
+          "intersection": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "gt_top2_distances_px": [
+            37.54448110006143,
+            81.92910495633296
+          ],
+          "predicted_top2_distances_px": [
+            40.12697343460114,
+            117.00455226847149
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            37.54448110006143,
+            81.92910495633296
+          ],
+          "legacy_top1_score": 1.0
+        },
+        {
+          "environment": "ball-9",
+          "gt_top2": [
+            10,
+            9
+          ],
+          "predicted_top2": [
+            10,
+            7
+          ],
+          "intersection": [
+            10
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            40.34148885441273,
+            73.05350232064855
+          ],
+          "predicted_top2_distances_px": [
+            71.19637854566186,
+            171.18121961222093
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            40.34148885441273,
+            181.24891409115673
+          ],
+          "legacy_top1_score": 1.0
+        }
+      ]
+    },
+    {
+      "method": "ours_stage2",
+      "environments": 8,
+      "mean_overlap_score": 0.4375,
+      "score_sum": 3.5,
+      "fully_matched_environments": 2,
+      "partially_matched_environments": 3,
+      "unmatched_environments": 3,
+      "decisions": [
+        {
+          "environment": "ball-0",
+          "gt_top2": [
+            2,
+            3
+          ],
+          "predicted_top2": [
+            5,
+            7
+          ],
+          "intersection": [],
+          "score": 0.0,
+          "gt_top2_distances_px": [
+            79.1361814028937,
+            86.76652134704278
+          ],
+          "predicted_top2_distances_px": [
+            120.89579462929619,
+            124.00861923503737
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            128.5091862816413,
+            122.55600933728655
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-1",
+          "gt_top2": [
+            4,
+            3
+          ],
+          "predicted_top2": [
+            9,
+            4
+          ],
+          "intersection": [
+            4
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            37.96582768418937,
+            79.36496373189692
+          ],
+          "predicted_top2_distances_px": [
+            37.97508216227684,
+            38.43165702776774
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            124.58023644774504,
+            37.96582768418937
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-1dot5",
+          "gt_top2": [
+            5,
+            4
+          ],
+          "predicted_top2": [
+            4,
+            5
+          ],
+          "intersection": [
+            4,
+            5
+          ],
+          "score": 1.0,
+          "gt_top2_distances_px": [
+            34.90478032796067,
+            52.125699674964395
+          ],
+          "predicted_top2_distances_px": [
+            47.007097307938324,
+            113.27780404878361
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            52.125699674964395,
+            34.90478032796067
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-2",
+          "gt_top2": [
+            6,
+            5
+          ],
+          "predicted_top2": [
+            4,
+            9
+          ],
+          "intersection": [],
+          "score": 0.0,
+          "gt_top2_distances_px": [
+            46.727632107464515,
+            73.51239592363629
+          ],
+          "predicted_top2_distances_px": [
+            82.69184661032233,
+            84.35465987747543
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            117.0257687041648,
+            126.19280591507491
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-3",
+          "gt_top2": [
+            8,
+            7
+          ],
+          "predicted_top2": [
+            6,
+            5
+          ],
+          "intersection": [],
+          "score": 0.0,
+          "gt_top2_distances_px": [
+            36.82814602663981,
+            57.40266117781918
+          ],
+          "predicted_top2_distances_px": [
+            69.7942952052694,
+            84.79918941335295
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            92.32373946186136,
+            149.1660078766319
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-4",
+          "gt_top2": [
+            9,
+            8
+          ],
+          "predicted_top2": [
+            6,
+            8
+          ],
+          "intersection": [
+            8
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            44.25078268695406,
+            58.7919303620217
+          ],
+          "predicted_top2_distances_px": [
+            74.13666438415366,
+            90.00261672803778
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            162.96418624102253,
+            58.7919303620217
+          ],
+          "legacy_top1_score": 0.0
+        },
+        {
+          "environment": "ball-7",
+          "gt_top2": [
+            10,
+            9
+          ],
+          "predicted_top2": [
+            10,
+            9
+          ],
+          "intersection": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "gt_top2_distances_px": [
+            37.54448110006143,
+            81.92910495633296
+          ],
+          "predicted_top2_distances_px": [
+            40.266143569576755,
+            88.49842325832111
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            37.54448110006143,
+            81.92910495633296
+          ],
+          "legacy_top1_score": 1.0
+        },
+        {
+          "environment": "ball-9",
+          "gt_top2": [
+            10,
+            9
+          ],
+          "predicted_top2": [
+            10,
+            7
+          ],
+          "intersection": [
+            10
+          ],
+          "score": 0.5,
+          "gt_top2_distances_px": [
+            40.34148885441273,
+            73.05350232064855
+          ],
+          "predicted_top2_distances_px": [
+            68.85953060668389,
+            147.88330478625122
+          ],
+          "selected_levels_actual_gt_distances_px": [
+            40.34148885441273,
+            181.24891409115673
+          ],
+          "legacy_top1_score": 1.0
+        }
+      ]
+    }
+  ]
+}

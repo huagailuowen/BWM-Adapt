@@ -1,0 +1,4949 @@
+{
+  "metric": "ball_first_reach_blue_minus30",
+  "source_directory": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2",
+  "source_test_query_sha256": "fcd89d8313a0059ce857c923939627df056c884f896195d0d664e4b655aeb35a",
+  "protocol": {
+    "split": "test",
+    "position": "farthest reached horizontal ball-center position",
+    "target": "right blue marker x from the shared GT initial frame",
+    "tolerance_original_pixels": 30,
+    "reach_test": "peak_center_x >= blue_marker_x - 30",
+    "level_scan": "ascending numerical levels; first predicted reaching level, without consulting GT",
+    "gt_selection": "same ascending scan and threshold applied independently to GT",
+    "offscreen": "reuse confirmed-exit last-visible position; never assume a new offscreen position",
+    "coordinate_system": "native crop pixels; the original camera x-offset cancels in the comparison",
+    "no_reach": "None; no fallback to highest level",
+    "missing_measurement": "explicitly unscorable; never silently ignore a lower unknown level",
+    "aggregation": "equal weight per environment; reachable-GT accuracy and correct abstention reported separately",
+    "inference_rerun": false,
+    "legacy_results_preserved": true
+  },
+  "environments": [
+    {
+      "environment": "ball-0",
+      "gt": {
+        "first_reaching_level": 3,
+        "selection_identifiable": true,
+        "unknown_levels": []
+      },
+      "predictions": {
+        "standard": {
+          "first_reaching_level": 4,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 3,
+          "exact_decision_score": 0.0,
+          "signed_level_error": 1,
+          "absolute_level_error": 1
+        },
+        "dino": {
+          "first_reaching_level": 4,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 3,
+          "exact_decision_score": 0.0,
+          "signed_level_error": 1,
+          "absolute_level_error": 1
+        },
+        "ours_stage1": {
+          "first_reaching_level": 3,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 3,
+          "exact_decision_score": 1.0,
+          "signed_level_error": 0,
+          "absolute_level_error": 0
+        },
+        "ours_stage2": {
+          "first_reaching_level": 4,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 3,
+          "exact_decision_score": 0.0,
+          "signed_level_error": 1,
+          "absolute_level_error": 1
+        }
+      },
+      "per_level": {
+        "gt": [
+          {
+            "level": 1,
+            "sample_id": "ball-0_lerobot/ep000000/precise/0035",
+            "blue_marker_x": 437.0199004975124,
+            "threshold_x": 407.0199004975124,
+            "farthest_ball_x": 245.2486338797814,
+            "margin_px": -161.77126661773102,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-0_lerobot/ep000031/precise/0024",
+            "blue_marker_x": 436.94711538461536,
+            "threshold_x": 406.94711538461536,
+            "farthest_ball_x": 365.1702702702703,
+            "margin_px": -41.776845114345065,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-0_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.9646464646465,
+            "threshold_x": 406.9646464646465,
+            "farthest_ball_x": 513.2596685082873,
+            "margin_px": 106.29502204364081,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-0_lerobot/ep000023/precise/0017",
+            "blue_marker_x": 437.21938775510205,
+            "threshold_x": 407.21938775510205,
+            "farthest_ball_x": 556.4487179487179,
+            "margin_px": 149.22933019361585,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-0_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 437.35748792270533,
+            "threshold_x": 407.35748792270533,
+            "farthest_ball_x": 556.0235294117647,
+            "margin_px": 148.66604148905935,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-0_lerobot/ep000017/precise/0015",
+            "blue_marker_x": 436.9191919191919,
+            "threshold_x": 406.9191919191919,
+            "farthest_ball_x": 552.2017937219731,
+            "margin_px": 145.2826018027812,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-0_lerobot/ep000018/precise/0015",
+            "blue_marker_x": 436.86341463414635,
+            "threshold_x": 406.86341463414635,
+            "farthest_ball_x": 551.0325203252032,
+            "margin_px": 144.16910569105687,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-0_lerobot/ep000037/precise/0014",
+            "blue_marker_x": 436.51173708920186,
+            "threshold_x": 406.51173708920186,
+            "farthest_ball_x": 551.8558558558559,
+            "margin_px": 145.34411876665405,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-0_lerobot/ep000028/precise/0013",
+            "blue_marker_x": 436.855,
+            "threshold_x": 406.855,
+            "farthest_ball_x": 556.9433962264151,
+            "margin_px": 150.08839622641506,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 1
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-0_lerobot/ep000001/precise/0013",
+            "blue_marker_x": 437.1161616161616,
+            "threshold_x": 407.1161616161616,
+            "farthest_ball_x": 554.4347826086956,
+            "margin_px": 147.31862099253402,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "standard": [
+          {
+            "level": 1,
+            "sample_id": "ball-0_lerobot/ep000000/precise/0035",
+            "blue_marker_x": 437.0199004975124,
+            "threshold_x": 407.0199004975124,
+            "farthest_ball_x": 174.35044642857142,
+            "margin_px": -232.669454068941,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-0_lerobot/ep000031/precise/0024",
+            "blue_marker_x": 436.94711538461536,
+            "threshold_x": 406.94711538461536,
+            "farthest_ball_x": 225.33939393939394,
+            "margin_px": -181.60772144522142,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-0_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.9646464646465,
+            "threshold_x": 406.9646464646465,
+            "farthest_ball_x": 216.7409200968523,
+            "margin_px": -190.22372636779417,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-0_lerobot/ep000023/precise/0017",
+            "blue_marker_x": 437.21938775510205,
+            "threshold_x": 407.21938775510205,
+            "farthest_ball_x": 556.2676056338029,
+            "margin_px": 149.04821787870083,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-0_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 437.35748792270533,
+            "threshold_x": 407.35748792270533,
+            "farthest_ball_x": 542.3055555555555,
+            "margin_px": 134.9480676328502,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-0_lerobot/ep000017/precise/0015",
+            "blue_marker_x": 436.9191919191919,
+            "threshold_x": 406.9191919191919,
+            "farthest_ball_x": 502.40767386091125,
+            "margin_px": 95.48848194171933,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-0_lerobot/ep000018/precise/0015",
+            "blue_marker_x": 436.86341463414635,
+            "threshold_x": 406.86341463414635,
+            "farthest_ball_x": 466.62404092071614,
+            "margin_px": 59.76062628656979,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-0_lerobot/ep000037/precise/0014",
+            "blue_marker_x": 436.51173708920186,
+            "threshold_x": 406.51173708920186,
+            "farthest_ball_x": 380.9012345679012,
+            "margin_px": -25.610502521300646,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-0_lerobot/ep000028/precise/0013",
+            "blue_marker_x": 436.855,
+            "threshold_x": 406.855,
+            "farthest_ball_x": 555.0322580645161,
+            "margin_px": 148.17725806451608,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-0_lerobot/ep000001/precise/0013",
+            "blue_marker_x": 437.1161616161616,
+            "threshold_x": 407.1161616161616,
+            "farthest_ball_x": 414.5743440233236,
+            "margin_px": 7.458182407161985,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "dino": [
+          {
+            "level": 1,
+            "sample_id": "ball-0_lerobot/ep000000/precise/0035",
+            "blue_marker_x": 437.0199004975124,
+            "threshold_x": 407.0199004975124,
+            "farthest_ball_x": 173.66887417218544,
+            "margin_px": -233.35102632532698,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-0_lerobot/ep000031/precise/0024",
+            "blue_marker_x": 436.94711538461536,
+            "threshold_x": 406.94711538461536,
+            "farthest_ball_x": 208.89204545454547,
+            "margin_px": -198.0550699300699,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-0_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.9646464646465,
+            "threshold_x": 406.9646464646465,
+            "farthest_ball_x": 211.99781181619255,
+            "margin_px": -194.96683464845393,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-0_lerobot/ep000023/precise/0017",
+            "blue_marker_x": 437.21938775510205,
+            "threshold_x": 407.21938775510205,
+            "farthest_ball_x": 553.1633663366337,
+            "margin_px": 145.9439785815316,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-0_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 437.35748792270533,
+            "threshold_x": 407.35748792270533,
+            "farthest_ball_x": 405.8879551820728,
+            "margin_px": -1.4695327406325305,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-0_lerobot/ep000017/precise/0015",
+            "blue_marker_x": 436.9191919191919,
+            "threshold_x": 406.9191919191919,
+            "farthest_ball_x": 505.55610972568576,
+            "margin_px": 98.63691780649384,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-0_lerobot/ep000018/precise/0015",
+            "blue_marker_x": 436.86341463414635,
+            "threshold_x": 406.86341463414635,
+            "farthest_ball_x": 515.8236842105263,
+            "margin_px": 108.96026957637991,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-0_lerobot/ep000037/precise/0014",
+            "blue_marker_x": 436.51173708920186,
+            "threshold_x": 406.51173708920186,
+            "farthest_ball_x": 411.74285714285713,
+            "margin_px": 5.231120053655275,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-0_lerobot/ep000028/precise/0013",
+            "blue_marker_x": 436.855,
+            "threshold_x": 406.855,
+            "farthest_ball_x": 555.6753246753246,
+            "margin_px": 148.82032467532463,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-0_lerobot/ep000001/precise/0013",
+            "blue_marker_x": 437.1161616161616,
+            "threshold_x": 407.1161616161616,
+            "farthest_ball_x": 412.67236467236467,
+            "margin_px": 5.55620305620306,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage1": [
+          {
+            "level": 1,
+            "sample_id": "ball-0_lerobot/ep000000/precise/0035",
+            "blue_marker_x": 437.0199004975124,
+            "threshold_x": 407.0199004975124,
+            "farthest_ball_x": 174.76379690949227,
+            "margin_px": -232.25610358802015,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-0_lerobot/ep000031/precise/0024",
+            "blue_marker_x": 436.94711538461536,
+            "threshold_x": 406.94711538461536,
+            "farthest_ball_x": 274.6848958333333,
+            "margin_px": -132.26221955128204,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-0_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.9646464646465,
+            "threshold_x": 406.9646464646465,
+            "farthest_ball_x": 445.3025641025641,
+            "margin_px": 38.3379176379176,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-0_lerobot/ep000023/precise/0017",
+            "blue_marker_x": 437.21938775510205,
+            "threshold_x": 407.21938775510205,
+            "farthest_ball_x": 554.8125,
+            "margin_px": 147.59311224489795,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 4
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-0_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 437.35748792270533,
+            "threshold_x": 407.35748792270533,
+            "farthest_ball_x": 547.7337461300309,
+            "margin_px": 140.37625820732558,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-0_lerobot/ep000017/precise/0015",
+            "blue_marker_x": 436.9191919191919,
+            "threshold_x": 406.9191919191919,
+            "farthest_ball_x": 552.6377551020408,
+            "margin_px": 145.71856318284892,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-0_lerobot/ep000018/precise/0015",
+            "blue_marker_x": 436.86341463414635,
+            "threshold_x": 406.86341463414635,
+            "farthest_ball_x": 552.2677595628415,
+            "margin_px": 145.4043449286952,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-0_lerobot/ep000037/precise/0014",
+            "blue_marker_x": 436.51173708920186,
+            "threshold_x": 406.51173708920186,
+            "farthest_ball_x": 552.9751552795032,
+            "margin_px": 146.4634181903013,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-0_lerobot/ep000028/precise/0013",
+            "blue_marker_x": 436.855,
+            "threshold_x": 406.855,
+            "farthest_ball_x": 553.5211267605633,
+            "margin_px": 146.66612676056332,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 5
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-0_lerobot/ep000001/precise/0013",
+            "blue_marker_x": 437.1161616161616,
+            "threshold_x": 407.1161616161616,
+            "farthest_ball_x": 554.7981651376147,
+            "margin_px": 147.68200352145305,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage2": [
+          {
+            "level": 1,
+            "sample_id": "ball-0_lerobot/ep000000/precise/0035",
+            "blue_marker_x": 437.0199004975124,
+            "threshold_x": 407.0199004975124,
+            "farthest_ball_x": 175.26525821596243,
+            "margin_px": -231.75464228155,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-0_lerobot/ep000031/precise/0024",
+            "blue_marker_x": 436.94711538461536,
+            "threshold_x": 406.94711538461536,
+            "farthest_ball_x": 275.24852071005915,
+            "margin_px": -131.6985946745562,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-0_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.9646464646465,
+            "threshold_x": 406.9646464646465,
+            "farthest_ball_x": 233.4458762886598,
+            "margin_px": -173.51877017598667,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-0_lerobot/ep000023/precise/0017",
+            "blue_marker_x": 437.21938775510205,
+            "threshold_x": 407.21938775510205,
+            "farthest_ball_x": 553.048275862069,
+            "margin_px": 145.82888810696693,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-0_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 437.35748792270533,
+            "threshold_x": 407.35748792270533,
+            "farthest_ball_x": 547.8823529411765,
+            "margin_px": 140.52486501847113,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-0_lerobot/ep000017/precise/0015",
+            "blue_marker_x": 436.9191919191919,
+            "threshold_x": 406.9191919191919,
+            "farthest_ball_x": 552.6093023255814,
+            "margin_px": 145.69011040638952,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-0_lerobot/ep000018/precise/0015",
+            "blue_marker_x": 436.86341463414635,
+            "threshold_x": 406.86341463414635,
+            "farthest_ball_x": 552.6483516483516,
+            "margin_px": 145.7849370142053,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-0_lerobot/ep000037/precise/0014",
+            "blue_marker_x": 436.51173708920186,
+            "threshold_x": 406.51173708920186,
+            "farthest_ball_x": 552.8933333333333,
+            "margin_px": 146.38159624413146,
+            "reaches": true,
+            "tracking_coverage": 0.9705882352941176,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-0_lerobot/ep000028/precise/0013",
+            "blue_marker_x": 436.855,
+            "threshold_x": 406.855,
+            "farthest_ball_x": 553.9579831932773,
+            "margin_px": 147.10298319327728,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 5
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-0_lerobot/ep000001/precise/0013",
+            "blue_marker_x": 437.1161616161616,
+            "threshold_x": 407.1161616161616,
+            "farthest_ball_x": 554.6412213740458,
+            "margin_px": 147.5250597578842,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ]
+      }
+    },
+    {
+      "environment": "ball-1",
+      "gt": {
+        "first_reaching_level": 4,
+        "selection_identifiable": true,
+        "unknown_levels": []
+      },
+      "predictions": {
+        "standard": {
+          "first_reaching_level": 3,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 4,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        },
+        "dino": {
+          "first_reaching_level": 3,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 4,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        },
+        "ours_stage1": {
+          "first_reaching_level": 4,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 4,
+          "exact_decision_score": 1.0,
+          "signed_level_error": 0,
+          "absolute_level_error": 0
+        },
+        "ours_stage2": {
+          "first_reaching_level": 4,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 4,
+          "exact_decision_score": 1.0,
+          "signed_level_error": 0,
+          "absolute_level_error": 0
+        }
+      },
+      "per_level": {
+        "gt": [
+          {
+            "level": 1,
+            "sample_id": "ball-1_lerobot/ep000020/precise/0037",
+            "blue_marker_x": 436.75728155339806,
+            "threshold_x": 406.75728155339806,
+            "farthest_ball_x": 176.16464891041161,
+            "margin_px": -230.59263264298644,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-1_lerobot/ep000003/precise/0022",
+            "blue_marker_x": 436.98604651162793,
+            "threshold_x": 406.98604651162793,
+            "farthest_ball_x": 271.0844327176781,
+            "margin_px": -135.90161379394982,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-1_lerobot/ep000038/precise/0021",
+            "blue_marker_x": 436.97536945812806,
+            "threshold_x": 406.97536945812806,
+            "farthest_ball_x": 365.0,
+            "margin_px": -41.97536945812806,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-1_lerobot/ep000007/precise/0019",
+            "blue_marker_x": 436.81,
+            "threshold_x": 406.81,
+            "farthest_ball_x": 421.33846153846156,
+            "margin_px": 14.528461538461556,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-1_lerobot/ep000023/precise/0016",
+            "blue_marker_x": 437.04347826086956,
+            "threshold_x": 407.04347826086956,
+            "farthest_ball_x": 546.2275280898876,
+            "margin_px": 139.18404982901808,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-1_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.75728155339806,
+            "threshold_x": 406.75728155339806,
+            "farthest_ball_x": 554.703125,
+            "margin_px": 147.94584344660194,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-1_lerobot/ep000025/precise/0015",
+            "blue_marker_x": 436.91509433962267,
+            "threshold_x": 406.91509433962267,
+            "farthest_ball_x": 554.1768707482993,
+            "margin_px": 147.2617764086766,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 14
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-1_lerobot/ep000017/precise/0012",
+            "blue_marker_x": 436.6916299559471,
+            "threshold_x": 406.6916299559471,
+            "farthest_ball_x": 552.6422018348624,
+            "margin_px": 145.95057187891524,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-1_lerobot/ep000032/precise/0013",
+            "blue_marker_x": 436.85714285714283,
+            "threshold_x": 406.85714285714283,
+            "farthest_ball_x": 552.9473684210526,
+            "margin_px": 146.09022556390977,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-1_lerobot/ep000000/precise/0015",
+            "blue_marker_x": 436.82758620689657,
+            "threshold_x": 406.82758620689657,
+            "farthest_ball_x": 554.8512396694215,
+            "margin_px": 148.02365346252492,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "standard": [
+          {
+            "level": 1,
+            "sample_id": "ball-1_lerobot/ep000020/precise/0037",
+            "blue_marker_x": 436.75728155339806,
+            "threshold_x": 406.75728155339806,
+            "farthest_ball_x": 176.2494004796163,
+            "margin_px": -230.50788107378176,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-1_lerobot/ep000003/precise/0022",
+            "blue_marker_x": 436.98604651162793,
+            "threshold_x": 406.98604651162793,
+            "farthest_ball_x": 266.4772182254197,
+            "margin_px": -140.50882828620826,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-1_lerobot/ep000038/precise/0021",
+            "blue_marker_x": 436.97536945812806,
+            "threshold_x": 406.97536945812806,
+            "farthest_ball_x": 434.3994910941476,
+            "margin_px": 27.42412163601955,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-1_lerobot/ep000007/precise/0019",
+            "blue_marker_x": 436.81,
+            "threshold_x": 406.81,
+            "farthest_ball_x": 490.1954674220963,
+            "margin_px": 83.38546742209633,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-1_lerobot/ep000023/precise/0016",
+            "blue_marker_x": 437.04347826086956,
+            "threshold_x": 407.04347826086956,
+            "farthest_ball_x": 369.594512195122,
+            "margin_px": -37.448966065747584,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-1_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.75728155339806,
+            "threshold_x": 406.75728155339806,
+            "farthest_ball_x": 370.21325648414984,
+            "margin_px": -36.54402506924822,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-1_lerobot/ep000025/precise/0015",
+            "blue_marker_x": 436.91509433962267,
+            "threshold_x": 406.91509433962267,
+            "farthest_ball_x": 353.5740740740741,
+            "margin_px": -53.34102026554859,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-1_lerobot/ep000017/precise/0012",
+            "blue_marker_x": 436.6916299559471,
+            "threshold_x": 406.6916299559471,
+            "farthest_ball_x": 369.2063037249284,
+            "margin_px": -37.485326231018746,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-1_lerobot/ep000032/precise/0013",
+            "blue_marker_x": 436.85714285714283,
+            "threshold_x": 406.85714285714283,
+            "farthest_ball_x": 429.7598870056497,
+            "margin_px": 22.902744148506883,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-1_lerobot/ep000000/precise/0015",
+            "blue_marker_x": 436.82758620689657,
+            "threshold_x": 406.82758620689657,
+            "farthest_ball_x": 533.1293302540415,
+            "margin_px": 126.30174404714495,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "dino": [
+          {
+            "level": 1,
+            "sample_id": "ball-1_lerobot/ep000020/precise/0037",
+            "blue_marker_x": 436.75728155339806,
+            "threshold_x": 406.75728155339806,
+            "farthest_ball_x": 174.84490740740742,
+            "margin_px": -231.91237414599064,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-1_lerobot/ep000003/precise/0022",
+            "blue_marker_x": 436.98604651162793,
+            "threshold_x": 406.98604651162793,
+            "farthest_ball_x": 205.35695538057743,
+            "margin_px": -201.6290911310505,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-1_lerobot/ep000038/precise/0021",
+            "blue_marker_x": 436.97536945812806,
+            "threshold_x": 406.97536945812806,
+            "farthest_ball_x": 432.2316076294278,
+            "margin_px": 25.256238171299742,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-1_lerobot/ep000007/precise/0019",
+            "blue_marker_x": 436.81,
+            "threshold_x": 406.81,
+            "farthest_ball_x": 490.0869565217391,
+            "margin_px": 83.27695652173912,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-1_lerobot/ep000023/precise/0016",
+            "blue_marker_x": 437.04347826086956,
+            "threshold_x": 407.04347826086956,
+            "farthest_ball_x": 369.9174603174603,
+            "margin_px": -37.12601794340924,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-1_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.75728155339806,
+            "threshold_x": 406.75728155339806,
+            "farthest_ball_x": 377.3076923076923,
+            "margin_px": -29.449589245705738,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-1_lerobot/ep000025/precise/0015",
+            "blue_marker_x": 436.91509433962267,
+            "threshold_x": 406.91509433962267,
+            "farthest_ball_x": 475.5783783783784,
+            "margin_px": 68.6632840387557,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-1_lerobot/ep000017/precise/0012",
+            "blue_marker_x": 436.6916299559471,
+            "threshold_x": 406.6916299559471,
+            "farthest_ball_x": 548.0487804878048,
+            "margin_px": 141.3571505318577,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-1_lerobot/ep000032/precise/0013",
+            "blue_marker_x": 436.85714285714283,
+            "threshold_x": 406.85714285714283,
+            "farthest_ball_x": 429.6295264623955,
+            "margin_px": 22.772383605252685,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-1_lerobot/ep000000/precise/0015",
+            "blue_marker_x": 436.82758620689657,
+            "threshold_x": 406.82758620689657,
+            "farthest_ball_x": 532.0683371298405,
+            "margin_px": 125.24075092294396,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage1": [
+          {
+            "level": 1,
+            "sample_id": "ball-1_lerobot/ep000020/precise/0037",
+            "blue_marker_x": 436.75728155339806,
+            "threshold_x": 406.75728155339806,
+            "farthest_ball_x": 175.60324825986078,
+            "margin_px": -231.15403329353728,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-1_lerobot/ep000003/precise/0022",
+            "blue_marker_x": 436.98604651162793,
+            "threshold_x": 406.98604651162793,
+            "farthest_ball_x": 257.6353591160221,
+            "margin_px": -149.35068739560586,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-1_lerobot/ep000038/precise/0021",
+            "blue_marker_x": 436.97536945812806,
+            "threshold_x": 406.97536945812806,
+            "farthest_ball_x": 268.7114285714286,
+            "margin_px": -138.26394088669946,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-1_lerobot/ep000007/precise/0019",
+            "blue_marker_x": 436.81,
+            "threshold_x": 406.81,
+            "farthest_ball_x": 497.4550561797753,
+            "margin_px": 90.64505617977528,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-1_lerobot/ep000023/precise/0016",
+            "blue_marker_x": 437.04347826086956,
+            "threshold_x": 407.04347826086956,
+            "farthest_ball_x": 555.3684210526316,
+            "margin_px": 148.324942791762,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-1_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.75728155339806,
+            "threshold_x": 406.75728155339806,
+            "farthest_ball_x": 552.9065420560747,
+            "margin_px": 146.14926050267667,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-1_lerobot/ep000025/precise/0015",
+            "blue_marker_x": 436.91509433962267,
+            "threshold_x": 406.91509433962267,
+            "farthest_ball_x": 555.3846153846154,
+            "margin_px": 148.4695210449927,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 22
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-1_lerobot/ep000017/precise/0012",
+            "blue_marker_x": 436.6916299559471,
+            "threshold_x": 406.6916299559471,
+            "farthest_ball_x": 548.1775700934579,
+            "margin_px": 141.4859401375108,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-1_lerobot/ep000032/precise/0013",
+            "blue_marker_x": 436.85714285714283,
+            "threshold_x": 406.85714285714283,
+            "farthest_ball_x": 447.9250720461095,
+            "margin_px": 41.06792918896667,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-1_lerobot/ep000000/precise/0015",
+            "blue_marker_x": 436.82758620689657,
+            "threshold_x": 406.82758620689657,
+            "farthest_ball_x": 552.1067415730337,
+            "margin_px": 145.2791553661371,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage2": [
+          {
+            "level": 1,
+            "sample_id": "ball-1_lerobot/ep000020/precise/0037",
+            "blue_marker_x": 436.75728155339806,
+            "threshold_x": 406.75728155339806,
+            "farthest_ball_x": 175.07322654462243,
+            "margin_px": -231.68405500877563,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-1_lerobot/ep000003/precise/0022",
+            "blue_marker_x": 436.98604651162793,
+            "threshold_x": 406.98604651162793,
+            "farthest_ball_x": 200.72901678657075,
+            "margin_px": -206.25702972505718,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-1_lerobot/ep000038/precise/0021",
+            "blue_marker_x": 436.97536945812806,
+            "threshold_x": 406.97536945812806,
+            "farthest_ball_x": 185.87387387387386,
+            "margin_px": -221.1014955842542,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-1_lerobot/ep000007/precise/0019",
+            "blue_marker_x": 436.81,
+            "threshold_x": 406.81,
+            "farthest_ball_x": 417.6065088757396,
+            "margin_px": 10.796508875739619,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-1_lerobot/ep000023/precise/0016",
+            "blue_marker_x": 437.04347826086956,
+            "threshold_x": 407.04347826086956,
+            "farthest_ball_x": 470.5073746312684,
+            "margin_px": 63.46389637039886,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-1_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.75728155339806,
+            "threshold_x": 406.75728155339806,
+            "farthest_ball_x": 373.8578431372549,
+            "margin_px": -32.89943841614314,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-1_lerobot/ep000025/precise/0015",
+            "blue_marker_x": 436.91509433962267,
+            "threshold_x": 406.91509433962267,
+            "farthest_ball_x": 556.3230769230769,
+            "margin_px": 149.4079825834542,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 21
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-1_lerobot/ep000017/precise/0012",
+            "blue_marker_x": 436.6916299559471,
+            "threshold_x": 406.6916299559471,
+            "farthest_ball_x": 547.6284829721362,
+            "margin_px": 140.9368530161891,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-1_lerobot/ep000032/precise/0013",
+            "blue_marker_x": 436.85714285714283,
+            "threshold_x": 406.85714285714283,
+            "farthest_ball_x": 443.1932584269663,
+            "margin_px": 36.33611556982345,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-1_lerobot/ep000000/precise/0015",
+            "blue_marker_x": 436.82758620689657,
+            "threshold_x": 406.82758620689657,
+            "farthest_ball_x": 550.019801980198,
+            "margin_px": 143.19221577330148,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ]
+      }
+    },
+    {
+      "environment": "ball-1dot5",
+      "gt": {
+        "first_reaching_level": 5,
+        "selection_identifiable": true,
+        "unknown_levels": []
+      },
+      "predictions": {
+        "standard": {
+          "first_reaching_level": 4,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 5,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        },
+        "dino": {
+          "first_reaching_level": 4,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 5,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        },
+        "ours_stage1": {
+          "first_reaching_level": 4,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 5,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        },
+        "ours_stage2": {
+          "first_reaching_level": 4,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 5,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        }
+      },
+      "per_level": {
+        "gt": [
+          {
+            "level": 1,
+            "sample_id": "ball-1dot5_lerobot/ep000031/precise/0036",
+            "blue_marker_x": 437.105,
+            "threshold_x": 407.105,
+            "farthest_ball_x": 172.76666666666668,
+            "margin_px": -234.33833333333334,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-1dot5_lerobot/ep000003/precise/0024",
+            "blue_marker_x": 436.8398058252427,
+            "threshold_x": 406.8398058252427,
+            "farthest_ball_x": 205.3008130081301,
+            "margin_px": -201.53899281711261,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-1dot5_lerobot/ep000022/precise/0021",
+            "blue_marker_x": 437.05392156862746,
+            "threshold_x": 407.05392156862746,
+            "farthest_ball_x": 320.52645502645504,
+            "margin_px": -86.52746654217242,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-1dot5_lerobot/ep000007/precise/0018",
+            "blue_marker_x": 436.88613861386136,
+            "threshold_x": 406.88613861386136,
+            "farthest_ball_x": 397.438202247191,
+            "margin_px": -9.447936366670376,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-1dot5_lerobot/ep000009/precise/0019",
+            "blue_marker_x": 436.81042654028437,
+            "threshold_x": 406.81042654028437,
+            "farthest_ball_x": 431.56532663316585,
+            "margin_px": 24.754900092881485,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-1dot5_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.8530805687204,
+            "threshold_x": 406.8530805687204,
+            "farthest_ball_x": 548.9101449275362,
+            "margin_px": 142.0570643588158,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-1dot5_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 437.04040404040404,
+            "threshold_x": 407.04040404040404,
+            "farthest_ball_x": 553.2947368421053,
+            "margin_px": 146.25433280170125,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-1dot5_lerobot/ep000034/precise/0015",
+            "blue_marker_x": 436.8666666666667,
+            "threshold_x": 406.8666666666667,
+            "farthest_ball_x": 552.3690987124463,
+            "margin_px": 145.50243204577964,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-1dot5_lerobot/ep000002/precise/0016",
+            "blue_marker_x": 436.79227053140096,
+            "threshold_x": 406.79227053140096,
+            "farthest_ball_x": 554.991452991453,
+            "margin_px": 148.19918246005204,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-1dot5_lerobot/ep000019/precise/0013",
+            "blue_marker_x": 437.0696517412935,
+            "threshold_x": 407.0696517412935,
+            "farthest_ball_x": 551.3122529644269,
+            "margin_px": 144.24260122313336,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "standard": [
+          {
+            "level": 1,
+            "sample_id": "ball-1dot5_lerobot/ep000031/precise/0036",
+            "blue_marker_x": 437.105,
+            "threshold_x": 407.105,
+            "farthest_ball_x": 203.2005277044855,
+            "margin_px": -203.90447229551452,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-1dot5_lerobot/ep000003/precise/0024",
+            "blue_marker_x": 436.8398058252427,
+            "threshold_x": 406.8398058252427,
+            "farthest_ball_x": 189.09,
+            "margin_px": -217.7498058252427,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-1dot5_lerobot/ep000022/precise/0021",
+            "blue_marker_x": 437.05392156862746,
+            "threshold_x": 407.05392156862746,
+            "farthest_ball_x": 385.544474393531,
+            "margin_px": -21.509447175096454,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-1dot5_lerobot/ep000007/precise/0018",
+            "blue_marker_x": 436.88613861386136,
+            "threshold_x": 406.88613861386136,
+            "farthest_ball_x": 445.0736842105263,
+            "margin_px": 38.18754559666496,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-1dot5_lerobot/ep000009/precise/0019",
+            "blue_marker_x": 436.81042654028437,
+            "threshold_x": 406.81042654028437,
+            "farthest_ball_x": 360.8242424242424,
+            "margin_px": -45.986184116041954,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-1dot5_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.8530805687204,
+            "threshold_x": 406.8530805687204,
+            "farthest_ball_x": 553.9086538461538,
+            "margin_px": 147.05557327743344,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-1dot5_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 437.04040404040404,
+            "threshold_x": 407.04040404040404,
+            "farthest_ball_x": 415.3369963369963,
+            "margin_px": 8.29659229659228,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-1dot5_lerobot/ep000034/precise/0015",
+            "blue_marker_x": 436.8666666666667,
+            "threshold_x": 406.8666666666667,
+            "farthest_ball_x": 552.8771929824561,
+            "margin_px": 146.01052631578943,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-1dot5_lerobot/ep000002/precise/0016",
+            "blue_marker_x": 436.79227053140096,
+            "threshold_x": 406.79227053140096,
+            "farthest_ball_x": 553.4912280701755,
+            "margin_px": 146.6989575387745,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-1dot5_lerobot/ep000019/precise/0013",
+            "blue_marker_x": 437.0696517412935,
+            "threshold_x": 407.0696517412935,
+            "farthest_ball_x": 513.9150943396227,
+            "margin_px": 106.84544259832916,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "dino": [
+          {
+            "level": 1,
+            "sample_id": "ball-1dot5_lerobot/ep000031/precise/0036",
+            "blue_marker_x": 437.105,
+            "threshold_x": 407.105,
+            "farthest_ball_x": 195.92658227848102,
+            "margin_px": -211.178417721519,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-1dot5_lerobot/ep000003/precise/0024",
+            "blue_marker_x": 436.8398058252427,
+            "threshold_x": 406.8398058252427,
+            "farthest_ball_x": 176.92417061611374,
+            "margin_px": -229.91563520912896,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-1dot5_lerobot/ep000022/precise/0021",
+            "blue_marker_x": 437.05392156862746,
+            "threshold_x": 407.05392156862746,
+            "farthest_ball_x": 375.39171974522293,
+            "margin_px": -31.66220182340453,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-1dot5_lerobot/ep000007/precise/0018",
+            "blue_marker_x": 436.88613861386136,
+            "threshold_x": 406.88613861386136,
+            "farthest_ball_x": 421.8861111111111,
+            "margin_px": 14.999972497249757,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-1dot5_lerobot/ep000009/precise/0019",
+            "blue_marker_x": 436.81042654028437,
+            "threshold_x": 406.81042654028437,
+            "farthest_ball_x": 541.0805555555555,
+            "margin_px": 134.27012901527115,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-1dot5_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.8530805687204,
+            "threshold_x": 406.8530805687204,
+            "farthest_ball_x": 551.7406015037594,
+            "margin_px": 144.88752093503905,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-1dot5_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 437.04040404040404,
+            "threshold_x": 407.04040404040404,
+            "farthest_ball_x": 411.153605015674,
+            "margin_px": 4.113200975269933,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-1dot5_lerobot/ep000034/precise/0015",
+            "blue_marker_x": 436.8666666666667,
+            "threshold_x": 406.8666666666667,
+            "farthest_ball_x": 551.6465863453815,
+            "margin_px": 144.7799196787148,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-1dot5_lerobot/ep000002/precise/0016",
+            "blue_marker_x": 436.79227053140096,
+            "threshold_x": 406.79227053140096,
+            "farthest_ball_x": 553.4074074074074,
+            "margin_px": 146.61513687600643,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-1dot5_lerobot/ep000019/precise/0013",
+            "blue_marker_x": 437.0696517412935,
+            "threshold_x": 407.0696517412935,
+            "farthest_ball_x": 512.2494117647059,
+            "margin_px": 105.17976002341237,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage1": [
+          {
+            "level": 1,
+            "sample_id": "ball-1dot5_lerobot/ep000031/precise/0036",
+            "blue_marker_x": 437.105,
+            "threshold_x": 407.105,
+            "farthest_ball_x": 202.53543307086613,
+            "margin_px": -204.56956692913388,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-1dot5_lerobot/ep000003/precise/0024",
+            "blue_marker_x": 436.8398058252427,
+            "threshold_x": 406.8398058252427,
+            "farthest_ball_x": 250.5766016713092,
+            "margin_px": -156.26320415393351,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-1dot5_lerobot/ep000022/precise/0021",
+            "blue_marker_x": 437.05392156862746,
+            "threshold_x": 407.05392156862746,
+            "farthest_ball_x": 288.7020725388601,
+            "margin_px": -118.35184902976738,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-1dot5_lerobot/ep000007/precise/0018",
+            "blue_marker_x": 436.88613861386136,
+            "threshold_x": 406.88613861386136,
+            "farthest_ball_x": 417.4974093264249,
+            "margin_px": 10.61127071256351,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-1dot5_lerobot/ep000009/precise/0019",
+            "blue_marker_x": 436.81042654028437,
+            "threshold_x": 406.81042654028437,
+            "farthest_ball_x": 382.82704402515725,
+            "margin_px": -23.98338251512712,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-1dot5_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.8530805687204,
+            "threshold_x": 406.8530805687204,
+            "farthest_ball_x": 525.623268698061,
+            "margin_px": 118.77018812934062,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-1dot5_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 437.04040404040404,
+            "threshold_x": 407.04040404040404,
+            "farthest_ball_x": 505.91205211726384,
+            "margin_px": 98.8716480768598,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-1dot5_lerobot/ep000034/precise/0015",
+            "blue_marker_x": 436.8666666666667,
+            "threshold_x": 406.8666666666667,
+            "farthest_ball_x": 552.6960352422908,
+            "margin_px": 145.82936857562413,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-1dot5_lerobot/ep000002/precise/0016",
+            "blue_marker_x": 436.79227053140096,
+            "threshold_x": 406.79227053140096,
+            "farthest_ball_x": 553.1818181818181,
+            "margin_px": 146.38954765041717,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-1dot5_lerobot/ep000019/precise/0013",
+            "blue_marker_x": 437.0696517412935,
+            "threshold_x": 407.0696517412935,
+            "farthest_ball_x": 549.1538461538462,
+            "margin_px": 142.08419441255268,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage2": [
+          {
+            "level": 1,
+            "sample_id": "ball-1dot5_lerobot/ep000031/precise/0036",
+            "blue_marker_x": 437.105,
+            "threshold_x": 407.105,
+            "farthest_ball_x": 213.68119891008175,
+            "margin_px": -193.42380108991827,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-1dot5_lerobot/ep000003/precise/0024",
+            "blue_marker_x": 436.8398058252427,
+            "threshold_x": 406.8398058252427,
+            "farthest_ball_x": 250.55905511811022,
+            "margin_px": -156.28075070713248,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-1dot5_lerobot/ep000022/precise/0021",
+            "blue_marker_x": 437.05392156862746,
+            "threshold_x": 407.05392156862746,
+            "farthest_ball_x": 305.7590909090909,
+            "margin_px": -101.29483065953656,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-1dot5_lerobot/ep000007/precise/0018",
+            "blue_marker_x": 436.88613861386136,
+            "threshold_x": 406.88613861386136,
+            "farthest_ball_x": 463.9251700680272,
+            "margin_px": 57.039031454165865,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-1dot5_lerobot/ep000009/precise/0019",
+            "blue_marker_x": 436.81042654028437,
+            "threshold_x": 406.81042654028437,
+            "farthest_ball_x": 541.6831395348837,
+            "margin_px": 134.87271299459934,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-1dot5_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.8530805687204,
+            "threshold_x": 406.8530805687204,
+            "farthest_ball_x": 554.5956284153006,
+            "margin_px": 147.74254784658018,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-1dot5_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 437.04040404040404,
+            "threshold_x": 407.04040404040404,
+            "farthest_ball_x": 552.4973821989529,
+            "margin_px": 145.45697815854885,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-1dot5_lerobot/ep000034/precise/0015",
+            "blue_marker_x": 436.8666666666667,
+            "threshold_x": 406.8666666666667,
+            "farthest_ball_x": 552.7955555555556,
+            "margin_px": 145.92888888888888,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-1dot5_lerobot/ep000002/precise/0016",
+            "blue_marker_x": 436.79227053140096,
+            "threshold_x": 406.79227053140096,
+            "farthest_ball_x": 553.2716763005781,
+            "margin_px": 146.4794057691771,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-1dot5_lerobot/ep000019/precise/0013",
+            "blue_marker_x": 437.0696517412935,
+            "threshold_x": 407.0696517412935,
+            "farthest_ball_x": 549.6071428571429,
+            "margin_px": 142.53749111584938,
+            "reaches": true,
+            "tracking_coverage": 0.9655172413793104,
+            "held_exit_frames": 0
+          }
+        ]
+      }
+    },
+    {
+      "environment": "ball-2",
+      "gt": {
+        "first_reaching_level": 6,
+        "selection_identifiable": true,
+        "unknown_levels": []
+      },
+      "predictions": {
+        "standard": {
+          "first_reaching_level": 5,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 6,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        },
+        "dino": {
+          "first_reaching_level": 5,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 6,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        },
+        "ours_stage1": {
+          "first_reaching_level": 6,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 6,
+          "exact_decision_score": 1.0,
+          "signed_level_error": 0,
+          "absolute_level_error": 0
+        },
+        "ours_stage2": {
+          "first_reaching_level": 6,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 6,
+          "exact_decision_score": 1.0,
+          "signed_level_error": 0,
+          "absolute_level_error": 0
+        }
+      },
+      "per_level": {
+        "gt": [
+          {
+            "level": 1,
+            "sample_id": "ball-2_lerobot/ep000001/precise/0039",
+            "blue_marker_x": 436.86224489795916,
+            "threshold_x": 406.86224489795916,
+            "farthest_ball_x": 191.47532467532469,
+            "margin_px": -215.38692022263447,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-2_lerobot/ep000030/precise/0024",
+            "blue_marker_x": 437.15458937198065,
+            "threshold_x": 407.15458937198065,
+            "farthest_ball_x": 207.50140056022408,
+            "margin_px": -199.65318881175656,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-2_lerobot/ep000005/precise/0023",
+            "blue_marker_x": 436.9704433497537,
+            "threshold_x": 406.9704433497537,
+            "farthest_ball_x": 265.33780160857907,
+            "margin_px": -141.6326417411746,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-2_lerobot/ep000016/precise/0020",
+            "blue_marker_x": 437.0495049504951,
+            "threshold_x": 407.0495049504951,
+            "farthest_ball_x": 323.48563968668407,
+            "margin_px": -83.56386526381101,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-2_lerobot/ep000015/precise/0017",
+            "blue_marker_x": 436.90954773869345,
+            "threshold_x": 406.90954773869345,
+            "farthest_ball_x": 371.2991452991453,
+            "margin_px": -35.610402439548125,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-2_lerobot/ep000034/precise/0016",
+            "blue_marker_x": 436.7753303964758,
+            "threshold_x": 406.7753303964758,
+            "farthest_ball_x": 466.0742705570292,
+            "margin_px": 59.2989401605534,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-2_lerobot/ep000025/precise/0015",
+            "blue_marker_x": 437.2142857142857,
+            "threshold_x": 407.2142857142857,
+            "farthest_ball_x": 514.2163588390501,
+            "margin_px": 107.00207312476442,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-2_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 437.1062801932367,
+            "threshold_x": 407.1062801932367,
+            "farthest_ball_x": 554.0314465408806,
+            "margin_px": 146.92516634764382,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-2_lerobot/ep000037/precise/0013",
+            "blue_marker_x": 437.075,
+            "threshold_x": 407.075,
+            "farthest_ball_x": 554.7664233576643,
+            "margin_px": 147.6914233576643,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-2_lerobot/ep000010/precise/0016",
+            "blue_marker_x": 436.622009569378,
+            "threshold_x": 406.622009569378,
+            "farthest_ball_x": 552.8021978021978,
+            "margin_px": 146.18018823281983,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "standard": [
+          {
+            "level": 1,
+            "sample_id": "ball-2_lerobot/ep000001/precise/0039",
+            "blue_marker_x": 436.86224489795916,
+            "threshold_x": 406.86224489795916,
+            "farthest_ball_x": 202.42493638676845,
+            "margin_px": -204.4373085111907,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-2_lerobot/ep000030/precise/0024",
+            "blue_marker_x": 437.15458937198065,
+            "threshold_x": 407.15458937198065,
+            "farthest_ball_x": 237.32970027247956,
+            "margin_px": -169.8248890995011,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-2_lerobot/ep000005/precise/0023",
+            "blue_marker_x": 436.9704433497537,
+            "threshold_x": 406.9704433497537,
+            "farthest_ball_x": 361.7069892473118,
+            "margin_px": -45.26345410244187,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-2_lerobot/ep000016/precise/0020",
+            "blue_marker_x": 437.0495049504951,
+            "threshold_x": 407.0495049504951,
+            "farthest_ball_x": 270.54285714285714,
+            "margin_px": -136.50664780763793,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-2_lerobot/ep000015/precise/0017",
+            "blue_marker_x": 436.90954773869345,
+            "threshold_x": 406.90954773869345,
+            "farthest_ball_x": 542.6013071895425,
+            "margin_px": 135.69175945084902,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-2_lerobot/ep000034/precise/0016",
+            "blue_marker_x": 436.7753303964758,
+            "threshold_x": 406.7753303964758,
+            "farthest_ball_x": 553.1960784313726,
+            "margin_px": 146.4207480348968,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-2_lerobot/ep000025/precise/0015",
+            "blue_marker_x": 437.2142857142857,
+            "threshold_x": 407.2142857142857,
+            "farthest_ball_x": 556.4833333333333,
+            "margin_px": 149.26904761904763,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 15
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-2_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 437.1062801932367,
+            "threshold_x": 407.1062801932367,
+            "farthest_ball_x": 370.92067988668555,
+            "margin_px": -36.18560030655118,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-2_lerobot/ep000037/precise/0013",
+            "blue_marker_x": 437.075,
+            "threshold_x": 407.075,
+            "farthest_ball_x": 442.60625,
+            "margin_px": 35.53125,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-2_lerobot/ep000010/precise/0016",
+            "blue_marker_x": 436.622009569378,
+            "threshold_x": 406.622009569378,
+            "farthest_ball_x": 538.9064039408867,
+            "margin_px": 132.28439437150865,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "dino": [
+          {
+            "level": 1,
+            "sample_id": "ball-2_lerobot/ep000001/precise/0039",
+            "blue_marker_x": 436.86224489795916,
+            "threshold_x": 406.86224489795916,
+            "farthest_ball_x": 194.97641509433961,
+            "margin_px": -211.88582980361954,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-2_lerobot/ep000030/precise/0024",
+            "blue_marker_x": 437.15458937198065,
+            "threshold_x": 407.15458937198065,
+            "farthest_ball_x": 176.14285714285714,
+            "margin_px": -231.0117322291235,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-2_lerobot/ep000005/precise/0023",
+            "blue_marker_x": 436.9704433497537,
+            "threshold_x": 406.9704433497537,
+            "farthest_ball_x": 178.26565874730022,
+            "margin_px": -228.70478460245346,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-2_lerobot/ep000016/precise/0020",
+            "blue_marker_x": 437.0495049504951,
+            "threshold_x": 407.0495049504951,
+            "farthest_ball_x": 239.06753246753246,
+            "margin_px": -167.98197248296262,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-2_lerobot/ep000015/precise/0017",
+            "blue_marker_x": 436.90954773869345,
+            "threshold_x": 406.90954773869345,
+            "farthest_ball_x": 429.2054794520548,
+            "margin_px": 22.29593171336137,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-2_lerobot/ep000034/precise/0016",
+            "blue_marker_x": 436.7753303964758,
+            "threshold_x": 406.7753303964758,
+            "farthest_ball_x": 553.253807106599,
+            "margin_px": 146.47847671012318,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-2_lerobot/ep000025/precise/0015",
+            "blue_marker_x": 437.2142857142857,
+            "threshold_x": 407.2142857142857,
+            "farthest_ball_x": 556.84,
+            "margin_px": 149.6257142857143,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 8
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-2_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 437.1062801932367,
+            "threshold_x": 407.1062801932367,
+            "farthest_ball_x": 370.76149425287355,
+            "margin_px": -36.34478594036318,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-2_lerobot/ep000037/precise/0013",
+            "blue_marker_x": 437.075,
+            "threshold_x": 407.075,
+            "farthest_ball_x": 440.23121387283237,
+            "margin_px": 33.15621387283238,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-2_lerobot/ep000010/precise/0016",
+            "blue_marker_x": 436.622009569378,
+            "threshold_x": 406.622009569378,
+            "farthest_ball_x": 540.1875,
+            "margin_px": 133.565490430622,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage1": [
+          {
+            "level": 1,
+            "sample_id": "ball-2_lerobot/ep000001/precise/0039",
+            "blue_marker_x": 436.86224489795916,
+            "threshold_x": 406.86224489795916,
+            "farthest_ball_x": 193.57395143487858,
+            "margin_px": -213.28829346308058,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-2_lerobot/ep000030/precise/0024",
+            "blue_marker_x": 437.15458937198065,
+            "threshold_x": 407.15458937198065,
+            "farthest_ball_x": 236.80327868852459,
+            "margin_px": -170.35131068345606,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-2_lerobot/ep000005/precise/0023",
+            "blue_marker_x": 436.9704433497537,
+            "threshold_x": 406.9704433497537,
+            "farthest_ball_x": 186.7035175879397,
+            "margin_px": -220.26692576181398,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-2_lerobot/ep000016/precise/0020",
+            "blue_marker_x": 437.0495049504951,
+            "threshold_x": 407.0495049504951,
+            "farthest_ball_x": 296.4223602484472,
+            "margin_px": -110.62714470204787,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-2_lerobot/ep000015/precise/0017",
+            "blue_marker_x": 436.90954773869345,
+            "threshold_x": 406.90954773869345,
+            "farthest_ball_x": 317.5367483296214,
+            "margin_px": -89.37279940907206,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-2_lerobot/ep000034/precise/0016",
+            "blue_marker_x": 436.7753303964758,
+            "threshold_x": 406.7753303964758,
+            "farthest_ball_x": 552.8990384615385,
+            "margin_px": 146.12370806506266,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-2_lerobot/ep000025/precise/0015",
+            "blue_marker_x": 437.2142857142857,
+            "threshold_x": 407.2142857142857,
+            "farthest_ball_x": 556.4285714285714,
+            "margin_px": 149.21428571428572,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 17
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-2_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 437.1062801932367,
+            "threshold_x": 407.1062801932367,
+            "farthest_ball_x": 522.2063953488372,
+            "margin_px": 115.10011515560046,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-2_lerobot/ep000037/precise/0013",
+            "blue_marker_x": 437.075,
+            "threshold_x": 407.075,
+            "farthest_ball_x": 507.178125,
+            "margin_px": 100.10312500000003,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-2_lerobot/ep000010/precise/0016",
+            "blue_marker_x": 436.622009569378,
+            "threshold_x": 406.622009569378,
+            "farthest_ball_x": 550.1235521235521,
+            "margin_px": 143.50154255417414,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage2": [
+          {
+            "level": 1,
+            "sample_id": "ball-2_lerobot/ep000001/precise/0039",
+            "blue_marker_x": 436.86224489795916,
+            "threshold_x": 406.86224489795916,
+            "farthest_ball_x": 197.36268343815513,
+            "margin_px": -209.49956145980403,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-2_lerobot/ep000030/precise/0024",
+            "blue_marker_x": 437.15458937198065,
+            "threshold_x": 407.15458937198065,
+            "farthest_ball_x": 237.59888579387186,
+            "margin_px": -169.5557035781088,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-2_lerobot/ep000005/precise/0023",
+            "blue_marker_x": 436.9704433497537,
+            "threshold_x": 406.9704433497537,
+            "farthest_ball_x": 270.83941605839414,
+            "margin_px": -136.13102729135954,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-2_lerobot/ep000016/precise/0020",
+            "blue_marker_x": 437.0495049504951,
+            "threshold_x": 407.0495049504951,
+            "farthest_ball_x": 360.1506849315069,
+            "margin_px": -46.898820018988204,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-2_lerobot/ep000015/precise/0017",
+            "blue_marker_x": 436.90954773869345,
+            "threshold_x": 406.90954773869345,
+            "farthest_ball_x": 342.51666666666665,
+            "margin_px": -64.3928810720268,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-2_lerobot/ep000034/precise/0016",
+            "blue_marker_x": 436.7753303964758,
+            "threshold_x": 406.7753303964758,
+            "farthest_ball_x": 552.979274611399,
+            "margin_px": 146.20394421492318,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-2_lerobot/ep000025/precise/0015",
+            "blue_marker_x": 437.2142857142857,
+            "threshold_x": 407.2142857142857,
+            "farthest_ball_x": 554.0879120879121,
+            "margin_px": 146.87362637362634,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 20
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-2_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 437.1062801932367,
+            "threshold_x": 407.1062801932367,
+            "farthest_ball_x": 521.5460122699386,
+            "margin_px": 114.43973207670189,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-2_lerobot/ep000037/precise/0013",
+            "blue_marker_x": 437.075,
+            "threshold_x": 407.075,
+            "farthest_ball_x": 510.1038062283737,
+            "margin_px": 103.0288062283737,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-2_lerobot/ep000010/precise/0016",
+            "blue_marker_x": 436.622009569378,
+            "threshold_x": 406.622009569378,
+            "farthest_ball_x": 551.0419847328244,
+            "margin_px": 144.4199751634464,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ]
+      }
+    },
+    {
+      "environment": "ball-3",
+      "gt": {
+        "first_reaching_level": 8,
+        "selection_identifiable": true,
+        "unknown_levels": []
+      },
+      "predictions": {
+        "standard": {
+          "first_reaching_level": 6,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 8,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -2,
+          "absolute_level_error": 2
+        },
+        "dino": {
+          "first_reaching_level": 6,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 8,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -2,
+          "absolute_level_error": 2
+        },
+        "ours_stage1": {
+          "first_reaching_level": 6,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 8,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -2,
+          "absolute_level_error": 2
+        },
+        "ours_stage2": {
+          "first_reaching_level": 6,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 8,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -2,
+          "absolute_level_error": 2
+        }
+      },
+      "per_level": {
+        "gt": [
+          {
+            "level": 1,
+            "sample_id": "ball-3_lerobot/ep000020/precise/0035",
+            "blue_marker_x": 437.04545454545456,
+            "threshold_x": 407.04545454545456,
+            "farthest_ball_x": 186.84324324324325,
+            "margin_px": -220.2022113022113,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-3_lerobot/ep000032/precise/0024",
+            "blue_marker_x": 436.85972850678735,
+            "threshold_x": 406.85972850678735,
+            "farthest_ball_x": 182.8235294117647,
+            "margin_px": -224.03619909502265,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-3_lerobot/ep000034/precise/0019",
+            "blue_marker_x": 437.0406091370558,
+            "threshold_x": 407.0406091370558,
+            "farthest_ball_x": 232.69060773480663,
+            "margin_px": -174.35000140224918,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-3_lerobot/ep000037/precise/0019",
+            "blue_marker_x": 437.2182741116751,
+            "threshold_x": 407.2182741116751,
+            "farthest_ball_x": 268.8809523809524,
+            "margin_px": -138.3373217307227,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-3_lerobot/ep000024/precise/0017",
+            "blue_marker_x": 436.93401015228426,
+            "threshold_x": 406.93401015228426,
+            "farthest_ball_x": 290.1171428571429,
+            "margin_px": -116.81686729514138,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-3_lerobot/ep000039/precise/0015",
+            "blue_marker_x": 436.910447761194,
+            "threshold_x": 406.910447761194,
+            "farthest_ball_x": 349.7039106145251,
+            "margin_px": -57.20653714666889,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-3_lerobot/ep000026/precise/0015",
+            "blue_marker_x": 437.1010101010101,
+            "threshold_x": 407.1010101010101,
+            "farthest_ball_x": 390.27840909090907,
+            "margin_px": -16.82260101010104,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-3_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 436.7020202020202,
+            "threshold_x": 406.7020202020202,
+            "farthest_ball_x": 435.6600566572238,
+            "margin_px": 28.95803645520357,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-3_lerobot/ep000028/precise/0013",
+            "blue_marker_x": 436.76576576576576,
+            "threshold_x": 406.76576576576576,
+            "farthest_ball_x": 511.2589928057554,
+            "margin_px": 104.49322703998962,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-3_lerobot/ep000029/precise/0014",
+            "blue_marker_x": 436.82027649769583,
+            "threshold_x": 406.82027649769583,
+            "farthest_ball_x": 552.9672131147541,
+            "margin_px": 146.14693661705832,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 9
+          }
+        ],
+        "standard": [
+          {
+            "level": 1,
+            "sample_id": "ball-3_lerobot/ep000020/precise/0035",
+            "blue_marker_x": 437.04545454545456,
+            "threshold_x": 407.04545454545456,
+            "farthest_ball_x": 179.31360946745562,
+            "margin_px": -227.73184507799894,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-3_lerobot/ep000032/precise/0024",
+            "blue_marker_x": 436.85972850678735,
+            "threshold_x": 406.85972850678735,
+            "farthest_ball_x": 245.17252396166134,
+            "margin_px": -161.687204545126,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-3_lerobot/ep000034/precise/0019",
+            "blue_marker_x": 437.0406091370558,
+            "threshold_x": 407.0406091370558,
+            "farthest_ball_x": 172.8216704288939,
+            "margin_px": -234.21893870816191,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-3_lerobot/ep000037/precise/0019",
+            "blue_marker_x": 437.2182741116751,
+            "threshold_x": 407.2182741116751,
+            "farthest_ball_x": 236.40568475452196,
+            "margin_px": -170.81258935715314,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-3_lerobot/ep000024/precise/0017",
+            "blue_marker_x": 436.93401015228426,
+            "threshold_x": 406.93401015228426,
+            "farthest_ball_x": 274.0796178343949,
+            "margin_px": -132.85439231788934,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-3_lerobot/ep000039/precise/0015",
+            "blue_marker_x": 436.910447761194,
+            "threshold_x": 406.910447761194,
+            "farthest_ball_x": 486.9895287958115,
+            "margin_px": 80.0790810346175,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-3_lerobot/ep000026/precise/0015",
+            "blue_marker_x": 437.1010101010101,
+            "threshold_x": 407.1010101010101,
+            "farthest_ball_x": 374.468438538206,
+            "margin_px": -32.63257156280412,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-3_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 436.7020202020202,
+            "threshold_x": 406.7020202020202,
+            "farthest_ball_x": 377.46666666666664,
+            "margin_px": -29.235353535353568,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-3_lerobot/ep000028/precise/0013",
+            "blue_marker_x": 436.76576576576576,
+            "threshold_x": 406.76576576576576,
+            "farthest_ball_x": 550.9894736842106,
+            "margin_px": 144.2237079184448,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 28
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-3_lerobot/ep000029/precise/0014",
+            "blue_marker_x": 436.82027649769583,
+            "threshold_x": 406.82027649769583,
+            "farthest_ball_x": 556.8275862068965,
+            "margin_px": 150.00730970920068,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 11
+          }
+        ],
+        "dino": [
+          {
+            "level": 1,
+            "sample_id": "ball-3_lerobot/ep000020/precise/0035",
+            "blue_marker_x": 437.04545454545456,
+            "threshold_x": 407.04545454545456,
+            "farthest_ball_x": 173.20689655172413,
+            "margin_px": -233.83855799373043,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-3_lerobot/ep000032/precise/0024",
+            "blue_marker_x": 436.85972850678735,
+            "threshold_x": 406.85972850678735,
+            "farthest_ball_x": 204.01734104046244,
+            "margin_px": -202.8423874663249,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-3_lerobot/ep000034/precise/0019",
+            "blue_marker_x": 437.0406091370558,
+            "threshold_x": 407.0406091370558,
+            "farthest_ball_x": 172.14192139737992,
+            "margin_px": -234.8986877396759,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-3_lerobot/ep000037/precise/0019",
+            "blue_marker_x": 437.2182741116751,
+            "threshold_x": 407.2182741116751,
+            "farthest_ball_x": 235.99236641221373,
+            "margin_px": -171.22590769946137,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-3_lerobot/ep000024/precise/0017",
+            "blue_marker_x": 436.93401015228426,
+            "threshold_x": 406.93401015228426,
+            "farthest_ball_x": 275.21597633136093,
+            "margin_px": -131.71803382092332,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-3_lerobot/ep000039/precise/0015",
+            "blue_marker_x": 436.910447761194,
+            "threshold_x": 406.910447761194,
+            "farthest_ball_x": 486.66835443037974,
+            "margin_px": 79.75790666918573,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-3_lerobot/ep000026/precise/0015",
+            "blue_marker_x": 437.1010101010101,
+            "threshold_x": 407.1010101010101,
+            "farthest_ball_x": 484.0568181818182,
+            "margin_px": 76.95580808080808,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-3_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 436.7020202020202,
+            "threshold_x": 406.7020202020202,
+            "farthest_ball_x": 417.80872483221475,
+            "margin_px": 11.106704630194542,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-3_lerobot/ep000028/precise/0013",
+            "blue_marker_x": 436.76576576576576,
+            "threshold_x": 406.76576576576576,
+            "farthest_ball_x": 552.2950819672132,
+            "margin_px": 145.5293162014474,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 27
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-3_lerobot/ep000029/precise/0014",
+            "blue_marker_x": 436.82027649769583,
+            "threshold_x": 406.82027649769583,
+            "farthest_ball_x": 556.734375,
+            "margin_px": 149.91409850230417,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 11
+          }
+        ],
+        "ours_stage1": [
+          {
+            "level": 1,
+            "sample_id": "ball-3_lerobot/ep000020/precise/0035",
+            "blue_marker_x": 437.04545454545456,
+            "threshold_x": 407.04545454545456,
+            "farthest_ball_x": 174.19452054794522,
+            "margin_px": -232.85093399750934,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-3_lerobot/ep000032/precise/0024",
+            "blue_marker_x": 436.85972850678735,
+            "threshold_x": 406.85972850678735,
+            "farthest_ball_x": 205.9620596205962,
+            "margin_px": -200.89766888619116,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-3_lerobot/ep000034/precise/0019",
+            "blue_marker_x": 437.0406091370558,
+            "threshold_x": 407.0406091370558,
+            "farthest_ball_x": 171.93388429752065,
+            "margin_px": -235.10672483953516,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-3_lerobot/ep000037/precise/0019",
+            "blue_marker_x": 437.2182741116751,
+            "threshold_x": 407.2182741116751,
+            "farthest_ball_x": 235.29919137466308,
+            "margin_px": -171.91908273701202,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-3_lerobot/ep000024/precise/0017",
+            "blue_marker_x": 436.93401015228426,
+            "threshold_x": 406.93401015228426,
+            "farthest_ball_x": 273.8360128617363,
+            "margin_px": -133.09799729054794,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-3_lerobot/ep000039/precise/0015",
+            "blue_marker_x": 436.910447761194,
+            "threshold_x": 406.910447761194,
+            "farthest_ball_x": 433.28932584269666,
+            "margin_px": 26.37887808150265,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-3_lerobot/ep000026/precise/0015",
+            "blue_marker_x": 437.1010101010101,
+            "threshold_x": 407.1010101010101,
+            "farthest_ball_x": 372.3441734417344,
+            "margin_px": -34.75683665927568,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-3_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 436.7020202020202,
+            "threshold_x": 406.7020202020202,
+            "farthest_ball_x": 426.6666666666667,
+            "margin_px": 19.964646464646478,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-3_lerobot/ep000028/precise/0013",
+            "blue_marker_x": 436.76576576576576,
+            "threshold_x": 406.76576576576576,
+            "farthest_ball_x": 555.7638888888889,
+            "margin_px": 148.99812312312315,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 27
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-3_lerobot/ep000029/precise/0014",
+            "blue_marker_x": 436.82027649769583,
+            "threshold_x": 406.82027649769583,
+            "farthest_ball_x": 556.9074074074074,
+            "margin_px": 150.08713090971156,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 9
+          }
+        ],
+        "ours_stage2": [
+          {
+            "level": 1,
+            "sample_id": "ball-3_lerobot/ep000020/precise/0035",
+            "blue_marker_x": 437.04545454545456,
+            "threshold_x": 407.04545454545456,
+            "farthest_ball_x": 181.52247191011236,
+            "margin_px": -225.5229826353422,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-3_lerobot/ep000032/precise/0024",
+            "blue_marker_x": 436.85972850678735,
+            "threshold_x": 406.85972850678735,
+            "farthest_ball_x": 225.5614973262032,
+            "margin_px": -181.29823118058414,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-3_lerobot/ep000034/precise/0019",
+            "blue_marker_x": 437.0406091370558,
+            "threshold_x": 407.0406091370558,
+            "farthest_ball_x": 290.36950146627566,
+            "margin_px": -116.67110767078015,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-3_lerobot/ep000037/precise/0019",
+            "blue_marker_x": 437.2182741116751,
+            "threshold_x": 407.2182741116751,
+            "farthest_ball_x": 305.24517906336087,
+            "margin_px": -101.97309504831424,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-3_lerobot/ep000024/precise/0017",
+            "blue_marker_x": 436.93401015228426,
+            "threshold_x": 406.93401015228426,
+            "farthest_ball_x": 358.03548387096777,
+            "margin_px": -48.89852628131649,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-3_lerobot/ep000039/precise/0015",
+            "blue_marker_x": 436.910447761194,
+            "threshold_x": 406.910447761194,
+            "farthest_ball_x": 493.7692307692308,
+            "margin_px": 86.85878300803677,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-3_lerobot/ep000026/precise/0015",
+            "blue_marker_x": 437.1010101010101,
+            "threshold_x": 407.1010101010101,
+            "farthest_ball_x": 556.125,
+            "margin_px": 149.0239898989899,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-3_lerobot/ep000036/precise/0014",
+            "blue_marker_x": 436.7020202020202,
+            "threshold_x": 406.7020202020202,
+            "farthest_ball_x": 551.3319327731092,
+            "margin_px": 144.629912571089,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-3_lerobot/ep000028/precise/0013",
+            "blue_marker_x": 436.76576576576576,
+            "threshold_x": 406.76576576576576,
+            "farthest_ball_x": 553.5547445255474,
+            "margin_px": 146.78897875978168,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 28
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-3_lerobot/ep000029/precise/0014",
+            "blue_marker_x": 436.82027649769583,
+            "threshold_x": 406.82027649769583,
+            "farthest_ball_x": 554.6739130434783,
+            "margin_px": 147.85363654578242,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 13
+          }
+        ]
+      }
+    },
+    {
+      "environment": "ball-4",
+      "gt": {
+        "first_reaching_level": 9,
+        "selection_identifiable": true,
+        "unknown_levels": []
+      },
+      "predictions": {
+        "standard": {
+          "first_reaching_level": 8,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 9,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        },
+        "dino": {
+          "first_reaching_level": 8,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 9,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        },
+        "ours_stage1": {
+          "first_reaching_level": 9,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 9,
+          "exact_decision_score": 1.0,
+          "signed_level_error": 0,
+          "absolute_level_error": 0
+        },
+        "ours_stage2": {
+          "first_reaching_level": 8,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 9,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        }
+      },
+      "per_level": {
+        "gt": [
+          {
+            "level": 1,
+            "sample_id": "ball-4_lerobot/ep000001/precise/0035",
+            "blue_marker_x": 437.1725888324873,
+            "threshold_x": 407.1725888324873,
+            "farthest_ball_x": 181.59948320413437,
+            "margin_px": -225.57310562835292,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-4_lerobot/ep000033/precise/0024",
+            "blue_marker_x": 436.7536945812808,
+            "threshold_x": 406.7536945812808,
+            "farthest_ball_x": 174.98987341772153,
+            "margin_px": -231.76382116355927,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-4_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.97115384615387,
+            "threshold_x": 406.97115384615387,
+            "farthest_ball_x": 199.15718157181573,
+            "margin_px": -207.81397227433814,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-4_lerobot/ep000007/precise/0020",
+            "blue_marker_x": 436.84263959390864,
+            "threshold_x": 406.84263959390864,
+            "farthest_ball_x": 229.60955056179776,
+            "margin_px": -177.23308903211088,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-4_lerobot/ep000039/precise/0018",
+            "blue_marker_x": 436.96585365853656,
+            "threshold_x": 406.96585365853656,
+            "farthest_ball_x": 254.44973544973544,
+            "margin_px": -152.51611820880112,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-4_lerobot/ep000017/precise/0019",
+            "blue_marker_x": 436.89719626168227,
+            "threshold_x": 406.89719626168227,
+            "farthest_ball_x": 275.811320754717,
+            "margin_px": -131.0858755069653,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-4_lerobot/ep000006/precise/0017",
+            "blue_marker_x": 436.93023255813955,
+            "threshold_x": 406.93023255813955,
+            "farthest_ball_x": 324.77777777777777,
+            "margin_px": -82.15245478036178,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-4_lerobot/ep000027/precise/0014",
+            "blue_marker_x": 436.94,
+            "threshold_x": 406.94,
+            "farthest_ball_x": 388.35435435435437,
+            "margin_px": -18.585645645645627,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-4_lerobot/ep000028/precise/0014",
+            "blue_marker_x": 437.21078431372547,
+            "threshold_x": 407.21078431372547,
+            "farthest_ball_x": 460.95675675675676,
+            "margin_px": 53.74597244303129,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-4_lerobot/ep000010/precise/0017",
+            "blue_marker_x": 436.5981308411215,
+            "threshold_x": 406.5981308411215,
+            "farthest_ball_x": 497.5518134715026,
+            "margin_px": 90.95368263038114,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "standard": [
+          {
+            "level": 1,
+            "sample_id": "ball-4_lerobot/ep000001/precise/0035",
+            "blue_marker_x": 437.1725888324873,
+            "threshold_x": 407.1725888324873,
+            "farthest_ball_x": 173.47368421052633,
+            "margin_px": -233.69890462196096,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-4_lerobot/ep000033/precise/0024",
+            "blue_marker_x": 436.7536945812808,
+            "threshold_x": 406.7536945812808,
+            "farthest_ball_x": 195.61581920903956,
+            "margin_px": -211.13787537224124,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-4_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.97115384615387,
+            "threshold_x": 406.97115384615387,
+            "farthest_ball_x": 221.25852272727272,
+            "margin_px": -185.71263111888115,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-4_lerobot/ep000007/precise/0020",
+            "blue_marker_x": 436.84263959390864,
+            "threshold_x": 406.84263959390864,
+            "farthest_ball_x": 362.69679300291546,
+            "margin_px": -44.14584659099319,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-4_lerobot/ep000039/precise/0018",
+            "blue_marker_x": 436.96585365853656,
+            "threshold_x": 406.96585365853656,
+            "farthest_ball_x": 317.633431085044,
+            "margin_px": -89.33242257349258,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-4_lerobot/ep000017/precise/0019",
+            "blue_marker_x": 436.89719626168227,
+            "threshold_x": 406.89719626168227,
+            "farthest_ball_x": 370.74934036939317,
+            "margin_px": -36.1478558922891,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-4_lerobot/ep000006/precise/0017",
+            "blue_marker_x": 436.93023255813955,
+            "threshold_x": 406.93023255813955,
+            "farthest_ball_x": 316.3181818181818,
+            "margin_px": -90.61205073995774,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-4_lerobot/ep000027/precise/0014",
+            "blue_marker_x": 436.94,
+            "threshold_x": 406.94,
+            "farthest_ball_x": 462.0,
+            "margin_px": 55.06,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-4_lerobot/ep000028/precise/0014",
+            "blue_marker_x": 437.21078431372547,
+            "threshold_x": 407.21078431372547,
+            "farthest_ball_x": 478.62628865979383,
+            "margin_px": 71.41550434606836,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-4_lerobot/ep000010/precise/0017",
+            "blue_marker_x": 436.5981308411215,
+            "threshold_x": 406.5981308411215,
+            "farthest_ball_x": 552.0098522167488,
+            "margin_px": 145.41172137562728,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "dino": [
+          {
+            "level": 1,
+            "sample_id": "ball-4_lerobot/ep000001/precise/0035",
+            "blue_marker_x": 437.1725888324873,
+            "threshold_x": 407.1725888324873,
+            "farthest_ball_x": 172.81578947368422,
+            "margin_px": -234.35679935880307,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-4_lerobot/ep000033/precise/0024",
+            "blue_marker_x": 436.7536945812808,
+            "threshold_x": 406.7536945812808,
+            "farthest_ball_x": 171.97674418604652,
+            "margin_px": -234.77695039523428,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-4_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.97115384615387,
+            "threshold_x": 406.97115384615387,
+            "farthest_ball_x": 178.352422907489,
+            "margin_px": -228.61873093866487,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-4_lerobot/ep000007/precise/0020",
+            "blue_marker_x": 436.84263959390864,
+            "threshold_x": 406.84263959390864,
+            "farthest_ball_x": 223.5185185185185,
+            "margin_px": -183.32412107539014,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-4_lerobot/ep000039/precise/0018",
+            "blue_marker_x": 436.96585365853656,
+            "threshold_x": 406.96585365853656,
+            "farthest_ball_x": 241.7920227920228,
+            "margin_px": -165.17383086651375,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-4_lerobot/ep000017/precise/0019",
+            "blue_marker_x": 436.89719626168227,
+            "threshold_x": 406.89719626168227,
+            "farthest_ball_x": 316.26684636118597,
+            "margin_px": -90.6303499004963,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-4_lerobot/ep000006/precise/0017",
+            "blue_marker_x": 436.93023255813955,
+            "threshold_x": 406.93023255813955,
+            "farthest_ball_x": 307.7209944751381,
+            "margin_px": -99.20923808300142,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-4_lerobot/ep000027/precise/0014",
+            "blue_marker_x": 436.94,
+            "threshold_x": 406.94,
+            "farthest_ball_x": 434.21714285714285,
+            "margin_px": 27.27714285714285,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-4_lerobot/ep000028/precise/0014",
+            "blue_marker_x": 437.21078431372547,
+            "threshold_x": 407.21078431372547,
+            "farthest_ball_x": 477.55128205128204,
+            "margin_px": 70.34049773755657,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-4_lerobot/ep000010/precise/0017",
+            "blue_marker_x": 436.5981308411215,
+            "threshold_x": 406.5981308411215,
+            "farthest_ball_x": 552.7826086956521,
+            "margin_px": 146.18447785453066,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage1": [
+          {
+            "level": 1,
+            "sample_id": "ball-4_lerobot/ep000001/precise/0035",
+            "blue_marker_x": 437.1725888324873,
+            "threshold_x": 407.1725888324873,
+            "farthest_ball_x": 173.60508083140877,
+            "margin_px": -233.56750800107852,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-4_lerobot/ep000033/precise/0024",
+            "blue_marker_x": 436.7536945812808,
+            "threshold_x": 406.7536945812808,
+            "farthest_ball_x": 172.6882494004796,
+            "margin_px": -234.0654451808012,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-4_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.97115384615387,
+            "threshold_x": 406.97115384615387,
+            "farthest_ball_x": 176.4488017429194,
+            "margin_px": -230.52235210323448,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-4_lerobot/ep000007/precise/0020",
+            "blue_marker_x": 436.84263959390864,
+            "threshold_x": 406.84263959390864,
+            "farthest_ball_x": 218.3342175066313,
+            "margin_px": -188.50842208727735,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-4_lerobot/ep000039/precise/0018",
+            "blue_marker_x": 436.96585365853656,
+            "threshold_x": 406.96585365853656,
+            "farthest_ball_x": 230.12295081967213,
+            "margin_px": -176.84290283886443,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-4_lerobot/ep000017/precise/0019",
+            "blue_marker_x": 436.89719626168227,
+            "threshold_x": 406.89719626168227,
+            "farthest_ball_x": 282.7083333333333,
+            "margin_px": -124.18886292834895,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-4_lerobot/ep000006/precise/0017",
+            "blue_marker_x": 436.93023255813955,
+            "threshold_x": 406.93023255813955,
+            "farthest_ball_x": 308.6426735218509,
+            "margin_px": -98.28755903628866,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-4_lerobot/ep000027/precise/0014",
+            "blue_marker_x": 436.94,
+            "threshold_x": 406.94,
+            "farthest_ball_x": 304.2417302798982,
+            "margin_px": -102.69826972010179,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-4_lerobot/ep000028/precise/0014",
+            "blue_marker_x": 437.21078431372547,
+            "threshold_x": 407.21078431372547,
+            "farthest_ball_x": 512.8004926108374,
+            "margin_px": 105.58970829711194,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-4_lerobot/ep000010/precise/0017",
+            "blue_marker_x": 436.5981308411215,
+            "threshold_x": 406.5981308411215,
+            "farthest_ball_x": 486.89066059225513,
+            "margin_px": 80.29252975113366,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage2": [
+          {
+            "level": 1,
+            "sample_id": "ball-4_lerobot/ep000001/precise/0035",
+            "blue_marker_x": 437.1725888324873,
+            "threshold_x": 407.1725888324873,
+            "farthest_ball_x": 174.51312649164677,
+            "margin_px": -232.65946234084052,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-4_lerobot/ep000033/precise/0024",
+            "blue_marker_x": 436.7536945812808,
+            "threshold_x": 406.7536945812808,
+            "farthest_ball_x": 172.751269035533,
+            "margin_px": -234.0024255457478,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-4_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.97115384615387,
+            "threshold_x": 406.97115384615387,
+            "farthest_ball_x": 188.86756756756756,
+            "margin_px": -218.1035862785863,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-4_lerobot/ep000007/precise/0020",
+            "blue_marker_x": 436.84263959390864,
+            "threshold_x": 406.84263959390864,
+            "farthest_ball_x": 224.56432748538012,
+            "margin_px": -182.27831210852852,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-4_lerobot/ep000039/precise/0018",
+            "blue_marker_x": 436.96585365853656,
+            "threshold_x": 406.96585365853656,
+            "farthest_ball_x": 317.9781420765027,
+            "margin_px": -88.98771158203385,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-4_lerobot/ep000017/precise/0019",
+            "blue_marker_x": 436.89719626168227,
+            "threshold_x": 406.89719626168227,
+            "farthest_ball_x": 369.5070821529745,
+            "margin_px": -37.39011410870779,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-4_lerobot/ep000006/precise/0017",
+            "blue_marker_x": 436.93023255813955,
+            "threshold_x": 406.93023255813955,
+            "farthest_ball_x": 313.90813648293965,
+            "margin_px": -93.0220960751999,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-4_lerobot/ep000027/precise/0014",
+            "blue_marker_x": 436.94,
+            "threshold_x": 406.94,
+            "farthest_ball_x": 517.1599045346062,
+            "margin_px": 110.2199045346062,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-4_lerobot/ep000028/precise/0014",
+            "blue_marker_x": 437.21078431372547,
+            "threshold_x": 407.21078431372547,
+            "farthest_ball_x": 517.9053398058253,
+            "margin_px": 110.69455549209982,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-4_lerobot/ep000010/precise/0017",
+            "blue_marker_x": 436.5981308411215,
+            "threshold_x": 406.5981308411215,
+            "farthest_ball_x": 551.7574257425742,
+            "margin_px": 145.15929490145277,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ]
+      }
+    },
+    {
+      "environment": "ball-7",
+      "gt": {
+        "first_reaching_level": 10,
+        "selection_identifiable": true,
+        "unknown_levels": []
+      },
+      "predictions": {
+        "standard": {
+          "first_reaching_level": 8,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 10,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -2,
+          "absolute_level_error": 2
+        },
+        "dino": {
+          "first_reaching_level": 8,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 10,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -2,
+          "absolute_level_error": 2
+        },
+        "ours_stage1": {
+          "first_reaching_level": 10,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 10,
+          "exact_decision_score": 1.0,
+          "signed_level_error": 0,
+          "absolute_level_error": 0
+        },
+        "ours_stage2": {
+          "first_reaching_level": 10,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 10,
+          "exact_decision_score": 1.0,
+          "signed_level_error": 0,
+          "absolute_level_error": 0
+        }
+      },
+      "per_level": {
+        "gt": [
+          {
+            "level": 1,
+            "sample_id": "ball-7_lerobot/ep000039/precise/0038",
+            "blue_marker_x": 437.09268292682924,
+            "threshold_x": 407.09268292682924,
+            "farthest_ball_x": 173.51466666666667,
+            "margin_px": -233.57801626016257,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-7_lerobot/ep000038/precise/0025",
+            "blue_marker_x": 436.9655172413793,
+            "threshold_x": 406.9655172413793,
+            "farthest_ball_x": 173.32460732984293,
+            "margin_px": -233.64090991153637,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-7_lerobot/ep000022/precise/0019",
+            "blue_marker_x": 436.81463414634146,
+            "threshold_x": 406.81463414634146,
+            "farthest_ball_x": 179.7575,
+            "margin_px": -227.05713414634147,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-7_lerobot/ep000023/precise/0018",
+            "blue_marker_x": 437.03061224489795,
+            "threshold_x": 407.03061224489795,
+            "farthest_ball_x": 200.30193905817174,
+            "margin_px": -206.7286731867262,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-7_lerobot/ep000007/precise/0042",
+            "blue_marker_x": 436.86343612334804,
+            "threshold_x": 406.86343612334804,
+            "farthest_ball_x": 201.23529411764707,
+            "margin_px": -205.62814200570097,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-7_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.73333333333335,
+            "threshold_x": 406.73333333333335,
+            "farthest_ball_x": 247.35777126099705,
+            "margin_px": -159.3755620723363,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-7_lerobot/ep000033/precise/0015",
+            "blue_marker_x": 436.7268292682927,
+            "threshold_x": 406.7268292682927,
+            "farthest_ball_x": 276.8452722063037,
+            "margin_px": -129.88155706198899,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-7_lerobot/ep000004/precise/0015",
+            "blue_marker_x": 436.9177489177489,
+            "threshold_x": 406.9177489177489,
+            "farthest_ball_x": 318.81159420289856,
+            "margin_px": -88.10615471485033,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-7_lerobot/ep000031/precise/0014",
+            "blue_marker_x": 436.9948979591837,
+            "threshold_x": 406.9948979591837,
+            "farthest_ball_x": 361.8449848024316,
+            "margin_px": -45.14991315675206,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-7_lerobot/ep000029/precise/0015",
+            "blue_marker_x": 436.65533980582524,
+            "threshold_x": 406.65533980582524,
+            "farthest_ball_x": 431.1776504297994,
+            "margin_px": 24.522310623974192,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "standard": [
+          {
+            "level": 1,
+            "sample_id": "ball-7_lerobot/ep000039/precise/0038",
+            "blue_marker_x": 437.09268292682924,
+            "threshold_x": 407.09268292682924,
+            "farthest_ball_x": 194.99019607843138,
+            "margin_px": -212.10248684839786,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-7_lerobot/ep000038/precise/0025",
+            "blue_marker_x": 436.9655172413793,
+            "threshold_x": 406.9655172413793,
+            "farthest_ball_x": 215.965,
+            "margin_px": -191.0005172413793,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-7_lerobot/ep000022/precise/0019",
+            "blue_marker_x": 436.81463414634146,
+            "threshold_x": 406.81463414634146,
+            "farthest_ball_x": 177.4656862745098,
+            "margin_px": -229.34894787183165,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-7_lerobot/ep000023/precise/0018",
+            "blue_marker_x": 437.03061224489795,
+            "threshold_x": 407.03061224489795,
+            "farthest_ball_x": 217.3941018766756,
+            "margin_px": -189.63651036822236,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-7_lerobot/ep000007/precise/0042",
+            "blue_marker_x": 436.86343612334804,
+            "threshold_x": 406.86343612334804,
+            "farthest_ball_x": 209.08479532163742,
+            "margin_px": -197.77864080171062,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-7_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.73333333333335,
+            "threshold_x": 406.73333333333335,
+            "farthest_ball_x": 313.7211267605634,
+            "margin_px": -93.01220657276997,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-7_lerobot/ep000033/precise/0015",
+            "blue_marker_x": 436.7268292682927,
+            "threshold_x": 406.7268292682927,
+            "farthest_ball_x": 313.0894568690096,
+            "margin_px": -93.6373723992831,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-7_lerobot/ep000004/precise/0015",
+            "blue_marker_x": 436.9177489177489,
+            "threshold_x": 406.9177489177489,
+            "farthest_ball_x": 555.2129629629629,
+            "margin_px": 148.29521404521404,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-7_lerobot/ep000031/precise/0014",
+            "blue_marker_x": 436.9948979591837,
+            "threshold_x": 406.9948979591837,
+            "farthest_ball_x": 373.3955696202532,
+            "margin_px": -33.59932833893049,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-7_lerobot/ep000029/precise/0015",
+            "blue_marker_x": 436.65533980582524,
+            "threshold_x": 406.65533980582524,
+            "farthest_ball_x": 420.7313432835821,
+            "margin_px": 14.076003477756842,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "dino": [
+          {
+            "level": 1,
+            "sample_id": "ball-7_lerobot/ep000039/precise/0038",
+            "blue_marker_x": 437.09268292682924,
+            "threshold_x": 407.09268292682924,
+            "farthest_ball_x": 172.6374695863747,
+            "margin_px": -234.45521334045455,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-7_lerobot/ep000038/precise/0025",
+            "blue_marker_x": 436.9655172413793,
+            "threshold_x": 406.9655172413793,
+            "farthest_ball_x": 200.76,
+            "margin_px": -206.2055172413793,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-7_lerobot/ep000022/precise/0019",
+            "blue_marker_x": 436.81463414634146,
+            "threshold_x": 406.81463414634146,
+            "farthest_ball_x": 176.06965174129354,
+            "margin_px": -230.74498240504792,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-7_lerobot/ep000023/precise/0018",
+            "blue_marker_x": 437.03061224489795,
+            "threshold_x": 407.03061224489795,
+            "farthest_ball_x": 211.57033248081842,
+            "margin_px": -195.46027976407953,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-7_lerobot/ep000007/precise/0042",
+            "blue_marker_x": 436.86343612334804,
+            "threshold_x": 406.86343612334804,
+            "farthest_ball_x": 202.8475073313783,
+            "margin_px": -204.01592879196974,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-7_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.73333333333335,
+            "threshold_x": 406.73333333333335,
+            "farthest_ball_x": 254.8668555240793,
+            "margin_px": -151.86647780925404,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-7_lerobot/ep000033/precise/0015",
+            "blue_marker_x": 436.7268292682927,
+            "threshold_x": 406.7268292682927,
+            "farthest_ball_x": 314.21035598705504,
+            "margin_px": -92.51647328123767,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-7_lerobot/ep000004/precise/0015",
+            "blue_marker_x": 436.9177489177489,
+            "threshold_x": 406.9177489177489,
+            "farthest_ball_x": 555.2830188679245,
+            "margin_px": 148.36526995017562,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-7_lerobot/ep000031/precise/0014",
+            "blue_marker_x": 436.9948979591837,
+            "threshold_x": 406.9948979591837,
+            "farthest_ball_x": 312.6448598130841,
+            "margin_px": -94.35003814609956,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-7_lerobot/ep000029/precise/0015",
+            "blue_marker_x": 436.65533980582524,
+            "threshold_x": 406.65533980582524,
+            "farthest_ball_x": 420.9439528023599,
+            "margin_px": 14.288612996534653,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage1": [
+          {
+            "level": 1,
+            "sample_id": "ball-7_lerobot/ep000039/precise/0038",
+            "blue_marker_x": 437.09268292682924,
+            "threshold_x": 407.09268292682924,
+            "farthest_ball_x": 172.9878048780488,
+            "margin_px": -234.10487804878045,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-7_lerobot/ep000038/precise/0025",
+            "blue_marker_x": 436.9655172413793,
+            "threshold_x": 406.9655172413793,
+            "farthest_ball_x": 175.46572104018912,
+            "margin_px": -231.49979620119018,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-7_lerobot/ep000022/precise/0019",
+            "blue_marker_x": 436.81463414634146,
+            "threshold_x": 406.81463414634146,
+            "farthest_ball_x": 176.08237986270024,
+            "margin_px": -230.73225428364123,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-7_lerobot/ep000023/precise/0018",
+            "blue_marker_x": 437.03061224489795,
+            "threshold_x": 407.03061224489795,
+            "farthest_ball_x": 208.0336787564767,
+            "margin_px": -198.99693348842126,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-7_lerobot/ep000007/precise/0042",
+            "blue_marker_x": 436.86343612334804,
+            "threshold_x": 406.86343612334804,
+            "farthest_ball_x": 208.56368563685638,
+            "margin_px": -198.29975048649166,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-7_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.73333333333335,
+            "threshold_x": 406.73333333333335,
+            "farthest_ball_x": 252.34795321637426,
+            "margin_px": -154.38538011695908,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-7_lerobot/ep000033/precise/0015",
+            "blue_marker_x": 436.7268292682927,
+            "threshold_x": 406.7268292682927,
+            "farthest_ball_x": 287.06232294617564,
+            "margin_px": -119.66450632211706,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-7_lerobot/ep000004/precise/0015",
+            "blue_marker_x": 436.9177489177489,
+            "threshold_x": 406.9177489177489,
+            "farthest_ball_x": 274.91715976331363,
+            "margin_px": -132.00058915443526,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-7_lerobot/ep000031/precise/0014",
+            "blue_marker_x": 436.9948979591837,
+            "threshold_x": 406.9948979591837,
+            "farthest_ball_x": 323.9113573407202,
+            "margin_px": -83.08354061846347,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-7_lerobot/ep000029/precise/0015",
+            "blue_marker_x": 436.65533980582524,
+            "threshold_x": 406.65533980582524,
+            "farthest_ball_x": 424.3636363636364,
+            "margin_px": 17.70829655781114,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage2": [
+          {
+            "level": 1,
+            "sample_id": "ball-7_lerobot/ep000039/precise/0038",
+            "blue_marker_x": 437.09268292682924,
+            "threshold_x": 407.09268292682924,
+            "farthest_ball_x": 172.24330900243308,
+            "margin_px": -234.84937392439616,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-7_lerobot/ep000038/precise/0025",
+            "blue_marker_x": 436.9655172413793,
+            "threshold_x": 406.9655172413793,
+            "farthest_ball_x": 173.97243107769424,
+            "margin_px": -232.99308616368506,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-7_lerobot/ep000022/precise/0019",
+            "blue_marker_x": 436.81463414634146,
+            "threshold_x": 406.81463414634146,
+            "farthest_ball_x": 175.4906976744186,
+            "margin_px": -231.32393647192285,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-7_lerobot/ep000023/precise/0018",
+            "blue_marker_x": 437.03061224489795,
+            "threshold_x": 407.03061224489795,
+            "farthest_ball_x": 210.41623036649216,
+            "margin_px": -196.6143818784058,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-7_lerobot/ep000007/precise/0042",
+            "blue_marker_x": 436.86343612334804,
+            "threshold_x": 406.86343612334804,
+            "farthest_ball_x": 216.672131147541,
+            "margin_px": -190.19130497580704,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-7_lerobot/ep000008/precise/0016",
+            "blue_marker_x": 436.73333333333335,
+            "threshold_x": 406.73333333333335,
+            "farthest_ball_x": 252.3139534883721,
+            "margin_px": -154.41937984496124,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-7_lerobot/ep000033/precise/0015",
+            "blue_marker_x": 436.7268292682927,
+            "threshold_x": 406.7268292682927,
+            "farthest_ball_x": 313.52287581699346,
+            "margin_px": -93.20395345129924,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-7_lerobot/ep000004/precise/0015",
+            "blue_marker_x": 436.9177489177489,
+            "threshold_x": 406.9177489177489,
+            "farthest_ball_x": 293.81949458483757,
+            "margin_px": -113.09825433291132,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-7_lerobot/ep000031/precise/0014",
+            "blue_marker_x": 436.9948979591837,
+            "threshold_x": 406.9948979591837,
+            "farthest_ball_x": 354.8376068376068,
+            "margin_px": -52.15729112157686,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-7_lerobot/ep000029/precise/0015",
+            "blue_marker_x": 436.65533980582524,
+            "threshold_x": 406.65533980582524,
+            "farthest_ball_x": 441.34375,
+            "margin_px": 34.688410194174764,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ]
+      }
+    },
+    {
+      "environment": "ball-9",
+      "gt": {
+        "first_reaching_level": 10,
+        "selection_identifiable": true,
+        "unknown_levels": []
+      },
+      "predictions": {
+        "standard": {
+          "first_reaching_level": 9,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 10,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        },
+        "dino": {
+          "first_reaching_level": 9,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 10,
+          "exact_decision_score": 0.0,
+          "signed_level_error": -1,
+          "absolute_level_error": 1
+        },
+        "ours_stage1": {
+          "first_reaching_level": null,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 10,
+          "exact_decision_score": 0.0,
+          "signed_level_error": null,
+          "absolute_level_error": null
+        },
+        "ours_stage2": {
+          "first_reaching_level": null,
+          "selection_identifiable": true,
+          "unknown_levels": [],
+          "gt_first_reaching_level": 10,
+          "exact_decision_score": 0.0,
+          "signed_level_error": null,
+          "absolute_level_error": null
+        }
+      },
+      "per_level": {
+        "gt": [
+          {
+            "level": 1,
+            "sample_id": "ball-9_lerobot/ep000039/precise/0036",
+            "blue_marker_x": 437.26395939086296,
+            "threshold_x": 407.26395939086296,
+            "farthest_ball_x": 173.64611260053618,
+            "margin_px": -233.61784679032678,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-9_lerobot/ep000017/precise/0025",
+            "blue_marker_x": 436.75688073394497,
+            "threshold_x": 406.75688073394497,
+            "farthest_ball_x": 173.91822429906543,
+            "margin_px": -232.83865643487954,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-9_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.82758620689657,
+            "threshold_x": 406.82758620689657,
+            "farthest_ball_x": 173.47989949748742,
+            "margin_px": -233.34768670940915,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-9_lerobot/ep000007/precise/0021",
+            "blue_marker_x": 436.807881773399,
+            "threshold_x": 406.807881773399,
+            "farthest_ball_x": 196.91256830601094,
+            "margin_px": -209.89531346738806,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-9_lerobot/ep000024/precise/0018",
+            "blue_marker_x": 437.03,
+            "threshold_x": 407.03,
+            "farthest_ball_x": 223.48467966573816,
+            "margin_px": -183.54532033426182,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-9_lerobot/ep000008/precise/0017",
+            "blue_marker_x": 437.0969387755102,
+            "threshold_x": 407.0969387755102,
+            "farthest_ball_x": 237.99420289855072,
+            "margin_px": -169.10273587695946,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-9_lerobot/ep000013/precise/0015",
+            "blue_marker_x": 436.7268292682927,
+            "threshold_x": 406.7268292682927,
+            "farthest_ball_x": 257.0056338028169,
+            "margin_px": -149.72119546547583,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-9_lerobot/ep000012/precise/0015",
+            "blue_marker_x": 436.94711538461536,
+            "threshold_x": 406.94711538461536,
+            "farthest_ball_x": 298.84365781710915,
+            "margin_px": -108.10345756750621,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-9_lerobot/ep000028/precise/0014",
+            "blue_marker_x": 437.0738916256158,
+            "threshold_x": 407.0738916256158,
+            "farthest_ball_x": 371.7521865889213,
+            "margin_px": -35.32170503669448,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-9_lerobot/ep000029/precise/0014",
+            "blue_marker_x": 436.57142857142856,
+            "threshold_x": 406.57142857142856,
+            "farthest_ball_x": 419.41284403669727,
+            "margin_px": 12.84141546526871,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "standard": [
+          {
+            "level": 1,
+            "sample_id": "ball-9_lerobot/ep000039/precise/0036",
+            "blue_marker_x": 437.26395939086296,
+            "threshold_x": 407.26395939086296,
+            "farthest_ball_x": 201.09066666666666,
+            "margin_px": -206.1732927241963,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-9_lerobot/ep000017/precise/0025",
+            "blue_marker_x": 436.75688073394497,
+            "threshold_x": 406.75688073394497,
+            "farthest_ball_x": 180.97816593886463,
+            "margin_px": -225.77871479508033,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-9_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.82758620689657,
+            "threshold_x": 406.82758620689657,
+            "farthest_ball_x": 210.2335164835165,
+            "margin_px": -196.59406972338007,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-9_lerobot/ep000007/precise/0021",
+            "blue_marker_x": 436.807881773399,
+            "threshold_x": 406.807881773399,
+            "farthest_ball_x": 219.37426900584796,
+            "margin_px": -187.43361276755104,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-9_lerobot/ep000024/precise/0018",
+            "blue_marker_x": 437.03,
+            "threshold_x": 407.03,
+            "farthest_ball_x": 258.1927374301676,
+            "margin_px": -148.83726256983238,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-9_lerobot/ep000008/precise/0017",
+            "blue_marker_x": 437.0969387755102,
+            "threshold_x": 407.0969387755102,
+            "farthest_ball_x": 257.17711171662125,
+            "margin_px": -149.91982705888893,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-9_lerobot/ep000013/precise/0015",
+            "blue_marker_x": 436.7268292682927,
+            "threshold_x": 406.7268292682927,
+            "farthest_ball_x": 278.6730769230769,
+            "margin_px": -128.0537523452158,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-9_lerobot/ep000012/precise/0015",
+            "blue_marker_x": 436.94711538461536,
+            "threshold_x": 406.94711538461536,
+            "farthest_ball_x": 282.0548387096774,
+            "margin_px": -124.89227667493793,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-9_lerobot/ep000028/precise/0014",
+            "blue_marker_x": 437.0738916256158,
+            "threshold_x": 407.0738916256158,
+            "farthest_ball_x": 554.968085106383,
+            "margin_px": 147.89419348076723,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-9_lerobot/ep000029/precise/0014",
+            "blue_marker_x": 436.57142857142856,
+            "threshold_x": 406.57142857142856,
+            "farthest_ball_x": 422.6754966887417,
+            "margin_px": 16.104068117313147,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "dino": [
+          {
+            "level": 1,
+            "sample_id": "ball-9_lerobot/ep000039/precise/0036",
+            "blue_marker_x": 437.26395939086296,
+            "threshold_x": 407.26395939086296,
+            "farthest_ball_x": 174.73560209424085,
+            "margin_px": -232.52835729662212,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-9_lerobot/ep000017/precise/0025",
+            "blue_marker_x": 436.75688073394497,
+            "threshold_x": 406.75688073394497,
+            "farthest_ball_x": 178.6235827664399,
+            "margin_px": -228.13329796750506,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-9_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.82758620689657,
+            "threshold_x": 406.82758620689657,
+            "farthest_ball_x": 174.78085642317382,
+            "margin_px": -232.04672978372275,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-9_lerobot/ep000007/precise/0021",
+            "blue_marker_x": 436.807881773399,
+            "threshold_x": 406.807881773399,
+            "farthest_ball_x": 217.54437869822485,
+            "margin_px": -189.26350307517416,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-9_lerobot/ep000024/precise/0018",
+            "blue_marker_x": 437.03,
+            "threshold_x": 407.03,
+            "farthest_ball_x": 241.27461139896374,
+            "margin_px": -165.75538860103623,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-9_lerobot/ep000008/precise/0017",
+            "blue_marker_x": 437.0969387755102,
+            "threshold_x": 407.0969387755102,
+            "farthest_ball_x": 244.0264705882353,
+            "margin_px": -163.07046818727488,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-9_lerobot/ep000013/precise/0015",
+            "blue_marker_x": 436.7268292682927,
+            "threshold_x": 406.7268292682927,
+            "farthest_ball_x": 276.14920634920634,
+            "margin_px": -130.57762291908637,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-9_lerobot/ep000012/precise/0015",
+            "blue_marker_x": 436.94711538461536,
+            "threshold_x": 406.94711538461536,
+            "farthest_ball_x": 267.0783699059561,
+            "margin_px": -139.86874547865926,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-9_lerobot/ep000028/precise/0014",
+            "blue_marker_x": 437.0738916256158,
+            "threshold_x": 407.0738916256158,
+            "farthest_ball_x": 553.5605095541401,
+            "margin_px": 146.48661792852437,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-9_lerobot/ep000029/precise/0014",
+            "blue_marker_x": 436.57142857142856,
+            "threshold_x": 406.57142857142856,
+            "farthest_ball_x": 423.03374233128835,
+            "margin_px": 16.462313759859796,
+            "reaches": true,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage1": [
+          {
+            "level": 1,
+            "sample_id": "ball-9_lerobot/ep000039/precise/0036",
+            "blue_marker_x": 437.26395939086296,
+            "threshold_x": 407.26395939086296,
+            "farthest_ball_x": 174.91871921182266,
+            "margin_px": -232.3452401790403,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-9_lerobot/ep000017/precise/0025",
+            "blue_marker_x": 436.75688073394497,
+            "threshold_x": 406.75688073394497,
+            "farthest_ball_x": 177.48532731376974,
+            "margin_px": -229.27155342017522,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-9_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.82758620689657,
+            "threshold_x": 406.82758620689657,
+            "farthest_ball_x": 175.0344827586207,
+            "margin_px": -231.79310344827587,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-9_lerobot/ep000007/precise/0021",
+            "blue_marker_x": 436.807881773399,
+            "threshold_x": 406.807881773399,
+            "farthest_ball_x": 202.65847665847667,
+            "margin_px": -204.14940511492233,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-9_lerobot/ep000024/precise/0018",
+            "blue_marker_x": 437.03,
+            "threshold_x": 407.03,
+            "farthest_ball_x": 236.20320855614975,
+            "margin_px": -170.82679144385023,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-9_lerobot/ep000008/precise/0017",
+            "blue_marker_x": 437.0969387755102,
+            "threshold_x": 407.0969387755102,
+            "farthest_ball_x": 246.09846153846155,
+            "margin_px": -160.99847723704863,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-9_lerobot/ep000013/precise/0015",
+            "blue_marker_x": 436.7268292682927,
+            "threshold_x": 406.7268292682927,
+            "farthest_ball_x": 267.23850574712645,
+            "margin_px": -139.48832352116625,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-9_lerobot/ep000012/precise/0015",
+            "blue_marker_x": 436.94711538461536,
+            "threshold_x": 406.94711538461536,
+            "farthest_ball_x": 254.27678571428572,
+            "margin_px": -152.67032967032964,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-9_lerobot/ep000028/precise/0014",
+            "blue_marker_x": 437.0738916256158,
+            "threshold_x": 407.0738916256158,
+            "farthest_ball_x": 265.82872928176795,
+            "margin_px": -141.24516234384782,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-9_lerobot/ep000029/precise/0014",
+            "blue_marker_x": 436.57142857142856,
+            "threshold_x": 406.57142857142856,
+            "farthest_ball_x": 373.4935483870968,
+            "margin_px": -33.077880184331775,
+            "reaches": false,
+            "tracking_coverage": 0.9642857142857143,
+            "held_exit_frames": 0
+          }
+        ],
+        "ours_stage2": [
+          {
+            "level": 1,
+            "sample_id": "ball-9_lerobot/ep000039/precise/0036",
+            "blue_marker_x": 437.26395939086296,
+            "threshold_x": 407.26395939086296,
+            "farthest_ball_x": 174.87435897435898,
+            "margin_px": -232.38960041650398,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 2,
+            "sample_id": "ball-9_lerobot/ep000017/precise/0025",
+            "blue_marker_x": 436.75688073394497,
+            "threshold_x": 406.75688073394497,
+            "farthest_ball_x": 177.08196721311475,
+            "margin_px": -229.67491352083022,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 3,
+            "sample_id": "ball-9_lerobot/ep000022/precise/0020",
+            "blue_marker_x": 436.82758620689657,
+            "threshold_x": 406.82758620689657,
+            "farthest_ball_x": 173.70324189526184,
+            "margin_px": -233.12434431163473,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 4,
+            "sample_id": "ball-9_lerobot/ep000007/precise/0021",
+            "blue_marker_x": 436.807881773399,
+            "threshold_x": 406.807881773399,
+            "farthest_ball_x": 203.00510204081633,
+            "margin_px": -203.80277973258268,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 5,
+            "sample_id": "ball-9_lerobot/ep000024/precise/0018",
+            "blue_marker_x": 437.03,
+            "threshold_x": 407.03,
+            "farthest_ball_x": 239.42133333333334,
+            "margin_px": -167.60866666666664,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 6,
+            "sample_id": "ball-9_lerobot/ep000008/precise/0017",
+            "blue_marker_x": 437.0969387755102,
+            "threshold_x": 407.0969387755102,
+            "farthest_ball_x": 245.15522388059702,
+            "margin_px": -161.94171489491316,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 7,
+            "sample_id": "ball-9_lerobot/ep000013/precise/0015",
+            "blue_marker_x": 436.7268292682927,
+            "threshold_x": 406.7268292682927,
+            "farthest_ball_x": 291.23,
+            "margin_px": -115.49682926829269,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 8,
+            "sample_id": "ball-9_lerobot/ep000012/precise/0015",
+            "blue_marker_x": 436.94711538461536,
+            "threshold_x": 406.94711538461536,
+            "farthest_ball_x": 254.3682634730539,
+            "margin_px": -152.57885191156146,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 9,
+            "sample_id": "ball-9_lerobot/ep000028/precise/0014",
+            "blue_marker_x": 437.0738916256158,
+            "threshold_x": 407.0738916256158,
+            "farthest_ball_x": 264.4634831460674,
+            "margin_px": -142.61040847954837,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          },
+          {
+            "level": 10,
+            "sample_id": "ball-9_lerobot/ep000029/precise/0014",
+            "blue_marker_x": 436.57142857142856,
+            "threshold_x": 406.57142857142856,
+            "farthest_ball_x": 375.7100977198697,
+            "margin_px": -30.861330851558876,
+            "reaches": false,
+            "tracking_coverage": 1.0,
+            "held_exit_frames": 0
+          }
+        ]
+      }
+    }
+  ],
+  "methods": [
+    {
+      "method": "standard",
+      "environments": 8,
+      "identifiable_comparisons": 8,
+      "exact_decision_accuracy": 0.0,
+      "fixed_denominator_accuracy": 0.0,
+      "gt_reachable_environments": 8,
+      "exact_hits_reachable": 0,
+      "reachable_gt_level_accuracy": 0.0,
+      "gt_no_reach_environments": 0,
+      "correct_abstentions": 0,
+      "model_no_reach_on_reachable_gt": 0,
+      "mean_absolute_level_error_for_two_selected_levels": 1.25,
+      "level_error_count": 8
+    },
+    {
+      "method": "dino",
+      "environments": 8,
+      "identifiable_comparisons": 8,
+      "exact_decision_accuracy": 0.0,
+      "fixed_denominator_accuracy": 0.0,
+      "gt_reachable_environments": 8,
+      "exact_hits_reachable": 0,
+      "reachable_gt_level_accuracy": 0.0,
+      "gt_no_reach_environments": 0,
+      "correct_abstentions": 0,
+      "model_no_reach_on_reachable_gt": 0,
+      "mean_absolute_level_error_for_two_selected_levels": 1.25,
+      "level_error_count": 8
+    },
+    {
+      "method": "ours_stage1",
+      "environments": 8,
+      "identifiable_comparisons": 8,
+      "exact_decision_accuracy": 0.625,
+      "fixed_denominator_accuracy": 0.625,
+      "gt_reachable_environments": 8,
+      "exact_hits_reachable": 5,
+      "reachable_gt_level_accuracy": 0.625,
+      "gt_no_reach_environments": 0,
+      "correct_abstentions": 0,
+      "model_no_reach_on_reachable_gt": 1,
+      "mean_absolute_level_error_for_two_selected_levels": 0.42857142857142855,
+      "level_error_count": 7
+    },
+    {
+      "method": "ours_stage2",
+      "environments": 8,
+      "identifiable_comparisons": 8,
+      "exact_decision_accuracy": 0.375,
+      "fixed_denominator_accuracy": 0.375,
+      "gt_reachable_environments": 8,
+      "exact_hits_reachable": 3,
+      "reachable_gt_level_accuracy": 0.375,
+      "gt_no_reach_environments": 0,
+      "correct_abstentions": 0,
+      "model_no_reach_on_reachable_gt": 1,
+      "mean_absolute_level_error_for_two_selected_levels": 0.7142857142857143,
+      "level_error_count": 7
+    }
+  ]
+}
