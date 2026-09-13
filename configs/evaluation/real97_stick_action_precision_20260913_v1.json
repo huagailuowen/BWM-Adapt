@@ -1,0 +1,22 @@
+{
+  "version": "real97_stick_action_precision_20260913_v1",
+  "ours": "outputs/infer_real97_stick_near_table_unbounded_job114938",
+  "standard": "outputs/infer_real97_stick_standard_step5500_reference_job114478",
+  "source_phase_records": "outputs/evaluation_stick_phase_interval_flow_job114259/per_video.json",
+  "geometry_config": "configs/evaluation/stick_common_reference_rigid_review_v3.json",
+  "fusion_config": "configs/evaluation/stick_fused_terminal_review_v4.json",
+  "contact_config": "configs/evaluation/stick_terminal_contact_boundary_v8.json",
+  "search_mode": "bounded_expand",
+  "angle_thresholds_deg": [3, 5],
+  "hold_seconds": 0.3,
+  "reference_geometry": "shared_native_pre_lift_reference_resampled_to_model_resolution",
+  "source_clock_not_encoded_fps": true,
+  "exclude_conditioning_and_padding": true,
+  "require_commanded_lift_end": true,
+  "rise_ratio_required": false,
+  "metric": "GT balanced among model-predicted balanced chunks",
+  "unknown_gt_policy": "retain in selected count; report precision interval, not an invented failure",
+  "no_predicted_positive_policy": "undefined precision, never one",
+  "formal_metric_approved": false,
+  "note": "Reuse the boundary-safe detector as a diagnostic. Numerical tilt/contact thresholds still require visual audit."
+}
