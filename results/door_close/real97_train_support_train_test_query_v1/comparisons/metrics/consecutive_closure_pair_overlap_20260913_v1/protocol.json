@@ -1,0 +1,127 @@
+{
+  "evaluation_id": "real97_train_support_train_test_query_v1",
+  "release": "consecutive_closure_pair_overlap_20260913_v1",
+  "task": "door",
+  "source_scoring_config": "configs/evaluation/real97_ball_door_scores_20260912_v2.json",
+  "source_tracking_status": "train_gt_calibrated_pending_heldout_overlay_audit",
+  "publication_status": "archived_computed_metrics_not_a_claim_of_completed_heldout_tracking_audit",
+  "action_selection": {
+    "prediction": "First ascending adjacent pair where both predicted levels close the door",
+    "score": "Intersection with the user-specified GT preferred pair, divided by two",
+    "no_pair": "score zero",
+    "gt_preferred_pairs": {
+      "door-0": [
+        1,
+        2
+      ],
+      "door-2u-1d": [
+        2,
+        3
+      ],
+      "door-3u": [
+        3,
+        4
+      ],
+      "door-2u-4d": [
+        4,
+        5
+      ],
+      "door-4d": [
+        3,
+        4
+      ],
+      "door-3u-4d": [
+        5,
+        6
+      ],
+      "door-6u-7d": [
+        7,
+        8
+      ],
+      "door-6u-8d": [
+        8,
+        9
+      ],
+      "door-12u-Half": [
+        9,
+        10
+      ]
+    },
+    "action_excluded_environments": [
+      "door-12u-Half-11d-Half"
+    ],
+    "closure_classifier": {
+      "policy": "one_sided_edge_gap",
+      "minimum_plausible_gap_px": -5,
+      "closed_max_gap_px": 18,
+      "open_min_gap_px": 22,
+      "calibration_split": "train",
+      "calibration_source": "outputs/eval_real97_ball_door_scores_20260912_v1/closure_calibration_audit",
+      "training_closed_observed_range_px": [
+        1,
+        16
+      ],
+      "training_open_observed_range_px": [
+        23,
+        152
+      ],
+      "training_visual_labels_by_query_index": {
+        "0": true,
+        "1": true,
+        "12": true,
+        "13": false,
+        "24": false,
+        "25": false,
+        "36": true,
+        "37": true,
+        "48": true,
+        "49": true,
+        "60": true,
+        "61": true,
+        "72": false,
+        "73": true,
+        "84": false,
+        "85": true,
+        "96": true,
+        "97": false,
+        "108": false,
+        "109": true
+      }
+    }
+  },
+  "image_metrics": [
+    "PSNR",
+    "SSIM",
+    "LPIPS-AlexNet"
+  ],
+  "object_metrics": [
+    "ADE_px",
+    "FDE_px",
+    "missing_penalized_ADE_px",
+    "tracking_coverage"
+  ],
+  "task_geometry": {
+    "native_size": [
+      640,
+      480
+    ],
+    "ours": "outputs/infer_real97_door_ours_reference_job114799",
+    "standard": "outputs/infer_real97_door_standard_step5500_reference_job115187",
+    "dino": "outputs/infer_real97_door_dino_step5500_reference_job115188"
+  },
+  "frame_policy": "Recorded evaluation_frame_indices; exclude conditioning frame and repeated tail padding",
+  "image_geometry": "Exclude letterbox bars; compare corresponding content crops",
+  "object_geometry": "Inverse-letterboxed native image pixels; Door uses tracked door edge, not a physical angle",
+  "ball_exit_policy": "Retain last-visible position only after confirmed right-side exit",
+  "aggregation": "Report train and test separately; scoreboard uses test environment macro means",
+  "paired_gt_only": true,
+  "counterfactual_action_sweeps_scored": false,
+  "checkpoint_steps": {
+    "ours": 3715,
+    "standard": 5500,
+    "dino": 5500
+  },
+  "fairness_note": "Ours Stage2 uses the existing customized supports and initializations, including near-environment-table starts. This is not an equal-information or equal-training-step benchmark.",
+  "media_included": false,
+  "new_inference_or_metric_recomputation": false
+}

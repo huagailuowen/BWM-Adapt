@@ -1,0 +1,1085 @@
+{
+  "threshold_selected_using_train_only": true,
+  "training_calibration": [
+    {
+      "key": "q0000_door-0_train_L01_ep000029",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0001_door-0_train_L08_ep000017",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0012_door-12u-Half_train_L09_ep000023",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0013_door-12u-Half_train_L04_ep000006",
+      "visual_closed": false,
+      "detected_closed": false,
+      "matches": true
+    },
+    {
+      "key": "q0024_door-12u-Half-11d-Half_train_L02_ep000003",
+      "visual_closed": false,
+      "detected_closed": false,
+      "matches": true
+    },
+    {
+      "key": "q0025_door-12u-Half-11d-Half_train_L08_ep000045",
+      "visual_closed": false,
+      "detected_closed": false,
+      "matches": true
+    },
+    {
+      "key": "q0036_door-2u-1d_train_L07_ep000045",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0037_door-2u-1d_train_L08_ep000036",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0048_door-2u-4d_train_L09_ep000044",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0049_door-2u-4d_train_L04_ep000023",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0060_door-3u_train_L03_ep000037",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0061_door-3u_train_L04_ep000005",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0072_door-3u-4d_train_L01_ep000019",
+      "visual_closed": false,
+      "detected_closed": false,
+      "matches": true
+    },
+    {
+      "key": "q0073_door-3u-4d_train_L08_ep000013",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0084_door-4d_train_L01_ep000042",
+      "visual_closed": false,
+      "detected_closed": false,
+      "matches": true
+    },
+    {
+      "key": "q0085_door-4d_train_L04_ep000035",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0096_door-6u-7d_train_L10_ep000019",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    },
+    {
+      "key": "q0097_door-6u-7d_train_L03_ep000022",
+      "visual_closed": false,
+      "detected_closed": false,
+      "matches": true
+    },
+    {
+      "key": "q0108_door-6u-8d_train_L01_ep000050",
+      "visual_closed": false,
+      "detected_closed": false,
+      "matches": true
+    },
+    {
+      "key": "q0109_door-6u-8d_train_L09_ep000016",
+      "visual_closed": true,
+      "detected_closed": true,
+      "matches": true
+    }
+  ],
+  "test_gt_prefer_self_check": [
+    {
+      "environment": "door-0",
+      "detected_pair": [
+        1,
+        2
+      ],
+      "reference_pair": [
+        1,
+        2
+      ],
+      "overlap": 1.0,
+      "closed_by_level": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      }
+    },
+    {
+      "environment": "door-12u-Half",
+      "detected_pair": [
+        9,
+        10
+      ],
+      "reference_pair": [
+        9,
+        10
+      ],
+      "overlap": 1.0,
+      "closed_by_level": {
+        "1": true,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": true,
+        "10": true
+      }
+    },
+    {
+      "environment": "door-12u-Half-11d-Half",
+      "detected_pair": [],
+      "reference_pair": null,
+      "overlap": null,
+      "closed_by_level": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": false,
+        "9": false,
+        "10": false
+      }
+    },
+    {
+      "environment": "door-2u-1d",
+      "detected_pair": [
+        2,
+        3
+      ],
+      "reference_pair": [
+        2,
+        3
+      ],
+      "overlap": 1.0,
+      "closed_by_level": {
+        "1": false,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      }
+    },
+    {
+      "environment": "door-2u-4d",
+      "detected_pair": [
+        4,
+        5
+      ],
+      "reference_pair": [
+        4,
+        5
+      ],
+      "overlap": 1.0,
+      "closed_by_level": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      }
+    },
+    {
+      "environment": "door-3u",
+      "detected_pair": [
+        3,
+        4
+      ],
+      "reference_pair": [
+        3,
+        4
+      ],
+      "overlap": 1.0,
+      "closed_by_level": {
+        "1": false,
+        "2": false,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      }
+    },
+    {
+      "environment": "door-3u-4d",
+      "detected_pair": [
+        5,
+        6
+      ],
+      "reference_pair": [
+        5,
+        6
+      ],
+      "overlap": 1.0,
+      "closed_by_level": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      }
+    },
+    {
+      "environment": "door-4d",
+      "detected_pair": [
+        4,
+        5
+      ],
+      "reference_pair": [
+        3,
+        4
+      ],
+      "overlap": 0.5,
+      "closed_by_level": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      }
+    },
+    {
+      "environment": "door-6u-7d",
+      "detected_pair": [
+        7,
+        8
+      ],
+      "reference_pair": [
+        7,
+        8
+      ],
+      "overlap": 1.0,
+      "closed_by_level": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": true,
+        "8": true,
+        "9": true,
+        "10": true
+      }
+    },
+    {
+      "environment": "door-6u-8d",
+      "detected_pair": [
+        8,
+        9
+      ],
+      "reference_pair": [
+        8,
+        9
+      ],
+      "overlap": 1.0,
+      "closed_by_level": {
+        "1": false,
+        "2": false,
+        "3": false,
+        "4": false,
+        "5": false,
+        "6": false,
+        "7": false,
+        "8": true,
+        "9": true,
+        "10": true
+      }
+    }
+  ],
+  "test_gt_levels": [
+    {
+      "key": "q0003_door-0_test_L01_ep000010",
+      "environment": "door-0",
+      "level": 1,
+      "state": "closed",
+      "tail_excess_px": -4.0
+    },
+    {
+      "key": "q0004_door-0_test_L02_ep000011",
+      "environment": "door-0",
+      "level": 2,
+      "state": "closed",
+      "tail_excess_px": -11.0
+    },
+    {
+      "key": "q0010_door-0_test_L03_ep000027",
+      "environment": "door-0",
+      "level": 3,
+      "state": "closed",
+      "tail_excess_px": -13.0
+    },
+    {
+      "key": "q0005_door-0_test_L04_ep000013",
+      "environment": "door-0",
+      "level": 4,
+      "state": "closed",
+      "tail_excess_px": -13.0
+    },
+    {
+      "key": "q0006_door-0_test_L05_ep000014",
+      "environment": "door-0",
+      "level": 5,
+      "state": "closed",
+      "tail_excess_px": -12.0
+    },
+    {
+      "key": "q0011_door-0_test_L06_ep000035",
+      "environment": "door-0",
+      "level": 6,
+      "state": "closed",
+      "tail_excess_px": -12.0
+    },
+    {
+      "key": "q0009_door-0_test_L07_ep000023",
+      "environment": "door-0",
+      "level": 7,
+      "state": "closed",
+      "tail_excess_px": -12.0
+    },
+    {
+      "key": "q0008_door-0_test_L08_ep000022",
+      "environment": "door-0",
+      "level": 8,
+      "state": "closed",
+      "tail_excess_px": -11.0
+    },
+    {
+      "key": "q0002_door-0_test_L09_ep000008",
+      "environment": "door-0",
+      "level": 9,
+      "state": "closed",
+      "tail_excess_px": -13.0
+    },
+    {
+      "key": "q0007_door-0_test_L10_ep000019",
+      "environment": "door-0",
+      "level": 10,
+      "state": "closed",
+      "tail_excess_px": -11.166666666666666
+    },
+    {
+      "key": "q0019_door-12u-Half_test_L01_ep000032",
+      "environment": "door-12u-Half",
+      "level": 1,
+      "state": "closed",
+      "tail_excess_px": -1.0
+    },
+    {
+      "key": "q0014_door-12u-Half_test_L02_ep000002",
+      "environment": "door-12u-Half",
+      "level": 2,
+      "state": "open_or_rebound",
+      "tail_excess_px": 74.5
+    },
+    {
+      "key": "q0022_door-12u-Half_test_L03_ep000042",
+      "environment": "door-12u-Half",
+      "level": 3,
+      "state": "open_or_rebound",
+      "tail_excess_px": 103.33333333333333
+    },
+    {
+      "key": "q0015_door-12u-Half_test_L04_ep000007",
+      "environment": "door-12u-Half",
+      "level": 4,
+      "state": "open_or_rebound",
+      "tail_excess_px": 118.16666666666667
+    },
+    {
+      "key": "q0020_door-12u-Half_test_L05_ep000036",
+      "environment": "door-12u-Half",
+      "level": 5,
+      "state": "open_or_rebound",
+      "tail_excess_px": 141.66666666666666
+    },
+    {
+      "key": "q0021_door-12u-Half_test_L06_ep000037",
+      "environment": "door-12u-Half",
+      "level": 6,
+      "state": "open_or_rebound",
+      "tail_excess_px": 139.83333333333334
+    },
+    {
+      "key": "q0023_door-12u-Half_test_L07_ep000046",
+      "environment": "door-12u-Half",
+      "level": 7,
+      "state": "open_or_rebound",
+      "tail_excess_px": 134.33333333333334
+    },
+    {
+      "key": "q0016_door-12u-Half_test_L08_ep000015",
+      "environment": "door-12u-Half",
+      "level": 8,
+      "state": "open_or_rebound",
+      "tail_excess_px": 133.33333333333334
+    },
+    {
+      "key": "q0017_door-12u-Half_test_L09_ep000017",
+      "environment": "door-12u-Half",
+      "level": 9,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0018_door-12u-Half_test_L10_ep000022",
+      "environment": "door-12u-Half",
+      "level": 10,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0032_door-12u-Half-11d-Half_test_L01_ep000037",
+      "environment": "door-12u-Half-11d-Half",
+      "level": 1,
+      "state": "open_or_rebound",
+      "tail_excess_px": 4.0
+    },
+    {
+      "key": "q0031_door-12u-Half-11d-Half_test_L02_ep000036",
+      "environment": "door-12u-Half-11d-Half",
+      "level": 2,
+      "state": "open_or_rebound",
+      "tail_excess_px": 26.5
+    },
+    {
+      "key": "q0030_door-12u-Half-11d-Half_test_L03_ep000035",
+      "environment": "door-12u-Half-11d-Half",
+      "level": 3,
+      "state": "open_or_rebound",
+      "tail_excess_px": 35.5
+    },
+    {
+      "key": "q0033_door-12u-Half-11d-Half_test_L04_ep000041",
+      "environment": "door-12u-Half-11d-Half",
+      "level": 4,
+      "state": "open_or_rebound",
+      "tail_excess_px": 65.83333333333333
+    },
+    {
+      "key": "q0026_door-12u-Half-11d-Half_test_L05_ep000008",
+      "environment": "door-12u-Half-11d-Half",
+      "level": 5,
+      "state": "open_or_rebound",
+      "tail_excess_px": 135.83333333333334
+    },
+    {
+      "key": "q0027_door-12u-Half-11d-Half_test_L06_ep000010",
+      "environment": "door-12u-Half-11d-Half",
+      "level": 6,
+      "state": "open_or_rebound",
+      "tail_excess_px": 132.16666666666666
+    },
+    {
+      "key": "q0034_door-12u-Half-11d-Half_test_L07_ep000044",
+      "environment": "door-12u-Half-11d-Half",
+      "level": 7,
+      "state": "open_or_rebound",
+      "tail_excess_px": 137.33333333333334
+    },
+    {
+      "key": "q0028_door-12u-Half-11d-Half_test_L08_ep000014",
+      "environment": "door-12u-Half-11d-Half",
+      "level": 8,
+      "state": "open_or_rebound",
+      "tail_excess_px": 127.83333333333333
+    },
+    {
+      "key": "q0035_door-12u-Half-11d-Half_test_L09_ep000046",
+      "environment": "door-12u-Half-11d-Half",
+      "level": 9,
+      "state": "open_or_rebound",
+      "tail_excess_px": 132.16666666666666
+    },
+    {
+      "key": "q0029_door-12u-Half-11d-Half_test_L10_ep000021",
+      "environment": "door-12u-Half-11d-Half",
+      "level": 10,
+      "state": "open_or_rebound",
+      "tail_excess_px": 124.5
+    },
+    {
+      "key": "q0045_door-2u-1d_test_L01_ep000029",
+      "environment": "door-2u-1d",
+      "level": 1,
+      "state": "open_or_rebound",
+      "tail_excess_px": 15.0
+    },
+    {
+      "key": "q0038_door-2u-1d_test_L02_ep000003",
+      "environment": "door-2u-1d",
+      "level": 2,
+      "state": "closed",
+      "tail_excess_px": -8.0
+    },
+    {
+      "key": "q0047_door-2u-1d_test_L03_ep000041",
+      "environment": "door-2u-1d",
+      "level": 3,
+      "state": "closed",
+      "tail_excess_px": -13.0
+    },
+    {
+      "key": "q0043_door-2u-1d_test_L04_ep000022",
+      "environment": "door-2u-1d",
+      "level": 4,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0039_door-2u-1d_test_L05_ep000008",
+      "environment": "door-2u-1d",
+      "level": 5,
+      "state": "closed",
+      "tail_excess_px": -13.0
+    },
+    {
+      "key": "q0040_door-2u-1d_test_L06_ep000010",
+      "environment": "door-2u-1d",
+      "level": 6,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0041_door-2u-1d_test_L07_ep000012",
+      "environment": "door-2u-1d",
+      "level": 7,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0042_door-2u-1d_test_L08_ep000015",
+      "environment": "door-2u-1d",
+      "level": 8,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0044_door-2u-1d_test_L09_ep000027",
+      "environment": "door-2u-1d",
+      "level": 9,
+      "state": "closed",
+      "tail_excess_px": -15.0
+    },
+    {
+      "key": "q0046_door-2u-1d_test_L10_ep000038",
+      "environment": "door-2u-1d",
+      "level": 10,
+      "state": "closed",
+      "tail_excess_px": -13.0
+    },
+    {
+      "key": "q0054_door-2u-4d_test_L01_ep000015",
+      "environment": "door-2u-4d",
+      "level": 1,
+      "state": "open_or_rebound",
+      "tail_excess_px": 59.166666666666664
+    },
+    {
+      "key": "q0050_door-2u-4d_test_L02_ep000003",
+      "environment": "door-2u-4d",
+      "level": 2,
+      "state": "open_or_rebound",
+      "tail_excess_px": 120.0
+    },
+    {
+      "key": "q0051_door-2u-4d_test_L03_ep000004",
+      "environment": "door-2u-4d",
+      "level": 3,
+      "state": "open_or_rebound",
+      "tail_excess_px": 139.16666666666666
+    },
+    {
+      "key": "q0055_door-2u-4d_test_L04_ep000020",
+      "environment": "door-2u-4d",
+      "level": 4,
+      "state": "closed",
+      "tail_excess_px": -12.0
+    },
+    {
+      "key": "q0059_door-2u-4d_test_L05_ep000040",
+      "environment": "door-2u-4d",
+      "level": 5,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0056_door-2u-4d_test_L06_ep000027",
+      "environment": "door-2u-4d",
+      "level": 6,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0057_door-2u-4d_test_L07_ep000028",
+      "environment": "door-2u-4d",
+      "level": 7,
+      "state": "closed",
+      "tail_excess_px": -15.0
+    },
+    {
+      "key": "q0058_door-2u-4d_test_L08_ep000030",
+      "environment": "door-2u-4d",
+      "level": 8,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0052_door-2u-4d_test_L09_ep000013",
+      "environment": "door-2u-4d",
+      "level": 9,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0053_door-2u-4d_test_L10_ep000014",
+      "environment": "door-2u-4d",
+      "level": 10,
+      "state": "closed",
+      "tail_excess_px": -17.0
+    },
+    {
+      "key": "q0065_door-3u_test_L01_ep000014",
+      "environment": "door-3u",
+      "level": 1,
+      "state": "open_or_rebound",
+      "tail_excess_px": 24.833333333333332
+    },
+    {
+      "key": "q0062_door-3u_test_L02_ep000003",
+      "environment": "door-3u",
+      "level": 2,
+      "state": "open_or_rebound",
+      "tail_excess_px": 55.666666666666664
+    },
+    {
+      "key": "q0063_door-3u_test_L03_ep000009",
+      "environment": "door-3u",
+      "level": 3,
+      "state": "closed",
+      "tail_excess_px": -7.0
+    },
+    {
+      "key": "q0064_door-3u_test_L04_ep000013",
+      "environment": "door-3u",
+      "level": 4,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0067_door-3u_test_L05_ep000028",
+      "environment": "door-3u",
+      "level": 5,
+      "state": "closed",
+      "tail_excess_px": -12.666666666666666
+    },
+    {
+      "key": "q0066_door-3u_test_L06_ep000019",
+      "environment": "door-3u",
+      "level": 6,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0070_door-3u_test_L07_ep000051",
+      "environment": "door-3u",
+      "level": 7,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0069_door-3u_test_L08_ep000042",
+      "environment": "door-3u",
+      "level": 8,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0071_door-3u_test_L09_ep000053",
+      "environment": "door-3u",
+      "level": 9,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0068_door-3u_test_L10_ep000033",
+      "environment": "door-3u",
+      "level": 10,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0081_door-3u-4d_test_L01_ep000031",
+      "environment": "door-3u-4d",
+      "level": 1,
+      "state": "open_or_rebound",
+      "tail_excess_px": 14.0
+    },
+    {
+      "key": "q0078_door-3u-4d_test_L02_ep000020",
+      "environment": "door-3u-4d",
+      "level": 2,
+      "state": "open_or_rebound",
+      "tail_excess_px": 116.16666666666667
+    },
+    {
+      "key": "q0082_door-3u-4d_test_L03_ep000033",
+      "environment": "door-3u-4d",
+      "level": 3,
+      "state": "open_or_rebound",
+      "tail_excess_px": 137.66666666666666
+    },
+    {
+      "key": "q0079_door-3u-4d_test_L04_ep000022",
+      "environment": "door-3u-4d",
+      "level": 4,
+      "state": "open_or_rebound",
+      "tail_excess_px": 133.66666666666666
+    },
+    {
+      "key": "q0074_door-3u-4d_test_L05_ep000008",
+      "environment": "door-3u-4d",
+      "level": 5,
+      "state": "closed",
+      "tail_excess_px": -13.333333333333334
+    },
+    {
+      "key": "q0080_door-3u-4d_test_L06_ep000025",
+      "environment": "door-3u-4d",
+      "level": 6,
+      "state": "closed",
+      "tail_excess_px": -13.333333333333334
+    },
+    {
+      "key": "q0075_door-3u-4d_test_L07_ep000011",
+      "environment": "door-3u-4d",
+      "level": 7,
+      "state": "closed",
+      "tail_excess_px": -15.0
+    },
+    {
+      "key": "q0083_door-3u-4d_test_L08_ep000039",
+      "environment": "door-3u-4d",
+      "level": 8,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0076_door-3u-4d_test_L09_ep000016",
+      "environment": "door-3u-4d",
+      "level": 9,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0077_door-3u-4d_test_L10_ep000017",
+      "environment": "door-3u-4d",
+      "level": 10,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0091_door-4d_test_L01_ep000032",
+      "environment": "door-4d",
+      "level": 1,
+      "state": "open_or_rebound",
+      "tail_excess_px": 38.666666666666664
+    },
+    {
+      "key": "q0086_door-4d_test_L02_ep000004",
+      "environment": "door-4d",
+      "level": 2,
+      "state": "open_or_rebound",
+      "tail_excess_px": 111.16666666666667
+    },
+    {
+      "key": "q0087_door-4d_test_L03_ep000005",
+      "environment": "door-4d",
+      "level": 3,
+      "state": "open_or_rebound",
+      "tail_excess_px": 135.0
+    },
+    {
+      "key": "q0095_door-4d_test_L04_ep000056",
+      "environment": "door-4d",
+      "level": 4,
+      "state": "closed",
+      "tail_excess_px": -13.0
+    },
+    {
+      "key": "q0089_door-4d_test_L05_ep000026",
+      "environment": "door-4d",
+      "level": 5,
+      "state": "closed",
+      "tail_excess_px": -13.0
+    },
+    {
+      "key": "q0094_door-4d_test_L06_ep000048",
+      "environment": "door-4d",
+      "level": 6,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0092_door-4d_test_L07_ep000039",
+      "environment": "door-4d",
+      "level": 7,
+      "state": "closed",
+      "tail_excess_px": -15.0
+    },
+    {
+      "key": "q0090_door-4d_test_L08_ep000029",
+      "environment": "door-4d",
+      "level": 8,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0093_door-4d_test_L09_ep000041",
+      "environment": "door-4d",
+      "level": 9,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0088_door-4d_test_L10_ep000020",
+      "environment": "door-4d",
+      "level": 10,
+      "state": "closed",
+      "tail_excess_px": -17.0
+    },
+    {
+      "key": "q0103_door-6u-7d_test_L01_ep000046",
+      "environment": "door-6u-7d",
+      "level": 1,
+      "state": "open_or_rebound",
+      "tail_excess_px": 30.333333333333332
+    },
+    {
+      "key": "q0104_door-6u-7d_test_L02_ep000047",
+      "environment": "door-6u-7d",
+      "level": 2,
+      "state": "open_or_rebound",
+      "tail_excess_px": 101.33333333333333
+    },
+    {
+      "key": "q0101_door-6u-7d_test_L03_ep000042",
+      "environment": "door-6u-7d",
+      "level": 3,
+      "state": "open_or_rebound",
+      "tail_excess_px": 132.16666666666666
+    },
+    {
+      "key": "q0102_door-6u-7d_test_L04_ep000043",
+      "environment": "door-6u-7d",
+      "level": 4,
+      "state": "open_or_rebound",
+      "tail_excess_px": 139.16666666666666
+    },
+    {
+      "key": "q0105_door-6u-7d_test_L05_ep000050",
+      "environment": "door-6u-7d",
+      "level": 5,
+      "state": "open_or_rebound",
+      "tail_excess_px": 127.16666666666667
+    },
+    {
+      "key": "q0106_door-6u-7d_test_L06_ep000051",
+      "environment": "door-6u-7d",
+      "level": 6,
+      "state": "open_or_rebound",
+      "tail_excess_px": 118.5
+    },
+    {
+      "key": "q0099_door-6u-7d_test_L07_ep000026",
+      "environment": "door-6u-7d",
+      "level": 7,
+      "state": "closed",
+      "tail_excess_px": -14.0
+    },
+    {
+      "key": "q0098_door-6u-7d_test_L08_ep000015",
+      "environment": "door-6u-7d",
+      "level": 8,
+      "state": "closed",
+      "tail_excess_px": -15.0
+    },
+    {
+      "key": "q0100_door-6u-7d_test_L09_ep000038",
+      "environment": "door-6u-7d",
+      "level": 9,
+      "state": "closed",
+      "tail_excess_px": -15.0
+    },
+    {
+      "key": "q0107_door-6u-7d_test_L10_ep000055",
+      "environment": "door-6u-7d",
+      "level": 10,
+      "state": "closed",
+      "tail_excess_px": -16.0
+    },
+    {
+      "key": "q0110_door-6u-8d_test_L01_ep000001",
+      "environment": "door-6u-8d",
+      "level": 1,
+      "state": "open_or_rebound",
+      "tail_excess_px": 12.0
+    },
+    {
+      "key": "q0111_door-6u-8d_test_L02_ep000003",
+      "environment": "door-6u-8d",
+      "level": 2,
+      "state": "open_or_rebound",
+      "tail_excess_px": 79.83333333333333
+    },
+    {
+      "key": "q0112_door-6u-8d_test_L03_ep000004",
+      "environment": "door-6u-8d",
+      "level": 3,
+      "state": "open_or_rebound",
+      "tail_excess_px": 115.0
+    },
+    {
+      "key": "q0113_door-6u-8d_test_L04_ep000007",
+      "environment": "door-6u-8d",
+      "level": 4,
+      "state": "open_or_rebound",
+      "tail_excess_px": 132.66666666666666
+    },
+    {
+      "key": "q0114_door-6u-8d_test_L05_ep000008",
+      "environment": "door-6u-8d",
+      "level": 5,
+      "state": "open_or_rebound",
+      "tail_excess_px": 128.33333333333334
+    },
+    {
+      "key": "q0116_door-6u-8d_test_L06_ep000031",
+      "environment": "door-6u-8d",
+      "level": 6,
+      "state": "open_or_rebound",
+      "tail_excess_px": 119.16666666666667
+    },
+    {
+      "key": "q0117_door-6u-8d_test_L07_ep000033",
+      "environment": "door-6u-8d",
+      "level": 7,
+      "state": "open_or_rebound",
+      "tail_excess_px": 104.33333333333333
+    },
+    {
+      "key": "q0119_door-6u-8d_test_L08_ep000047",
+      "environment": "door-6u-8d",
+      "level": 8,
+      "state": "closed",
+      "tail_excess_px": -15.0
+    },
+    {
+      "key": "q0118_door-6u-8d_test_L09_ep000036",
+      "environment": "door-6u-8d",
+      "level": 9,
+      "state": "closed",
+      "tail_excess_px": -15.0
+    },
+    {
+      "key": "q0115_door-6u-8d_test_L10_ep000018",
+      "environment": "door-6u-8d",
+      "level": 10,
+      "state": "closed",
+      "tail_excess_px": -17.0
+    }
+  ],
+  "final_frame_grids": [
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-0_test_levels_01_05.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-0_test_levels_06_10.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-12u-Half_test_levels_01_05.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-12u-Half_test_levels_06_10.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-12u-Half-11d-Half_test_levels_01_05.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-12u-Half-11d-Half_test_levels_06_10.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-2u-1d_test_levels_01_05.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-2u-1d_test_levels_06_10.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-2u-4d_test_levels_01_05.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-2u-4d_test_levels_06_10.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-3u_test_levels_01_05.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-3u_test_levels_06_10.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-3u-4d_test_levels_01_05.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-3u-4d_test_levels_06_10.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-4d_test_levels_01_05.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-4d_test_levels_06_10.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-6u-7d_test_levels_01_05.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-6u-7d_test_levels_06_10.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-6u-8d_test_levels_01_05.jpg",
+    "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_ball_door_scores_20260912_v2/audit/door/door-6u-8d_test_levels_06_10.jpg"
+  ]
+}

@@ -1,0 +1,1311 @@
+{
+  "source_directory": "outputs/eval_real97_ball_door_scores_20260912_v2",
+  "source_files": {
+    "summary_provisional.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/summary_provisional.json",
+      "sha256": "d9b3267d5bbac8005c254f989e92d57cc9835351172ca33be10879a7700c5821",
+      "bytes": 84041
+    },
+    "manifest.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/manifest.json",
+      "sha256": "862e48ae145a7922944f510c4e64192d66aaa1221a9b1dad3d7a790e033bd268",
+      "bytes": 1177017
+    },
+    "protocol.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/protocol.json",
+      "sha256": "f8166b872de8baf88e044c6d66984dae5434a2bc9def801b8261cdc92388c568",
+      "bytes": 2729
+    },
+    "ball_action_first_reach_successor_pair_overlap.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/ball_action_first_reach_successor_pair_overlap.json",
+      "sha256": "8c51fa32265de968bb9c0ebac005cf08c5353d7a2c01b74373c5c669e9fb10f4",
+      "bytes": 17506
+    },
+    "ball_action_first_reach_blue_minus30.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/ball_action_first_reach_blue_minus30.json",
+      "sha256": "55abbe92fb52e9af54a6357bb27e9205a7a5cadd21e9b32b276f41538c5ad135",
+      "bytes": 177873
+    },
+    "ball_action_top2_overlap.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/ball_action_top2_overlap.json",
+      "sha256": "7e148edd5ce8b31fe243f5f3165e4bf8e706533bfbde65a78c7833297f01d86e",
+      "bytes": 23106
+    },
+    "door_calibration_audit.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/door_calibration_audit.json",
+      "sha256": "41111acc982e65b0751156ad2f0799c386b508ffd89b00bf258cf0fd48769b39",
+      "bytes": 28527
+    },
+    "cpu_complete.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/cpu_complete.json",
+      "sha256": "c41cfd2bd3172de98d350282cb0aec95f5aaef32ba72ab45bfbb00a67e8af7dd",
+      "bytes": 975
+    },
+    "lpips_complete.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips_complete.json",
+      "sha256": "9ec59111e490359222eb59c76b1c476a8842976f7c6b031bb9f9076c6904cbcc",
+      "bytes": 38
+    },
+    "queries/door/q0000_door-0_train_L01_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0000_door-0_train_L01_ep000029.json",
+      "sha256": "7e50b5783754008539acf0cf799f5a1fd93c3d86b963440f24609dc88cb4d506",
+      "bytes": 37042
+    },
+    "lpips/door/q0000_door-0_train_L01_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0000_door-0_train_L01_ep000029.json",
+      "sha256": "516ee3596d121017c97a5b8e01658abb8cfa67dfb899fe49d507d24d9185b65e",
+      "bytes": 7608
+    },
+    "queries/door/q0001_door-0_train_L08_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0001_door-0_train_L08_ep000017.json",
+      "sha256": "207538e031f9d99d76f59266df648d0dc37cc77d4581aff38b8ad83181c76c66",
+      "bytes": 21996
+    },
+    "lpips/door/q0001_door-0_train_L08_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0001_door-0_train_L08_ep000017.json",
+      "sha256": "1b36b322b4101f647ac7ca0f668fd5df4fa70dd23c27932b124837af2dc1f6bd",
+      "bytes": 4294
+    },
+    "queries/door/q0002_door-0_test_L09_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0002_door-0_test_L09_ep000008.json",
+      "sha256": "6da4f968dd4131e3f643bc3da174984054323b21976f4946d5b99fb2748e5ab7",
+      "bytes": 25393
+    },
+    "lpips/door/q0002_door-0_test_L09_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0002_door-0_test_L09_ep000008.json",
+      "sha256": "4c0f23bb58b09df8a7dbcc8e29a048832a0b98e169120cc5d1472ecf6e39c68b",
+      "bytes": 5047
+    },
+    "queries/door/q0003_door-0_test_L01_ep000010.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0003_door-0_test_L01_ep000010.json",
+      "sha256": "2fbf367d3e6f52873bebd76f61bc0d2235a4f9889d7d6c39bbf844127f5659a5",
+      "bytes": 35728
+    },
+    "lpips/door/q0003_door-0_test_L01_ep000010.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0003_door-0_test_L01_ep000010.json",
+      "sha256": "9ed552725338c7ffe75f81a8eab478912cb80e147ba49d8c1e4ec7bfdcaddb4b",
+      "bytes": 7255
+    },
+    "queries/door/q0004_door-0_test_L02_ep000011.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0004_door-0_test_L02_ep000011.json",
+      "sha256": "5164c86b72a08de7d0264ae7674c7a2a542828b7441b88b7e20fcd63654dd644",
+      "bytes": 32256
+    },
+    "lpips/door/q0004_door-0_test_L02_ep000011.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0004_door-0_test_L02_ep000011.json",
+      "sha256": "2a5d0f63b7dbdf1d5eab3c818c36de8e19b02b1f6df6ec4d6a68e8fa2503983a",
+      "bytes": 6489
+    },
+    "queries/door/q0005_door-0_test_L04_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0005_door-0_test_L04_ep000013.json",
+      "sha256": "2240d7a08e0d4a4d7fc5b0311fe8a03d5792df6d3eb2f2e27e31b792a82d8302",
+      "bytes": 24054
+    },
+    "lpips/door/q0005_door-0_test_L04_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0005_door-0_test_L04_ep000013.json",
+      "sha256": "7973279b4ebf128deba575579447e847e911c4ecb82b6f303819eae325fc0bc3",
+      "bytes": 4762
+    },
+    "queries/door/q0006_door-0_test_L05_ep000014.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0006_door-0_test_L05_ep000014.json",
+      "sha256": "31bc43d0b18f829559fac683d58b6d146c0c5b0dbb9f867f6dcb8e6e219f0028",
+      "bytes": 19225
+    },
+    "lpips/door/q0006_door-0_test_L05_ep000014.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0006_door-0_test_L05_ep000014.json",
+      "sha256": "61b90bcfd332518d9a276ad9d6131bcbdfcd48d352e992bdfbe3b39c2593b1bc",
+      "bytes": 3677
+    },
+    "queries/door/q0007_door-0_test_L10_ep000019.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0007_door-0_test_L10_ep000019.json",
+      "sha256": "c0d18d1d2c0b9316af6691c193005c16291d77e434dcffb891cd0a65977256a0",
+      "bytes": 21879
+    },
+    "lpips/door/q0007_door-0_test_L10_ep000019.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0007_door-0_test_L10_ep000019.json",
+      "sha256": "b886693c6eb0f29152ebc7b2a2818aceb80789b04d5b6bca8f48a1b1c10d7ea7",
+      "bytes": 4295
+    },
+    "queries/door/q0008_door-0_test_L08_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0008_door-0_test_L08_ep000022.json",
+      "sha256": "ec209634e6ab95537cdaa62fb2cfe6c50c6be5f077304dc2168df159aabe0e98",
+      "bytes": 21085
+    },
+    "lpips/door/q0008_door-0_test_L08_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0008_door-0_test_L08_ep000022.json",
+      "sha256": "80a4fb79018c0b55ebf308952323628900c29fa5988a40303b0794c95769a3cc",
+      "bytes": 4149
+    },
+    "queries/door/q0009_door-0_test_L07_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0009_door-0_test_L07_ep000023.json",
+      "sha256": "2960f95d8fa440dc91ca3e2f861259069a4d117e299270cad59ed19a1f8502c8",
+      "bytes": 19879
+    },
+    "lpips/door/q0009_door-0_test_L07_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0009_door-0_test_L07_ep000023.json",
+      "sha256": "1975aa1792b182afc13d7b3bb383266c4feb59dd177b1b4b7600be559de68dd8",
+      "bytes": 3859
+    },
+    "queries/door/q0010_door-0_test_L03_ep000027.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0010_door-0_test_L03_ep000027.json",
+      "sha256": "7cd21ad76bc3b17a24b2d45ded125eaad61d6d812836a2437b81983de30cee27",
+      "bytes": 28865
+    },
+    "lpips/door/q0010_door-0_test_L03_ep000027.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0010_door-0_test_L03_ep000027.json",
+      "sha256": "3ec20964407b2c8a6d015b8b3a05a5bef09d05fe528e0016c8aafd2a76441fef",
+      "bytes": 5799
+    },
+    "queries/door/q0011_door-0_test_L06_ep000035.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0011_door-0_test_L06_ep000035.json",
+      "sha256": "ee16e1a610fbd7aa4263560bc8c6a2bbe34ef08c7d961d115d3fb6c4f097a000",
+      "bytes": 24006
+    },
+    "lpips/door/q0011_door-0_test_L06_ep000035.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0011_door-0_test_L06_ep000035.json",
+      "sha256": "22cef1f7a95427ffd294ed85e96b8bd367cb404bb01517dc66f87726b7ecc762",
+      "bytes": 4715
+    },
+    "queries/door/q0012_door-12u-Half_train_L09_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0012_door-12u-Half_train_L09_ep000023.json",
+      "sha256": "4161b04127fcb5aa6f3b0350d8fc7abb7063295d4d5758656ff246bc5219e975",
+      "bytes": 22019
+    },
+    "lpips/door/q0012_door-12u-Half_train_L09_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0012_door-12u-Half_train_L09_ep000023.json",
+      "sha256": "1e565d28f2a10afd7fec9439c8513ad92a8a94f4f2cc8562de0c939ceb41f35c",
+      "bytes": 4299
+    },
+    "queries/door/q0013_door-12u-Half_train_L04_ep000006.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0013_door-12u-Half_train_L04_ep000006.json",
+      "sha256": "9a0b2f9827c7009bf18533037354c2ef6ae1cadc26d922fe1e5779aace80daae",
+      "bytes": 37176
+    },
+    "lpips/door/q0013_door-12u-Half_train_L04_ep000006.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0013_door-12u-Half_train_L04_ep000006.json",
+      "sha256": "a95ceaaee04a92aa2deb3d9db70a1189c6512c4e4d1b7a4af0fc698f228c547b",
+      "bytes": 7521
+    },
+    "queries/door/q0014_door-12u-Half_test_L02_ep000002.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0014_door-12u-Half_test_L02_ep000002.json",
+      "sha256": "1636b26fb22b085aa09bf4764f705909419b95619dcf63d1b11daf4797c879ea",
+      "bytes": 37161
+    },
+    "lpips/door/q0014_door-12u-Half_test_L02_ep000002.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0014_door-12u-Half_test_L02_ep000002.json",
+      "sha256": "f9498970f7c08b69394652ab15fde48aca686923d3c2314b437fd62ca9e6083c",
+      "bytes": 7546
+    },
+    "queries/door/q0015_door-12u-Half_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0015_door-12u-Half_test_L04_ep000007.json",
+      "sha256": "6274dd05797ac489a2e8c6f9f45315b2cffde7f5a70aa395d18c7fc2db6fdace",
+      "bytes": 37044
+    },
+    "lpips/door/q0015_door-12u-Half_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0015_door-12u-Half_test_L04_ep000007.json",
+      "sha256": "24bca72402e9f13ad9f831741372e329d13132429b357f553ea75e256c2527eb",
+      "bytes": 7530
+    },
+    "queries/door/q0016_door-12u-Half_test_L08_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0016_door-12u-Half_test_L08_ep000015.json",
+      "sha256": "b45f18c168f928f23ca8b50899da779812ac1ed53b8b8f9feef5924966571ed0",
+      "bytes": 32298
+    },
+    "lpips/door/q0016_door-12u-Half_test_L08_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0016_door-12u-Half_test_L08_ep000015.json",
+      "sha256": "f02368561967f170221a6146da960c4c8382cb09bfbe61f5ed3d33ca562bff4e",
+      "bytes": 6455
+    },
+    "queries/door/q0017_door-12u-Half_test_L09_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0017_door-12u-Half_test_L09_ep000017.json",
+      "sha256": "b7b472f09caa8d8397e9f40ac5e850ca3fb23b44974b9161ebdf3af328d7bfba",
+      "bytes": 24074
+    },
+    "lpips/door/q0017_door-12u-Half_test_L09_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0017_door-12u-Half_test_L09_ep000017.json",
+      "sha256": "4f989a74ea0090e24e9d0c57db30d12dd5a296fec21ef80a2bce14bf4e6875fe",
+      "bytes": 4742
+    },
+    "queries/door/q0018_door-12u-Half_test_L10_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0018_door-12u-Half_test_L10_ep000022.json",
+      "sha256": "066c3babafb4b9a5e2497cf4b5f6e37da2417389fa52e0fa233abba62514fc63",
+      "bytes": 25994
+    },
+    "lpips/door/q0018_door-12u-Half_test_L10_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0018_door-12u-Half_test_L10_ep000022.json",
+      "sha256": "6c804a455b9b0a9f3ab6d1b335b70711cdf6b8567a0d2edbee8b532539c673e9",
+      "bytes": 5210
+    },
+    "queries/door/q0019_door-12u-Half_test_L01_ep000032.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0019_door-12u-Half_test_L01_ep000032.json",
+      "sha256": "4d03ec4fcc0efca15081fef5194033dd0989dffd90cbdc302c526516f4352dba",
+      "bytes": 33666
+    },
+    "lpips/door/q0019_door-12u-Half_test_L01_ep000032.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0019_door-12u-Half_test_L01_ep000032.json",
+      "sha256": "097e690fd63983b6a75047439e06ab19bdb7d74ded12c2b9658327bf18369d4a",
+      "bytes": 6814
+    },
+    "queries/door/q0020_door-12u-Half_test_L05_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0020_door-12u-Half_test_L05_ep000036.json",
+      "sha256": "5b2241a4a7d9ae4716404579092c9367c7b2a3dd27a60527d7ed96aa43b2727f",
+      "bytes": 37079
+    },
+    "lpips/door/q0020_door-12u-Half_test_L05_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0020_door-12u-Half_test_L05_ep000036.json",
+      "sha256": "84ad0c8e6fc1f5a0c2de28aa1146f2bf6cdb5fc8b6841405f736c35061d76ef2",
+      "bytes": 7522
+    },
+    "queries/door/q0021_door-12u-Half_test_L06_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0021_door-12u-Half_test_L06_ep000037.json",
+      "sha256": "8aa332d4100523f9c75e47c5947de1b991fdd238a9084141dbe9dc23b2db0513",
+      "bytes": 37067
+    },
+    "lpips/door/q0021_door-12u-Half_test_L06_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0021_door-12u-Half_test_L06_ep000037.json",
+      "sha256": "56877970c963bd95cb444eb65cf0e460d4a763ad817ab62e4798628ac3ae2ea3",
+      "bytes": 7515
+    },
+    "queries/door/q0022_door-12u-Half_test_L03_ep000042.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0022_door-12u-Half_test_L03_ep000042.json",
+      "sha256": "9b16a7ef65403bc281b2889345bbc7dec1cb9ec9489260997a0e597223a88a48",
+      "bytes": 37114
+    },
+    "lpips/door/q0022_door-12u-Half_test_L03_ep000042.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0022_door-12u-Half_test_L03_ep000042.json",
+      "sha256": "47aa751389423fc45d88f0ed27a85a0872cbc3f2f4d1c265a1425fb1c55f35b9",
+      "bytes": 7561
+    },
+    "queries/door/q0023_door-12u-Half_test_L07_ep000046.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0023_door-12u-Half_test_L07_ep000046.json",
+      "sha256": "ac35cc24ad621f6e6a3d8eff6cec0403cc72277ca96660c59f8fccbe832754e0",
+      "bytes": 35788
+    },
+    "lpips/door/q0023_door-12u-Half_test_L07_ep000046.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0023_door-12u-Half_test_L07_ep000046.json",
+      "sha256": "3eb21ce0b28ca0b1f9faf21eb4276c1f9e0986465752f01c88a4bff5e1356203",
+      "bytes": 7277
+    },
+    "queries/door/q0024_door-12u-Half-11d-Half_train_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0024_door-12u-Half-11d-Half_train_L02_ep000003.json",
+      "sha256": "834ea8b423fc32064d0d58c6518fdbc537e75d9cd97c1f3b2ec20c6ec70e769a",
+      "bytes": 33068
+    },
+    "lpips/door/q0024_door-12u-Half-11d-Half_train_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0024_door-12u-Half-11d-Half_train_L02_ep000003.json",
+      "sha256": "ed07666012926184b7eafc4f61291f71fd2272eea0c1c5fd6bd78b366223ebb3",
+      "bytes": 6648
+    },
+    "queries/door/q0025_door-12u-Half-11d-Half_train_L08_ep000045.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0025_door-12u-Half-11d-Half_train_L08_ep000045.json",
+      "sha256": "6696267250217abcf1c86581050b394ff64ecdd1c7c09bd3c1daca43066abfa3",
+      "bytes": 32966
+    },
+    "lpips/door/q0025_door-12u-Half-11d-Half_train_L08_ep000045.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0025_door-12u-Half-11d-Half_train_L08_ep000045.json",
+      "sha256": "1e52f9c6e0d9cd8f2e504f1478bbd1ebc936a0ddc31d3abf5d892aa83b13aa26",
+      "bytes": 6583
+    },
+    "queries/door/q0026_door-12u-Half-11d-Half_test_L05_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0026_door-12u-Half-11d-Half_test_L05_ep000008.json",
+      "sha256": "4179967f86260d75d1b9adb3f5248e10dea320c1c2dc5ce4e9a4aaab92e6c792",
+      "bytes": 37025
+    },
+    "lpips/door/q0026_door-12u-Half-11d-Half_test_L05_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0026_door-12u-Half-11d-Half_test_L05_ep000008.json",
+      "sha256": "38705b02456c8b4269c0b09e75e470265e15e0d1884a2859aa9dfb8bda43ffd5",
+      "bytes": 7470
+    },
+    "queries/door/q0027_door-12u-Half-11d-Half_test_L06_ep000010.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0027_door-12u-Half-11d-Half_test_L06_ep000010.json",
+      "sha256": "bd279b1164dd29406f2feda33c2320edbb50daa515e51efb8009c1ce543f75df",
+      "bytes": 35121
+    },
+    "lpips/door/q0027_door-12u-Half-11d-Half_test_L06_ep000010.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0027_door-12u-Half-11d-Half_test_L06_ep000010.json",
+      "sha256": "817c035a5278d6da8c418fcd6cf4e94c29ca61c9812ae2c57b6a17a57e4a16c0",
+      "bytes": 7090
+    },
+    "queries/door/q0028_door-12u-Half-11d-Half_test_L08_ep000014.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0028_door-12u-Half-11d-Half_test_L08_ep000014.json",
+      "sha256": "94e75c58f8ef10e2226013e785aaa2091f15cffbad23e9761902bca9bebd6931",
+      "bytes": 32926
+    },
+    "lpips/door/q0028_door-12u-Half-11d-Half_test_L08_ep000014.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0028_door-12u-Half-11d-Half_test_L08_ep000014.json",
+      "sha256": "6d16e794fbd9877d61f5ed56240ee24266b86d1d43a236682d042cd3fd5bd162",
+      "bytes": 6577
+    },
+    "queries/door/q0029_door-12u-Half-11d-Half_test_L10_ep000021.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0029_door-12u-Half-11d-Half_test_L10_ep000021.json",
+      "sha256": "be2258f4956cfbde64e8fc0f992510c3c236fc881bd2e309520052ef3082e245",
+      "bytes": 26023
+    },
+    "lpips/door/q0029_door-12u-Half-11d-Half_test_L10_ep000021.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0029_door-12u-Half-11d-Half_test_L10_ep000021.json",
+      "sha256": "c90da9b5c9f7e40eefa78acd7f47305f6ddb2abf67985063d472a0054c52cd38",
+      "bytes": 5135
+    },
+    "queries/door/q0030_door-12u-Half-11d-Half_test_L03_ep000035.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0030_door-12u-Half-11d-Half_test_L03_ep000035.json",
+      "sha256": "cf1a7f9e687f0bfa8720de0f6791779544915dee24a012c0a80004436727e1b4",
+      "bytes": 34360
+    },
+    "lpips/door/q0030_door-12u-Half-11d-Half_test_L03_ep000035.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0030_door-12u-Half-11d-Half_test_L03_ep000035.json",
+      "sha256": "4bdb5c81c841862d83fe2a82e97bd8d3e2347a7dd6255836cba94e5e69c748be",
+      "bytes": 6909
+    },
+    "queries/door/q0031_door-12u-Half-11d-Half_test_L02_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0031_door-12u-Half-11d-Half_test_L02_ep000036.json",
+      "sha256": "ca64e20a3bb9f63256d25984fc3d2474152f79c49875c5b4fcdf9a51331460b5",
+      "bytes": 33105
+    },
+    "lpips/door/q0031_door-12u-Half-11d-Half_test_L02_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0031_door-12u-Half-11d-Half_test_L02_ep000036.json",
+      "sha256": "2cdee33de1fcb4885bfd98f94cd1671ad256aac1a57072810cca78e915d41e2b",
+      "bytes": 6645
+    },
+    "queries/door/q0032_door-12u-Half-11d-Half_test_L01_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0032_door-12u-Half-11d-Half_test_L01_ep000037.json",
+      "sha256": "0d091709bccf9f403d84e9b56a97d0c9907818f8cab7509ed7968c8226413834",
+      "bytes": 33731
+    },
+    "lpips/door/q0032_door-12u-Half-11d-Half_test_L01_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0032_door-12u-Half-11d-Half_test_L01_ep000037.json",
+      "sha256": "98e5e15b06f3745a339cea83239c20e4ecec96ee3421fd9501496fe1ab9dad81",
+      "bytes": 6815
+    },
+    "queries/door/q0033_door-12u-Half-11d-Half_test_L04_ep000041.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0033_door-12u-Half-11d-Half_test_L04_ep000041.json",
+      "sha256": "9149b020199a2d0658146a803c173039fffb340df4b54a5963e7f7fd73830550",
+      "bytes": 35090
+    },
+    "lpips/door/q0033_door-12u-Half-11d-Half_test_L04_ep000041.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0033_door-12u-Half-11d-Half_test_L04_ep000041.json",
+      "sha256": "b57451618a4a9bbd3d6321301cc415922b7d6ac065d123a88ca04d26b1533255",
+      "bytes": 7056
+    },
+    "queries/door/q0034_door-12u-Half-11d-Half_test_L07_ep000044.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0034_door-12u-Half-11d-Half_test_L07_ep000044.json",
+      "sha256": "9aebdf52aae319141c5786878e4fff28378e0519b27479b9844f6b63b9758e92",
+      "bytes": 35675
+    },
+    "lpips/door/q0034_door-12u-Half-11d-Half_test_L07_ep000044.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0034_door-12u-Half-11d-Half_test_L07_ep000044.json",
+      "sha256": "6c5bca7046f6073853b59b436b9cfc0e928727dfad8afd1ed8772eecc1cba669",
+      "bytes": 7173
+    },
+    "queries/door/q0035_door-12u-Half-11d-Half_test_L09_ep000046.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0035_door-12u-Half-11d-Half_test_L09_ep000046.json",
+      "sha256": "2c737ced71ea761b350b1411ce2de2077d872e2ad9c264509d2c58b3fbe18329",
+      "bytes": 26766
+    },
+    "lpips/door/q0035_door-12u-Half-11d-Half_test_L09_ep000046.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0035_door-12u-Half-11d-Half_test_L09_ep000046.json",
+      "sha256": "3e1751f203f0409990cd51ec8ba19f364637940ad433c79b3572c59be8a33791",
+      "bytes": 5243
+    },
+    "queries/door/q0036_door-2u-1d_train_L07_ep000045.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0036_door-2u-1d_train_L07_ep000045.json",
+      "sha256": "665a4cf0888dd6bbb2c3ba32949a8922a82345ef4ab7cc1069ef84557438e095",
+      "bytes": 18495
+    },
+    "lpips/door/q0036_door-2u-1d_train_L07_ep000045.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0036_door-2u-1d_train_L07_ep000045.json",
+      "sha256": "cbcd3bc7b1fb4565277ebc2ab2ca05f578df53d6efbd008393465a29fad2ccb3",
+      "bytes": 3545
+    },
+    "queries/door/q0037_door-2u-1d_train_L08_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0037_door-2u-1d_train_L08_ep000036.json",
+      "sha256": "34fbd5e98345ee870a0514fbbdb5786b5d1d810bc3cc26a5a2548e605cfbc873",
+      "bytes": 19222
+    },
+    "lpips/door/q0037_door-2u-1d_train_L08_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0037_door-2u-1d_train_L08_ep000036.json",
+      "sha256": "04de41df3c2eb0528d2b72bca2fcf14383191a7e2e1c9656a0e5dae64e6f02da",
+      "bytes": 3696
+    },
+    "queries/door/q0038_door-2u-1d_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0038_door-2u-1d_test_L02_ep000003.json",
+      "sha256": "c2eefe9d6448ef52f0a8ab7d5e3d3ff7f29ba2f885715d2cae97ee287ba103aa",
+      "bytes": 24672
+    },
+    "lpips/door/q0038_door-2u-1d_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0038_door-2u-1d_test_L02_ep000003.json",
+      "sha256": "a4d1ee5173b08c8b83fbed11963a88a55463b0605e7b9c40be19d6312535db6b",
+      "bytes": 4910
+    },
+    "queries/door/q0039_door-2u-1d_test_L05_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0039_door-2u-1d_test_L05_ep000008.json",
+      "sha256": "d6c083adffe4fdcf9bec738c374ae954c1c6d506bc454a072bdfa669a83c6bb2",
+      "bytes": 22637
+    },
+    "lpips/door/q0039_door-2u-1d_test_L05_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0039_door-2u-1d_test_L05_ep000008.json",
+      "sha256": "f6a97af54611ef6ade0fb5e445207f255f4f0f76ba98450ea597dde87beb6a17",
+      "bytes": 4448
+    },
+    "queries/door/q0040_door-2u-1d_test_L06_ep000010.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0040_door-2u-1d_test_L06_ep000010.json",
+      "sha256": "6f13617a4659fd33bb89ccc4272b91bae52bba53b89d031c6a103ecf3ac9f00a",
+      "bytes": 22650
+    },
+    "lpips/door/q0040_door-2u-1d_test_L06_ep000010.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0040_door-2u-1d_test_L06_ep000010.json",
+      "sha256": "e00f9344d425028a781b52be7731abba9160387d8425d240c3a5f4a9aac66778",
+      "bytes": 4436
+    },
+    "queries/door/q0041_door-2u-1d_test_L07_ep000012.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0041_door-2u-1d_test_L07_ep000012.json",
+      "sha256": "9b2da58b8ac803a1d347d30a688dab6df0937f1d4782db14dca54edfcecd9999",
+      "bytes": 20514
+    },
+    "lpips/door/q0041_door-2u-1d_test_L07_ep000012.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0041_door-2u-1d_test_L07_ep000012.json",
+      "sha256": "2437053d37eb636936cb526f4f3f018f38a1ec763aea1cb60be4489d1664acdc",
+      "bytes": 3991
+    },
+    "queries/door/q0042_door-2u-1d_test_L08_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0042_door-2u-1d_test_L08_ep000015.json",
+      "sha256": "1f05f61d59ad33573b1198fbe0c1076e503a9b2964805ac10ea954954da12d7e",
+      "bytes": 21990
+    },
+    "lpips/door/q0042_door-2u-1d_test_L08_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0042_door-2u-1d_test_L08_ep000015.json",
+      "sha256": "ae0649693f6ad992c02db39287fde309967b8dcd37aad3a9cda8c8e82289bdff",
+      "bytes": 4289
+    },
+    "queries/door/q0043_door-2u-1d_test_L04_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0043_door-2u-1d_test_L04_ep000022.json",
+      "sha256": "7b01247ac4944213206632cd1610253cf75e60b5170d5a5fff81ddce717c6285",
+      "bytes": 27458
+    },
+    "lpips/door/q0043_door-2u-1d_test_L04_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0043_door-2u-1d_test_L04_ep000022.json",
+      "sha256": "3f1a7786c90ef88ac771e57fddbe7a10353c417749f9ed234c31f24dea636013",
+      "bytes": 5507
+    },
+    "queries/door/q0044_door-2u-1d_test_L09_ep000027.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0044_door-2u-1d_test_L09_ep000027.json",
+      "sha256": "bd37f8f1c9b1091d291b84bf755e1eed119f8f17b16d610e9ff2a3b137c75119",
+      "bytes": 24605
+    },
+    "lpips/door/q0044_door-2u-1d_test_L09_ep000027.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0044_door-2u-1d_test_L09_ep000027.json",
+      "sha256": "6937124a464825e0be572381a8f513232eb24431c452e891316c76e17e005d81",
+      "bytes": 4907
+    },
+    "queries/door/q0045_door-2u-1d_test_L01_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0045_door-2u-1d_test_L01_ep000029.json",
+      "sha256": "e359a395a93135d6f6d3bd43c0e804a7fdcf9b620e2c4838156ff68637921a4d",
+      "bytes": 36504
+    },
+    "lpips/door/q0045_door-2u-1d_test_L01_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0045_door-2u-1d_test_L01_ep000029.json",
+      "sha256": "5e85ed9cd91f5afe32810900485d9185483838a3e26099402d44627da1ff5150",
+      "bytes": 7467
+    },
+    "queries/door/q0046_door-2u-1d_test_L10_ep000038.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0046_door-2u-1d_test_L10_ep000038.json",
+      "sha256": "51d7c9cff8753c9b835b9db14bc945e5b627be896fac57f3d75027c24b5975d9",
+      "bytes": 29520
+    },
+    "lpips/door/q0046_door-2u-1d_test_L10_ep000038.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0046_door-2u-1d_test_L10_ep000038.json",
+      "sha256": "a32da367edac6f659f1e88d3bfa8212493f21aa25330fa461b74bbf73a3460d8",
+      "bytes": 5945
+    },
+    "queries/door/q0047_door-2u-1d_test_L03_ep000041.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0047_door-2u-1d_test_L03_ep000041.json",
+      "sha256": "00195d9e2fbc03e54542e3b6b9eb61d23468c7a68c0915f809774e08e6d38bdd",
+      "bytes": 29565
+    },
+    "lpips/door/q0047_door-2u-1d_test_L03_ep000041.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0047_door-2u-1d_test_L03_ep000041.json",
+      "sha256": "bbbf7e81d497e2abafa4e8ea0d5877ebe89aa0a64f4da231828fc97b1951332e",
+      "bytes": 5947
+    },
+    "queries/door/q0048_door-2u-4d_train_L09_ep000044.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0048_door-2u-4d_train_L09_ep000044.json",
+      "sha256": "2aa0310779b018c2d4441af5ab82854e499ff4cc466fcfea66abfead6772561c",
+      "bytes": 24050
+    },
+    "lpips/door/q0048_door-2u-4d_train_L09_ep000044.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0048_door-2u-4d_train_L09_ep000044.json",
+      "sha256": "5f52a75d9add1a640d58229ac3c4bfcc80db08509bc645d257571ab6b3bcb6a0",
+      "bytes": 4762
+    },
+    "queries/door/q0049_door-2u-4d_train_L04_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0049_door-2u-4d_train_L04_ep000023.json",
+      "sha256": "d27cd09221e3255910a5958c1b2090daa81d3671eac5b4be516f585c1f302b22",
+      "bytes": 30251
+    },
+    "lpips/door/q0049_door-2u-4d_train_L04_ep000023.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0049_door-2u-4d_train_L04_ep000023.json",
+      "sha256": "6eb804ee15c3ad3dcb8723e8bc894b8287b5ccd2a30b77ab14c6add9d96c8ea7",
+      "bytes": 6092
+    },
+    "queries/door/q0050_door-2u-4d_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0050_door-2u-4d_test_L02_ep000003.json",
+      "sha256": "73c5c26b46f91fd5018060dfe8d86940a2589b2290ac5a46f9d53abf5fe42070",
+      "bytes": 37151
+    },
+    "lpips/door/q0050_door-2u-4d_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0050_door-2u-4d_test_L02_ep000003.json",
+      "sha256": "c6ad5b20c644f7d712dafef0f7dda2f7070ad7b010618c41ed841292b7f8ed4e",
+      "bytes": 7569
+    },
+    "queries/door/q0051_door-2u-4d_test_L03_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0051_door-2u-4d_test_L03_ep000004.json",
+      "sha256": "074d281060a5e73eee5bc6254f02406fda91e93486674c66bfaa8b61ff1197d0",
+      "bytes": 37104
+    },
+    "lpips/door/q0051_door-2u-4d_test_L03_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0051_door-2u-4d_test_L03_ep000004.json",
+      "sha256": "8f49bceaa4651b3e5a403705bcbd7c8ed2b94db12c9c7b5f12406cbebf070ccf",
+      "bytes": 7549
+    },
+    "queries/door/q0052_door-2u-4d_test_L09_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0052_door-2u-4d_test_L09_ep000013.json",
+      "sha256": "676293d42602fac171e55261ada4e1416f709461ee7c49f813442d393898f38b",
+      "bytes": 19876
+    },
+    "lpips/door/q0052_door-2u-4d_test_L09_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0052_door-2u-4d_test_L09_ep000013.json",
+      "sha256": "fc9ade2ce9cc89fbd7b6a290563b23c3ae0c4aabd8904a5773c4295ba07b5094",
+      "bytes": 3848
+    },
+    "queries/door/q0053_door-2u-4d_test_L10_ep000014.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0053_door-2u-4d_test_L10_ep000014.json",
+      "sha256": "076d8935841dce53b43a9247eaf0dbada569f57a62f44858a6770dcb05dd99d0",
+      "bytes": 22673
+    },
+    "lpips/door/q0053_door-2u-4d_test_L10_ep000014.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0053_door-2u-4d_test_L10_ep000014.json",
+      "sha256": "d2acc9b57170e5d0f91c85136988faef75e2168ab88e94c2977e63f6abec506c",
+      "bytes": 4450
+    },
+    "queries/door/q0054_door-2u-4d_test_L01_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0054_door-2u-4d_test_L01_ep000015.json",
+      "sha256": "a9845c6524892813920a7dc8815b32f9f79b530ede2566912207f2f07341b81a",
+      "bytes": 37144
+    },
+    "lpips/door/q0054_door-2u-4d_test_L01_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0054_door-2u-4d_test_L01_ep000015.json",
+      "sha256": "3b44361a27acb6c03cdb4d60473f94de09167867285ffcc2e96fc3ea803d707d",
+      "bytes": 7580
+    },
+    "queries/door/q0055_door-2u-4d_test_L04_ep000020.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0055_door-2u-4d_test_L04_ep000020.json",
+      "sha256": "a76660efa488d84df8d52e9554c75d676dc1bab3c2fa11343ba24acc39690ce6",
+      "bytes": 27489
+    },
+    "lpips/door/q0055_door-2u-4d_test_L04_ep000020.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0055_door-2u-4d_test_L04_ep000020.json",
+      "sha256": "92315a226d99a2fd353c8ad3f21aaef145f2194bf43b9fb40afefe230ff1b08c",
+      "bytes": 5450
+    },
+    "queries/door/q0056_door-2u-4d_test_L06_ep000027.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0056_door-2u-4d_test_L06_ep000027.json",
+      "sha256": "d52a92682d6c3918bc23d4e5221744d63c1999d6234b5bdd26ad52eeccf2e5e6",
+      "bytes": 33008
+    },
+    "lpips/door/q0056_door-2u-4d_test_L06_ep000027.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0056_door-2u-4d_test_L06_ep000027.json",
+      "sha256": "c63e34ffd155cc23705e84f2d7005a4f2c403052f8bd11b03c97867544b8d2bf",
+      "bytes": 6712
+    },
+    "queries/door/q0057_door-2u-4d_test_L07_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0057_door-2u-4d_test_L07_ep000028.json",
+      "sha256": "889b9c24ba047049ffc27e1b8a1e4d336933f44f6797900668a6ab0851cfea6f",
+      "bytes": 34358
+    },
+    "lpips/door/q0057_door-2u-4d_test_L07_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0057_door-2u-4d_test_L07_ep000028.json",
+      "sha256": "eb88be237226bc2c947f8c698aa44be0c015337ec9112d7ece6c18e2a063ef6d",
+      "bytes": 6990
+    },
+    "queries/door/q0058_door-2u-4d_test_L08_ep000030.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0058_door-2u-4d_test_L08_ep000030.json",
+      "sha256": "1da4b81a6d7ea3661c234856169d3ca642192007bc6b118388021fdd411dae9e",
+      "bytes": 27493
+    },
+    "lpips/door/q0058_door-2u-4d_test_L08_ep000030.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0058_door-2u-4d_test_L08_ep000030.json",
+      "sha256": "182d196f3722e775832d9bbba451d2a694aa26562c6bfaf82c1c9fc6de12e279",
+      "bytes": 5472
+    },
+    "queries/door/q0059_door-2u-4d_test_L05_ep000040.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0059_door-2u-4d_test_L05_ep000040.json",
+      "sha256": "1995586da69a634ff532efc2c59d01f231d9efdd71f6de84f0607a7373455b08",
+      "bytes": 22686
+    },
+    "lpips/door/q0059_door-2u-4d_test_L05_ep000040.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0059_door-2u-4d_test_L05_ep000040.json",
+      "sha256": "f390c3dc0e7036928ed256af2bd6d2d28bcf40c903235e29e10c183e0a2cf35b",
+      "bytes": 4443
+    },
+    "queries/door/q0060_door-3u_train_L03_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0060_door-3u_train_L03_ep000037.json",
+      "sha256": "3b5332d1c9992342c36a6bb4e7ee6c78980d2d5264bc0dc33372e657c73aeaeb",
+      "bytes": 33649
+    },
+    "lpips/door/q0060_door-3u_train_L03_ep000037.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0060_door-3u_train_L03_ep000037.json",
+      "sha256": "9a226929447bb8f4a86664f4399af74791529b83877762d816564fb83a01e4dc",
+      "bytes": 6805
+    },
+    "queries/door/q0061_door-3u_train_L04_ep000005.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0061_door-3u_train_L04_ep000005.json",
+      "sha256": "099c776d4409986b6b05aa47584b9a2aa88e58f8a28e43791c12357e0d902aa5",
+      "bytes": 28107
+    },
+    "lpips/door/q0061_door-3u_train_L04_ep000005.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0061_door-3u_train_L04_ep000005.json",
+      "sha256": "9a17cc26c4e6be541afb0bfcb52cfefef39661c2466a04b82557fc7710a18e77",
+      "bytes": 5637
+    },
+    "queries/door/q0062_door-3u_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0062_door-3u_test_L02_ep000003.json",
+      "sha256": "c95d69ae6425ec974b6258af62ffbb9cb5d107cc9a11ff264fcbe40a07e21c91",
+      "bytes": 32340
+    },
+    "lpips/door/q0062_door-3u_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0062_door-3u_test_L02_ep000003.json",
+      "sha256": "ced29d1c9404aff1631e8eac3aa50928fa7a0dfada873d6179bdbec48d8491ba",
+      "bytes": 6478
+    },
+    "queries/door/q0063_door-3u_test_L03_ep000009.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0063_door-3u_test_L03_ep000009.json",
+      "sha256": "5f69532f584c41428a0716447ed6cf6634ca3b1de2324dae428889d8984a6200",
+      "bytes": 30247
+    },
+    "lpips/door/q0063_door-3u_test_L03_ep000009.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0063_door-3u_test_L03_ep000009.json",
+      "sha256": "a2c91a0b1541ea984c47fe9eaa043fb3c98e58a9e234ff940f6e844e91fd54c5",
+      "bytes": 6075
+    },
+    "queries/door/q0064_door-3u_test_L04_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0064_door-3u_test_L04_ep000013.json",
+      "sha256": "260609840a0103d3fecd60bef3045bc7309e9753c3a437c50918dcaed0fe91a6",
+      "bytes": 25986
+    },
+    "lpips/door/q0064_door-3u_test_L04_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0064_door-3u_test_L04_ep000013.json",
+      "sha256": "0066dd51b7337cd82b296df4be13498a0f1b54cfb454ccf24fd83afe53859a79",
+      "bytes": 5201
+    },
+    "queries/door/q0065_door-3u_test_L01_ep000014.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0065_door-3u_test_L01_ep000014.json",
+      "sha256": "dc1f506f9bb9d7cd8dc76b8dc71fd1f5ba733cb67ed89804a9a8efab3f834b42",
+      "bytes": 37164
+    },
+    "lpips/door/q0065_door-3u_test_L01_ep000014.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0065_door-3u_test_L01_ep000014.json",
+      "sha256": "304363a9ad987a1d20085e0f9366d4486a46aa0ce6efd9a06eb591c2a7d3ac97",
+      "bytes": 7602
+    },
+    "queries/door/q0066_door-3u_test_L06_ep000019.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0066_door-3u_test_L06_ep000019.json",
+      "sha256": "7958ab2e392af2b8e860489e8fcafcd29e16b1c946a9f34649be5b06124ac555",
+      "bytes": 25990
+    },
+    "lpips/door/q0066_door-3u_test_L06_ep000019.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0066_door-3u_test_L06_ep000019.json",
+      "sha256": "4f127936c168a1e92c5b614871d2c432518a179bb13d5d31eb8a0594df4e8f96",
+      "bytes": 5204
+    },
+    "queries/door/q0067_door-3u_test_L05_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0067_door-3u_test_L05_ep000028.json",
+      "sha256": "90c6d291f322dd49083b616047e67977bbf8d79737adeab527a8302e4841c876",
+      "bytes": 32364
+    },
+    "lpips/door/q0067_door-3u_test_L05_ep000028.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0067_door-3u_test_L05_ep000028.json",
+      "sha256": "2cbdff1e17a886051e3800b94a393e26b2f9a79a3159a1761b4601153b864384",
+      "bytes": 6570
+    },
+    "queries/door/q0068_door-3u_test_L10_ep000033.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0068_door-3u_test_L10_ep000033.json",
+      "sha256": "f2cc244d19a09cd237f0f930a14c9593af75e142377d28022c8eeb39da6e1801",
+      "bytes": 20586
+    },
+    "lpips/door/q0068_door-3u_test_L10_ep000033.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0068_door-3u_test_L10_ep000033.json",
+      "sha256": "598cddc1c3fa0a10bc1684bbcdc3536f61795b47b882f2d428ef93e9d6611668",
+      "bytes": 4000
+    },
+    "queries/door/q0069_door-3u_test_L08_ep000042.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0069_door-3u_test_L08_ep000042.json",
+      "sha256": "a897546ad6154504f7af6213fd6ce62443e99f3b9734bb61a632504ba416566a",
+      "bytes": 26790
+    },
+    "lpips/door/q0069_door-3u_test_L08_ep000042.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0069_door-3u_test_L08_ep000042.json",
+      "sha256": "2fbc8cda19cacb4e233f349f8891fdb18987eff577bb435b449d3fb00be92437",
+      "bytes": 5341
+    },
+    "queries/door/q0070_door-3u_test_L07_ep000051.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0070_door-3u_test_L07_ep000051.json",
+      "sha256": "390208f0180a1ee7b83b0a6e9f32c02cfb12b21556428dab8bb11d9d977ed127",
+      "bytes": 26814
+    },
+    "lpips/door/q0070_door-3u_test_L07_ep000051.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0070_door-3u_test_L07_ep000051.json",
+      "sha256": "8b96e60cdb2db7694bde2aacc48f6e740f64b9502e8e5f97648a97310f929432",
+      "bytes": 5346
+    },
+    "queries/door/q0071_door-3u_test_L09_ep000053.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0071_door-3u_test_L09_ep000053.json",
+      "sha256": "0b436b45e2e5d95c994a311e6c16288839e5498e705cd93139875b7bca9e48cb",
+      "bytes": 24594
+    },
+    "lpips/door/q0071_door-3u_test_L09_ep000053.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0071_door-3u_test_L09_ep000053.json",
+      "sha256": "0a30d823bec4a5e862aee4d72565ed45290302802a1e81ec321fadedd68561c9",
+      "bytes": 4900
+    },
+    "queries/door/q0072_door-3u-4d_train_L01_ep000019.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0072_door-3u-4d_train_L01_ep000019.json",
+      "sha256": "50869003e4f5673f6fce895d1567d3d5f253908effb50bc68c0c47f76aa3e3af",
+      "bytes": 37133
+    },
+    "lpips/door/q0072_door-3u-4d_train_L01_ep000019.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0072_door-3u-4d_train_L01_ep000019.json",
+      "sha256": "04debd9fbcceafb384e0214d54f061ba77f4731366c713f93402856bab9a9a8f",
+      "bytes": 7581
+    },
+    "queries/door/q0073_door-3u-4d_train_L08_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0073_door-3u-4d_train_L08_ep000013.json",
+      "sha256": "84d0684e72fa2bbbc20ba87fa8f163f3014751d628230d3dfc372125e8cf9ff3",
+      "bytes": 23350
+    },
+    "lpips/door/q0073_door-3u-4d_train_L08_ep000013.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0073_door-3u-4d_train_L08_ep000013.json",
+      "sha256": "34208babbd142113c22ffb0947baebca7e4047d8f92fe9d926b3bc792fce90b7",
+      "bytes": 4609
+    },
+    "queries/door/q0074_door-3u-4d_test_L05_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0074_door-3u-4d_test_L05_ep000008.json",
+      "sha256": "424c3426a14e926f0ab8eb50837bf69c4a8dd164f870422dc54f1f2ad467fdcb",
+      "bytes": 29583
+    },
+    "lpips/door/q0074_door-3u-4d_test_L05_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0074_door-3u-4d_test_L05_ep000008.json",
+      "sha256": "ed1b84091e2cbdd370aeecb8275a86e3d29817b57e4d033fd7983c7e39d53022",
+      "bytes": 5906
+    },
+    "queries/door/q0075_door-3u-4d_test_L07_ep000011.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0075_door-3u-4d_test_L07_ep000011.json",
+      "sha256": "12dd0f3eb86c6a98b2de284842fc6fb2556fe91b1a181504a49356a5c1a6a1c8",
+      "bytes": 22655
+    },
+    "lpips/door/q0075_door-3u-4d_test_L07_ep000011.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0075_door-3u-4d_test_L07_ep000011.json",
+      "sha256": "03611c15c4f9dc958d59740b41014d7c59d24ca256419eefba5358f8833da9b5",
+      "bytes": 4420
+    },
+    "queries/door/q0076_door-3u-4d_test_L09_ep000016.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0076_door-3u-4d_test_L09_ep000016.json",
+      "sha256": "71252080332725296004d62aa32e6caacf7b15e31da20205bbd630114d02586e",
+      "bytes": 19957
+    },
+    "lpips/door/q0076_door-3u-4d_test_L09_ep000016.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0076_door-3u-4d_test_L09_ep000016.json",
+      "sha256": "eb05570e6ea2a264bafafac071c8741d959d9a592b65628771d64dbbe9ec62d6",
+      "bytes": 3854
+    },
+    "queries/door/q0077_door-3u-4d_test_L10_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0077_door-3u-4d_test_L10_ep000017.json",
+      "sha256": "0c63486684dd2605de13fd0f170c2a3a9c44ce417076544a8aed1b70dc7865d2",
+      "bytes": 19916
+    },
+    "lpips/door/q0077_door-3u-4d_test_L10_ep000017.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0077_door-3u-4d_test_L10_ep000017.json",
+      "sha256": "eed626bb2f8b687441d84728fd277c8463d3f9de1ff61365949b31c857e213ef",
+      "bytes": 3844
+    },
+    "queries/door/q0078_door-3u-4d_test_L02_ep000020.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0078_door-3u-4d_test_L02_ep000020.json",
+      "sha256": "cda897a944eefc1c1b88c12e0077fa7a0afb2ce99c791d895235ff663385311d",
+      "bytes": 37177
+    },
+    "lpips/door/q0078_door-3u-4d_test_L02_ep000020.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0078_door-3u-4d_test_L02_ep000020.json",
+      "sha256": "b1f0a51d665560d692a310376925b09cae72f0390f28f878ae2a0b357feb68f8",
+      "bytes": 7612
+    },
+    "queries/door/q0079_door-3u-4d_test_L04_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0079_door-3u-4d_test_L04_ep000022.json",
+      "sha256": "ca6cb1ac6140ccc3e883fe1243eff642523e35df15e1bffddedd5301d2697a4f",
+      "bytes": 36952
+    },
+    "lpips/door/q0079_door-3u-4d_test_L04_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0079_door-3u-4d_test_L04_ep000022.json",
+      "sha256": "eff55e020a04693daf61745b561fe1f923f472e845a6d72654b2e90b74562dd3",
+      "bytes": 7469
+    },
+    "queries/door/q0080_door-3u-4d_test_L06_ep000025.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0080_door-3u-4d_test_L06_ep000025.json",
+      "sha256": "98d66762cceaf40cff1621f3e5cbd8df233d47cf607e57e022f1f36a7fd17c47",
+      "bytes": 28816
+    },
+    "lpips/door/q0080_door-3u-4d_test_L06_ep000025.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0080_door-3u-4d_test_L06_ep000025.json",
+      "sha256": "960168d312b79f9328f5032d1737280ce12af16e46e501c15f89c478c680a028",
+      "bytes": 5730
+    },
+    "queries/door/q0081_door-3u-4d_test_L01_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0081_door-3u-4d_test_L01_ep000031.json",
+      "sha256": "1af5a38e4115952ae3a0f7e93cd3aca2fab055675e8b40839975c750c0ed0a38",
+      "bytes": 36500
+    },
+    "lpips/door/q0081_door-3u-4d_test_L01_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0081_door-3u-4d_test_L01_ep000031.json",
+      "sha256": "b2757ddbc19dd15129c8929aadec3c32bd8d8944212058fbf7050352c288b605",
+      "bytes": 7431
+    },
+    "queries/door/q0082_door-3u-4d_test_L03_ep000033.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0082_door-3u-4d_test_L03_ep000033.json",
+      "sha256": "9065a6a08792c821f55de3d7fed86ed6dc86293c162b151b6b63e7d9f0dc3808",
+      "bytes": 37093
+    },
+    "lpips/door/q0082_door-3u-4d_test_L03_ep000033.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0082_door-3u-4d_test_L03_ep000033.json",
+      "sha256": "95e69f481de94b29b9b316de61da725a8138551973e764c0247db0cb27319277",
+      "bytes": 7514
+    },
+    "queries/door/q0083_door-3u-4d_test_L08_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0083_door-3u-4d_test_L08_ep000039.json",
+      "sha256": "873da551bbf3063ec7e837c33d4d31fcfc2431c5004e7f7cf02560eef209b9b8",
+      "bytes": 24040
+    },
+    "lpips/door/q0083_door-3u-4d_test_L08_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0083_door-3u-4d_test_L08_ep000039.json",
+      "sha256": "405b208358e51c4967048a067c8dd9f181b9f6ce347c1abc897b3311b2451096",
+      "bytes": 4758
+    },
+    "queries/door/q0084_door-4d_train_L01_ep000042.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0084_door-4d_train_L01_ep000042.json",
+      "sha256": "86bcbb5e57de878b01bdb9a41b4bad3d881af7d36ee71ff45d48d0c90fb830d4",
+      "bytes": 37158
+    },
+    "lpips/door/q0084_door-4d_train_L01_ep000042.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0084_door-4d_train_L01_ep000042.json",
+      "sha256": "4f8bdfc3b8823564d809984b2a1ba97a3bfb9d783d2ba150b8ecec3139112cb8",
+      "bytes": 7558
+    },
+    "queries/door/q0085_door-4d_train_L04_ep000035.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0085_door-4d_train_L04_ep000035.json",
+      "sha256": "314c477cd554906419ebe09ae24709f30a08606ca11ff0bf132128f8f1464d0e",
+      "bytes": 31486
+    },
+    "lpips/door/q0085_door-4d_train_L04_ep000035.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0085_door-4d_train_L04_ep000035.json",
+      "sha256": "50c8704329676c995992a22cf529247642107da1dc4f8c2e42adc7f86df11414",
+      "bytes": 6398
+    },
+    "queries/door/q0086_door-4d_test_L02_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0086_door-4d_test_L02_ep000004.json",
+      "sha256": "5fe19a0b82e45b867bd7916a08489fb5e6eea39ac186f2fcdc5f72f72a4d2680",
+      "bytes": 37037
+    },
+    "lpips/door/q0086_door-4d_test_L02_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0086_door-4d_test_L02_ep000004.json",
+      "sha256": "99a966170fb9da4415a855e726c1a853886fde2490fc9da56809e0794ce4babc",
+      "bytes": 7493
+    },
+    "queries/door/q0087_door-4d_test_L03_ep000005.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0087_door-4d_test_L03_ep000005.json",
+      "sha256": "b18d20ebfd6a07bda166921d33580299183ec8681ca5ca9de72ab907a709f595",
+      "bytes": 37083
+    },
+    "lpips/door/q0087_door-4d_test_L03_ep000005.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0087_door-4d_test_L03_ep000005.json",
+      "sha256": "b34dda989ebb97576748de8671203f3a84c8b5dd8ef88ce62e4c4057d930fa7a",
+      "bytes": 7513
+    },
+    "queries/door/q0088_door-4d_test_L10_ep000020.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0088_door-4d_test_L10_ep000020.json",
+      "sha256": "eeb4a332e73c3f48792c08e990a320631264ea64d7d1740d89fcabb9993fa852",
+      "bytes": 18506
+    },
+    "lpips/door/q0088_door-4d_test_L10_ep000020.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0088_door-4d_test_L10_ep000020.json",
+      "sha256": "749e674a8116f7a010cc8173c1da930fbc7f572a685c2939a914de82d2d68ff8",
+      "bytes": 3540
+    },
+    "queries/door/q0089_door-4d_test_L05_ep000026.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0089_door-4d_test_L05_ep000026.json",
+      "sha256": "cb3d31e5c05c3e0ad6ea9d82bde9b2f10ef21226c6c09a223d60e12bd037e35e",
+      "bytes": 26002
+    },
+    "lpips/door/q0089_door-4d_test_L05_ep000026.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0089_door-4d_test_L05_ep000026.json",
+      "sha256": "e6201dd6a8341fe5577e5b6f0c838789026b98f3ae1bb0591afe48aca3137873",
+      "bytes": 5193
+    },
+    "queries/door/q0090_door-4d_test_L08_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0090_door-4d_test_L08_ep000029.json",
+      "sha256": "a9819dac38a6905aad8ac1fd9cf2f31482a475bca78e75b84db2c66e13d7f260",
+      "bytes": 20428
+    },
+    "lpips/door/q0090_door-4d_test_L08_ep000029.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0090_door-4d_test_L08_ep000029.json",
+      "sha256": "b76bdd17d125031f0f8d8f05f73e42091b221a8cc5881448a6cd35dda04653ba",
+      "bytes": 3987
+    },
+    "queries/door/q0091_door-4d_test_L01_ep000032.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0091_door-4d_test_L01_ep000032.json",
+      "sha256": "ef5b46be67e98ccc320e5f4240206374eea5b5baefd835b559c24557949e7ff2",
+      "bytes": 37160
+    },
+    "lpips/door/q0091_door-4d_test_L01_ep000032.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0091_door-4d_test_L01_ep000032.json",
+      "sha256": "c1edf392508e5f7813db12c7896cf63cb44ee29f3089b14ccd7c1742c891cc92",
+      "bytes": 7578
+    },
+    "queries/door/q0092_door-4d_test_L07_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0092_door-4d_test_L07_ep000039.json",
+      "sha256": "f8cf1010d5eb5f403f478023d961bf8a5577ecc5edadc023eafe237d3480e768",
+      "bytes": 33720
+    },
+    "lpips/door/q0092_door-4d_test_L07_ep000039.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0092_door-4d_test_L07_ep000039.json",
+      "sha256": "6bafc667701329c153321a010cda9c21de5d5a1e94e26a97703f2f24ed549e5f",
+      "bytes": 6872
+    },
+    "queries/door/q0093_door-4d_test_L09_ep000041.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0093_door-4d_test_L09_ep000041.json",
+      "sha256": "f5ac8bb070d4713c68925f5019c7eda91809f43ca30062ca1ac4e93b7cd79f48",
+      "bytes": 28151
+    },
+    "lpips/door/q0093_door-4d_test_L09_ep000041.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0093_door-4d_test_L09_ep000041.json",
+      "sha256": "3023e32cddf34920fa7c9cb3622457949e94537324260e4e8ff006364fe11372",
+      "bytes": 5651
+    },
+    "queries/door/q0094_door-4d_test_L06_ep000048.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0094_door-4d_test_L06_ep000048.json",
+      "sha256": "1bb80d0ec7411e5f64a69361c829da4303e8126be48a053ff011f3c62dac7ac9",
+      "bytes": 28819
+    },
+    "lpips/door/q0094_door-4d_test_L06_ep000048.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0094_door-4d_test_L06_ep000048.json",
+      "sha256": "5649eee04935b4fbf1deaddbb50aadef0450b6de4c1d4b37b6d1e3b687ea2eed",
+      "bytes": 5705
+    },
+    "queries/door/q0095_door-4d_test_L04_ep000056.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0095_door-4d_test_L04_ep000056.json",
+      "sha256": "473db8cde04bc6ef68de4db3b4ffa43b9608d9d374e0fc9b5c36ac8353ff98df",
+      "bytes": 30238
+    },
+    "lpips/door/q0095_door-4d_test_L04_ep000056.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0095_door-4d_test_L04_ep000056.json",
+      "sha256": "f78551fa0a18fcdba168fbb42029ad0a20c7426fe5275b5ac040c3171ae4cdfa",
+      "bytes": 6099
+    },
+    "queries/door/q0096_door-6u-7d_train_L10_ep000019.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0096_door-6u-7d_train_L10_ep000019.json",
+      "sha256": "88c302db07ad28234aa7462fdd25ac18e5eea9f758969687454753a41b63f5b6",
+      "bytes": 28842
+    },
+    "lpips/door/q0096_door-6u-7d_train_L10_ep000019.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0096_door-6u-7d_train_L10_ep000019.json",
+      "sha256": "ec725eae2759a8b965432b02f58b516e7f239fc1321ed35c46acee508bc830b6",
+      "bytes": 5799
+    },
+    "queries/door/q0097_door-6u-7d_train_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0097_door-6u-7d_train_L03_ep000022.json",
+      "sha256": "b3dd8d8a55ae098d869ff1c397041b9a0d3d934e0ceb8b810f6dddbd65807465",
+      "bytes": 37076
+    },
+    "lpips/door/q0097_door-6u-7d_train_L03_ep000022.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0097_door-6u-7d_train_L03_ep000022.json",
+      "sha256": "8be83ec07a7762ca18395ee46cbfe1dd143171071c27b8265b3bc2793f1f39f6",
+      "bytes": 7522
+    },
+    "queries/door/q0098_door-6u-7d_test_L08_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0098_door-6u-7d_test_L08_ep000015.json",
+      "sha256": "4e13d7216b37f4a94814167f13a5f987c7c7a960c071b6e3ad9e4a9345e72ac1",
+      "bytes": 28210
+    },
+    "lpips/door/q0098_door-6u-7d_test_L08_ep000015.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0098_door-6u-7d_test_L08_ep000015.json",
+      "sha256": "3baa8531d5d19d917f2f43a2b642e5042593e658eefcfdf8163439917873846e",
+      "bytes": 5644
+    },
+    "queries/door/q0099_door-6u-7d_test_L07_ep000026.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0099_door-6u-7d_test_L07_ep000026.json",
+      "sha256": "6c238315e36cab4d02541ef913197e1d0378b8129d522328f57a9df6d11f7168",
+      "bytes": 23391
+    },
+    "lpips/door/q0099_door-6u-7d_test_L07_ep000026.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0099_door-6u-7d_test_L07_ep000026.json",
+      "sha256": "ab2ca5626c3ed192040d9fb4b5a21ef16d76c6c52c36d3367d165c8febb68c52",
+      "bytes": 4603
+    },
+    "queries/door/q0100_door-6u-7d_test_L09_ep000038.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0100_door-6u-7d_test_L09_ep000038.json",
+      "sha256": "59298559b1d75e829cc3e8d00e39048e5e6a8e1481e0603de944c886128949e5",
+      "bytes": 21988
+    },
+    "lpips/door/q0100_door-6u-7d_test_L09_ep000038.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0100_door-6u-7d_test_L09_ep000038.json",
+      "sha256": "ad81412b0bfda084402303c408dbc5b7dcb839e6f9e70ee4afa5807c7ada19a2",
+      "bytes": 4301
+    },
+    "queries/door/q0101_door-6u-7d_test_L03_ep000042.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0101_door-6u-7d_test_L03_ep000042.json",
+      "sha256": "74f359bdd77c9c84846387043a46b865d17b855fac73c0b996704bae0963e4c6",
+      "bytes": 37120
+    },
+    "lpips/door/q0101_door-6u-7d_test_L03_ep000042.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0101_door-6u-7d_test_L03_ep000042.json",
+      "sha256": "5653f94c7d4340ebf40716e0c0d544e8c6504741146a2d5fe1929e8291c536a6",
+      "bytes": 7542
+    },
+    "queries/door/q0102_door-6u-7d_test_L04_ep000043.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0102_door-6u-7d_test_L04_ep000043.json",
+      "sha256": "1adbae6026baf9b2210abe430346a4939718e292deb982c4f029886e97b15ec5",
+      "bytes": 37046
+    },
+    "lpips/door/q0102_door-6u-7d_test_L04_ep000043.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0102_door-6u-7d_test_L04_ep000043.json",
+      "sha256": "fe9b521693e6b11a31bded16645961c821a435e9f6dc1a549474f79479128aeb",
+      "bytes": 7507
+    },
+    "queries/door/q0103_door-6u-7d_test_L01_ep000046.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0103_door-6u-7d_test_L01_ep000046.json",
+      "sha256": "42b29ddcc238c4ef7610959f926b7390840073abdc45c9bcaf4d9a8dddc09a3d",
+      "bytes": 37149
+    },
+    "lpips/door/q0103_door-6u-7d_test_L01_ep000046.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0103_door-6u-7d_test_L01_ep000046.json",
+      "sha256": "248856747bb97d45478750e9b377ac727c0552edff15629e6c31c2a5f1f51e2d",
+      "bytes": 7542
+    },
+    "queries/door/q0104_door-6u-7d_test_L02_ep000047.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0104_door-6u-7d_test_L02_ep000047.json",
+      "sha256": "5f6026a9c7b2a2be6b0f7af1b436ef69b6bc4d48876d4ace4444aa904df179c8",
+      "bytes": 37159
+    },
+    "lpips/door/q0104_door-6u-7d_test_L02_ep000047.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0104_door-6u-7d_test_L02_ep000047.json",
+      "sha256": "35a04d6c874a2b1bfa161c9504b56eff3df052788125cc19fead266214611776",
+      "bytes": 7549
+    },
+    "queries/door/q0105_door-6u-7d_test_L05_ep000050.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0105_door-6u-7d_test_L05_ep000050.json",
+      "sha256": "b613066a64beb0293ada199028a172fa021b30a5cd535655b9a94f3271a5e08d",
+      "bytes": 35737
+    },
+    "lpips/door/q0105_door-6u-7d_test_L05_ep000050.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0105_door-6u-7d_test_L05_ep000050.json",
+      "sha256": "f159e33d4e56b3bbe9cf3d78a55cbc04f6e1a3479735e917b247993d861ea4dc",
+      "bytes": 7215
+    },
+    "queries/door/q0106_door-6u-7d_test_L06_ep000051.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0106_door-6u-7d_test_L06_ep000051.json",
+      "sha256": "bf4430e39b3f8aa24fbeaa22417c9db303de798e6e394149a73e2ac59d98e0db",
+      "bytes": 34985
+    },
+    "lpips/door/q0106_door-6u-7d_test_L06_ep000051.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0106_door-6u-7d_test_L06_ep000051.json",
+      "sha256": "c565e12d03be54c56a2ecd77098ad05af8e841d338a3c4af67915cc256f7d1d1",
+      "bytes": 7058
+    },
+    "queries/door/q0107_door-6u-7d_test_L10_ep000055.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0107_door-6u-7d_test_L10_ep000055.json",
+      "sha256": "d76301247c43d4c5631f09b8fdd0a67f9ca171eaa6bf1c53a12b6c0a40dacb5c",
+      "bytes": 23330
+    },
+    "lpips/door/q0107_door-6u-7d_test_L10_ep000055.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0107_door-6u-7d_test_L10_ep000055.json",
+      "sha256": "6e58665193386d3b58bdd12d9370b0d14a39909e34f61faee6b8c0428f0cf00d",
+      "bytes": 4602
+    },
+    "queries/door/q0108_door-6u-8d_train_L01_ep000050.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0108_door-6u-8d_train_L01_ep000050.json",
+      "sha256": "90dcdd530a921f989d47c81f84160d149b70ef1c93db0696ef7b89741cdccc61",
+      "bytes": 34407
+    },
+    "lpips/door/q0108_door-6u-8d_train_L01_ep000050.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0108_door-6u-8d_train_L01_ep000050.json",
+      "sha256": "b64ed053e36469622f5390c09ef5b1182234fb803c5fb97ea58328f4718dd158",
+      "bytes": 6994
+    },
+    "queries/door/q0109_door-6u-8d_train_L09_ep000016.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0109_door-6u-8d_train_L09_ep000016.json",
+      "sha256": "05d249acb380e0df4cee3b1082648a7452c183849674ef79b5f2abb4ce4319bd",
+      "bytes": 25995
+    },
+    "lpips/door/q0109_door-6u-8d_train_L09_ep000016.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0109_door-6u-8d_train_L09_ep000016.json",
+      "sha256": "13857e1e3be1e0e56e1da3a2804ce919a1013b4ed85c9dab36cfa259c5e76666",
+      "bytes": 5200
+    },
+    "queries/door/q0110_door-6u-8d_test_L01_ep000001.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0110_door-6u-8d_test_L01_ep000001.json",
+      "sha256": "944c3899bdf654ff4a28667b76cedc733a2e87bb650aa148c6b44f9ced3422b2",
+      "bytes": 37018
+    },
+    "lpips/door/q0110_door-6u-8d_test_L01_ep000001.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0110_door-6u-8d_test_L01_ep000001.json",
+      "sha256": "00d8c1a479622f23a51c1ad1b97429c9bfa0002f461f011729ee6e7e143fbb0b",
+      "bytes": 7538
+    },
+    "queries/door/q0111_door-6u-8d_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0111_door-6u-8d_test_L02_ep000003.json",
+      "sha256": "e2435c5aab08c2a4e0165cd0f66e2a22f8db5875baec0973158751a5b480fdbb",
+      "bytes": 37107
+    },
+    "lpips/door/q0111_door-6u-8d_test_L02_ep000003.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0111_door-6u-8d_test_L02_ep000003.json",
+      "sha256": "6e2a32431b2c159a71c90bc7deb52675e3aac4720f6deb74f707b950b16af240",
+      "bytes": 7523
+    },
+    "queries/door/q0112_door-6u-8d_test_L03_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0112_door-6u-8d_test_L03_ep000004.json",
+      "sha256": "d8e21fa2c743b3d13ad570a410093807f7153a4d32b0716d853c20b9b36fb50d",
+      "bytes": 37163
+    },
+    "lpips/door/q0112_door-6u-8d_test_L03_ep000004.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0112_door-6u-8d_test_L03_ep000004.json",
+      "sha256": "a1edcc074649c586156120ed34a552ff153d18ef9e1958f2a352c7d50f782df6",
+      "bytes": 7566
+    },
+    "queries/door/q0113_door-6u-8d_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0113_door-6u-8d_test_L04_ep000007.json",
+      "sha256": "9730ebecf55d927557f1a9ddd4dde9ab50fa0a9d80fd98a398401c15b3439f38",
+      "bytes": 37081
+    },
+    "lpips/door/q0113_door-6u-8d_test_L04_ep000007.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0113_door-6u-8d_test_L04_ep000007.json",
+      "sha256": "4b1e555e9ee3758ce4ffb6d702c18c8f1106ed623523494ffde7bf8cea67206d",
+      "bytes": 7529
+    },
+    "queries/door/q0114_door-6u-8d_test_L05_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0114_door-6u-8d_test_L05_ep000008.json",
+      "sha256": "1649243fb681f81abffc97cd75078225c23b46c0706315aa3b79aad8c165e6ab",
+      "bytes": 37131
+    },
+    "lpips/door/q0114_door-6u-8d_test_L05_ep000008.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0114_door-6u-8d_test_L05_ep000008.json",
+      "sha256": "ff186283a7f652f4b9f8ab67fa3e7cc1f4cb60c0bfd0429a1b780ae8d423f5e4",
+      "bytes": 7555
+    },
+    "queries/door/q0115_door-6u-8d_test_L10_ep000018.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0115_door-6u-8d_test_L10_ep000018.json",
+      "sha256": "444b8fd44a15fe1848e692e67585030f8c048f5c05b131ea0192a6e84935d723",
+      "bytes": 21951
+    },
+    "lpips/door/q0115_door-6u-8d_test_L10_ep000018.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0115_door-6u-8d_test_L10_ep000018.json",
+      "sha256": "df79661df83eb80f79f452ae0fb8cbce40515377142dc3c2086ac69a62267b6d",
+      "bytes": 4299
+    },
+    "queries/door/q0116_door-6u-8d_test_L06_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0116_door-6u-8d_test_L06_ep000031.json",
+      "sha256": "3f82c0c6f431763863a0246e5fb7286a4dfa319c9aacd1975aeec3224cd2c731",
+      "bytes": 36432
+    },
+    "lpips/door/q0116_door-6u-8d_test_L06_ep000031.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0116_door-6u-8d_test_L06_ep000031.json",
+      "sha256": "70b6c53d542c60e9b5b2b009c648f728854fb52e2360c018d66050b6a212371b",
+      "bytes": 7409
+    },
+    "queries/door/q0117_door-6u-8d_test_L07_ep000033.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0117_door-6u-8d_test_L07_ep000033.json",
+      "sha256": "8e82395ec5132a73d603eb0570ab50ba0a96e4e276ee63d2f45e831cb2dbcb5a",
+      "bytes": 34285
+    },
+    "lpips/door/q0117_door-6u-8d_test_L07_ep000033.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0117_door-6u-8d_test_L07_ep000033.json",
+      "sha256": "9d973099f49d9588860c09fd29ac18380a1534014e761a2638884e1fec81ab3c",
+      "bytes": 6875
+    },
+    "queries/door/q0118_door-6u-8d_test_L09_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0118_door-6u-8d_test_L09_ep000036.json",
+      "sha256": "089caa392db7df9b50f137aa23d86752422d69642922ac42daba0868ff1474c8",
+      "bytes": 26818
+    },
+    "lpips/door/q0118_door-6u-8d_test_L09_ep000036.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0118_door-6u-8d_test_L09_ep000036.json",
+      "sha256": "746397d8ad717bd943f80956075736a05073452080d1a2d52cb1e077910fdcba",
+      "bytes": 5354
+    },
+    "queries/door/q0119_door-6u-8d_test_L08_ep000047.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/queries/door/q0119_door-6u-8d_test_L08_ep000047.json",
+      "sha256": "8f87dc54ecdadd4529d9cf2be10d20c3f446514dd8cae956be8aba9df0361891",
+      "bytes": 25996
+    },
+    "lpips/door/q0119_door-6u-8d_test_L08_ep000047.json": {
+      "source": "outputs/eval_real97_ball_door_scores_20260912_v2/lpips/door/q0119_door-6u-8d_test_L08_ep000047.json",
+      "sha256": "a84fb04cbff2a3e31d6136d542e65a315cd41e91c177d6478820caad33210dbe",
+      "bytes": 5198
+    }
+  },
+  "completion_records": {
+    "cpu_complete.json": {
+      "queries": 216,
+      "reused_image_metrics": true,
+      "door_closure": {
+        "policy": "one_sided_edge_gap",
+        "minimum_plausible_gap_px": -5,
+        "closed_max_gap_px": 18,
+        "open_min_gap_px": 22,
+        "calibration_split": "train",
+        "calibration_source": "outputs/eval_real97_ball_door_scores_20260912_v1/closure_calibration_audit",
+        "training_closed_observed_range_px": [
+          1,
+          16
+        ],
+        "training_open_observed_range_px": [
+          23,
+          152
+        ],
+        "training_visual_labels_by_query_index": {
+          "0": true,
+          "1": true,
+          "12": true,
+          "13": false,
+          "24": false,
+          "25": false,
+          "36": true,
+          "37": true,
+          "48": true,
+          "49": true,
+          "60": true,
+          "61": true,
+          "72": false,
+          "73": true,
+          "84": false,
+          "85": true,
+          "96": true,
+          "97": false,
+          "108": false,
+          "109": true
+        }
+      },
+      "training_visual_label_matches": 20,
+      "training_visual_label_count": 20
+    },
+    "lpips_complete.json": {
+      "queries": 216,
+      "net": "alex"
+    }
+  },
+  "frozen_inference_outputs": {
+    "native_size": [
+      640,
+      480
+    ],
+    "ours": "outputs/infer_real97_door_ours_reference_job114799",
+    "standard": "outputs/infer_real97_door_standard_step5500_reference_job115187",
+    "dino": "outputs/infer_real97_door_dino_step5500_reference_job115188"
+  },
+  "all_videos_remain_in_original_output_directories": true,
+  "training_weights_dataset_files_and_logs_included": false
+}

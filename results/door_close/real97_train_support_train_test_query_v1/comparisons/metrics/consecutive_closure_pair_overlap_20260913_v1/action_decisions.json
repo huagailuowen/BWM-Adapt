@@ -1,0 +1,981 @@
+{
+  "metric": "first_consecutive_closed_pair_overlap",
+  "methods": [
+    {
+      "task": "door",
+      "method": "standard",
+      "environment_count": 9,
+      "scorable_count": 9,
+      "macro_score": 0.3888888888888889,
+      "conservative_score_fixed_denominator": 0.3888888888888889,
+      "decisions": [
+        {
+          "environment": "door-0",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            1,
+            2
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "9": true,
+            "1": true,
+            "2": false,
+            "4": true,
+            "5": false,
+            "10": true,
+            "8": true,
+            "7": true,
+            "3": true,
+            "6": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-12u-Half",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "2": false,
+            "4": true,
+            "8": true,
+            "9": true,
+            "10": true,
+            "1": false,
+            "5": true,
+            "6": true,
+            "3": false,
+            "7": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-1d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            2,
+            3
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "4": true,
+            "9": true,
+            "1": false,
+            "10": true,
+            "3": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-4d",
+          "predicted_prefer": [
+            5,
+            6
+          ],
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "4": false,
+            "6": true,
+            "7": true,
+            "8": false,
+            "5": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "4": true,
+            "1": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "9": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "1": false,
+            "3": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": true,
+            "3": false,
+            "10": true,
+            "5": true,
+            "8": true,
+            "1": false,
+            "7": true,
+            "9": true,
+            "6": false,
+            "4": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-7d",
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "gt_prefer": [
+            7,
+            8
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "8": true,
+            "7": true,
+            "9": true,
+            "3": false,
+            "4": true,
+            "1": true,
+            "2": false,
+            "5": false,
+            "6": true,
+            "10": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-8d",
+          "predicted_prefer": [
+            7,
+            8
+          ],
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": true,
+            "5": false,
+            "10": true,
+            "6": false,
+            "7": true,
+            "9": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    },
+    {
+      "task": "door",
+      "method": "dino",
+      "environment_count": 9,
+      "scorable_count": 9,
+      "macro_score": 0.4444444444444444,
+      "conservative_score_fixed_denominator": 0.4444444444444444,
+      "decisions": [
+        {
+          "environment": "door-0",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            1,
+            2
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "9": true,
+            "1": false,
+            "2": false,
+            "4": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "3": true,
+            "6": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-12u-Half",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "2": false,
+            "4": true,
+            "8": true,
+            "9": true,
+            "10": true,
+            "1": false,
+            "5": true,
+            "6": true,
+            "3": false,
+            "7": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-1d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            2,
+            3
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "4": true,
+            "9": true,
+            "1": false,
+            "10": true,
+            "3": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-4d",
+          "predicted_prefer": [
+            5,
+            6
+          ],
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "4": false,
+            "6": true,
+            "7": true,
+            "8": true,
+            "5": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": true,
+            "4": true,
+            "1": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "9": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "5": false,
+            "7": true,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "1": false,
+            "3": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-4d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": true,
+            "3": true,
+            "10": true,
+            "5": true,
+            "8": true,
+            "1": false,
+            "7": true,
+            "9": true,
+            "6": false,
+            "4": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-7d",
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "gt_prefer": [
+            7,
+            8
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "8": true,
+            "7": true,
+            "9": true,
+            "3": false,
+            "4": true,
+            "1": true,
+            "2": false,
+            "5": false,
+            "6": true,
+            "10": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-8d",
+          "predicted_prefer": [
+            7,
+            8
+          ],
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "1": false,
+            "2": true,
+            "3": false,
+            "4": true,
+            "5": false,
+            "10": true,
+            "6": false,
+            "7": true,
+            "9": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    },
+    {
+      "task": "door",
+      "method": "ours_stage1",
+      "environment_count": 9,
+      "scorable_count": 9,
+      "macro_score": 0.8888888888888888,
+      "conservative_score_fixed_denominator": 0.8888888888888888,
+      "decisions": [
+        {
+          "environment": "door-0",
+          "predicted_prefer": [
+            1,
+            2
+          ],
+          "gt_prefer": [
+            1,
+            2
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "9": true,
+            "1": true,
+            "2": true,
+            "4": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "3": true,
+            "6": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-12u-Half",
+          "predicted_prefer": [
+            9,
+            10
+          ],
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "4": false,
+            "8": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "7": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-1d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            2,
+            3
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "4": true,
+            "9": true,
+            "1": false,
+            "10": true,
+            "3": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "4": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "5": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": true,
+            "4": true,
+            "1": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "9": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "5": true,
+            "7": true,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "1": false,
+            "3": false,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-4d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": true,
+            "3": true,
+            "10": true,
+            "5": true,
+            "8": true,
+            "1": false,
+            "7": true,
+            "9": true,
+            "6": false,
+            "4": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-7d",
+          "predicted_prefer": [
+            7,
+            8
+          ],
+          "gt_prefer": [
+            7,
+            8
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "8": true,
+            "7": true,
+            "9": true,
+            "3": false,
+            "4": false,
+            "1": false,
+            "2": false,
+            "5": false,
+            "6": false,
+            "10": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-8d",
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": false,
+            "5": false,
+            "10": true,
+            "6": false,
+            "7": false,
+            "9": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    },
+    {
+      "task": "door",
+      "method": "ours_stage2",
+      "environment_count": 9,
+      "scorable_count": 9,
+      "macro_score": 0.7777777777777778,
+      "conservative_score_fixed_denominator": 0.7777777777777778,
+      "decisions": [
+        {
+          "environment": "door-0",
+          "predicted_prefer": [
+            1,
+            2
+          ],
+          "gt_prefer": [
+            1,
+            2
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "9": true,
+            "1": true,
+            "2": true,
+            "4": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "3": true,
+            "6": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-12u-Half",
+          "predicted_prefer": [
+            9,
+            10
+          ],
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "4": false,
+            "8": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "7": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-1d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            2,
+            3
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "4": true,
+            "9": true,
+            "1": false,
+            "10": true,
+            "3": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "4": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "5": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": true,
+            "4": true,
+            "1": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "9": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "5": true,
+            "7": true,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "1": false,
+            "3": false,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "10": true,
+            "5": true,
+            "8": true,
+            "1": false,
+            "7": true,
+            "9": true,
+            "6": false,
+            "4": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-7d",
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "gt_prefer": [
+            7,
+            8
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "8": true,
+            "7": true,
+            "9": true,
+            "3": false,
+            "4": false,
+            "1": false,
+            "2": false,
+            "5": false,
+            "6": true,
+            "10": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-8d",
+          "predicted_prefer": [
+            7,
+            8
+          ],
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": false,
+            "5": false,
+            "10": true,
+            "6": false,
+            "7": true,
+            "9": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    }
+  ]
+}
