@@ -10,6 +10,7 @@ import random
 import yaml
 
 from ..environment_sampling import weighted_sample_without_replacement
+from ..window_sampling import WindowIndexSelector
 
 
 @dataclass(frozen=True)
@@ -34,6 +35,10 @@ class Event80PrequentialSampler:
         environment_key: str = "mu_index",
         action_key: str = "action_id",
         distinct_actions: bool = False,
+        window_sampling_mode: str = "legacy",
+        window_kind_field: str = "sampling_kind",
+        preferred_window_kind: str = "precise",
+        preferred_window_probability: float = 0.5,
     ) -> None:
         self.seed = int(seed)
         self.sequence_length = int(sequence_length)
@@ -90,6 +95,18 @@ class Event80PrequentialSampler:
                 )
         self.grouped_indices = grouped
         self.grouped_indices_by_action = grouped_by_action
+        self.window_selector = WindowIndexSelector(
+            self.rows,
+            mode=window_sampling_mode,
+            kind_field=window_kind_field,
+            preferred_kind=preferred_window_kind,
+            preferred_probability=preferred_window_probability,
+        )
+        if self.window_selector.enabled and not self.distinct_actions:
+            raise ValueError(
+                "Episode/window balancing requires distinct_actions=True and an "
+                "episode identifier as action_key (not an action level)."
+            )
 
     def sample(
         self,
@@ -117,7 +134,10 @@ class Event80PrequentialSampler:
             if self.distinct_actions:
                 by_action = self.grouped_indices_by_action[environment_id]
                 selected_actions = rng.sample(sorted(by_action), self.sequence_length)
-                indices = [rng.choice(by_action[action_id]) for action_id in selected_actions]
+                indices = [
+                    self.window_selector.choose(rng, by_action[action_id])
+                    for action_id in selected_actions
+                ]
             else:
                 indices = rng.sample(
                     self.grouped_indices[environment_id], self.sequence_length

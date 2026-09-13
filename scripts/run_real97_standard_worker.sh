@@ -76,10 +76,7 @@ flat = {k: v for section in cfg.values() if isinstance(section, dict) for k, v i
 source = pathlib.Path(flat['dataset_base_path'])
 manifest = pathlib.Path(flat['dataset_metadata_path']).parent
 summary = json.loads((manifest / 'manifest_summary.json').read_text())
-# Metadata-only latent aliases reuse exactly the same immutable physical files.
-# Legacy manifests have no override and retain their original cache identity.
-cache_identity = summary.get('source_dataset_cache_identity', summary)
-tag = cache_identity['task'] + '_' + cache_identity['version'] + '_' + cache_identity['train_manifest_sha256'][:12]
+tag = summary['task'] + '_' + summary['version'] + '_' + summary['train_manifest_sha256'][:12]
 local = cache / 'datasets_real' / tag
 local.parent.mkdir(parents=True, exist_ok=True)
 with (local.parent / (tag + '.lock')).open('a') as lock:
@@ -108,9 +105,9 @@ PY
   export BWM_LOCAL_CHECKPOINT_ROOT="/tmp/${USER}/bwm_grouped_checkpoints/${SLURM_JOB_ID}/${slot}"
   printf '[training] slot=%s visible_gpus=%s output=%s\n' "$slot" "$devices" "$run_root"
   exec .venv/bin/python -m torch.distributed.run \
-    --nnodes=1 --nproc_per_node=2 --rdzv_backend=c10d --rdzv_endpoint=localhost:0 \
+    --nnodes=1 --nproc_per_node=2 --rdzv_backend=c10d --rdzv_endpoint=localhost:${BWM_STANDARD_PORT:?} \
     --rdzv_id="${SLURM_JOB_ID}_${slot}" \
-    "${BWM_GROUPED_TRAIN_ENTRYPOINT:-scripts/train_stage1_grouped_context.py}" --config "$runtime" --find_unused_parameters
+    scripts/methods/train_real97_standard_pooled.py --config "$runtime" --find_unused_parameters
 )
 
 # Separate process groups/rendezvous/output. A child failure does not kill its peer.

@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import time
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
@@ -39,6 +40,15 @@ def add_ttt_kvb_config(parser: argparse.ArgumentParser) -> argparse.ArgumentPars
     group.add_argument("--ttt_environment_key", type=str, default="mu_index")
     group.add_argument("--ttt_action_key", type=str, default="action_id")
     group.add_argument(
+        "--ttt_window_sampling_mode",
+        choices=("legacy", "uniform_episode_then_window"),
+        default="legacy",
+        help="Opt-in episode/window balancing; use episode_index as action_key.",
+    )
+    group.add_argument("--ttt_window_kind_field", default="sampling_kind")
+    group.add_argument("--ttt_preferred_window_kind", default="precise")
+    group.add_argument("--ttt_preferred_window_probability", type=float, default=0.5)
+    group.add_argument(
         "--ttt_distinct_actions",
         action=argparse.BooleanOptionalAction,
         default=False,
@@ -65,6 +75,10 @@ def add_ttt_kvb_config(parser: argparse.ArgumentParser) -> argparse.ArgumentPars
             "CPU. This preserves the full TTT graph while reducing GPU peak memory."
         ),
     )
+    group.add_argument("--ttt_saved_tensor_policy", choices=("legacy", "selective"), default="legacy")
+    group.add_argument("--ttt_gpu_saved_tensor_budget_gib", type=float, default=12.0)
+    group.add_argument("--ttt_backward_per_stream", action=argparse.BooleanOptionalAction, default=False)
+    group.add_argument("--ttt_sync_per_update", action=argparse.BooleanOptionalAction, default=False)
     return parser
 
 
@@ -150,6 +164,10 @@ def main() -> None:
         environment_key=args.ttt_environment_key,
         action_key=args.ttt_action_key,
         distinct_actions=args.ttt_distinct_actions,
+        window_sampling_mode=args.ttt_window_sampling_mode,
+        window_kind_field=args.ttt_window_kind_field,
+        preferred_window_kind=args.ttt_preferred_window_kind,
+        preferred_window_probability=args.ttt_preferred_window_probability,
     )
     model_class = (
         OneMinuteTTTWanTrainingModule
@@ -241,6 +259,16 @@ def main() -> None:
         log_steps=args.log_steps,
     )
 
+    saved_storage = None
+    if args.ttt_saved_tensor_policy == "selective":
+        from wan_video_action.methods.baselines.ttt_kvb.activation_storage import SelectiveSavedTensorStorage
+        saved_storage = SelectiveSavedTensorStorage(
+            accelerator.unwrap_model(model), gpu_budget_gib=args.ttt_gpu_saved_tensor_budget_gib,
+        )
+    if args.ttt_backward_per_stream and args.ttt_protocol != "oneminute_write_then_predict":
+        raise ValueError("Stream backward is supported only for the causal write-then-predict branch.")
+    diagnostic_callback = getattr(model_logger, "on_step_diagnostics", None)
+
     updates_per_chunk = (
         "all_tokens/64"
         if args.ttt_protocol == "oneminute_write_then_predict"
@@ -266,6 +294,12 @@ def main() -> None:
     sequence_length = int(args.ttt_sequence_length)
     for update_index in iterator:
         step = update_index + 1
+        update_started_wall = time.time()
+        update_started_monotonic = time.monotonic()
+        if diagnostic_callback is not None:
+            torch.cuda.reset_peak_memory_stats(accelerator.device)
+        if saved_storage is not None:
+            saved_storage.begin_update()
         episodes = sampler.sample(
             step=step,
             process_index=accelerator.process_index,
@@ -276,8 +310,11 @@ def main() -> None:
         local_position_losses = torch.zeros(
             sequence_length, device=accelerator.device, dtype=torch.float32
         )
-        for episode in episodes:
+        for episode_number, episode in enumerate(episodes):
             controller.reset(batch_size=1)
+            if saved_storage is not None:
+                saved_storage.begin_stream()
+            stream_losses = []
             unwrapped_model = accelerator.unwrap_model(model)
             if args.ttt_protocol == "oneminute_write_then_predict":
                 lower = int(float(args.min_timestep_boundary) * len(unwrapped_model.pipe.scheduler.timesteps))
@@ -288,8 +325,11 @@ def main() -> None:
             for position, sample_index in enumerate(episode.indices):
                 chunk = dataset[sample_index]
                 is_final_query = position == sequence_length - 1
+                synchronize = is_final_query and (
+                    not args.ttt_sync_per_update or episode_number == len(episodes) - 1
+                )
                 sync_context = (
-                    nullcontext() if is_final_query else accelerator.no_sync(model)
+                    nullcontext() if synchronize else accelerator.no_sync(model)
                 )
                 with sync_context:
                     mode_context = (
@@ -299,16 +339,25 @@ def main() -> None:
                     )
                     with mode_context:
                         saved_tensor_context = (
-                            torch.autograd.graph.save_on_cpu(pin_memory=False)
-                            if args.ttt_saved_tensor_cpu_offload
-                            else nullcontext()
+                            saved_storage.scope() if saved_storage is not None else (
+                                torch.autograd.graph.save_on_cpu(pin_memory=False)
+                                if args.ttt_saved_tensor_cpu_offload else nullcontext()
+                            )
                         )
                         with saved_tensor_context:
                             loss = model(chunk)
-                        accelerator.backward(
-                            loss / float(sequence_length * len(episodes)),
-                            retain_graph=not is_final_query,
-                        )
+                        if args.ttt_backward_per_stream:
+                            stream_losses.append(loss)
+                            if is_final_query:
+                                stream_loss = torch.stack(stream_losses).sum() / float(sequence_length * len(episodes))
+                                accelerator.backward(stream_loss)
+                                stream_losses.clear()
+                                del stream_loss
+                        else:
+                            accelerator.backward(
+                                loss / float(sequence_length * len(episodes)),
+                                retain_graph=not is_final_query,
+                            )
                 local_position_losses[position] += loss.detach().float() / float(
                     len(episodes)
                 )
@@ -337,9 +386,12 @@ def main() -> None:
                     flush=True,
                 )
             controller.clear()
+            if saved_storage is not None:
+                saved_storage.end_stream()
 
+        gradient_norm = None
         if args.max_grad_norm is not None and args.max_grad_norm > 0:
-            accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
+            gradient_norm = accelerator.clip_grad_norm_(model.parameters(), args.max_grad_norm)
         optimizer.step()
         scheduler.step()
 
@@ -357,6 +409,13 @@ def main() -> None:
                     f"{position_text}",
                     flush=True,
                 )
+        if diagnostic_callback is not None:
+            diagnostic_callback(
+                accelerator=accelerator, model=model, step=step, loss=detached_loss,
+                position_losses=gathered_losses, gradient_norm=gradient_norm,
+                started_wall=update_started_wall, started_monotonic=update_started_monotonic,
+                storage_statistics=dict(saved_storage.statistics) if saved_storage is not None else None,
+            )
         model_logger.on_step_end(
             accelerator,
             model,

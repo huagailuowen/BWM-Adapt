@@ -16,6 +16,7 @@ import yaml
 from transformers import AutoModel
 
 from .environment_sampling import weighted_sample_without_replacement
+from .window_sampling import WindowIndexSelector
 
 
 @dataclass(frozen=True)
@@ -47,6 +48,10 @@ class Event80K1Sampler:
         environment_key: str = "mu_index",
         action_key: str = "action_id",
         distinct_actions: bool = False,
+        window_sampling_mode: str = "legacy",
+        window_kind_field: str = "sampling_kind",
+        preferred_window_kind: str = "precise",
+        preferred_window_probability: float = 0.5,
     ) -> None:
         self.metadata_path = Path(metadata_path)
         self.environment_key = str(environment_key)
@@ -136,6 +141,18 @@ class Event80K1Sampler:
                 )
         self.grouped_indices = grouped
         self.grouped_indices_by_action = grouped_by_action
+        self.window_selector = WindowIndexSelector(
+            self.rows,
+            mode=window_sampling_mode,
+            kind_field=window_kind_field,
+            preferred_kind=preferred_window_kind,
+            preferred_probability=preferred_window_probability,
+        )
+        if self.window_selector.enabled and not self.distinct_actions:
+            raise ValueError(
+                "Episode/window balancing requires distinct_actions=True and an "
+                "episode identifier as action_key (not an action level)."
+            )
 
     def sample(
         self,
@@ -190,7 +207,8 @@ class Event80K1Sampler:
                         if action_id not in support_actions
                     ]
                 support_indices = [
-                    rng.choice(by_action[action_id]) for action_id in support_actions
+                    self.window_selector.choose(rng, by_action[action_id])
+                    for action_id in support_actions
                 ]
                 support_index = support_indices[0]
                 if self.queries_per_environment:
@@ -199,7 +217,8 @@ class Event80K1Sampler:
                     )
                 remaining_actions.sort()
                 remaining_queries = [
-                    rng.choice(by_action[action_id]) for action_id in remaining_actions
+                    self.window_selector.choose(rng, by_action[action_id])
+                    for action_id in remaining_actions
                 ]
             else:
                 if self.trajectories_per_environment:

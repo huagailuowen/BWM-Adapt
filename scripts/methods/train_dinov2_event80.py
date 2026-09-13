@@ -40,6 +40,21 @@ def add_dinov2_config(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
     group.add_argument("--dinov2_environment_key", type=str, default="mu_index")
     group.add_argument("--dinov2_action_key", type=str, default="action_id")
     group.add_argument(
+        "--dinov2_window_sampling_mode",
+        choices=("legacy", "uniform_episode_then_window"),
+        default="legacy",
+        help="Opt-in episode/window balancing; use episode_index as action_key.",
+    )
+    group.add_argument("--dinov2_window_kind_field", default="sampling_kind")
+    group.add_argument("--dinov2_preferred_window_kind", default="precise")
+    group.add_argument("--dinov2_preferred_window_probability", type=float, default=0.5)
+    group.add_argument(
+        "--dinov2_support_light_augmentation_enabled",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Apply the existing training-only Wan light augmentation to supports.",
+    )
+    group.add_argument(
         "--dinov2_distinct_actions",
         action=argparse.BooleanOptionalAction,
         default=False,
@@ -68,12 +83,33 @@ def add_dinov2_config(parser: argparse.ArgumentParser) -> argparse.ArgumentParse
 
 
 class DINOv2WanTrainingModule(nn.Module):
-    def __init__(self, *, wan: WanTrainingModule, support_encoder: DINOv2AmortizedContextEncoder):
+    def __init__(
+        self, *, wan: WanTrainingModule,
+        support_encoder: DINOv2AmortizedContextEncoder,
+        support_light_augmentation_enabled: bool = False,
+    ):
         super().__init__()
         self.wan = wan
         self.support_encoder = support_encoder
+        self.support_light_augmentation_enabled = bool(support_light_augmentation_enabled)
 
     def extract_support_visual(self, video):
+        if (
+            self.support_light_augmentation_enabled
+            and self.training
+            and self.wan.training
+            and self.wan.video_light_augmentation_enabled
+        ):
+            # Reuse the exact Wan transform, once per support, before frozen DINO.
+            # Copy because the existing augmentation writes its input in place.
+            device = next(self.support_encoder.dino.parameters()).device
+            video = torch.as_tensor(video, dtype=torch.float32, device=device).clone()
+            if video.ndim == 4:
+                video = video.unsqueeze(0)
+            shared, _, _ = self.wan.apply_video_light_augmentation(
+                ({"input_video": video}, {}, {})
+            )
+            video = shared["input_video"]
         return self.support_encoder.extract_visual_features(video)
 
     def forward(
@@ -166,6 +202,10 @@ def main() -> None:
         environment_key=args.dinov2_environment_key,
         action_key=args.dinov2_action_key,
         distinct_actions=args.dinov2_distinct_actions,
+        window_sampling_mode=args.dinov2_window_sampling_mode,
+        window_kind_field=args.dinov2_window_kind_field,
+        preferred_window_kind=args.dinov2_preferred_window_kind,
+        preferred_window_probability=args.dinov2_preferred_window_probability,
     )
     wan = WanTrainingModule(
         model_paths=json.dumps(runtime_config["model_paths_list"]),
@@ -206,7 +246,11 @@ def main() -> None:
         aggregation_mode=args.dinov2_aggregation_mode,
         mlp_hidden_dim=args.dinov2_mlp_hidden_dim,
     )
-    model = DINOv2WanTrainingModule(wan=wan, support_encoder=support_encoder)
+    model = DINOv2WanTrainingModule(
+        wan=wan,
+        support_encoder=support_encoder,
+        support_light_augmentation_enabled=args.dinov2_support_light_augmentation_enabled,
+    )
     wan_parameters = [parameter for parameter in model.wan.parameters() if parameter.requires_grad]
     head_parameters = [
         parameter for parameter in model.support_encoder.parameters() if parameter.requires_grad
