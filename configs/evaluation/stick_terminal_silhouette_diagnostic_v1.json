@@ -1,0 +1,20 @@
+{
+  "status": "independent_terminal_review_not_formal_metric",
+  "dark_value_thresholds": [65, 85, 105],
+  "roi_pad_x": 24,
+  "roi_pad_top": 12,
+  "roi_pad_bottom": 14,
+  "minimum_dark_pixels": 35,
+  "minimum_threshold_agreement": 2,
+  "maximum_threshold_gap_spread_px": 4.0,
+  "silhouette_error_floor_px": 1.0,
+  "minimum_clearance_px": 1.0,
+  "rod_attachment_offset_px": 2.0,
+  "rod_corridor_half_width_px": 16,
+  "rod_angle_agreement_deg": 1.5,
+  "minimum_rod_line_support_px": 80,
+  "small_tilt_sensitivity_deg": [3.0, 5.0],
+  "hold_seconds": 0.3,
+  "rise_ratio_is_success_requirement": false,
+  "formal_metric_approved": false
+}

@@ -1,0 +1,17 @@
+{
+  "status": "experimental_requires_visual_audit",
+  "absolute_min_px": 1.0,
+  "minimum_rise_ratio": 0.5,
+  "hold_seconds": 0.3,
+  "native_flow_floor_px": 0.5,
+  "query_flow_floor_px": 0.8,
+  "fallback_contact_offset_px": 6.0,
+  "fallback_contact_horizontal_margin_px": 10.0,
+  "fallback_reference_uncertainty_px": 20.0,
+  "allow_partial_contact_negative_witness": true,
+  "reference_error_policy": "fixed_reference_geometry_error_propagated_through_A_minus_identity",
+  "negative_ratio_policy": "upper_small_below_ratio_times_fully_observed_lower_large",
+  "positive_ratio_policy": "both_full_geometries_visible_and_lower_small_above_ratio_times_upper_large",
+  "camera_policy": "fixed_camera_no_3d_ground_contact_certification",
+  "formal_metric_approved": false
+}

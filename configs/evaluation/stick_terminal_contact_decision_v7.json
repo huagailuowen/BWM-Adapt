@@ -1,0 +1,18 @@
+{
+  "source_geometry": "outputs/reevaluation_stick_fused_terminal_job114457/per_video.json",
+  "source_edges": "outputs/stick_local_contact_edges_job114480",
+  "development_labels": "outputs/stick_contact_edge_manual_review_114462_v6.json",
+  "contact_gap_max_px": 1.5,
+  "contact_gap_min_px": -6.0,
+  "lift_gap_min_px": 2.5,
+  "minimum_visible_footpoints": 6,
+  "angle_thresholds_deg": [3.0, 5.0],
+  "angle_failure_margin_deg": 0.5,
+  "negative_persistence_fraction": 0.5,
+  "native_blind_samples_per_environment": 4,
+  "query_blind_count": 8,
+  "seed": 20260911,
+  "formal_metric_approved": false,
+  "contact_threshold_status": "development-set candidate; freeze before new blind review",
+  "angle_threshold_status": "unchanged diagnostic sensitivity; not an approved physical limit"
+}

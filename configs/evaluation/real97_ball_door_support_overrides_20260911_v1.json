@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "purpose": "Rerun only Stage2 for explicitly revised support levels; preserve source results and factual queries.",
+  "task_order": ["door", "ball"],
+  "tasks": {
+    "door": {
+      "source_prepared": "outputs/evaluation_real97_ball_door_ours_20260911/door_prep_job114763",
+      "source_inference": "outputs/infer_real97_door_ours_reference_job114764",
+      "support_levels": {
+        "door-0": [2, 3],
+        "door-2u-1d": [1, 3],
+        "door-12u-Half": [7],
+        "door-12u-Half-11d-Half": [10]
+      }
+    },
+    "ball": {
+      "source_prepared": "outputs/evaluation_real97_ball_door_ours_20260911/ball_prep_job114761",
+      "source_inference": "outputs/infer_real97_ball_ours_reference_job114762",
+      "support_levels": {"ball-0": [2, 5]}
+    }
+  },
+  "selection": {
+    "split": "train",
+    "one_episode_per_requested_level": true,
+    "prefer_existing_support_at_requested_level": true,
+    "otherwise_use_existing_recorded_action_template_episode": true,
+    "disjoint_from_factual_query_episodes": true,
+    "missing_requested_level_policy": "error_without_substitution",
+    "explicit_levels_override_previous_peak_position_preference": true
+  },
+  "rerun": {
+    "initial_context": "original_mean_training_table_not_previous_adapted_context",
+    "inner_schedule": "unchanged_from_source_plan",
+    "checkpoint_and_table": "unchanged_exact_source_pair",
+    "query_windows_and_seeds": "unchanged",
+    "reuse_stage1": true,
+    "reuse_unchanged_environment_stage2": true,
+    "rerun_affected_environment_action_sweeps": true,
+    "test_grid_order": "ascending_numeric_action_level",
+    "write_to_new_output_directories": true,
+    "formal_metric_approved": false
+  }
+}

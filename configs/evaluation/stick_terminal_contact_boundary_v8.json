@@ -1,0 +1,33 @@
+{
+  "source_geometry": "outputs/reevaluation_stick_fused_terminal_job114457/per_video.json",
+  "source_edges": "outputs/stick_local_contact_edges_job114480",
+  "source_review_manifest": "outputs/stick_terminal_contact_decision_job114487/blind_review_manifest.json",
+  "source_manual_review": "outputs/stick_terminal_contact_decision_job114487/manual_review_52_provisional.json",
+  "search_radius_px": 10,
+  "search_boundary_margin_px": 2,
+  "search_modes": {"boundary_reject": [10], "bounded_expand": [10, 16, 24]},
+  "minimum_edge_contrast": 8,
+  "distance_penalty": 0.25,
+  "footpoint_stride_px": 3,
+  "floor_band_px": 16,
+  "contact_gap_max_px": 1.5,
+  "contact_gap_min_px": -6.0,
+  "lift_gap_min_px": 2.5,
+  "minimum_visible_footpoints": 6,
+  "angle_thresholds_deg": [3, 5],
+  "angle_failure_margin_deg": 0.5,
+  "negative_persistence_fraction": 0.5,
+  "formal_metric_approved": false,
+  "expected_v7_counts": {
+    "full_episode/gt/3": {"positive": 12, "negative": 192, "unknown": 34},
+    "full_episode/gt/5": {"positive": 26, "negative": 191, "unknown": 21},
+    "query/gt/3": {"positive": 2, "negative": 37, "unknown": 1},
+    "query/gt/5": {"positive": 2, "negative": 37, "unknown": 1},
+    "query_native_control/gt/3": {"positive": 1, "negative": 37, "unknown": 2},
+    "query_native_control/gt/5": {"positive": 2, "negative": 37, "unknown": 1},
+    "query/stage1/3": {"positive": 3, "negative": 28, "unknown": 9},
+    "query/stage1/5": {"positive": 4, "negative": 28, "unknown": 8},
+    "query/stage2/3": {"positive": 4, "negative": 27, "unknown": 9},
+    "query/stage2/5": {"positive": 6, "negative": 27, "unknown": 7}
+  }
+}

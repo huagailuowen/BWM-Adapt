@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "status": "draft_requires_tracking_audit",
+  "support_split": "eligible_train_only",
+  "query_split": "heldout_test_only",
+  "uniform_pipeline_across_splits": true,
+  "coordinates": {
+    "evaluation": "original_640x480",
+    "ball_crop_offset": [
+      80,
+      156
+    ],
+    "soft_crop_offset": [
+      32,
+      224
+    ],
+    "inverse_letterbox_required": true
+  },
+  "temporal": {
+    "preserve_action_frame_alignment": true,
+    "exclude_conditioning_frame": true,
+    "exclude_padding": true,
+    "peak_requires_observed_horizon": true
+  },
+  "ball": {
+    "target_x": [
+      280,
+      330
+    ],
+    "outcome": "maximum_observed_ball_center_x",
+    "support": {
+      "k": "not_frozen",
+      "min_post_action_roll_px": 25,
+      "max_original_x": 580,
+      "exclude_original_peak_x": [
+        275,
+        335
+      ],
+      "no_exit": true,
+      "max_missing_rate": 0.02,
+      "selection_uses_train_outcomes_only": true,
+      "validate_on_actual_chunk": true
+    }
+  },
+  "soft": {
+    "action_selection": false,
+    "object": "silver_terminal_block_not_rope",
+    "support": {
+      "k": 4,
+      "preferred_left": 2,
+      "preferred_right": 2,
+      "min_directional_excursion_px": 25,
+      "min_sustained_endpoint_translation_px": 15,
+      "seed_box_review_required": true,
+      "distinct_episodes": true,
+      "validate_on_actual_chunk": true
+    },
+    "first_batch": "15_ID_environments_only",
+    "ood_environments": [
+      "soft-3l",
+      "soft-6m",
+      "soft-4l",
+      "soft-7r"
+    ]
+  },
+  "door": {
+    "accepted_levels": {
+      "door-0": [
+        1,
+        2
+      ],
+      "door-2u-1d": [
+        2,
+        3
+      ],
+      "door-3u": [
+        3,
+        4
+      ],
+      "door-2u-4d": [
+        4,
+        5
+      ],
+      "door-4d": [
+        3,
+        4
+      ],
+      "door-3u-4d": [
+        5,
+        6
+      ],
+      "door-6u-7d": [
+        7,
+        8
+      ],
+      "door-6u-8d": [
+        8,
+        9
+      ],
+      "door-12u-Half": [
+        9,
+        10
+      ],
+      "door-12u-Half-11d-Half": []
+    },
+    "unreachable_environment_policy": "prediction_only_exclude_action_selection_denominator",
+    "actual_closure_is_separate_diagnostic": true,
+    "support": {
+      "preferred_level": 2,
+      "alternative": "just_below_minimum_closing_level",
+      "unreachable_levels": [
+        9,
+        10
+      ]
+    }
+  },
+  "stick": {
+    "support": {
+      "k": 2,
+      "selection": "nearest_informative_left_and_right_of_train_only_empirical_balance",
+      "fit_balance_using": "train_only_not_split_file_all_episode_estimate",
+      "require_full_lift_chunk": true,
+      "avoid_extreme_tip": true
+    },
+    "action_selection_requires_reachable_test_candidate": true
+  },
+  "quality": {
+    "proposals_are_not_gold": true,
+    "manual_audit_required": true,
+    "failed_tracks_are_not_forward_filled": true,
+    "no_silent_episode_drops": true,
+    "no_inference_started": true
+  }
+}

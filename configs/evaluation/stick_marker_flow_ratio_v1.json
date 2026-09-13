@@ -1,0 +1,12 @@
+{
+  "status": "experimental_marker_motion_proxy_requires_visual_review",
+  "flow_error_floor_px": 0.5,
+  "contact_lever_arm_px": 20.0,
+  "absolute_min_px": 1.0,
+  "minimum_rise_ratio": 0.5,
+  "hold_seconds": 0.3,
+  "direct_reference_tracking": true,
+  "angle_auxiliary_only": true,
+  "camera_assumption": "fixed camera; no independent background-motion compensation yet",
+  "warning": "material marker motion plus a heuristic rotation error budget is not direct observation of every contact corner"
+}

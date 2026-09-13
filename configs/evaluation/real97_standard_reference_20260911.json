@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "method": "standard_pooled",
+  "seed": 20260910,
+  "num_inference_steps": 50,
+  "cfg_scale": 1.0,
+  "source_fps": 20,
+  "tasks": {
+    "stick": {
+      "prepared": "outputs/evaluation_real97_reference_ttt_v3_20260910/stick_prep_job113867",
+      "training_run": "outputs/real97_train_real97_stick_standard_pooled_2gpu_20260909_v1_job113942",
+      "checkpoint": "protected/step-5500.safetensors",
+      "expected_queries": 40,
+      "expected_environments": 8,
+      "history_frames": 1,
+      "model_frames": 41,
+      "canonical_target_eef": false
+    },
+    "soft": {
+      "prepared": "outputs/evaluation_real97_reference_ttt_v3_20260910/soft_prep_job113869",
+      "training_run": "outputs/real97_train_real97_soft_eef_history5_standard_pooled_2gpu_20260910_v1_job113942",
+      "checkpoint": "protected/step-5500.safetensors",
+      "expected_queries": 60,
+      "expected_environments": 15,
+      "history_frames": 5,
+      "model_frames": 33,
+      "canonical_target_eef": true
+    }
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "schema_version": 2,
+  "status": "development_calibration_requires_accuracy_audit",
+  "soft_dataset": "../../datasets_real/soft_pull_9_7_crop_512x256",
+  "soft": {
+    "templates": [
+      {
+        "environment": "soft-1l",
+        "episode_index": 0,
+        "frame": 0,
+        "bbox": [
+          346,
+          165,
+          49,
+          51
+        ],
+        "source_split": "train",
+        "reviewer": "assistant_visual",
+        "center_definition": "visible_metal_body_bbox_center"
+      },
+      {
+        "environment": "soft-1r",
+        "episode_index": 0,
+        "frame": 0,
+        "bbox": [
+          374,
+          145,
+          41,
+          49
+        ],
+        "source_split": "train",
+        "reviewer": "assistant_visual",
+        "center_definition": "visible_metal_body_bbox_center"
+      },
+      {
+        "environment": "soft-2m",
+        "episode_index": 0,
+        "frame": 0,
+        "bbox": [
+          425,
+          109,
+          35,
+          45
+        ],
+        "source_split": "train",
+        "reviewer": "assistant_visual",
+        "center_definition": "visible_metal_body_bbox_center"
+      },
+      {
+        "environment": "soft-3m",
+        "episode_index": 0,
+        "frame": 0,
+        "bbox": [
+          397,
+          151,
+          44,
+          50
+        ],
+        "source_split": "train",
+        "reviewer": "assistant_visual",
+        "center_definition": "visible_metal_body_bbox_center"
+      },
+      {
+        "environment": "soft-6l",
+        "episode_index": 0,
+        "frame": 65,
+        "bbox": [
+          199,
+          194,
+          58,
+          62
+        ],
+        "source_split": "train",
+        "reviewer": "assistant_visual",
+        "center_definition": "visible_metal_body_bbox_center"
+      }
+    ],
+    "scales": [
+      0.9,
+      1,
+      1.1
+    ],
+    "angles_deg": [
+      -20,
+      0,
+      20
+    ],
+    "local_search_radius_px": 70,
+    "candidate_merge_radius_px": 15,
+    "global_search_every": 15,
+    "min_score": 0.46,
+    "min_margin": 0.035
+  },
+  "door": {
+    "closed_panel_offset_px": 14,
+    "closed_tolerance_px": 5,
+    "open_excess_px": 10,
+    "minimum_stable_seconds": 0.3,
+    "status": "provisional_train_visual_calibration",
+    "calibration_evidence": {
+      "environment": "door-0",
+      "episode_index": 0,
+      "frame": 76,
+      "split": "train",
+      "front_panel_edge_x_approx": 305,
+      "closed_door_outer_edge_x_approx": 319
+    }
+  },
+  "validation_landmarks": [
+    {
+      "environment": "soft-1l",
+      "episode_index": 0,
+      "frame": 152,
+      "center": [
+        114,
+        185
+      ],
+      "tolerance_px": 6,
+      "source_split": "train",
+      "reviewer": "assistant_visual_coarse",
+      "role": "development_validation_not_final_accuracy_test"
+    },
+    {
+      "environment": "soft-1r",
+      "episode_index": 0,
+      "frame": 139,
+      "center": [
+        334,
+        211
+      ],
+      "tolerance_px": 6,
+      "source_split": "train",
+      "reviewer": "assistant_visual_coarse",
+      "role": "development_validation_not_final_accuracy_test"
+    },
+    {
+      "environment": "soft-2m",
+      "episode_index": 0,
+      "frame": 116,
+      "center": [
+        418,
+        152
+      ],
+      "tolerance_px": 6,
+      "source_split": "train",
+      "reviewer": "assistant_visual_coarse",
+      "role": "development_validation_not_final_accuracy_test"
+    },
+    {
+      "environment": "soft-3m",
+      "episode_index": 0,
+      "frame": 130,
+      "center": [
+        414,
+        175
+      ],
+      "tolerance_px": 6,
+      "source_split": "train",
+      "reviewer": "assistant_visual_coarse",
+      "role": "development_validation_not_final_accuracy_test"
+    },
+    {
+      "environment": "soft-4r",
+      "episode_index": 0,
+      "frame": 0,
+      "center": [
+        335,
+        215
+      ],
+      "tolerance_px": 6,
+      "source_split": "train",
+      "reviewer": "assistant_visual_coarse",
+      "role": "development_validation_not_final_accuracy_test"
+    },
+    {
+      "environment": "soft-8",
+      "episode_index": 0,
+      "frame": 0,
+      "center": [
+        418,
+        180
+      ],
+      "tolerance_px": 6,
+      "source_split": "train",
+      "reviewer": "assistant_visual_coarse",
+      "role": "development_validation_not_final_accuracy_test"
+    }
+  ],
+  "requirements": {
+    "same_tracker_for_all_splits": true,
+    "no_environment_or_level_given_to_tracker": true,
+    "final_accuracy_requires_independent_frame_annotations": true,
+    "no_automatic_model_inference": true
+  }
+}
+

@@ -1,0 +1,17 @@
+{
+  "prepared": "outputs/evaluation_real97_reference_ttt_v3_20260910/stick_prep_job113867",
+  "source_inference": "outputs/infer_real97_stick_stage1table_stage2_v3_job113868",
+  "query_count": 8,
+  "query_splits": {"train": 4, "test": 4},
+  "one_query_per_source_environment": true,
+  "grasp_fraction_targets_per_split": [0.25, 0.42, 0.58, 0.75],
+  "grasp_fraction_reference_frames": 5,
+  "column_order": "ascending_training_balance_fraction",
+  "reuse_stage2_contexts": true,
+  "refit_stage2": false,
+  "seed_policy": "original_base_seed_plus_query_index_identical_for_all_Z",
+  "grid_rows": ["gt_repeated", "stage1_training_table", "stage2_reused_support_adapted"],
+  "num_inference_steps": 50,
+  "fps": 6.666666666666667,
+  "formal_metrics": false
+}

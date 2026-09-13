@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "seed": 20260910,
+  "num_inference_steps": 50,
+  "tasks": {
+    "door": {
+      "prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114799/door_prep",
+      "standard_training": "outputs/real97_train_real97_door_standard_pooled_2gpu_20260909_v1_job114454",
+      "dino_training": "outputs/real97_train_real97_door_dinov2_concat_mlp_k1k2_3x8_2gpu_20260911_v1_job114681",
+      "geometry": [49, 192, 256]
+    },
+    "ball": {
+      "prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114807/ball_prep",
+      "standard_training": "outputs/real97_train_real97_ball_standard_pooled_2gpu_20260909_v1_job114454",
+      "dino_training": "outputs/real97_train_real97_ball_dinov2_concat_mlp_k1k2_3x8_2gpu_20260911_v1_job114682",
+      "geometry": [61, 160, 320]
+    }
+  }
+}

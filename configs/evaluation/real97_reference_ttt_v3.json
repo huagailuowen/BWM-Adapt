@@ -1,0 +1,64 @@
+{
+  "schema_version": 3,
+  "seed": 20260910,
+  "purpose": "First factual GT/Stage1-table/Stage2-TTT experiment; tracking metrics remain development measurements.",
+  "query_train_episodes_per_environment": 2,
+  "query_test_policy": "all_heldout_episodes",
+  "ttt": {
+    "stage2_inner_lr_schedule": "0.3:10,0.15:10,0.05:10,0.015:10",
+    "stage2_inner_steps": 40,
+    "stage2_inner_grad_clip": 0.0,
+    "stage2_context_reg_weight": 0.0,
+    "stage2_context_clamp_min": -1.0,
+    "stage2_context_clamp_max": 1.0,
+    "ttt_context_fp32": true,
+    "ttt_support_gradient_accumulation": true,
+    "ttt_adapt_scope": "context",
+    "spatial_loss_mode": "none",
+    "num_inference_steps": 50,
+    "cfg_scale": 1.0
+  },
+  "ball": {
+    "support_count": 1,
+    "preferred_support_peak_original_x": [150, 220],
+    "preference_not_hard_requirement": true,
+    "target_original_peak_x": [280, 330],
+    "fixed_initial_action_sweep": "extension_only_no_unmatched_GT_scoring"
+  },
+  "door": {
+    "support_count": 2,
+    "support_levels": "minimum_success_level_minus_1_and_plus_2",
+    "unavailable_levels": "record_as_unavailable_do_not_invent_or_clamp",
+    "unreachable_environment": "prediction_only_support_exception_pending",
+    "fixed_initial_action_sweep": "extension_only_no_unmatched_GT_scoring"
+  },
+  "tasks": {
+    "stick": {
+      "training_config": "configs/train/train_real97_stick_target_c32_2gpu_20260909_v1.yaml",
+      "training_run": "outputs/real97_train_real97_stick_target_c32_2gpu_20260909_v1_job112804",
+      "model_file": "step-5500.safetensors",
+      "table_file": "step-5500.context_table.json",
+      "model_step": 5500,
+      "table_step": 5500,
+      "support_count": 2,
+      "support_rule": "train_only_empirical_balance_bracketing",
+      "minimum_informative_tilt_deg": 0.5,
+      "maximum_support_tilt_deg": 15.0
+    },
+    "soft": {
+      "training_config": "configs/train/train_real97_soft_target_c32_2gpu_20260909_v1.yaml",
+      "training_run": "outputs/real97_train_real97_soft_target_c32_2gpu_20260909_v1_job112804",
+      "model_file": "step-5300.safetensors",
+      "table_file": "phase-0909-1841-step-005500-all_context-curriculum_phase_end.context_table.json",
+      "model_step": 5300,
+      "table_step": 5500,
+      "pairing_reason": "Steps 5301-5500 update context only; the step5500 model publication did not complete.",
+      "support_count": 4,
+      "preferred_direction_counts": {"left": 2, "right": 2},
+      "minimum_net_dx_px": 15.0,
+      "minimum_directional_excursion_px": 25.0,
+      "center_definition": "visible_box",
+      "action_selection": false
+    }
+  }
+}

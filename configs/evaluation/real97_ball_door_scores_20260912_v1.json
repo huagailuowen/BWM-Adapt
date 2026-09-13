@@ -1,0 +1,50 @@
+{
+  "version": "real97_ball_door_scores_20260912_v1",
+  "output": "outputs/eval_real97_ball_door_scores_20260912_v1",
+  "calibration": "configs/evaluation/real97_object_calibration_v3.json",
+  "source_fps": 20,
+  "resize_mode": "letterbox",
+  "tasks": {
+    "ball": {
+      "native_size": [560, 248],
+      "original_camera_crop_x": 80,
+      "ours": "outputs/infer_real97_ball_ours_reference_job114807",
+      "standard": "outputs/infer_real97_ball_standard_step5500_reference_job115189",
+      "dino": "outputs/infer_real97_ball_dino_step5500_reference_job115190"
+    },
+    "door": {
+      "native_size": [640, 480],
+      "ours": "outputs/infer_real97_door_ours_reference_job114799",
+      "standard": "outputs/infer_real97_door_standard_step5500_reference_job115187",
+      "dino": "outputs/infer_real97_door_dino_step5500_reference_job115188"
+    }
+  },
+  "door_prefer": {
+    "door-0": [1, 2],
+    "door-2u-1d": [2, 3],
+    "door-3u": [3, 4],
+    "door-2u-4d": [4, 5],
+    "door-4d": [3, 4],
+    "door-3u-4d": [5, 6],
+    "door-6u-7d": [7, 8],
+    "door-6u-8d": [8, 9],
+    "door-12u-Half": [9, 10]
+  },
+  "door_action_excluded": ["door-12u-Half-11d-Half"],
+  "ball_marker": {
+    "hue_min": 85,
+    "hue_max": 135,
+    "saturation_min": 65,
+    "value_min": 45,
+    "minimum_area": 5,
+    "maximum_area": 1600,
+    "minimum_x_fraction": 0.5,
+    "maximum_extent": 80
+  },
+  "ball_exit": {
+    "near_boundary_px": 12,
+    "minimum_rightward_velocity_px": 1.0
+  },
+  "audit_levels": [2, 5, 9],
+  "tracking_status": "provisional_until_overlay_audit"
+}

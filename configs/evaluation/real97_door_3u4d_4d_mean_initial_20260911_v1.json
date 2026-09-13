@@ -1,0 +1,34 @@
+{
+  "schema_version": 3,
+  "task_order": ["door"],
+  "disable_context_clamp": true,
+  "noise_seed": 20260911,
+  "noise_distribution": "independent_per_dimension_uniform",
+  "noise_min": -0.5,
+  "noise_max": 0.5,
+  "initialization_note": "Only the two rerun environments use mean_training_table, with no added noise. Noise parameters are unused for this policy. Other environments retain their existing initialization and results.",
+  "tasks": {
+    "door": {
+      "source_prepared": "outputs/evaluation_real97_ball_door_ours_20260911/door_prep_job114763",
+      "source_inference": "outputs/infer_real97_door_ours_reference_job114764",
+      "output_job_id": "114799",
+      "reset_existing_stage2": true,
+      "partial_stage2_replacement": true,
+      "initial_context": "mean_training_table",
+      "rerun_environments": ["door-3u-4d", "door-4d"],
+      "support_levels": {
+        "door-3u-4d": [4, 6],
+        "door-4d": [3, 5]
+      },
+      "fallback_training_manifest": "outputs/real97_train_real97_door_target_c32_2gpu_20260909_v2_job113230/input_manifest/train.jsonl",
+      "fallback_chunk_events": "outputs/real97_train_real97_door_target_c32_2gpu_20260909_v2_job113230/input_manifest/chunk_events.jsonl",
+      "supplement_existing_dataset_cache": true,
+      "preserve_other_environment_results": true
+    }
+  },
+  "support_policy": "Preserve the current query-disjoint training Support episodes at the requested levels; only the initial Z changes",
+  "reuse_all_gt_and_stage1": true,
+  "query_windows_and_generation_seeds": "unchanged",
+  "inner_steps_and_learning_rates": "unchanged",
+  "formal_metric_approved": false
+}

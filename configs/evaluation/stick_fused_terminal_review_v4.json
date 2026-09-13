@@ -1,0 +1,11 @@
+{
+  "status": "diagnostic_not_frozen_metric",
+  "base_config": "configs/evaluation/stick_common_reference_rigid_review_v3.json",
+  "direct_measurements": "outputs/reevaluation_stick_common_reference_rigid_job114313/per_video.json",
+  "minimum_appearance_iou": 0.45,
+  "minimum_independent_angle_error_deg": 0.35,
+  "failure_rule": "any_confident_violation_in_required_terminal_window",
+  "hold_seconds": 0.3,
+  "small_tilt_sensitivity_deg": [3, 5],
+  "formal_metric_approved": false
+}

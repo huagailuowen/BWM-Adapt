@@ -1,0 +1,15 @@
+{
+  "source_detections": "outputs/evaluation_real97_dataset_audit_20260909/open_vocab_probe_job113619/detections.jsonl",
+  "native_size": [512, 256],
+  "min_box_side": 12,
+  "max_box_side": 90,
+  "saturation_threshold": 70,
+  "green_hue_min": 35,
+  "green_hue_max": 90,
+  "green_min_value": 35,
+  "max_green_fraction": 0.12,
+  "max_saturated_fraction": 0.25,
+  "background_ring_px": 6,
+  "background_lightness_difference": 8,
+  "purpose": "Calibration-only replay. Thresholds are provisional; coarse landmarks and synthetic negatives are not an independent accuracy certificate. No reference coordinates enter filtering."
+}

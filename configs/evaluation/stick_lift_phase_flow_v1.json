@@ -1,0 +1,16 @@
+{
+  "status": "experimental_requires_visual_audit",
+  "absolute_min_px": 1.0,
+  "minimum_rise_ratio": 0.5,
+  "hold_seconds": 0.3,
+  "reference_policy": "last_available_frame_strictly_before_command_lift_start",
+  "ground_contact_assumption": "objects are on the table immediately before commanded lift; exceptions remain review cases",
+  "reference_bottom_dark_value": 110,
+  "reference_geometry_band_px": 0.75,
+  "generated_geometry_band_px": 1.5,
+  "flow_error_floor_px": 0.5,
+  "contact_lever_arm_px": 20.0,
+  "anchor_period": 8,
+  "angle_auxiliary_only": true,
+  "formal_metric_approved": false
+}

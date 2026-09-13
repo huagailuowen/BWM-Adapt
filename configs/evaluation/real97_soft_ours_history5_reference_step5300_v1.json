@@ -1,0 +1,21 @@
+{
+  "snapshot": "outputs/reference_snapshots/soft_history5_114005_step5300_static_v1",
+  "training_run": "outputs/real97_train_real97_soft_eef_history5_c32_2gpu_20260910_v1_job114005",
+  "model_step": 5300,
+  "table_step": 5300,
+  "original_prepared": "outputs/evaluation_real97_reference_ttt_v3_20260910/soft_prep_job113869",
+  "standard_reference_inference": "outputs/infer_real97_soft_standard_step5500_reference_job114479",
+  "query_count": 60,
+  "environment_count": 15,
+  "support_count_per_environment": 4,
+  "support_policy": "same_train_episode_ids_and_original_informative_windows_real_history5",
+  "query_policy": "exact_standard_nonstatic_query_manifest",
+  "stage2_initial": "mean_step5300_training_table",
+  "stage2_inner_lr_schedule": "0.3:10,0.15:10,0.05:10,0.015:10",
+  "stage2_inner_steps": 40,
+  "num_inference_steps": 50,
+  "seed": 20260910,
+  "fps": 6.666666666666667,
+  "support_and_query_static": false,
+  "formal_metric_approved": false
+}

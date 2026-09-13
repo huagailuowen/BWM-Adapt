@@ -1,0 +1,13 @@
+{
+  "status": "contact_calibration_only_not_formal_action_scoring",
+  "flow_uncertainty_floor_px": 0.35,
+  "silhouette_uncertainty_floor_px": 0.75,
+  "maximum_forward_backward_error_px": 1.5,
+  "maximum_rigid_fit_error_px": 2.0,
+  "maximum_tilt_deg": 5.0,
+  "hold_seconds": 0.3,
+  "unknown_policy": "evaluate each endpoint independently; visible contact at one end remains evidence even if its peer is hidden",
+  "thin_gap_policy": "allow smaller than two pixels when both rigid-corner and silhouette evidence exceed their margins; unresolved otherwise",
+  "initial_appearance_policy": "record first-frame offset and require subsequent displacement, not a constant reconstruction shift",
+  "warning": "margins are heuristic reliability bands, not calibrated statistical probabilities"
+}

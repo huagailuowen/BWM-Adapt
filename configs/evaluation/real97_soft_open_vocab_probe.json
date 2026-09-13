@@ -1,0 +1,45 @@
+{
+  "model_id": "IDEA-Research/grounding-dino-tiny",
+  "cache_dir": "../../checkpoints/vision_detectors/grounding_dino_hf",
+  "inventory": "outputs/evaluation_real97_dataset_audit_20260909/episodes.jsonl",
+  "landmark_config": "configs/evaluation/real97_object_calibration_v3.json",
+  "negative_root": "outputs/evaluation_real97_dataset_audit_20260909/soft_pose_bank_113618",
+  "prompt": "a small silver metal bracket. a metal block.",
+  "detector_resize": {
+    "shortest_edge": 512,
+    "longest_edge": 1024
+  },
+  "box_threshold": 0.22,
+  "text_threshold": 0.2,
+  "min_box_side": 12,
+  "max_box_side": 120,
+  "failure_episodes": [
+    [
+      "soft-2l",
+      2
+    ],
+    [
+      "soft-2m",
+      1
+    ],
+    [
+      "soft-3m",
+      5
+    ],
+    [
+      "soft-5r",
+      3
+    ],
+    [
+      "soft-6r",
+      1
+    ],
+    [
+      "soft-7l",
+      1
+    ]
+  ],
+  "purpose": "Detector calibration only; no world-model inference or latent fitting",
+  "official_reference": "https://huggingface.co/docs/transformers/model_doc/grounding-dino"
+}
+

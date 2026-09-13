@@ -1,0 +1,5 @@
+{
+  "base_tracking_config": "configs/evaluation/real97_soft_dino_fullvideo.json",
+  "center_definition": "visible_box",
+  "description": "Measure the center of the detection box intersected with the image rectangle. Boundary contact does not invalidate the visible-object center. Do not extrapolate the hidden part or fill missing detections."
+}

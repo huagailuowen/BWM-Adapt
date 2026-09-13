@@ -1,0 +1,11 @@
+{
+  "source": "outputs/reevaluation_stick_fused_terminal_job114457/per_video.json",
+  "manual_labels": "outputs/stick_contact_edge_manual_review_114462_v6.json",
+  "search_radius_px": 10,
+  "minimum_edge_contrast": 8.0,
+  "distance_penalty": 0.25,
+  "footpoint_stride_px": 3,
+  "floor_band_px": 16,
+  "formal_metric_approved": false,
+  "changes_success_labels": false
+}

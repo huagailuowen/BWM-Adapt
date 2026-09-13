@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "seed": 20260910,
+  "source_protocol": "configs/evaluation/real97_reference_ttt_v3.json",
+  "calibrated_outcomes": "outputs/evaluation_real97_dataset_audit_20260909/calibration_v2_job113505/episode_outcomes.jsonl",
+  "query_train_episodes_per_environment": 2,
+  "query_test_policy": "all_heldout_episodes",
+  "ball": {
+    "preferred_support_peak_original_x": [
+      150,
+      220
+    ],
+    "target_original_peak_x": [
+      280,
+      330
+    ],
+    "minimum_support_roll_px": 25,
+    "maximum_missing_fraction": 0.05,
+    "preferred_interval_is_not_hard_requirement": true
+  },
+  "door": {
+    "minimum_success_level": {
+      "door-0": 1,
+      "door-2u-1d": 2,
+      "door-3u": 3,
+      "door-2u-4d": 4,
+      "door-4d": 3,
+      "door-3u-4d": 5,
+      "door-6u-7d": 7,
+      "door-6u-8d": 8,
+      "door-12u-Half": 9,
+      "door-12u-Half-11d-Half": null
+    },
+    "support_rule": "minimum_minus_1_and_plus_2",
+    "missing_support_level_policy": "record_missing_use_available_do_not_invent",
+    "unreachable_support_levels": [
+      9,
+      10
+    ],
+    "unreachable_environment_action_selection": false
+  },
+  "tasks": {
+    "ball": {
+      "training_run": "outputs/real97_train_real97_ball_target_c32_2gpu_20260909_v2_job113231",
+      "training_config": "configs/train/train_real97_ball_target_c32_2gpu_20260909_v2.yaml",
+      "model_file": "step-5500.safetensors",
+      "table_file": "step-5500.context_table.json",
+      "model_step": 5500,
+      "table_step": 5500,
+      "num_frames": 61,
+      "frame_stride": 1,
+      "height": 160,
+      "width": 320,
+      "action_type": "joint_target",
+      "expected_environments": 8
+    },
+    "door": {
+      "training_run": "outputs/real97_train_real97_door_target_c32_2gpu_20260909_v2_job113230",
+      "training_config": "configs/train/train_real97_door_target_c32_2gpu_20260909_v2.yaml",
+      "model_file": "step-3715.safetensors",
+      "table_file": "step-3715.context_table.json",
+      "model_step": 3715,
+      "table_step": 3715,
+      "num_frames": 49,
+      "frame_stride": 1,
+      "height": 192,
+      "width": 256,
+      "action_type": "joint_target_export",
+      "expected_environments": 10
+    }
+  },
+  "extension": {
+    "enabled": true,
+    "initial_frame": "one_test_query_per_environment",
+    "actions": "original_recorded_train_target_templates_one_per_available_level",
+    "paired_gt": false,
+    "formal_action_metric": false
+  },
+  "formal_metric_approved": false
+}

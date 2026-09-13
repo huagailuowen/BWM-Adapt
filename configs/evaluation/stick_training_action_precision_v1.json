@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "provisional_contact_calibration_not_certified",
+  "seed": 20260910,
+  "coordinate_system": "native_640x480",
+  "success": {
+    "clearance_px": 3.0,
+    "tilt_deg": 5.0,
+    "hold_seconds": 0.3
+  },
+  "sensitivity_clearance_px": [2.0, 3.0, 4.0],
+  "sensitivity_tilt_deg": [3.0, 5.0, 7.0],
+  "candidate_pool": "all approved training episodes, one earliest full_lift window per episode, excluding adaptation support episodes",
+  "selection": "predicted success; no GT outcome used to filter or rank actions",
+  "primary_metric": "GT_success_among_prediction_selected_actions",
+  "unknown_policy": "abstain for prediction; retain unknown selected GT in precision bounds",
+  "reuse_contexts": "one previously adapted Z per environment; never adapt on candidate outcomes"
+}

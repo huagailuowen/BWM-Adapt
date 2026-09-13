@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "task_order": ["ball", "door"],
+  "disable_context_clamp": true,
+  "noise_seed": 20260911,
+  "noise_distribution": "independent_per_dimension_uniform",
+  "noise_min": -0.5,
+  "noise_max": 0.5,
+  "tasks": {
+    "ball": {
+      "source_prepared": "outputs/evaluation_real97_ball_door_ours_20260911/ball_prep_job114761",
+      "source_inference": "outputs/infer_real97_ball_ours_reference_job114762",
+      "output_job_id": "114807",
+      "reset_existing_stage2": true,
+      "partial_stage2_replacement": true,
+      "initial_context": "corresponding_environment_table_plus_uniform_noise",
+      "require_exact_original_support": false,
+      "rerun_environments": ["ball-0", "ball-1"],
+      "support_levels": {"ball-0": [1, 2], "ball-1": [2, 3]},
+      "noise_policy": "Same per-environment seeds and initial vectors as the previous unbounded Ball run",
+      "preserve_other_environment_results": true
+    },
+    "door": {
+      "source_prepared": "outputs/evaluation_real97_ball_door_ours_20260911/door_prep_job114763",
+      "source_inference": "outputs/infer_real97_door_ours_reference_job114764",
+      "output_job_id": "114799",
+      "reset_existing_stage2": true,
+      "initial_context": "corresponding_environment_table_plus_uniform_noise",
+      "support_levels": {
+        "door-0": [2, 5],
+        "door-2u-1d": [1, 3],
+        "door-12u-Half": [7],
+        "door-12u-Half-11d-Half": [10],
+        "door-2u-4d": [3, 6],
+        "door-3u": [2, 5],
+        "door-3u-4d": [4, 7],
+        "door-4d": [2, 5],
+        "door-6u-7d": [6, 9],
+        "door-6u-8d": [7, 10]
+      }
+    }
+  },
+  "training_table_is_read_only": true,
+  "reuse_all_gt_and_stage1": true,
+  "query_windows_and_generation_seeds": "unchanged_from_source",
+  "inner_steps_and_learning_rates": "unchanged_from_source",
+  "query_future_used_in_adaptation": false,
+  "interpretation": "Known-environment local adaptation diagnostics; not unknown-environment identification",
+  "formal_metric_approved": false
+}

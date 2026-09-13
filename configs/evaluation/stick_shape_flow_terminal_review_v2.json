@@ -1,0 +1,19 @@
+{
+  "status": "reference_shape_flow_terminal_review_not_frozen_metric",
+  "grabcut_iterations": 2,
+  "shape_halo_px": 6,
+  "background_ring_px": 12,
+  "maximum_halo_boundary_pixels": 4,
+  "clearance_error_floor_px": 1.0,
+  "minimum_clearance_px": 1.0,
+  "rod_attachment_offset_px": 2.0,
+  "rod_corridor_half_width_px": 16,
+  "rod_angle_agreement_deg": 1.5,
+  "minimum_rod_line_support_px": 80,
+  "small_tilt_sensitivity_deg": [3.0, 5.0],
+  "tilt_failure_margin_deg": 1.0,
+  "hold_seconds": 0.3,
+  "query_reference": "corresponding_gt_conditioning_frame_zero",
+  "rise_ratio_is_success_requirement": false,
+  "formal_metric_approved": false
+}

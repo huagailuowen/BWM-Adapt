@@ -1,0 +1,15 @@
+{
+  "status": "contact_evidence_diagnostic_only",
+  "source": "outputs/reevaluation_stick_fused_terminal_job114457/per_video.json",
+  "base_config": "configs/evaluation/stick_common_reference_rigid_review_v3.json",
+  "vertical_blue_kernel": [3, 17],
+  "vertical_blue_margin": [7, 5],
+  "floor_band_half_width_px": 16,
+  "floor_component_min_area": 6,
+  "floor_component_max_height_px": 18,
+  "floor_component_min_width_px": 5,
+  "floor_component_min_width_height_ratio": 0.65,
+  "reference_x_margin_px": 45,
+  "formal_metric_approved": false,
+  "success_thresholds_modified": false
+}

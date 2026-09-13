@@ -1,0 +1,36 @@
+{
+  "schema_version": 3,
+  "task_order": ["door"],
+  "disable_context_clamp": true,
+  "noise_seed": 20260911,
+  "noise_distribution": "independent_per_dimension_uniform",
+  "noise_min": -0.5,
+  "noise_max": 0.5,
+  "tasks": {
+    "door": {
+      "source_prepared": "outputs/evaluation_real97_ball_door_ours_20260911/door_prep_job114763",
+      "source_inference": "outputs/infer_real97_door_ours_reference_job114764",
+      "output_job_id": "114799",
+      "reset_existing_stage2": true,
+      "partial_stage2_replacement": true,
+      "initial_context": "corresponding_environment_table_plus_uniform_noise",
+      "rerun_environments": ["door-12u-Half", "door-12u-Half-11d-Half", "door-3u-4d", "door-4d"],
+      "support_levels": {
+        "door-12u-Half": [8, 10],
+        "door-12u-Half-11d-Half": [8, 10],
+        "door-3u-4d": [4, 6],
+        "door-4d": [3, 5]
+      },
+      "fallback_training_manifest": "outputs/real97_train_real97_door_target_c32_2gpu_20260909_v2_job113230/input_manifest/train.jsonl",
+      "fallback_chunk_events": "outputs/real97_train_real97_door_target_c32_2gpu_20260909_v2_job113230/input_manifest/chunk_events.jsonl",
+      "supplement_existing_dataset_cache": true,
+      "preserve_other_environment_results": true,
+      "noise_policy": "Reuse the same deterministic per-environment initial vector as the preceding near-table run"
+    }
+  },
+  "support_policy": "One train episode per requested level; never reuse a factual query episode as Support",
+  "reuse_all_gt_and_stage1": true,
+  "query_windows_and_generation_seeds": "unchanged",
+  "inner_steps_and_learning_rates": "unchanged",
+  "formal_metric_approved": false
+}

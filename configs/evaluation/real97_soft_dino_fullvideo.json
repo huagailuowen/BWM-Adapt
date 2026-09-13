@@ -1,0 +1,21 @@
+{
+  "detector_config": "configs/evaluation/real97_soft_open_vocab_probe.json",
+  "filter_config": "configs/evaluation/real97_soft_open_vocab_color_filter.json",
+  "inventory": "outputs/evaluation_real97_dataset_audit_20260909/episodes.jsonl",
+  "seed": 20260910,
+  "episodes_per_environment": 3,
+  "id_train_episodes": 2,
+  "id_test_episodes": 1,
+  "include_previous_failure_episodes": true,
+  "shards": 4,
+  "frame_stride": 1,
+  "original_image_crop_offset": [32, 224],
+  "nms_iou": 0.4,
+  "ambiguous_score_margin": 0.08,
+  "distinct_center_distance_px": 15,
+  "max_displacement_per_frame_px": 45,
+  "association_memory_frames": 5,
+  "boundary_margin_px": 2,
+  "jump_warning_px": 20,
+  "purpose": "Full-video detector/tracker calibration only. No BWM inference, no support adaptation, no interpolation of missing centers. Coverage is not tracking accuracy."
+}
