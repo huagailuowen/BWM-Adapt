@@ -35,12 +35,12 @@
 <text x="2470.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0657</text>
 <text x="2830.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">64%</text>
 <text x="105" y="570.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">No curriculum + joint</text>
-<text x="1210.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="1550.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="1870.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="2170.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="2470.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="2830.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
+<text x="1210.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">5.68</text>
+<text x="1550.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">12.28</text>
+<text x="1870.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.697</text>
+<text x="2170.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9507</text>
+<text x="2470.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0547</text>
+<text x="2830.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">60%</text>
 <text x="105" y="670.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">No curriculum + iterative</text>
 <text x="1210.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">6.17</text>
 <text x="1550.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">12.81</text>
