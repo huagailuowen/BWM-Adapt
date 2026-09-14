@@ -2,7 +2,9 @@
 # Stage 1 grouped latent-C curriculum on event-tap segmented80 fixed 65-105 data.
 # C is one Wan2.2-TI2V-5B-width 3072-D token with a direct identity projection.
 # Curriculum: 300 model-only warmup, then initial 5 groups also get a high-LR C bootstrap,
-# then add 5 groups per round until all 80 groups are active.
+# then add 5 groups per round, capped at the reference run's 35 active groups.
+# Keep all 80 metadata groups so nested-uniform activation preserves membership.
+# After 7300 updates, alternate all-C 200 / model 200 until the 24h limit.
 
 dataset:
   dataset_base_path: "/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine"
@@ -69,17 +71,21 @@ grouped_context_stage1:
   grouped_context_new_context_lr: 0.15
   grouped_context_model_lr_warmup_steps: 100
   grouped_context_weight_decay: 0.0
-  grouped_context_structured_updates: 16300
+  grouped_context_structured_updates: 1000000000
   grouped_context_friction_groups_per_update: 4
   grouped_context_actions_per_update: 4
   grouped_context_microbatches_per_update: 16
+  grouped_context_sampling_mode: "independent_windows"
   grouped_context_curriculum_initial_groups: 5
   grouped_context_curriculum_add_groups: 5
-  grouped_context_curriculum_total_groups: 80
+  grouped_context_curriculum_total_groups: 35
+  grouped_context_curriculum_variant: "default"
+  grouped_context_curriculum_joint_steps: 0
   grouped_context_curriculum_initial_model_steps: 300
   grouped_context_curriculum_new_context_steps: 200
   grouped_context_curriculum_all_context_steps: 200
   grouped_context_curriculum_model_steps: 200
+  grouped_context_post_curriculum_cycle_steps: 200
 
 training:
   learning_rate: 1e-5
@@ -95,12 +101,12 @@ training:
   batch_size: 1
 
 output:
-  output_path: "./outputs/push_box_event_tap_segmented80_65_105_curriculum_c32_random_initboot_stage1_16300_PENDING_JOB"
+  output_path: "./outputs/method_benchmarks/pushbox_friction_event80/ours_direct_environment_token/seed_20260708/checkpoints"
   remove_prefix_in_ckpt: "pipe.dit."
-  save_steps: 500
+  save_steps: 200
   checkpoint_save_minutes: 60
   checkpoint_keep_last: 2
-  log_steps: 10
+  log_steps: 2
   ckpt_path: "ckpt/BLM/step-12000.safetensors"
   resume_from: null
 

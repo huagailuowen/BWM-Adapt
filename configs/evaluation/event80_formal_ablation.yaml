@@ -1,0 +1,66 @@
+benchmark: pushbox_friction_event80
+title: Event80 Formal Ablation Study
+output_dir: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/formal_ablation_v1
+source_scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv
+source_protocol: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/protocol.json
+support_query_manifest: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json
+selection_note: User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10; include Ours as the reference.
+notes:
+  - Existing reported metrics are reused; no video generation or metric recomputation.
+  - Blank metric cells mean unavailable or pending, never zero.
+  - Historical initialization runs retain their recorded training schedules and are not claimed to be strict single-variable controls.
+  - C4 and direct-token jobs use two GPUs, 4 environments x 4 actions per rank, the original active35 pool, and the 1000-step alternating curriculum.
+  - The 1000-step pure-joint variant, C1, C128, new-C200/joint800, shuffled groups, and per-trajectory codes are not selected for this formal table.
+rows:
+  - method: ours
+    label: Ours (random C32)
+    candidate: reference
+    checkpoint_step: 7272
+    source_job: 88823
+    status: scored
+    setting: Original random-C32 alternating curriculum; 1000 steps per wave.
+  - method: joint_model_latent_training_curriculum700_step4200
+    label: Joint model-Z (700-step cycle)
+    candidate: 1
+    checkpoint_step: 4200
+    status: scored
+    setting: Progressive curriculum; model and environment codes update jointly; 700 steps per wave.
+  - method: all_active_joint_no_curriculum
+    label: No curriculum + joint
+    candidate: 3
+    checkpoint_step: 5200
+    status: metrics_pending
+    source_scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/all_active_joint_no_curriculum/step_5200/seed_20260708/metrics/complete_v1/scoreboard.csv
+    setting: All 35 training environments active from the beginning; joint model/code updates.
+  - method: all_active_iterative_no_curriculum
+    label: No curriculum + iterative
+    candidate: 4
+    checkpoint_step: 7000
+    status: scored
+    setting: All 35 training environments active from the beginning; alternating 200-step model/code blocks.
+  - method: ours_context_dim_4
+    label: C=4 + MLP
+    candidate: 6
+    source_job: 115984
+    status: training_incomplete
+    setting: Independent U(0,1) 4-D codes; standard 1000-step alternating curriculum; active35.
+  - method: ours_direct_environment_token
+    label: Direct token (3072-D)
+    candidate: 8
+    source_job: 115985
+    status: training_incomplete
+    setting: One 3072-D code per environment; identity projection; Gaussian initialization with mean 0 and std 0.02; standard alternating curriculum.
+  - method: latent_c32_shared_88822
+    label: C32 shared initialization
+    candidate: 9
+    source_job: 88822
+    checkpoint_step: 6814
+    status: scored
+    setting: Historical shared-initialization C32 run; retain the recorded training configuration.
+  - method: latent_c32_jitter005_89030
+    label: C32 random [-0.05, 0.05]
+    candidate: 10
+    source_job: 89030
+    checkpoint_step: 7000
+    status: scored
+    setting: Historical small-range random-initialization C32 run; retain the recorded training configuration.

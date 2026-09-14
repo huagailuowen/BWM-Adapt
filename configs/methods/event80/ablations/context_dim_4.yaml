@@ -7,6 +7,8 @@ experiment:
 
 method:
   latent_dim: 4
+source:
+  legacy_train_config: configs/train/train_push_box_event80_iterative_c4_2gpu_24h.yaml
 
 execution:
   training:

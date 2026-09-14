@@ -1,5 +1,38 @@
 # Baseline and Ablation Plan
 
+## Final Event80 ablation table (locked 2026-09-13)
+
+This is the final intended ablation selection, not a claim that all evaluations
+have finished. Earlier sections retain the broader candidate pool for reference;
+only the following seven variants belong in the formal Event80 ablation table,
+alongside Ours as the reference row.
+
+| Candidate | Formal row | Intended comparison |
+| --- | --- | --- |
+| Reference | Ours: random C32 | Original 1000-step alternating curriculum |
+| 1 | Joint model-Z, 700-step cycle only | Joint optimization instead of alternating model/code updates; use step4200, not the 1000-step joint variant |
+| 3 | No curriculum + joint | Activate all 35 training environments immediately; jointly update model and codes |
+| 4 | No curriculum + iterative | Activate all 35 training environments immediately; retain alternating model/code updates |
+| 6 | C=4 + MLP | Lower-dimensional environment code; retain the standard alternating curriculum |
+| 8 | Direct 3072-D environment token | Remove the context projection MLP; retain the standard alternating curriculum |
+| 9 | C32 shared initialization | Historical shared-initialization run 88822 |
+| 10 | C32 random initialization in [-0.05, 0.05] | Historical small-range random-initialization run 89030 |
+
+The authoritative selection is `configs/evaluation/event80_formal_ablation.yaml`.
+The [formal table and run provenance](results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/formal_ablation_v1/formal_ablation.md)
+are accompanied by SVG, PNG, CSV, JSON, and protocol/source records in the same directory.
+The evaluation uses the selected 5 ID + 5 OOD environments, K=1 informative
+support, and nine disjoint queries per environment. Report object-centroid
+ADE/FDE, global PSNR/SSIM/official LPIPS, and action-selection success.
+
+Unfinished C4/direct-token evaluations remain blank. Any other missing formal
+score, including no-curriculum joint until its metrics finish, also remains
+blank rather than being replaced with zero or a mismatched experiment.
+Historical initialization runs retain their actual training schedules and must
+not be presented as strict single-variable controls without qualification.
+C1, C128, the 1000-step pure-joint run, new-C200/joint800, shuffled grouping,
+and per-trajectory codes remain outside this selected formal table.
+
 This file is the repository-local mirror of the authoritative ablation plan in the Google Doc, updated on 2026-09-05.
 
 ## Baselines
