@@ -254,7 +254,6 @@ def render(config: dict, output_dir: Path) -> None:
         "* Mass Balance Ours uses the completed fixed-pose 5-ID/5-OOD test; baseline rows use workspace-random data.",
         "\u2020 Mass Collision LoRA uses the earlier compatible no-leak balanced-support protocol. -- indicates pending/unavailable.",
         "DINOv2: Transformer for Friction; concat-MLP for Gravity/Collision/Light/Balance. Mass x Friction is pending.",
-        "Gravity Ours: centroid ADE/FDE from step 4300; other metrics from step 3837 (mixed-checkpoint summary, by request).",
     ]
     note_y = table_bottom + 48
     for index, note in enumerate(notes):

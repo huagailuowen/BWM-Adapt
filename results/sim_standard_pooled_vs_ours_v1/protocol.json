@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T00:50:47.919009+00:00",
+  "generated_at": "2026-09-15T02:57:08.637677+00:00",
   "comparison": "Ours versus standard pooled world model",
   "global_metrics": "PSNR/SSIM/LPIPS are averaged over the available ID/OOD environment summaries.",
   "object_metrics": "Mean/final object-state error: centroid ADE/FDE in pixels for moving objects; yellow-lamp score MAE/final absolute error for LightSwitch.",
@@ -23,16 +23,6 @@
     }
   },
   "additional_provenance": {
-    "gravity_ours_object_only": {
-      "source": "results/gravity/gravity80_uniform5id5ood_strict_v1/methods/ours/step_4300/seed_20260712/video_metrics/object_centric/object_summary.json",
-      "checkpoint_step": 4300,
-      "replaced_metrics": [
-        "object_mean_error",
-        "object_final_error"
-      ],
-      "other_metrics_checkpoint_step": 3837,
-      "note": "Mixed-checkpoint summary requested by user; all other scores are preserved."
-    },
     "multi_background_ours_misresume": {
       "benchmark_config": "configs/evaluation/multi_background_pushbox/misresume_step4400_complete_benchmark.yaml",
       "checkpoint": "outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_resume4000_stage1_8700_104188/step-4400.safetensors",
