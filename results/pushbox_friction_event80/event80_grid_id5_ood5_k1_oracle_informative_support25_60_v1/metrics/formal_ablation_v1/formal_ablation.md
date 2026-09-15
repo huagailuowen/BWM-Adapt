@@ -8,8 +8,8 @@ User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10; include
 | Joint model-Z (700-step cycle) | 7.03 | 15.66 | 31.203 | 0.9465 | 0.0657 | 64% |
 | No curriculum + joint | 5.68 | 12.28 | 31.697 | 0.9507 | 0.0547 | 60% |
 | No curriculum + iterative | 6.17 | 12.81 | 31.799 | 0.9514 | 0.0549 | 56% |
-| C=4 + MLP |  |  |  |  |  |  |
-| Direct token (3072-D) |  |  |  |  |  |  |
+| C=4 + MLP | 3.71 | 7.22 | 29.353 | 0.9494 | 0.0546 | 76% |
+| Direct token (3072-D) | 94.50 | 80.49 | 15.218 | 0.3555 | 0.7626 | 24% |
 | C32 shared initialization | 7.94 | 15.98 | 30.638 | 0.9466 | 0.0631 | 56% |
 | C32 random [-0.05, 0.05] | 4.81 | 9.73 | 32.172 | 0.9509 | 0.0495 | 60% |
 
@@ -32,8 +32,8 @@ Metrics are copied from the recorded formal scoreboard. No new rollout or metric
 | Joint model-Z (700-step cycle) | 4200 |  | scored | Progressive curriculum; model and environment codes update jointly; 700 steps per wave. |
 | No curriculum + joint | 5200 |  | scored | All 35 training environments active from the beginning; joint model/code updates. |
 | No curriculum + iterative | 7000 |  | scored | All 35 training environments active from the beginning; alternating 200-step model/code blocks. |
-| C=4 + MLP |  | 115984 | metrics_pending | Independent U(0,1) 4-D codes; standard 1000-step alternating curriculum; active35. |
-| Direct token (3072-D) |  | 115985 | metrics_pending | One 3072-D code per environment; identity projection; Gaussian initialization with mean 0 and std 0.02; standard alternating curriculum. |
+| C=4 + MLP | 6300 | 115984 | scored | Independent U(0,1) 4-D codes; standard 1000-step alternating curriculum; active35. |
+| Direct token (3072-D) | 7700 | 115985 | scored | One 3072-D code per environment; identity projection; Gaussian initialization with mean 0 and std 0.02; standard alternating curriculum. |
 | C32 shared initialization | 6814 | 88822 | scored | Historical shared-initialization C32 run; retain the recorded training configuration. |
 | C32 random [-0.05, 0.05] | 7000 | 89030 | scored | Historical small-range random-initialization C32 run; retain the recorded training configuration. |
 

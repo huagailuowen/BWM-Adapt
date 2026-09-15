@@ -20,12 +20,12 @@
 <text x="2830.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">Action success</text>
 <text x="2830.0" y="290" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400">higher is better</text>
 <text x="105" y="370.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="700">Ours (random C32)</text>
-<text x="1210.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">3.85</text>
-<text x="1550.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">7.59</text>
+<text x="1210.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">3.85</text>
+<text x="1550.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">7.59</text>
 <text x="1870.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.976</text>
 <text x="2170.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9513</text>
 <text x="2470.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0495</text>
-<text x="2830.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">68%</text>
+<text x="2830.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">68%</text>
 <line x1="90" y1="420" x2="3040" y2="420" stroke="#111111" stroke-width="1"/>
 <text x="105" y="470.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">Joint model-Z (700-step cycle)</text>
 <text x="1210.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">7.03</text>
@@ -49,19 +49,19 @@
 <text x="2470.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0549</text>
 <text x="2830.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">56%</text>
 <text x="105" y="770.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">C=4 + MLP</text>
-<text x="1210.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="1550.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="1870.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="2170.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="2470.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="2830.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
+<text x="1210.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">3.71</text>
+<text x="1550.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">7.22</text>
+<text x="1870.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">29.353</text>
+<text x="2170.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9494</text>
+<text x="2470.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0546</text>
+<text x="2830.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">76%</text>
 <text x="105" y="870.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">Direct token (3072-D)</text>
-<text x="1210.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="1550.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="1870.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="2170.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="2470.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
-<text x="2830.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400"></text>
+<text x="1210.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">94.50</text>
+<text x="1550.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">80.49</text>
+<text x="1870.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">15.218</text>
+<text x="2170.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.3555</text>
+<text x="2470.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.7626</text>
+<text x="2830.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">24%</text>
 <text x="105" y="970.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">C32 shared initialization</text>
 <text x="1210.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">7.94</text>
 <text x="1550.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">15.98</text>
