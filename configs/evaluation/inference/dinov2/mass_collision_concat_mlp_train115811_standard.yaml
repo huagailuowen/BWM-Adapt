@@ -1,0 +1,17 @@
+task: mass_collision
+method: dinov2_concat_mlp_random_k1k2
+train_job_id: 115811
+train_config: configs/train/train_mass_collision_noleak_mainview_dinov2_concat_mlp_random_k1k2_total8_4envpergpu_2gpu_24h.yaml
+checkpoint_dir: outputs/method_benchmarks/mass_collision_noleak_original20/dinov2_concat_mlp_random_k1k2_total8_4envpergpu/seed_20260827_job_115811/checkpoints
+# The 24h job may time out before 6500. Select and pin the newest complete file.
+required_checkpoint_step: null
+reference_plan: results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1/methods/ours_action8_highmass2x/step_4300/seed_20260827/same_mass_other_actions/transfer_plan.json
+metric_template: configs/evaluation/action_tasks/dinov2/mass_collision_noleak_step6500_id5_ood5_minimum_long_v1.yaml
+output_base: results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1/methods/dinov2_concat_mlp_random_k1k2/train_job_115811
+expected_environments: 10
+expected_queries: 80
+seed: 20260827
+fps: 10
+num_inference_steps: 25
+cfg_scale: 1.0
+quality: 6

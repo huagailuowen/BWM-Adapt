@@ -1,0 +1,25 @@
+benchmark: joint_mass_friction
+source:
+  method: ours_random_c32
+  job_id: 91267
+  checkpoint_step: 7172
+  metadata: data/mass_friction_joint100_bwm_full61_20260718/train_active84_91267_step7172.jsonl
+selection:
+  # In this metadata, friction_mu is the numeric joint-environment ID (0..99),
+  # not the physical friction coefficient. Never group solely by true friction.
+  environment_key: friction_mu
+  physical_value_keys: [target_mass_kg, target_table_friction_mu]
+  action_key: action_id
+  total_environment_count: 100
+  active_environment_count: 84
+  held_out_environment_count: 16
+  active_environment_ids:
+    [0, 3, 5, 7, 9, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+     24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+     40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55,
+     56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71,
+     72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 87, 90,
+     92, 94, 96, 99]
+  camera_protocol: observation.images.image and observation.images.wrist_image
+  actions_per_environment: 9
+  chunks_sampled_per_environment: 6

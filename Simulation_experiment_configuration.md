@@ -150,3 +150,31 @@ Mass Collision、Mass Balance 和 Light 不再进入 sampler 补跑清单。它�
 上述约束同时适用于 Ours、Standard Pooled WM、DINOv2、TTT-KQV 和相应 ablations。现有结果与未来补跑结果分别记录，不能用新版配置说明覆盖旧实验的真实运行配置。
 
 除非某项 ablation 明确研究 common-action 对齐，后续新增配置均以 independent-action 为默认，不得在未记录的情况下切回 common-action。
+
+## Mass x friction: two-GPU DINO and TTT runs (2026-09-14)
+
+These are additional runs, not replacements for the original four-GPU results.
+Both use the 84 joint environments active in Ours 91267/step7172, with the same
+756 training clips, 61-frame windows, main and wrist views, and original BWM
+initialization. In this metadata, `friction_mu` is a composite environment ID,
+not a physical friction coefficient; grouping therefore preserves mass-friction
+combinations rather than merging all cases with equal friction.
+
+| Method | GPUs | Environments/rank | Chunks/environment | Clips/rank | Global clips/update | Training mechanism |
+| --- | --- | --- | --- | --- | --- | --- |
+| DINOv2 Concat-MLP | 2 | 4 | 6 | 24 | 48 | Random K=1 or K=2 supports; remaining 5 or 4 queries; frozen DINO, learned 1024-hidden concat MLP to 32-D context |
+| TTT-KQV | 2 | 4 | 6 | 24 | 48 | Six-chunk action-distinct shuffled streams; existing causal write-then-predict mechanism |
+
+Both request 24 hours on H200/B200, giving 48 GPU-hours rather than the original
+four-GPU budget of 96 GPU-hours. No extra accumulation restores the old global
+batch of 96. The 50000-update safety cap is not intended to be reached before
+the wall-clock limit. Model LR remains 1e-5 with 100 warm-up updates; save every
+200 updates and retain the latest two checkpoints. DINO encoder-head LR is
+1e-4. TTT retains the existing 1e-4 slow-module LR and full write-token coverage;
+selective saved-tensor offload, per-stream backward, and one synchronization per
+update reduce memory pressure without shrinking the six-chunk logical batch.
+
+Configurations:
+- `configs/train/train_mass_friction100_active84_dinov2_concat_mlp_random_k1k2_total6_4envpergpu_2gpu_24h.yaml`
+- `configs/train/train_mass_friction100_active84_ttt_kqv_prequential6_4envpergpu_2gpu_24h.yaml`
+- `configs/methods/mass_friction/manifests/ours_91267_step7172_active84.yaml`
