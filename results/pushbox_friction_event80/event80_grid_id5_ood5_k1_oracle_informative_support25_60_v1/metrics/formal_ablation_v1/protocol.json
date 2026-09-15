@@ -53,7 +53,8 @@
       "label": "C=4 + MLP",
       "candidate": 6,
       "source_job": 115984,
-      "status": "training_incomplete",
+      "status": "metrics_pending",
+      "result_pointer": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_4/train_job_115984/evaluation_result.json",
       "setting": "Independent U(0,1) 4-D codes; standard 1000-step alternating curriculum; active35."
     },
     {
@@ -61,7 +62,8 @@
       "label": "Direct token (3072-D)",
       "candidate": 8,
       "source_job": 115985,
-      "status": "training_incomplete",
+      "status": "metrics_pending",
+      "result_pointer": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_direct_environment_token/train_job_115985/evaluation_result.json",
       "setting": "One 3072-D code per environment; identity projection; Gaussian initialization with mean 0 and std 0.02; standard alternating curriculum."
     },
     {
@@ -109,7 +111,7 @@
       }
     }
   },
-  "render_job_id": "116142",
+  "render_job_id": "116742",
   "source_protocol_snapshot": {
     "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
     "aggregation": "equal weight per environment after averaging its nine queries",

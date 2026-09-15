@@ -140,6 +140,14 @@ def main():
     additional_sources = {}
     rows = []
     for spec in config['rows']:
+        spec = dict(spec)
+        result_pointer = spec.pop('result_pointer', None)
+        if result_pointer and (ROOT / result_pointer).is_file():
+            completed = json.loads((ROOT / result_pointer).read_text())
+            if completed['method'] != spec['method']:
+                raise ValueError(f"Method mismatch in {result_pointer}")
+            spec['checkpoint_step'] = int(completed['checkpoint_step'])
+            spec['source_scoreboard'] = completed['source_scoreboard']
         row = dict(spec)
         row['source_scoreboard'] = spec.get('source_scoreboard', config['source_scoreboard'])
         selected_scores = scores

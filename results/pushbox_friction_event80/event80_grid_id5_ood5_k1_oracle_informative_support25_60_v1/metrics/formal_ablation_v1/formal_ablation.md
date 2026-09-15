@@ -32,8 +32,8 @@ Metrics are copied from the recorded formal scoreboard. No new rollout or metric
 | Joint model-Z (700-step cycle) | 4200 |  | scored | Progressive curriculum; model and environment codes update jointly; 700 steps per wave. |
 | No curriculum + joint | 5200 |  | scored | All 35 training environments active from the beginning; joint model/code updates. |
 | No curriculum + iterative | 7000 |  | scored | All 35 training environments active from the beginning; alternating 200-step model/code blocks. |
-| C=4 + MLP |  | 115984 | training_incomplete | Independent U(0,1) 4-D codes; standard 1000-step alternating curriculum; active35. |
-| Direct token (3072-D) |  | 115985 | training_incomplete | One 3072-D code per environment; identity projection; Gaussian initialization with mean 0 and std 0.02; standard alternating curriculum. |
+| C=4 + MLP |  | 115984 | metrics_pending | Independent U(0,1) 4-D codes; standard 1000-step alternating curriculum; active35. |
+| Direct token (3072-D) |  | 115985 | metrics_pending | One 3072-D code per environment; identity projection; Gaussian initialization with mean 0 and std 0.02; standard alternating curriculum. |
 | C32 shared initialization | 6814 | 88822 | scored | Historical shared-initialization C32 run; retain the recorded training configuration. |
 | C32 random [-0.05, 0.05] | 7000 | 89030 | scored | Historical small-range random-initialization C32 run; retain the recorded training configuration. |
 
