@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "disable_context_clamp": true,
+  "stage1_replica": 0,
+  "stage2_initialization": "mean_of_every_trained_latent_once",
+  "noise_seed": 20260913,
+  "noise_min": 0.0,
+  "noise_max": 0.0,
+  "tasks": {
+    "door": {
+      "source_prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114799/door_prep",
+      "source_inference": "outputs/infer_real97_door_ours_reference_job114799",
+      "training_run": "outputs/real97_train_real97_door_target_c32_dual_latent_lr003_2gpu_20260912_v1_job115191",
+      "training_config": "configs/train/train_real97_door_target_c32_dual_latent_lr003_2gpu_20260912_v1.yaml",
+      "action_stats": "data/real97_door_20260912_dual_latent_lr003_v1/action_stats.json",
+      "prepared": "outputs/evaluation_real97_dual_latent_mean_20260913_v1/door_prep",
+      "initial_context": "mean_training_table",
+      "require_exact_original_support": true,
+      "expected_latents": 20,
+      "model_step": 5500,
+      "table_step": 5500
+    },
+    "ball": {
+      "source_prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114807/ball_prep",
+      "source_inference": "outputs/infer_real97_ball_ours_reference_job114807",
+      "training_run": "outputs/real97_train_real97_ball_target_c32_dual_latent_lr003_2gpu_20260912_v1_job115192",
+      "training_config": "configs/train/train_real97_ball_target_c32_dual_latent_lr003_2gpu_20260912_v1.yaml",
+      "action_stats": "data/real97_ball_20260912_dual_latent_lr003_v1/action_stats.json",
+      "prepared": "outputs/evaluation_real97_dual_latent_mean_20260913_v1/ball_prep",
+      "initial_context": "mean_training_table",
+      "require_exact_original_support": true,
+      "expected_latents": 16,
+      "model_step": 5500,
+      "table_step": 5500
+    }
+  },
+  "stage2": {
+    "inner_lr_schedule": "0.3:10,0.15:10,0.05:10,0.015:10",
+    "inner_steps": 40,
+    "context_precision": "float32",
+    "regularization": 0.0,
+    "hard_bounds": null,
+    "roi": false,
+    "inference_light_augmentation": false
+  },
+  "query_support_and_action_templates": "Exact prior frozen manifests; no reselection or action edits",
+  "factual_grid": "Rows GT, Stage1, Stage2; train and test separate; columns sorted by numerical level",
+  "counterfactual_grid": "Retain fixed-test-initial-frame action sweep, clearly separated from paired-GT evaluation",
+  "checkpoint_handling": "Hard-link the completed model into a new reference directory; copy its paired C table; use existing locked node-local staging"
+}

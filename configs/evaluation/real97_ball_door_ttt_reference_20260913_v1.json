@@ -1,0 +1,37 @@
+{
+  "version": "real97_ball_door_ttt_reference_20260913_v1",
+  "seed": 20260910,
+  "num_inference_steps": 50,
+  "support_noise_seed_offset": 1000003,
+  "protocol": "oneminute_write_then_predict",
+  "support_order": "unchanged_frozen_support_indices",
+  "support_size": "all_current_ours_supports_for_each_environment",
+  "fast_state_lifecycle": "reset_per_denoising_timestep_then_all_support_scans_then_query_scan_then_clear",
+  "query_future_gt_used": false,
+  "cross_query_memory": false,
+  "roi": false,
+  "inference_light_augmentation": false,
+  "tasks": {
+    "door": {
+      "source_prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114799/door_prep",
+      "prepared": "outputs/evaluation_real97_ttt_reference_20260913_v1/door_prep",
+      "training_run": "outputs/real97_train_real97_door_ttt_write_then_predict_3x2x4_gpu_resident_2gpu_20260912_v3_job115337",
+      "checkpoint": "protected/step-3656.safetensors",
+      "checkpoint_step": 3656,
+      "expected_queries": 120,
+      "geometry": [49, 192, 256]
+    },
+    "ball": {
+      "source_prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114807/ball_prep",
+      "prepared": "outputs/evaluation_real97_ttt_reference_20260913_v1/ball_prep",
+      "training_run": "outputs/real97_train_real97_ball_ttt_write_then_predict_3x2x4_gpu_resident_2gpu_20260912_v3_job115338",
+      "checkpoint": "protected/step-4144.safetensors",
+      "checkpoint_step": 4144,
+      "expected_queries": 96,
+      "geometry": [61, 160, 320]
+    }
+  },
+  "factual_grid": "GT above TTT; train/test separate; ascending numerical action levels",
+  "action_sweeps": "same_test_initial_frame_with_recorded_training_action_templates; no paired future GT",
+  "fairness_note": "Same factual query and selected training-support manifests as the other methods, but actual final training steps differ. TTT updates fast memory, not a C32 latent."
+}
