@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "method": "standard_pooled",
+  "seed": 20260910,
+  "num_inference_steps": 50,
+  "cfg_scale": 1,
+  "source_fps": 20,
+  "tasks": {
+    "soft": {
+      "prepared": "outputs/infer_real97_soft_standard_matched_balanced9_static_20260914_v1/prepared",
+      "training_run": "outputs/real97_train_real97_soft_eef_history5_standard_pooled_2gpu_20260910_v1_job113942",
+      "checkpoint": "protected/step-5500.safetensors",
+      "expected_queries": 36,
+      "expected_environments": 9,
+      "history_frames": 5,
+      "model_frames": 33,
+      "canonical_target_eef": true
+    }
+  },
+  "matched_ours": "outputs/infer_real97_soft_balanced9_dual_static1_train115613_job116188",
+  "reuse_standard": "outputs/infer_real97_soft_standard_step5500_static_start_job114497"
+}

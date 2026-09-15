@@ -1,0 +1,71 @@
+{
+  "training_job_id": 115613,
+  "training_run": "outputs/real97_train_real97_soft_static_balanced9_dual_c32_lr003_2gpu_20260913_v1_job115613",
+  "preferred_final_step": 5500,
+  "minimum_checkpoint_step": 5100,
+  "snapshot_root": "outputs/reference_snapshots/soft_balanced9_dual_115613_static1",
+  "source_dataset": "/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets_real/soft_pull_9_7_crop_512x256_static",
+  "environments": [
+    "soft-1l",
+    "soft-2l",
+    "soft-4l",
+    "soft-1r",
+    "soft-7r",
+    "soft-5r",
+    "soft-2m",
+    "soft-6m",
+    "soft-8"
+  ],
+  "quality_exclusions": {
+    "soft-6m": [
+      10
+    ]
+  },
+  "historical_queries": "outputs/infer_real97_soft_standard_step5500_static_start_job114497/query.jsonl",
+  "historical_supports": "outputs/evaluation_real97_reference_ttt_v3_20260910/soft_prep_job113869/support.jsonl",
+  "tracking_cache": "outputs/evaluation_real97_dataset_audit_20260909/dino_fullvideo_job113664/visible_center/episodes",
+  "expected_query_count": 36,
+  "query_train_episodes_per_environment": 2,
+  "query_test_policy": "all_18_heldout_episodes",
+  "support_count_per_environment": 4,
+  "support_minimum_net_dx_px": 15,
+  "support_minimum_excursion_px": 25,
+  "support_policy": "prefer_eligible_historical_episodes_at_legal_static_starts; prefer_2_left_2_right; require_both_directions",
+  "query_policy": "episode_start_0_stride3_through96_with_tail_padding",
+  "num_frames": 33,
+  "num_history_frames": 1,
+  "frame_stride": 3,
+  "stage1_replica": 0,
+  "stage2_initial": "corresponding_family_mean_of_both_replicas",
+  "stage2_inner_lr_schedule": "0.3:10,0.15:10,0.05:10,0.015:10",
+  "stage2_inner_steps": 40,
+  "context_hard_bounds": null,
+  "context_regularization": 0,
+  "spatial_loss_mode": "none",
+  "video_light_augmentation_enabled": false,
+  "num_inference_steps": 50,
+  "seed": 20260910,
+  "fps": 6.666666666666667,
+  "formal_metric_approved": false,
+  "source_inference": "outputs/infer_real97_soft_balanced9_dual_static1_train115613_job116188",
+  "initialization_groups": {
+    "8": [
+      "soft-8"
+    ],
+    "L": [
+      "soft-1l",
+      "soft-2l",
+      "soft-4l",
+      "soft-2m",
+      "soft-6m"
+    ],
+    "R": [
+      "soft-1r",
+      "soft-5r",
+      "soft-7r"
+    ]
+  },
+  "group_assignment_policy": "User-specified L/R/8 prior; soft-1r belongs to R; soft-2m and soft-6m belong to L based only on the training table.",
+  "known_family_prior": true,
+  "output": "outputs/infer_real97_soft_balanced9_family_mean_static_20260914_v1"
+}
