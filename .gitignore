@@ -48,3 +48,19 @@ AGENTS.md
 
 # Demo
 !demo/**
+
+# Text-only Real97 result release; keep generated media and other outputs ignored.
+!/results/
+/results/*
+!/results/real97_all_methods_main_table_v1/
+/results/real97_all_methods_main_table_v1/*
+!/results/real97_all_methods_main_table_v1/README.md
+!/results/real97_all_methods_main_table_v1/real97_all_methods_main_table.csv
+!/results/real97_all_methods_main_table_v1/soft_lpips/
+/results/real97_all_methods_main_table_v1/soft_lpips/*
+!/results/real97_all_methods_main_table_v1/soft_lpips/summary.json
+!/results/real97_all_methods_main_table_v1/soft_lpips/per_query.json
+!/results/real97_all_methods_main_table_v1/metrics/
+/results/real97_all_methods_main_table_v1/metrics/*
+!/results/real97_all_methods_main_table_v1/metrics/ball_door_comparison.json
+!/results/real97_all_methods_main_table_v1/metrics/soft_family_mean_comparison.json

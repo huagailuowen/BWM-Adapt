@@ -35,6 +35,7 @@ excluded. The real97 Door and Ball releases are indexed at:
 
 - [Door close](door_close/real97_train_support_train_test_query_v1/README.md)
 - [Ball friction](ball_friction/real97_train_support_train_test_query_v1/README.md)
+- [Real97 main results table](real97_all_methods_main_table_v1/README.md)
 
 Training resource telemetry remains next to the corresponding method checkpoint
 under `outputs/method_benchmarks/`. It records the declared fixed hardware-time

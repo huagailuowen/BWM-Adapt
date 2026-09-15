@@ -1,0 +1,96 @@
+{
+  "status": "complete",
+  "job_id": "116854",
+  "source": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_soft_family_mean_comparison_20260914_v1/initialization_comparison_per_query.json",
+  "source_sha256": "b1db3ba6cbd31de087f7b41402e9c9fb4c0a04f3f3bcec3c305e89735c5f9eb9",
+  "metric": "LPIPS",
+  "backbone": "alex",
+  "version": "0.1",
+  "rgb_size": [
+    512,
+    256
+  ],
+  "resize": "opencv_INTER_LINEAR",
+  "input_range": [
+    -1,
+    1
+  ],
+  "native_future_frames": [
+    3,
+    6,
+    9,
+    12,
+    15,
+    18,
+    21,
+    24,
+    27,
+    30,
+    33,
+    36,
+    39,
+    42,
+    45,
+    48,
+    51,
+    54,
+    57,
+    60,
+    63,
+    66,
+    69,
+    72,
+    75,
+    78,
+    81,
+    84
+  ],
+  "aggregation": "mean over 28 future frames, then mean over queries",
+  "tracking_mask_applied": false,
+  "condition_frames_scored": false,
+  "test": {
+    "queries": 18,
+    "environments": [
+      "soft-1l",
+      "soft-1r",
+      "soft-2l",
+      "soft-2m",
+      "soft-4l",
+      "soft-5r",
+      "soft-6m",
+      "soft-7r",
+      "soft-8"
+    ],
+    "standard": 0.07745321065054407,
+    "ours": 0.07920931291116017
+  },
+  "test_shared_training_environments": {
+    "queries": 12,
+    "environments": [
+      "soft-1l",
+      "soft-1r",
+      "soft-2l",
+      "soft-2m",
+      "soft-5r",
+      "soft-8"
+    ],
+    "standard": 0.07952993933022733,
+    "ours": 0.07549362080836934
+  },
+  "train": {
+    "queries": 18,
+    "environments": [
+      "soft-1l",
+      "soft-1r",
+      "soft-2l",
+      "soft-2m",
+      "soft-4l",
+      "soft-5r",
+      "soft-6m",
+      "soft-7r",
+      "soft-8"
+    ],
+    "standard": 0.054908451990091374,
+    "ours": 0.060663182558196166
+  }
+}

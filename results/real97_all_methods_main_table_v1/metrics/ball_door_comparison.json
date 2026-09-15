@@ -1,0 +1,5358 @@
+{
+  "status": "train_gt_calibrated_pending_heldout_overlay_audit",
+  "lora_queries_expected": 216,
+  "lora_queries_scored": 216,
+  "lora_lpips_complete": true,
+  "image_object": [
+    {
+      "task": "ball",
+      "split": "train",
+      "method": "standard",
+      "queries": 16,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 36.74343782701034,
+        "ssim": 0.9626700790692734,
+        "ade_px": 14.536448752481295,
+        "fde_px": 28.657232129600164,
+        "observed_only_ade_px": 14.68394782492857,
+        "missing_penalized_ade_px": 14.536448752481295,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 27.531443610376616,
+        "lpips": 0.022626283520366997
+      },
+      "valid_query_counts": {
+        "psnr": 16,
+        "ssim": 16,
+        "ade_px": 16,
+        "fde_px": 16,
+        "observed_only_ade_px": 16,
+        "missing_penalized_ade_px": 16,
+        "paired_valid_frames": 16,
+        "gt_valid_frames": 16,
+        "gt_coverage": 16,
+        "prediction_coverage": 16,
+        "paired_coverage": 16,
+        "peak_x_error_px": 16,
+        "lpips": 16
+      },
+      "environment_macro": {
+        "psnr": 36.74343782701034,
+        "ssim": 0.9626700790692735,
+        "ade_px": 14.536448752481297,
+        "fde_px": 28.65723212960016,
+        "observed_only_ade_px": 14.683947824928572,
+        "missing_penalized_ade_px": 14.536448752481297,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 27.531443610376616,
+        "lpips": 0.022626283520366997
+      }
+    },
+    {
+      "task": "ball",
+      "split": "train",
+      "method": "dino",
+      "queries": 16,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 36.82134801730076,
+        "ssim": 0.9629896310030255,
+        "ade_px": 15.71388273087658,
+        "fde_px": 29.844721482338677,
+        "observed_only_ade_px": 15.888954261961096,
+        "missing_penalized_ade_px": 15.71388273087658,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 28.667122291692667,
+        "lpips": 0.023577024461701512
+      },
+      "valid_query_counts": {
+        "psnr": 16,
+        "ssim": 16,
+        "ade_px": 16,
+        "fde_px": 16,
+        "observed_only_ade_px": 16,
+        "missing_penalized_ade_px": 16,
+        "paired_valid_frames": 16,
+        "gt_valid_frames": 16,
+        "gt_coverage": 16,
+        "prediction_coverage": 16,
+        "paired_coverage": 16,
+        "peak_x_error_px": 16,
+        "lpips": 16
+      },
+      "environment_macro": {
+        "psnr": 36.82134801730076,
+        "ssim": 0.9629896310030255,
+        "ade_px": 15.71388273087658,
+        "fde_px": 29.84472148233867,
+        "observed_only_ade_px": 15.888954261961096,
+        "missing_penalized_ade_px": 15.71388273087658,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 28.667122291692667,
+        "lpips": 0.023577024461701512
+      }
+    },
+    {
+      "task": "ball",
+      "split": "train",
+      "method": "ours_stage1",
+      "queries": 16,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 35.17266130523769,
+        "ssim": 0.9572407764628217,
+        "ade_px": 11.86133734131605,
+        "fde_px": 16.968463580091786,
+        "observed_only_ade_px": 12.202522788393741,
+        "missing_penalized_ade_px": 11.86133734131605,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 16.636131690306986,
+        "lpips": 0.0222919195657596
+      },
+      "valid_query_counts": {
+        "psnr": 16,
+        "ssim": 16,
+        "ade_px": 16,
+        "fde_px": 16,
+        "observed_only_ade_px": 16,
+        "missing_penalized_ade_px": 16,
+        "paired_valid_frames": 16,
+        "gt_valid_frames": 16,
+        "gt_coverage": 16,
+        "prediction_coverage": 16,
+        "paired_coverage": 16,
+        "peak_x_error_px": 16,
+        "lpips": 16
+      },
+      "environment_macro": {
+        "psnr": 35.17266130523768,
+        "ssim": 0.9572407764628218,
+        "ade_px": 11.861337341316052,
+        "fde_px": 16.96846358009179,
+        "observed_only_ade_px": 12.202522788393743,
+        "missing_penalized_ade_px": 11.861337341316052,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 16.636131690306986,
+        "lpips": 0.0222919195657596
+      }
+    },
+    {
+      "task": "ball",
+      "split": "train",
+      "method": "ours_stage2",
+      "queries": 16,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 34.38950143103206,
+        "ssim": 0.9540939048016077,
+        "ade_px": 15.345182769407774,
+        "fde_px": 32.04754232626692,
+        "observed_only_ade_px": 15.544135267032352,
+        "missing_penalized_ade_px": 15.345182769407774,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 31.890045993215523,
+        "lpips": 0.028720723814330995
+      },
+      "valid_query_counts": {
+        "psnr": 16,
+        "ssim": 16,
+        "ade_px": 16,
+        "fde_px": 16,
+        "observed_only_ade_px": 16,
+        "missing_penalized_ade_px": 16,
+        "paired_valid_frames": 16,
+        "gt_valid_frames": 16,
+        "gt_coverage": 16,
+        "prediction_coverage": 16,
+        "paired_coverage": 16,
+        "peak_x_error_px": 16,
+        "lpips": 16
+      },
+      "environment_macro": {
+        "psnr": 34.389501431032066,
+        "ssim": 0.9540939048016078,
+        "ade_px": 15.345182769407774,
+        "fde_px": 32.04754232626692,
+        "observed_only_ade_px": 15.544135267032352,
+        "missing_penalized_ade_px": 15.345182769407774,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 31.890045993215523,
+        "lpips": 0.028720723814330995
+      }
+    },
+    {
+      "task": "ball",
+      "split": "test",
+      "method": "standard",
+      "queries": 80,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 36.04200439559078,
+        "ssim": 0.9605375824459397,
+        "ade_px": 28.35665783865639,
+        "fde_px": 64.41830260624161,
+        "observed_only_ade_px": 27.750684159788072,
+        "missing_penalized_ade_px": 28.35665783865639,
+        "paired_valid_frames": 41.725,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 62.09724395303105,
+        "lpips": 0.03153085202211514
+      },
+      "valid_query_counts": {
+        "psnr": 80,
+        "ssim": 80,
+        "ade_px": 80,
+        "fde_px": 80,
+        "observed_only_ade_px": 80,
+        "missing_penalized_ade_px": 80,
+        "paired_valid_frames": 80,
+        "gt_valid_frames": 80,
+        "gt_coverage": 80,
+        "prediction_coverage": 80,
+        "paired_coverage": 80,
+        "peak_x_error_px": 80,
+        "lpips": 80
+      },
+      "environment_macro": {
+        "psnr": 36.04200439559078,
+        "ssim": 0.96053758244594,
+        "ade_px": 28.35665783865639,
+        "fde_px": 64.41830260624161,
+        "observed_only_ade_px": 27.750684159788065,
+        "missing_penalized_ade_px": 28.35665783865639,
+        "paired_valid_frames": 41.725,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 62.09724395303105,
+        "lpips": 0.03153085202211514
+      }
+    },
+    {
+      "task": "ball",
+      "split": "test",
+      "method": "dino",
+      "queries": 80,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 36.311863243312224,
+        "ssim": 0.9612657811341316,
+        "ade_px": 25.52430058179055,
+        "fde_px": 54.32947113101987,
+        "observed_only_ade_px": 25.186102855203274,
+        "missing_penalized_ade_px": 25.52430058179055,
+        "paired_valid_frames": 41.725,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 53.76768240622611,
+        "lpips": 0.02942287843907252
+      },
+      "valid_query_counts": {
+        "psnr": 80,
+        "ssim": 80,
+        "ade_px": 80,
+        "fde_px": 80,
+        "observed_only_ade_px": 80,
+        "missing_penalized_ade_px": 80,
+        "paired_valid_frames": 80,
+        "gt_valid_frames": 80,
+        "gt_coverage": 80,
+        "prediction_coverage": 80,
+        "paired_coverage": 80,
+        "peak_x_error_px": 80,
+        "lpips": 80
+      },
+      "environment_macro": {
+        "psnr": 36.31186324331222,
+        "ssim": 0.9612657811341319,
+        "ade_px": 25.52430058179055,
+        "fde_px": 54.32947113101987,
+        "observed_only_ade_px": 25.18610285520327,
+        "missing_penalized_ade_px": 25.52430058179055,
+        "paired_valid_frames": 41.725,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 53.76768240622611,
+        "lpips": 0.02942287843907252
+      }
+    },
+    {
+      "task": "ball",
+      "split": "test",
+      "method": "ours_stage1",
+      "queries": 80,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 34.83382027918249,
+        "ssim": 0.9560467051619279,
+        "ade_px": 16.694327044328837,
+        "fde_px": 26.158052533764,
+        "observed_only_ade_px": 16.6715464219133,
+        "missing_penalized_ade_px": 16.956841721873616,
+        "paired_valid_frames": 41.7125,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 0.9995535714285714,
+        "paired_coverage": 0.9995535714285714,
+        "peak_x_error_px": 26.466516712075965,
+        "lpips": 0.027760467864573
+      },
+      "valid_query_counts": {
+        "psnr": 80,
+        "ssim": 80,
+        "ade_px": 80,
+        "fde_px": 80,
+        "observed_only_ade_px": 80,
+        "missing_penalized_ade_px": 80,
+        "paired_valid_frames": 80,
+        "gt_valid_frames": 80,
+        "gt_coverage": 80,
+        "prediction_coverage": 80,
+        "paired_coverage": 80,
+        "peak_x_error_px": 80,
+        "lpips": 80
+      },
+      "environment_macro": {
+        "psnr": 34.83382027918249,
+        "ssim": 0.9560467051619277,
+        "ade_px": 16.694327044328837,
+        "fde_px": 26.158052533764007,
+        "observed_only_ade_px": 16.6715464219133,
+        "missing_penalized_ade_px": 16.956841721873616,
+        "paired_valid_frames": 41.712500000000006,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 0.9995535714285714,
+        "paired_coverage": 0.9995535714285714,
+        "peak_x_error_px": 26.466516712075965,
+        "lpips": 0.027760467864573004
+      }
+    },
+    {
+      "task": "ball",
+      "split": "test",
+      "method": "ours_stage2",
+      "queries": 80,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 34.16360147408692,
+        "ssim": 0.9528782971056218,
+        "ade_px": 21.742961367868606,
+        "fde_px": 40.547814473216995,
+        "observed_only_ade_px": 21.742709907094813,
+        "missing_penalized_ade_px": 22.223141633658127,
+        "paired_valid_frames": 41.7,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 0.9992013184584178,
+        "paired_coverage": 0.9992013184584178,
+        "peak_x_error_px": 39.77474941663227,
+        "lpips": 0.03281606937525794
+      },
+      "valid_query_counts": {
+        "psnr": 80,
+        "ssim": 80,
+        "ade_px": 80,
+        "fde_px": 80,
+        "observed_only_ade_px": 80,
+        "missing_penalized_ade_px": 80,
+        "paired_valid_frames": 80,
+        "gt_valid_frames": 80,
+        "gt_coverage": 80,
+        "prediction_coverage": 80,
+        "paired_coverage": 80,
+        "peak_x_error_px": 80,
+        "lpips": 80
+      },
+      "environment_macro": {
+        "psnr": 34.16360147408692,
+        "ssim": 0.9528782971056219,
+        "ade_px": 21.742961367868617,
+        "fde_px": 40.547814473217,
+        "observed_only_ade_px": 21.742709907094817,
+        "missing_penalized_ade_px": 22.22314163365814,
+        "paired_valid_frames": 41.7,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 0.9992013184584179,
+        "paired_coverage": 0.9992013184584179,
+        "peak_x_error_px": 39.774749416632275,
+        "lpips": 0.03281606937525794
+      }
+    },
+    {
+      "task": "door",
+      "split": "train",
+      "method": "standard",
+      "queries": 20,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 32.03849436622805,
+        "ssim": 0.9267254866293552,
+        "ade_px": 11.47549147055702,
+        "fde_px": 22.05,
+        "observed_only_ade_px": 11.47549147055702,
+        "missing_penalized_ade_px": 11.47549147055702,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.8421052631578947,
+        "lpips": 0.03871069806627929
+      },
+      "valid_query_counts": {
+        "psnr": 20,
+        "ssim": 20,
+        "ade_px": 20,
+        "fde_px": 20,
+        "observed_only_ade_px": 20,
+        "missing_penalized_ade_px": 20,
+        "paired_valid_frames": 20,
+        "gt_valid_frames": 20,
+        "gt_coverage": 20,
+        "prediction_coverage": 20,
+        "paired_coverage": 20,
+        "closure_agreement_with_tracked_gt": 19,
+        "lpips": 20
+      },
+      "environment_macro": {
+        "psnr": 32.03849436622805,
+        "ssim": 0.9267254866293554,
+        "ade_px": 11.47549147055702,
+        "fde_px": 22.05,
+        "observed_only_ade_px": 11.47549147055702,
+        "missing_penalized_ade_px": 11.47549147055702,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.85,
+        "lpips": 0.03871069806627929
+      }
+    },
+    {
+      "task": "door",
+      "split": "train",
+      "method": "dino",
+      "queries": 20,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 32.36869185570012,
+        "ssim": 0.9280634002552433,
+        "ade_px": 11.441425348597472,
+        "fde_px": 19.4,
+        "observed_only_ade_px": 11.441425348597472,
+        "missing_penalized_ade_px": 11.441425348597472,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.8421052631578947,
+        "lpips": 0.038098127814009786
+      },
+      "valid_query_counts": {
+        "psnr": 20,
+        "ssim": 20,
+        "ade_px": 20,
+        "fde_px": 20,
+        "observed_only_ade_px": 20,
+        "missing_penalized_ade_px": 20,
+        "paired_valid_frames": 20,
+        "gt_valid_frames": 20,
+        "gt_coverage": 20,
+        "prediction_coverage": 20,
+        "paired_coverage": 20,
+        "closure_agreement_with_tracked_gt": 19,
+        "lpips": 20
+      },
+      "environment_macro": {
+        "psnr": 32.36869185570012,
+        "ssim": 0.9280634002552433,
+        "ade_px": 11.44142534859747,
+        "fde_px": 19.4,
+        "observed_only_ade_px": 11.44142534859747,
+        "missing_penalized_ade_px": 11.44142534859747,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.85,
+        "lpips": 0.038098127814009786
+      }
+    },
+    {
+      "task": "door",
+      "split": "train",
+      "method": "ours_stage1",
+      "queries": 20,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 31.4145902367352,
+        "ssim": 0.9222761377243941,
+        "ade_px": 6.793396630623382,
+        "fde_px": 13.05,
+        "observed_only_ade_px": 6.793396630623382,
+        "missing_penalized_ade_px": 6.793396630623382,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.95,
+        "lpips": 0.03520490974187851
+      },
+      "valid_query_counts": {
+        "psnr": 20,
+        "ssim": 20,
+        "ade_px": 20,
+        "fde_px": 20,
+        "observed_only_ade_px": 20,
+        "missing_penalized_ade_px": 20,
+        "paired_valid_frames": 20,
+        "gt_valid_frames": 20,
+        "gt_coverage": 20,
+        "prediction_coverage": 20,
+        "paired_coverage": 20,
+        "closure_agreement_with_tracked_gt": 20,
+        "lpips": 20
+      },
+      "environment_macro": {
+        "psnr": 31.4145902367352,
+        "ssim": 0.9222761377243943,
+        "ade_px": 6.793396630623382,
+        "fde_px": 13.05,
+        "observed_only_ade_px": 6.793396630623382,
+        "missing_penalized_ade_px": 6.793396630623382,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.95,
+        "lpips": 0.03520490974187851
+      }
+    },
+    {
+      "task": "door",
+      "split": "train",
+      "method": "ours_stage2",
+      "queries": 20,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 30.740088214908297,
+        "ssim": 0.9187598870454228,
+        "ade_px": 10.243583357978128,
+        "fde_px": 18.0,
+        "observed_only_ade_px": 10.243583357978128,
+        "missing_penalized_ade_px": 10.243583357978128,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.85,
+        "lpips": 0.04174140337854624
+      },
+      "valid_query_counts": {
+        "psnr": 20,
+        "ssim": 20,
+        "ade_px": 20,
+        "fde_px": 20,
+        "observed_only_ade_px": 20,
+        "missing_penalized_ade_px": 20,
+        "paired_valid_frames": 20,
+        "gt_valid_frames": 20,
+        "gt_coverage": 20,
+        "prediction_coverage": 20,
+        "paired_coverage": 20,
+        "closure_agreement_with_tracked_gt": 20,
+        "lpips": 20
+      },
+      "environment_macro": {
+        "psnr": 30.740088214908297,
+        "ssim": 0.9187598870454229,
+        "ade_px": 10.243583357978128,
+        "fde_px": 18.0,
+        "observed_only_ade_px": 10.243583357978128,
+        "missing_penalized_ade_px": 10.243583357978128,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.85,
+        "lpips": 0.04174140337854624
+      }
+    },
+    {
+      "task": "door",
+      "split": "test",
+      "method": "standard",
+      "queries": 100,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 29.959671136188316,
+        "ssim": 0.9115462397518573,
+        "ade_px": 21.82005786112472,
+        "fde_px": 41.22,
+        "observed_only_ade_px": 21.82005786112472,
+        "missing_penalized_ade_px": 21.82005786112472,
+        "paired_valid_frames": 37.66,
+        "gt_valid_frames": 37.66,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.72,
+        "lpips": 0.05703487530350685
+      },
+      "valid_query_counts": {
+        "psnr": 100,
+        "ssim": 100,
+        "ade_px": 100,
+        "fde_px": 100,
+        "observed_only_ade_px": 100,
+        "missing_penalized_ade_px": 100,
+        "paired_valid_frames": 100,
+        "gt_valid_frames": 100,
+        "gt_coverage": 100,
+        "prediction_coverage": 100,
+        "paired_coverage": 100,
+        "closure_agreement_with_tracked_gt": 100,
+        "lpips": 100
+      },
+      "environment_macro": {
+        "psnr": 29.95967113618831,
+        "ssim": 0.9115462397518576,
+        "ade_px": 21.820057861124717,
+        "fde_px": 41.220000000000006,
+        "observed_only_ade_px": 21.820057861124717,
+        "missing_penalized_ade_px": 21.820057861124717,
+        "paired_valid_frames": 37.660000000000004,
+        "gt_valid_frames": 37.660000000000004,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.72,
+        "lpips": 0.05703487530350686
+      }
+    },
+    {
+      "task": "door",
+      "split": "test",
+      "method": "dino",
+      "queries": 100,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 30.27689829126932,
+        "ssim": 0.913663067104118,
+        "ade_px": 21.119074747591686,
+        "fde_px": 38.9,
+        "observed_only_ade_px": 21.119074747591686,
+        "missing_penalized_ade_px": 21.119074747591686,
+        "paired_valid_frames": 37.66,
+        "gt_valid_frames": 37.66,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.73,
+        "lpips": 0.05492330661974847
+      },
+      "valid_query_counts": {
+        "psnr": 100,
+        "ssim": 100,
+        "ade_px": 100,
+        "fde_px": 100,
+        "observed_only_ade_px": 100,
+        "missing_penalized_ade_px": 100,
+        "paired_valid_frames": 100,
+        "gt_valid_frames": 100,
+        "gt_coverage": 100,
+        "prediction_coverage": 100,
+        "paired_coverage": 100,
+        "closure_agreement_with_tracked_gt": 100,
+        "lpips": 100
+      },
+      "environment_macro": {
+        "psnr": 30.276898291269326,
+        "ssim": 0.9136630671041178,
+        "ade_px": 21.11907474759169,
+        "fde_px": 38.9,
+        "observed_only_ade_px": 21.11907474759169,
+        "missing_penalized_ade_px": 21.11907474759169,
+        "paired_valid_frames": 37.660000000000004,
+        "gt_valid_frames": 37.660000000000004,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.73,
+        "lpips": 0.054923306619748466
+      }
+    },
+    {
+      "task": "door",
+      "split": "test",
+      "method": "ours_stage1",
+      "queries": 100,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 30.971075152533913,
+        "ssim": 0.9184883776153935,
+        "ade_px": 10.460723140307628,
+        "fde_px": 17.65,
+        "observed_only_ade_px": 10.460723140307628,
+        "missing_penalized_ade_px": 10.460723140307628,
+        "paired_valid_frames": 37.66,
+        "gt_valid_frames": 37.66,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.92,
+        "lpips": 0.03961846686899662
+      },
+      "valid_query_counts": {
+        "psnr": 100,
+        "ssim": 100,
+        "ade_px": 100,
+        "fde_px": 100,
+        "observed_only_ade_px": 100,
+        "missing_penalized_ade_px": 100,
+        "paired_valid_frames": 100,
+        "gt_valid_frames": 100,
+        "gt_coverage": 100,
+        "prediction_coverage": 100,
+        "paired_coverage": 100,
+        "closure_agreement_with_tracked_gt": 100,
+        "lpips": 100
+      },
+      "environment_macro": {
+        "psnr": 30.971075152533906,
+        "ssim": 0.9184883776153935,
+        "ade_px": 10.460723140307628,
+        "fde_px": 17.65,
+        "observed_only_ade_px": 10.460723140307628,
+        "missing_penalized_ade_px": 10.460723140307628,
+        "paired_valid_frames": 37.660000000000004,
+        "gt_valid_frames": 37.660000000000004,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.9199999999999999,
+        "lpips": 0.03961846686899663
+      }
+    },
+    {
+      "task": "door",
+      "split": "test",
+      "method": "ours_stage2",
+      "queries": 100,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 30.147526909923645,
+        "ssim": 0.911674177388693,
+        "ade_px": 14.067673126354096,
+        "fde_px": 23.08,
+        "observed_only_ade_px": 14.067673126354096,
+        "missing_penalized_ade_px": 14.067673126354096,
+        "paired_valid_frames": 37.66,
+        "gt_valid_frames": 37.66,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.88,
+        "lpips": 0.047595828510820865
+      },
+      "valid_query_counts": {
+        "psnr": 100,
+        "ssim": 100,
+        "ade_px": 100,
+        "fde_px": 100,
+        "observed_only_ade_px": 100,
+        "missing_penalized_ade_px": 100,
+        "paired_valid_frames": 100,
+        "gt_valid_frames": 100,
+        "gt_coverage": 100,
+        "prediction_coverage": 100,
+        "paired_coverage": 100,
+        "closure_agreement_with_tracked_gt": 100,
+        "lpips": 100
+      },
+      "environment_macro": {
+        "psnr": 30.147526909923652,
+        "ssim": 0.911674177388693,
+        "ade_px": 14.067673126354094,
+        "fde_px": 23.08,
+        "observed_only_ade_px": 14.067673126354094,
+        "missing_penalized_ade_px": 14.067673126354094,
+        "paired_valid_frames": 37.660000000000004,
+        "gt_valid_frames": 37.660000000000004,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.8800000000000001,
+        "lpips": 0.04759582851082087
+      }
+    },
+    {
+      "task": "ball",
+      "split": "train",
+      "method": "lora",
+      "queries": 16,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 35.690249504139096,
+        "ssim": 0.9597896901199643,
+        "ade_px": 25.593653850784058,
+        "fde_px": 43.10488912935753,
+        "observed_only_ade_px": 25.818769400312902,
+        "missing_penalized_ade_px": 25.593653850784058,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 42.886585509633704,
+        "lpips": 0.03294857678702101
+      },
+      "valid_query_counts": {
+        "psnr": 16,
+        "ssim": 16,
+        "ade_px": 16,
+        "fde_px": 16,
+        "observed_only_ade_px": 16,
+        "missing_penalized_ade_px": 16,
+        "paired_valid_frames": 16,
+        "gt_valid_frames": 16,
+        "gt_coverage": 16,
+        "prediction_coverage": 16,
+        "paired_coverage": 16,
+        "peak_x_error_px": 16,
+        "lpips": 16
+      },
+      "environment_macro": {
+        "psnr": 35.6902495041391,
+        "ssim": 0.9597896901199645,
+        "ade_px": 25.593653850784065,
+        "fde_px": 43.10488912935754,
+        "observed_only_ade_px": 25.818769400312906,
+        "missing_penalized_ade_px": 25.593653850784065,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 42.88658550963371,
+        "lpips": 0.03294857678702101
+      }
+    },
+    {
+      "task": "ball",
+      "split": "test",
+      "method": "lora",
+      "queries": 80,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 35.578206024999915,
+        "ssim": 0.9591338628541172,
+        "ade_px": 36.82079589478573,
+        "fde_px": 70.01961035253873,
+        "observed_only_ade_px": 36.373869786240945,
+        "missing_penalized_ade_px": 36.82079589478573,
+        "paired_valid_frames": 41.725,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 70.07097319966577,
+        "lpips": 0.036974655697122216
+      },
+      "valid_query_counts": {
+        "psnr": 80,
+        "ssim": 80,
+        "ade_px": 80,
+        "fde_px": 80,
+        "observed_only_ade_px": 80,
+        "missing_penalized_ade_px": 80,
+        "paired_valid_frames": 80,
+        "gt_valid_frames": 80,
+        "gt_coverage": 80,
+        "prediction_coverage": 80,
+        "paired_coverage": 80,
+        "peak_x_error_px": 80,
+        "lpips": 80
+      },
+      "environment_macro": {
+        "psnr": 35.57820602499993,
+        "ssim": 0.9591338628541173,
+        "ade_px": 36.82079589478572,
+        "fde_px": 70.01961035253872,
+        "observed_only_ade_px": 36.373869786240924,
+        "missing_penalized_ade_px": 36.82079589478572,
+        "paired_valid_frames": 41.725,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 70.07097319966577,
+        "lpips": 0.036974655697122216
+      }
+    },
+    {
+      "task": "door",
+      "split": "train",
+      "method": "lora",
+      "queries": 20,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 32.03852600156643,
+        "ssim": 0.927224071672258,
+        "ade_px": 9.852575944011193,
+        "fde_px": 13.15,
+        "observed_only_ade_px": 9.852575944011193,
+        "missing_penalized_ade_px": 9.852575944011193,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.9,
+        "lpips": 0.03546736752614379
+      },
+      "valid_query_counts": {
+        "psnr": 20,
+        "ssim": 20,
+        "ade_px": 20,
+        "fde_px": 20,
+        "observed_only_ade_px": 20,
+        "missing_penalized_ade_px": 20,
+        "paired_valid_frames": 20,
+        "gt_valid_frames": 20,
+        "gt_coverage": 20,
+        "prediction_coverage": 20,
+        "paired_coverage": 20,
+        "closure_agreement_with_tracked_gt": 20,
+        "lpips": 20
+      },
+      "environment_macro": {
+        "psnr": 32.03852600156643,
+        "ssim": 0.927224071672258,
+        "ade_px": 9.852575944011189,
+        "fde_px": 13.15,
+        "observed_only_ade_px": 9.852575944011189,
+        "missing_penalized_ade_px": 9.852575944011189,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.9,
+        "lpips": 0.03546736752614379
+      }
+    },
+    {
+      "task": "door",
+      "split": "test",
+      "method": "lora",
+      "queries": 100,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 30.243820247582377,
+        "ssim": 0.9149518579049069,
+        "ade_px": 17.35134790597519,
+        "fde_px": 32.14,
+        "observed_only_ade_px": 17.35134790597519,
+        "missing_penalized_ade_px": 17.35134790597519,
+        "paired_valid_frames": 37.66,
+        "gt_valid_frames": 37.66,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.79,
+        "lpips": 0.0494644598197192
+      },
+      "valid_query_counts": {
+        "psnr": 100,
+        "ssim": 100,
+        "ade_px": 100,
+        "fde_px": 100,
+        "observed_only_ade_px": 100,
+        "missing_penalized_ade_px": 100,
+        "paired_valid_frames": 100,
+        "gt_valid_frames": 100,
+        "gt_coverage": 100,
+        "prediction_coverage": 100,
+        "paired_coverage": 100,
+        "closure_agreement_with_tracked_gt": 100,
+        "lpips": 100
+      },
+      "environment_macro": {
+        "psnr": 30.24382024758238,
+        "ssim": 0.9149518579049072,
+        "ade_px": 17.351347905975196,
+        "fde_px": 32.14,
+        "observed_only_ade_px": 17.351347905975196,
+        "missing_penalized_ade_px": 17.351347905975196,
+        "paired_valid_frames": 37.660000000000004,
+        "gt_valid_frames": 37.660000000000004,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.79,
+        "lpips": 0.04946445981971919
+      }
+    },
+    {
+      "task": "ball",
+      "split": "train",
+      "method": "ttt",
+      "queries": 16,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 36.93813785409397,
+        "ssim": 0.9630356402477119,
+        "ade_px": 17.58710679513943,
+        "fde_px": 35.128835540503594,
+        "observed_only_ade_px": 17.694109010808535,
+        "missing_penalized_ade_px": 17.58710679513943,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 34.80181321844782,
+        "lpips": 0.023628998082131147
+      },
+      "valid_query_counts": {
+        "psnr": 16,
+        "ssim": 16,
+        "ade_px": 16,
+        "fde_px": 16,
+        "observed_only_ade_px": 16,
+        "missing_penalized_ade_px": 16,
+        "paired_valid_frames": 16,
+        "gt_valid_frames": 16,
+        "gt_coverage": 16,
+        "prediction_coverage": 16,
+        "paired_coverage": 16,
+        "peak_x_error_px": 16,
+        "lpips": 16
+      },
+      "environment_macro": {
+        "psnr": 36.938137854093966,
+        "ssim": 0.9630356402477117,
+        "ade_px": 17.587106795139434,
+        "fde_px": 35.1288355405036,
+        "observed_only_ade_px": 17.694109010808535,
+        "missing_penalized_ade_px": 17.587106795139434,
+        "paired_valid_frames": 41.125,
+        "gt_valid_frames": 41.125,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 34.80181321844782,
+        "lpips": 0.023628998082131147
+      }
+    },
+    {
+      "task": "ball",
+      "split": "test",
+      "method": "ttt",
+      "queries": 80,
+      "environments": 8,
+      "query_mean": {
+        "psnr": 36.285779540838874,
+        "ssim": 0.961271164477939,
+        "ade_px": 29.66413930323507,
+        "fde_px": 67.3229006383035,
+        "observed_only_ade_px": 29.361724523762934,
+        "missing_penalized_ade_px": 29.66413930323507,
+        "paired_valid_frames": 41.725,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 65.8888634712658,
+        "lpips": 0.03238116251304746
+      },
+      "valid_query_counts": {
+        "psnr": 80,
+        "ssim": 80,
+        "ade_px": 80,
+        "fde_px": 80,
+        "observed_only_ade_px": 80,
+        "missing_penalized_ade_px": 80,
+        "paired_valid_frames": 80,
+        "gt_valid_frames": 80,
+        "gt_coverage": 80,
+        "prediction_coverage": 80,
+        "paired_coverage": 80,
+        "peak_x_error_px": 80,
+        "lpips": 80
+      },
+      "environment_macro": {
+        "psnr": 36.28577954083889,
+        "ssim": 0.961271164477939,
+        "ade_px": 29.664139303235075,
+        "fde_px": 67.32290063830351,
+        "observed_only_ade_px": 29.36172452376293,
+        "missing_penalized_ade_px": 29.664139303235075,
+        "paired_valid_frames": 41.725,
+        "gt_valid_frames": 41.725,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 65.88886347126575,
+        "lpips": 0.03238116251304746
+      }
+    },
+    {
+      "task": "door",
+      "split": "train",
+      "method": "ttt",
+      "queries": 20,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 32.78113118057857,
+        "ssim": 0.9314108232263996,
+        "ade_px": 10.515818161773112,
+        "fde_px": 19.9,
+        "observed_only_ade_px": 10.515818161773112,
+        "missing_penalized_ade_px": 10.515818161773112,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.8947368421052632,
+        "lpips": 0.03422079342417419
+      },
+      "valid_query_counts": {
+        "psnr": 20,
+        "ssim": 20,
+        "ade_px": 20,
+        "fde_px": 20,
+        "observed_only_ade_px": 20,
+        "missing_penalized_ade_px": 20,
+        "paired_valid_frames": 20,
+        "gt_valid_frames": 20,
+        "gt_coverage": 20,
+        "prediction_coverage": 20,
+        "paired_coverage": 20,
+        "closure_agreement_with_tracked_gt": 19,
+        "lpips": 20
+      },
+      "environment_macro": {
+        "psnr": 32.781131180578576,
+        "ssim": 0.9314108232263996,
+        "ade_px": 10.515818161773112,
+        "fde_px": 19.9,
+        "observed_only_ade_px": 10.515818161773112,
+        "missing_penalized_ade_px": 10.515818161773112,
+        "paired_valid_frames": 37.2,
+        "gt_valid_frames": 37.2,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.9,
+        "lpips": 0.03422079342417419
+      }
+    },
+    {
+      "task": "door",
+      "split": "test",
+      "method": "ttt",
+      "queries": 100,
+      "environments": 10,
+      "query_mean": {
+        "psnr": 30.952713394104936,
+        "ssim": 0.9178495298774508,
+        "ade_px": 19.868779006563184,
+        "fde_px": 35.93,
+        "observed_only_ade_px": 19.868779006563184,
+        "missing_penalized_ade_px": 19.868779006563184,
+        "paired_valid_frames": 37.66,
+        "gt_valid_frames": 37.66,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.76,
+        "lpips": 0.05164000480435789
+      },
+      "valid_query_counts": {
+        "psnr": 100,
+        "ssim": 100,
+        "ade_px": 100,
+        "fde_px": 100,
+        "observed_only_ade_px": 100,
+        "missing_penalized_ade_px": 100,
+        "paired_valid_frames": 100,
+        "gt_valid_frames": 100,
+        "gt_coverage": 100,
+        "prediction_coverage": 100,
+        "paired_coverage": 100,
+        "closure_agreement_with_tracked_gt": 100,
+        "lpips": 100
+      },
+      "environment_macro": {
+        "psnr": 30.952713394104922,
+        "ssim": 0.9178495298774509,
+        "ade_px": 19.86877900656318,
+        "fde_px": 35.93,
+        "observed_only_ade_px": 19.86877900656318,
+        "missing_penalized_ade_px": 19.86877900656318,
+        "paired_valid_frames": 37.660000000000004,
+        "gt_valid_frames": 37.660000000000004,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.76,
+        "lpips": 0.05164000480435789
+      }
+    }
+  ],
+  "action": [
+    {
+      "task": "door",
+      "method": "standard",
+      "environment_count": 9,
+      "scorable_count": 9,
+      "macro_score": 0.3888888888888889,
+      "conservative_score_fixed_denominator": 0.3888888888888889,
+      "decisions": [
+        {
+          "environment": "door-0",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            1,
+            2
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "9": true,
+            "1": true,
+            "2": false,
+            "4": true,
+            "5": false,
+            "10": true,
+            "8": true,
+            "7": true,
+            "3": true,
+            "6": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-12u-Half",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "2": false,
+            "4": true,
+            "8": true,
+            "9": true,
+            "10": true,
+            "1": false,
+            "5": true,
+            "6": true,
+            "3": false,
+            "7": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-1d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            2,
+            3
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "4": true,
+            "9": true,
+            "1": false,
+            "10": true,
+            "3": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-4d",
+          "predicted_prefer": [
+            5,
+            6
+          ],
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "4": false,
+            "6": true,
+            "7": true,
+            "8": false,
+            "5": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "4": true,
+            "1": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "9": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "1": false,
+            "3": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": true,
+            "3": false,
+            "10": true,
+            "5": true,
+            "8": true,
+            "1": false,
+            "7": true,
+            "9": true,
+            "6": false,
+            "4": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-7d",
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "gt_prefer": [
+            7,
+            8
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "8": true,
+            "7": true,
+            "9": true,
+            "3": false,
+            "4": true,
+            "1": true,
+            "2": false,
+            "5": false,
+            "6": true,
+            "10": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-8d",
+          "predicted_prefer": [
+            7,
+            8
+          ],
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": true,
+            "5": false,
+            "10": true,
+            "6": false,
+            "7": true,
+            "9": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    },
+    {
+      "task": "door",
+      "method": "dino",
+      "environment_count": 9,
+      "scorable_count": 9,
+      "macro_score": 0.4444444444444444,
+      "conservative_score_fixed_denominator": 0.4444444444444444,
+      "decisions": [
+        {
+          "environment": "door-0",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            1,
+            2
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "9": true,
+            "1": false,
+            "2": false,
+            "4": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "3": true,
+            "6": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-12u-Half",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "2": false,
+            "4": true,
+            "8": true,
+            "9": true,
+            "10": true,
+            "1": false,
+            "5": true,
+            "6": true,
+            "3": false,
+            "7": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-1d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            2,
+            3
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "4": true,
+            "9": true,
+            "1": false,
+            "10": true,
+            "3": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-4d",
+          "predicted_prefer": [
+            5,
+            6
+          ],
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "4": false,
+            "6": true,
+            "7": true,
+            "8": true,
+            "5": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": true,
+            "4": true,
+            "1": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "9": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "5": false,
+            "7": true,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "1": false,
+            "3": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-4d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": true,
+            "3": true,
+            "10": true,
+            "5": true,
+            "8": true,
+            "1": false,
+            "7": true,
+            "9": true,
+            "6": false,
+            "4": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-7d",
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "gt_prefer": [
+            7,
+            8
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "8": true,
+            "7": true,
+            "9": true,
+            "3": false,
+            "4": true,
+            "1": true,
+            "2": false,
+            "5": false,
+            "6": true,
+            "10": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-8d",
+          "predicted_prefer": [
+            7,
+            8
+          ],
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "1": false,
+            "2": true,
+            "3": false,
+            "4": true,
+            "5": false,
+            "10": true,
+            "6": false,
+            "7": true,
+            "9": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    },
+    {
+      "task": "door",
+      "method": "ours_stage1",
+      "environment_count": 9,
+      "scorable_count": 9,
+      "macro_score": 0.8888888888888888,
+      "conservative_score_fixed_denominator": 0.8888888888888888,
+      "decisions": [
+        {
+          "environment": "door-0",
+          "predicted_prefer": [
+            1,
+            2
+          ],
+          "gt_prefer": [
+            1,
+            2
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "9": true,
+            "1": true,
+            "2": true,
+            "4": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "3": true,
+            "6": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-12u-Half",
+          "predicted_prefer": [
+            9,
+            10
+          ],
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "4": false,
+            "8": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "7": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-1d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            2,
+            3
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "4": true,
+            "9": true,
+            "1": false,
+            "10": true,
+            "3": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "4": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "5": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": true,
+            "4": true,
+            "1": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "9": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "5": true,
+            "7": true,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "1": false,
+            "3": false,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-4d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": true,
+            "3": true,
+            "10": true,
+            "5": true,
+            "8": true,
+            "1": false,
+            "7": true,
+            "9": true,
+            "6": false,
+            "4": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-7d",
+          "predicted_prefer": [
+            7,
+            8
+          ],
+          "gt_prefer": [
+            7,
+            8
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "8": true,
+            "7": true,
+            "9": true,
+            "3": false,
+            "4": false,
+            "1": false,
+            "2": false,
+            "5": false,
+            "6": false,
+            "10": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-8d",
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": false,
+            "5": false,
+            "10": true,
+            "6": false,
+            "7": false,
+            "9": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    },
+    {
+      "task": "door",
+      "method": "ours_stage2",
+      "environment_count": 9,
+      "scorable_count": 9,
+      "macro_score": 0.7777777777777778,
+      "conservative_score_fixed_denominator": 0.7777777777777778,
+      "decisions": [
+        {
+          "environment": "door-0",
+          "predicted_prefer": [
+            1,
+            2
+          ],
+          "gt_prefer": [
+            1,
+            2
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "9": true,
+            "1": true,
+            "2": true,
+            "4": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "3": true,
+            "6": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-12u-Half",
+          "predicted_prefer": [
+            9,
+            10
+          ],
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "4": false,
+            "8": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "7": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-1d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            2,
+            3
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "4": true,
+            "9": true,
+            "1": false,
+            "10": true,
+            "3": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "4": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "5": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": true,
+            "4": true,
+            "1": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "9": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "5": true,
+            "7": true,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "1": false,
+            "3": false,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "10": true,
+            "5": true,
+            "8": true,
+            "1": false,
+            "7": true,
+            "9": true,
+            "6": false,
+            "4": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-7d",
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "gt_prefer": [
+            7,
+            8
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "8": true,
+            "7": true,
+            "9": true,
+            "3": false,
+            "4": false,
+            "1": false,
+            "2": false,
+            "5": false,
+            "6": true,
+            "10": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-8d",
+          "predicted_prefer": [
+            7,
+            8
+          ],
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": false,
+            "5": false,
+            "10": true,
+            "6": false,
+            "7": true,
+            "9": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    },
+    {
+      "task": "ball",
+      "method": "standard",
+      "rule": "first_reach_and_successor_pair_overlap",
+      "environment_count": 8,
+      "scorable_count": 8,
+      "macro_score": 0.375,
+      "conservative_score_fixed_denominator": 0.375,
+      "decisions": [
+        {
+          "environment": "ball-0",
+          "gt_first_reach": 3,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "3": true,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "3": false,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": false
+          },
+          "threshold_x_by_level": {
+            "1": 407.0199004975124,
+            "10": 407.1161616161616,
+            "5": 407.35748792270533,
+            "6": 406.9191919191919,
+            "7": 406.86341463414635,
+            "3": 406.9646464646465,
+            "4": 407.21938775510205,
+            "9": 406.855,
+            "2": 406.94711538461536,
+            "8": 406.51173708920186
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-1",
+          "gt_first_reach": 4,
+          "predicted_first_reach": 3,
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "predicted_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "8": false,
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": true,
+            "3": true
+          },
+          "threshold_x_by_level": {
+            "10": 406.82758620689657,
+            "2": 406.98604651162793,
+            "4": 406.81,
+            "6": 406.75728155339806,
+            "8": 406.6916299559471,
+            "1": 406.75728155339806,
+            "5": 407.04347826086956,
+            "7": 406.91509433962267,
+            "9": 406.85714285714283,
+            "3": 406.97536945812806
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-1dot5",
+          "gt_first_reach": 5,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": true
+          },
+          "predicted_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "5": false,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": true
+          },
+          "threshold_x_by_level": {
+            "9": 406.79227053140096,
+            "2": 406.8398058252427,
+            "4": 406.88613861386136,
+            "6": 406.8530805687204,
+            "5": 406.81042654028437,
+            "10": 407.0696517412935,
+            "3": 407.05392156862746,
+            "1": 407.105,
+            "8": 406.8666666666667,
+            "7": 407.04040404040404
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-2",
+          "gt_first_reach": 6,
+          "predicted_first_reach": 5,
+          "gt_prefer": [
+            6,
+            7
+          ],
+          "predicted_prefer": [
+            5,
+            6
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": false,
+            "4": false,
+            "7": true,
+            "2": false,
+            "6": true,
+            "8": true,
+            "9": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": true,
+            "4": false,
+            "7": true,
+            "2": false,
+            "6": true,
+            "8": false,
+            "9": true
+          },
+          "threshold_x_by_level": {
+            "1": 406.86224489795916,
+            "3": 406.9704433497537,
+            "10": 406.622009569378,
+            "5": 406.90954773869345,
+            "4": 407.0495049504951,
+            "7": 407.2142857142857,
+            "2": 407.15458937198065,
+            "6": 406.7753303964758,
+            "8": 407.1062801932367,
+            "9": 407.075
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-3",
+          "gt_first_reach": 8,
+          "predicted_first_reach": 6,
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": true,
+            "4": false,
+            "6": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": false,
+            "4": false,
+            "6": true
+          },
+          "threshold_x_by_level": {
+            "1": 407.04545454545456,
+            "5": 406.93401015228426,
+            "7": 407.1010101010101,
+            "9": 406.76576576576576,
+            "10": 406.82027649769583,
+            "2": 406.85972850678735,
+            "3": 407.0406091370558,
+            "8": 406.7020202020202,
+            "4": 407.2182741116751,
+            "6": 406.910447761194
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-4",
+          "gt_first_reach": 9,
+          "predicted_first_reach": 8,
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": false,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": true,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "threshold_x_by_level": {
+            "1": 407.1725888324873,
+            "7": 406.93023255813955,
+            "4": 406.84263959390864,
+            "10": 406.5981308411215,
+            "6": 406.89719626168227,
+            "3": 406.97115384615387,
+            "8": 406.94,
+            "9": 407.21078431372547,
+            "2": 406.7536945812808,
+            "5": 406.96585365853656
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-7",
+          "gt_first_reach": 10,
+          "predicted_first_reach": 8,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "8": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "8": true,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "8": 406.9177489177489,
+            "5": 406.86343612334804,
+            "6": 406.73333333333335,
+            "3": 406.81463414634146,
+            "4": 407.03061224489795,
+            "10": 406.65533980582524,
+            "9": 406.9948979591837,
+            "7": 406.7268292682927,
+            "2": 406.9655172413793,
+            "1": 407.09268292682924
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        },
+        {
+          "environment": "ball-9",
+          "gt_first_reach": 10,
+          "predicted_first_reach": 9,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [
+            9,
+            10
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": false,
+            "10": true,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": true,
+            "10": true,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "4": 406.807881773399,
+            "6": 407.0969387755102,
+            "8": 406.94711538461536,
+            "7": 406.7268292682927,
+            "2": 406.75688073394497,
+            "3": 406.82758620689657,
+            "5": 407.03,
+            "9": 407.0738916256158,
+            "10": 406.57142857142856,
+            "1": 407.26395939086296
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        }
+      ]
+    },
+    {
+      "task": "ball",
+      "method": "dino",
+      "rule": "first_reach_and_successor_pair_overlap",
+      "environment_count": 8,
+      "scorable_count": 8,
+      "macro_score": 0.375,
+      "conservative_score_fixed_denominator": 0.375,
+      "decisions": [
+        {
+          "environment": "ball-0",
+          "gt_first_reach": 3,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "3": true,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": false,
+            "6": true,
+            "7": true,
+            "3": false,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": true
+          },
+          "threshold_x_by_level": {
+            "1": 407.0199004975124,
+            "10": 407.1161616161616,
+            "5": 407.35748792270533,
+            "6": 406.9191919191919,
+            "7": 406.86341463414635,
+            "3": 406.9646464646465,
+            "4": 407.21938775510205,
+            "9": 406.855,
+            "2": 406.94711538461536,
+            "8": 406.51173708920186
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-1",
+          "gt_first_reach": 4,
+          "predicted_first_reach": 3,
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "predicted_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "8": true,
+            "1": false,
+            "5": false,
+            "7": true,
+            "9": true,
+            "3": true
+          },
+          "threshold_x_by_level": {
+            "10": 406.82758620689657,
+            "2": 406.98604651162793,
+            "4": 406.81,
+            "6": 406.75728155339806,
+            "8": 406.6916299559471,
+            "1": 406.75728155339806,
+            "5": 407.04347826086956,
+            "7": 406.91509433962267,
+            "9": 406.85714285714283,
+            "3": 406.97536945812806
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-1dot5",
+          "gt_first_reach": 5,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": true
+          },
+          "predicted_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "5": true,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": true
+          },
+          "threshold_x_by_level": {
+            "9": 406.79227053140096,
+            "2": 406.8398058252427,
+            "4": 406.88613861386136,
+            "6": 406.8530805687204,
+            "5": 406.81042654028437,
+            "10": 407.0696517412935,
+            "3": 407.05392156862746,
+            "1": 407.105,
+            "8": 406.8666666666667,
+            "7": 407.04040404040404
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-2",
+          "gt_first_reach": 6,
+          "predicted_first_reach": 5,
+          "gt_prefer": [
+            6,
+            7
+          ],
+          "predicted_prefer": [
+            5,
+            6
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": false,
+            "4": false,
+            "7": true,
+            "2": false,
+            "6": true,
+            "8": true,
+            "9": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": true,
+            "4": false,
+            "7": true,
+            "2": false,
+            "6": true,
+            "8": false,
+            "9": true
+          },
+          "threshold_x_by_level": {
+            "1": 406.86224489795916,
+            "3": 406.9704433497537,
+            "10": 406.622009569378,
+            "5": 406.90954773869345,
+            "4": 407.0495049504951,
+            "7": 407.2142857142857,
+            "2": 407.15458937198065,
+            "6": 406.7753303964758,
+            "8": 407.1062801932367,
+            "9": 407.075
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-3",
+          "gt_first_reach": 8,
+          "predicted_first_reach": 6,
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": true,
+            "4": false,
+            "6": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": true,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": true,
+            "4": false,
+            "6": true
+          },
+          "threshold_x_by_level": {
+            "1": 407.04545454545456,
+            "5": 406.93401015228426,
+            "7": 407.1010101010101,
+            "9": 406.76576576576576,
+            "10": 406.82027649769583,
+            "2": 406.85972850678735,
+            "3": 407.0406091370558,
+            "8": 406.7020202020202,
+            "4": 407.2182741116751,
+            "6": 406.910447761194
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-4",
+          "gt_first_reach": 9,
+          "predicted_first_reach": 8,
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": false,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": true,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "threshold_x_by_level": {
+            "1": 407.1725888324873,
+            "7": 406.93023255813955,
+            "4": 406.84263959390864,
+            "10": 406.5981308411215,
+            "6": 406.89719626168227,
+            "3": 406.97115384615387,
+            "8": 406.94,
+            "9": 407.21078431372547,
+            "2": 406.7536945812808,
+            "5": 406.96585365853656
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-7",
+          "gt_first_reach": 10,
+          "predicted_first_reach": 8,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "8": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "8": true,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "8": 406.9177489177489,
+            "5": 406.86343612334804,
+            "6": 406.73333333333335,
+            "3": 406.81463414634146,
+            "4": 407.03061224489795,
+            "10": 406.65533980582524,
+            "9": 406.9948979591837,
+            "7": 406.7268292682927,
+            "2": 406.9655172413793,
+            "1": 407.09268292682924
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        },
+        {
+          "environment": "ball-9",
+          "gt_first_reach": 10,
+          "predicted_first_reach": 9,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [
+            9,
+            10
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": false,
+            "10": true,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": true,
+            "10": true,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "4": 406.807881773399,
+            "6": 407.0969387755102,
+            "8": 406.94711538461536,
+            "7": 406.7268292682927,
+            "2": 406.75688073394497,
+            "3": 406.82758620689657,
+            "5": 407.03,
+            "9": 407.0738916256158,
+            "10": 406.57142857142856,
+            "1": 407.26395939086296
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        }
+      ]
+    },
+    {
+      "task": "ball",
+      "method": "ours_stage1",
+      "rule": "first_reach_and_successor_pair_overlap",
+      "environment_count": 8,
+      "scorable_count": 8,
+      "macro_score": 0.6875,
+      "conservative_score_fixed_denominator": 0.6875,
+      "decisions": [
+        {
+          "environment": "ball-0",
+          "gt_first_reach": 3,
+          "predicted_first_reach": 3,
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "3": true,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "3": true,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": true
+          },
+          "threshold_x_by_level": {
+            "1": 407.0199004975124,
+            "10": 407.1161616161616,
+            "5": 407.35748792270533,
+            "6": 406.9191919191919,
+            "7": 406.86341463414635,
+            "3": 406.9646464646465,
+            "4": 407.21938775510205,
+            "9": 406.855,
+            "2": 406.94711538461536,
+            "8": 406.51173708920186
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-1",
+          "gt_first_reach": 4,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "predicted_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "threshold_x_by_level": {
+            "10": 406.82758620689657,
+            "2": 406.98604651162793,
+            "4": 406.81,
+            "6": 406.75728155339806,
+            "8": 406.6916299559471,
+            "1": 406.75728155339806,
+            "5": 407.04347826086956,
+            "7": 406.91509433962267,
+            "9": 406.85714285714283,
+            "3": 406.97536945812806
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-1dot5",
+          "gt_first_reach": 5,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": true
+          },
+          "predicted_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "5": false,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": true
+          },
+          "threshold_x_by_level": {
+            "9": 406.79227053140096,
+            "2": 406.8398058252427,
+            "4": 406.88613861386136,
+            "6": 406.8530805687204,
+            "5": 406.81042654028437,
+            "10": 407.0696517412935,
+            "3": 407.05392156862746,
+            "1": 407.105,
+            "8": 406.8666666666667,
+            "7": 407.04040404040404
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-2",
+          "gt_first_reach": 6,
+          "predicted_first_reach": 6,
+          "gt_prefer": [
+            6,
+            7
+          ],
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": false,
+            "4": false,
+            "7": true,
+            "2": false,
+            "6": true,
+            "8": true,
+            "9": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": false,
+            "4": false,
+            "7": true,
+            "2": false,
+            "6": true,
+            "8": true,
+            "9": true
+          },
+          "threshold_x_by_level": {
+            "1": 406.86224489795916,
+            "3": 406.9704433497537,
+            "10": 406.622009569378,
+            "5": 406.90954773869345,
+            "4": 407.0495049504951,
+            "7": 407.2142857142857,
+            "2": 407.15458937198065,
+            "6": 406.7753303964758,
+            "8": 407.1062801932367,
+            "9": 407.075
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-3",
+          "gt_first_reach": 8,
+          "predicted_first_reach": 6,
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": true,
+            "4": false,
+            "6": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": true,
+            "4": false,
+            "6": true
+          },
+          "threshold_x_by_level": {
+            "1": 407.04545454545456,
+            "5": 406.93401015228426,
+            "7": 407.1010101010101,
+            "9": 406.76576576576576,
+            "10": 406.82027649769583,
+            "2": 406.85972850678735,
+            "3": 407.0406091370558,
+            "8": 406.7020202020202,
+            "4": 407.2182741116751,
+            "6": 406.910447761194
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-4",
+          "gt_first_reach": 9,
+          "predicted_first_reach": 9,
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "predicted_prefer": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": false,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": false,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "threshold_x_by_level": {
+            "1": 407.1725888324873,
+            "7": 406.93023255813955,
+            "4": 406.84263959390864,
+            "10": 406.5981308411215,
+            "6": 406.89719626168227,
+            "3": 406.97115384615387,
+            "8": 406.94,
+            "9": 407.21078431372547,
+            "2": 406.7536945812808,
+            "5": 406.96585365853656
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-7",
+          "gt_first_reach": 10,
+          "predicted_first_reach": 10,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [
+            10,
+            11
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "8": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "8": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "8": 406.9177489177489,
+            "5": 406.86343612334804,
+            "6": 406.73333333333335,
+            "3": 406.81463414634146,
+            "4": 407.03061224489795,
+            "10": 406.65533980582524,
+            "9": 406.9948979591837,
+            "7": 406.7268292682927,
+            "2": 406.9655172413793,
+            "1": 407.09268292682924
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        },
+        {
+          "environment": "ball-9",
+          "gt_first_reach": 10,
+          "predicted_first_reach": null,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": false,
+            "10": true,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": false,
+            "10": false,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "4": 406.807881773399,
+            "6": 407.0969387755102,
+            "8": 406.94711538461536,
+            "7": 406.7268292682927,
+            "2": 406.75688073394497,
+            "3": 406.82758620689657,
+            "5": 407.03,
+            "9": 407.0738916256158,
+            "10": 406.57142857142856,
+            "1": 407.26395939086296
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        }
+      ]
+    },
+    {
+      "task": "ball",
+      "method": "ours_stage2",
+      "rule": "first_reach_and_successor_pair_overlap",
+      "environment_count": 8,
+      "scorable_count": 8,
+      "macro_score": 0.5625,
+      "conservative_score_fixed_denominator": 0.5625,
+      "decisions": [
+        {
+          "environment": "ball-0",
+          "gt_first_reach": 3,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "3": true,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "3": false,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": true
+          },
+          "threshold_x_by_level": {
+            "1": 407.0199004975124,
+            "10": 407.1161616161616,
+            "5": 407.35748792270533,
+            "6": 406.9191919191919,
+            "7": 406.86341463414635,
+            "3": 406.9646464646465,
+            "4": 407.21938775510205,
+            "9": 406.855,
+            "2": 406.94711538461536,
+            "8": 406.51173708920186
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-1",
+          "gt_first_reach": 4,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "predicted_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "threshold_x_by_level": {
+            "10": 406.82758620689657,
+            "2": 406.98604651162793,
+            "4": 406.81,
+            "6": 406.75728155339806,
+            "8": 406.6916299559471,
+            "1": 406.75728155339806,
+            "5": 407.04347826086956,
+            "7": 406.91509433962267,
+            "9": 406.85714285714283,
+            "3": 406.97536945812806
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-1dot5",
+          "gt_first_reach": 5,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": true
+          },
+          "predicted_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "5": true,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": true
+          },
+          "threshold_x_by_level": {
+            "9": 406.79227053140096,
+            "2": 406.8398058252427,
+            "4": 406.88613861386136,
+            "6": 406.8530805687204,
+            "5": 406.81042654028437,
+            "10": 407.0696517412935,
+            "3": 407.05392156862746,
+            "1": 407.105,
+            "8": 406.8666666666667,
+            "7": 407.04040404040404
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-2",
+          "gt_first_reach": 6,
+          "predicted_first_reach": 6,
+          "gt_prefer": [
+            6,
+            7
+          ],
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": false,
+            "4": false,
+            "7": true,
+            "2": false,
+            "6": true,
+            "8": true,
+            "9": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": false,
+            "4": false,
+            "7": true,
+            "2": false,
+            "6": true,
+            "8": true,
+            "9": true
+          },
+          "threshold_x_by_level": {
+            "1": 406.86224489795916,
+            "3": 406.9704433497537,
+            "10": 406.622009569378,
+            "5": 406.90954773869345,
+            "4": 407.0495049504951,
+            "7": 407.2142857142857,
+            "2": 407.15458937198065,
+            "6": 406.7753303964758,
+            "8": 407.1062801932367,
+            "9": 407.075
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-3",
+          "gt_first_reach": 8,
+          "predicted_first_reach": 6,
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": true,
+            "4": false,
+            "6": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": true,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": true,
+            "4": false,
+            "6": true
+          },
+          "threshold_x_by_level": {
+            "1": 407.04545454545456,
+            "5": 406.93401015228426,
+            "7": 407.1010101010101,
+            "9": 406.76576576576576,
+            "10": 406.82027649769583,
+            "2": 406.85972850678735,
+            "3": 407.0406091370558,
+            "8": 406.7020202020202,
+            "4": 407.2182741116751,
+            "6": 406.910447761194
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-4",
+          "gt_first_reach": 9,
+          "predicted_first_reach": 8,
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": false,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": true,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "threshold_x_by_level": {
+            "1": 407.1725888324873,
+            "7": 406.93023255813955,
+            "4": 406.84263959390864,
+            "10": 406.5981308411215,
+            "6": 406.89719626168227,
+            "3": 406.97115384615387,
+            "8": 406.94,
+            "9": 407.21078431372547,
+            "2": 406.7536945812808,
+            "5": 406.96585365853656
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-7",
+          "gt_first_reach": 10,
+          "predicted_first_reach": 10,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [
+            10,
+            11
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "8": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "8": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "8": 406.9177489177489,
+            "5": 406.86343612334804,
+            "6": 406.73333333333335,
+            "3": 406.81463414634146,
+            "4": 407.03061224489795,
+            "10": 406.65533980582524,
+            "9": 406.9948979591837,
+            "7": 406.7268292682927,
+            "2": 406.9655172413793,
+            "1": 407.09268292682924
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        },
+        {
+          "environment": "ball-9",
+          "gt_first_reach": 10,
+          "predicted_first_reach": null,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": false,
+            "10": true,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": false,
+            "10": false,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "4": 406.807881773399,
+            "6": 407.0969387755102,
+            "8": 406.94711538461536,
+            "7": 406.7268292682927,
+            "2": 406.75688073394497,
+            "3": 406.82758620689657,
+            "5": 407.03,
+            "9": 407.0738916256158,
+            "10": 406.57142857142856,
+            "1": 407.26395939086296
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        }
+      ]
+    },
+    {
+      "task": "door",
+      "method": "lora",
+      "environment_count": 9,
+      "scorable_count": 9,
+      "macro_score": 0.4444444444444444,
+      "conservative_score_fixed_denominator": 0.4444444444444444,
+      "decisions": [
+        {
+          "environment": "door-0",
+          "predicted_prefer": [
+            1,
+            2
+          ],
+          "gt_prefer": [
+            1,
+            2
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "9": true,
+            "1": true,
+            "2": true,
+            "4": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "3": true,
+            "6": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-12u-Half",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "2": false,
+            "4": true,
+            "8": true,
+            "9": false,
+            "10": true,
+            "1": false,
+            "5": true,
+            "6": false,
+            "3": false,
+            "7": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-1d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            2,
+            3
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "4": true,
+            "9": true,
+            "1": false,
+            "10": true,
+            "3": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-4d",
+          "predicted_prefer": [
+            5,
+            6
+          ],
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "4": false,
+            "6": true,
+            "7": true,
+            "8": false,
+            "5": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": true,
+            "4": true,
+            "1": true,
+            "6": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "9": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": false,
+            "6": false,
+            "1": false,
+            "3": false,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-4d",
+          "predicted_prefer": [
+            1,
+            2
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "2": true,
+            "3": true,
+            "10": true,
+            "5": true,
+            "8": true,
+            "1": true,
+            "7": true,
+            "9": true,
+            "6": true,
+            "4": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-7d",
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "gt_prefer": [
+            7,
+            8
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "8": true,
+            "7": false,
+            "9": true,
+            "3": false,
+            "4": true,
+            "1": true,
+            "2": false,
+            "5": false,
+            "6": true,
+            "10": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-8d",
+          "predicted_prefer": [],
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": false,
+            "5": false,
+            "10": false,
+            "6": false,
+            "7": false,
+            "9": false,
+            "8": false
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    },
+    {
+      "task": "ball",
+      "method": "lora",
+      "rule": "first_reach_and_successor_pair_overlap",
+      "environment_count": 8,
+      "scorable_count": 8,
+      "macro_score": 0.5625,
+      "conservative_score_fixed_denominator": 0.5625,
+      "decisions": [
+        {
+          "environment": "ball-0",
+          "gt_first_reach": 3,
+          "predicted_first_reach": 3,
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "3": true,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "3": true,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": false
+          },
+          "threshold_x_by_level": {
+            "1": 407.0199004975124,
+            "10": 407.1161616161616,
+            "5": 407.35748792270533,
+            "6": 406.9191919191919,
+            "7": 406.86341463414635,
+            "3": 406.9646464646465,
+            "4": 407.21938775510205,
+            "9": 406.855,
+            "2": 406.94711538461536,
+            "8": 406.51173708920186
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-1",
+          "gt_first_reach": 4,
+          "predicted_first_reach": 10,
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "predicted_prefer": [
+            10,
+            11
+          ],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "predicted_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": false,
+            "6": false,
+            "8": false,
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": false,
+            "3": false
+          },
+          "threshold_x_by_level": {
+            "10": 406.82758620689657,
+            "2": 406.98604651162793,
+            "4": 406.81,
+            "6": 406.75728155339806,
+            "8": 406.6916299559471,
+            "1": 406.75728155339806,
+            "5": 407.04347826086956,
+            "7": 406.91509433962267,
+            "9": 406.85714285714283,
+            "3": 406.97536945812806
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        },
+        {
+          "environment": "ball-1dot5",
+          "gt_first_reach": 5,
+          "predicted_first_reach": 8,
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": true
+          },
+          "predicted_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": false,
+            "6": false,
+            "5": false,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": false
+          },
+          "threshold_x_by_level": {
+            "9": 406.79227053140096,
+            "2": 406.8398058252427,
+            "4": 406.88613861386136,
+            "6": 406.8530805687204,
+            "5": 406.81042654028437,
+            "10": 407.0696517412935,
+            "3": 407.05392156862746,
+            "1": 407.105,
+            "8": 406.8666666666667,
+            "7": 407.04040404040404
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-2",
+          "gt_first_reach": 6,
+          "predicted_first_reach": 6,
+          "gt_prefer": [
+            6,
+            7
+          ],
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": false,
+            "4": false,
+            "7": true,
+            "2": false,
+            "6": true,
+            "8": true,
+            "9": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": false,
+            "4": false,
+            "7": false,
+            "2": false,
+            "6": true,
+            "8": false,
+            "9": false
+          },
+          "threshold_x_by_level": {
+            "1": 406.86224489795916,
+            "3": 406.9704433497537,
+            "10": 406.622009569378,
+            "5": 406.90954773869345,
+            "4": 407.0495049504951,
+            "7": 407.2142857142857,
+            "2": 407.15458937198065,
+            "6": 406.7753303964758,
+            "8": 407.1062801932367,
+            "9": 407.075
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-3",
+          "gt_first_reach": 8,
+          "predicted_first_reach": 9,
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "predicted_prefer": [
+            9,
+            10
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": true,
+            "4": false,
+            "6": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": false,
+            "4": false,
+            "6": false
+          },
+          "threshold_x_by_level": {
+            "1": 407.04545454545456,
+            "5": 406.93401015228426,
+            "7": 407.1010101010101,
+            "9": 406.76576576576576,
+            "10": 406.82027649769583,
+            "2": 406.85972850678735,
+            "3": 407.0406091370558,
+            "8": 406.7020202020202,
+            "4": 407.2182741116751,
+            "6": 406.910447761194
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-4",
+          "gt_first_reach": 9,
+          "predicted_first_reach": 9,
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "predicted_prefer": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": false,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": false,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "threshold_x_by_level": {
+            "1": 407.1725888324873,
+            "7": 406.93023255813955,
+            "4": 406.84263959390864,
+            "10": 406.5981308411215,
+            "6": 406.89719626168227,
+            "3": 406.97115384615387,
+            "8": 406.94,
+            "9": 407.21078431372547,
+            "2": 406.7536945812808,
+            "5": 406.96585365853656
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-7",
+          "gt_first_reach": 10,
+          "predicted_first_reach": 8,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "8": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "8": true,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "8": 406.9177489177489,
+            "5": 406.86343612334804,
+            "6": 406.73333333333335,
+            "3": 406.81463414634146,
+            "4": 407.03061224489795,
+            "10": 406.65533980582524,
+            "9": 406.9948979591837,
+            "7": 406.7268292682927,
+            "2": 406.9655172413793,
+            "1": 407.09268292682924
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        },
+        {
+          "environment": "ball-9",
+          "gt_first_reach": 10,
+          "predicted_first_reach": 10,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [
+            10,
+            11
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": false,
+            "10": true,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": false,
+            "10": true,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "4": 406.807881773399,
+            "6": 407.0969387755102,
+            "8": 406.94711538461536,
+            "7": 406.7268292682927,
+            "2": 406.75688073394497,
+            "3": 406.82758620689657,
+            "5": 407.03,
+            "9": 407.0738916256158,
+            "10": 406.57142857142856,
+            "1": 407.26395939086296
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        }
+      ]
+    },
+    {
+      "task": "door",
+      "method": "ttt",
+      "environment_count": 9,
+      "scorable_count": 9,
+      "macro_score": 0.3888888888888889,
+      "conservative_score_fixed_denominator": 0.3888888888888889,
+      "decisions": [
+        {
+          "environment": "door-0",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            1,
+            2
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "9": true,
+            "1": false,
+            "2": false,
+            "4": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "3": true,
+            "6": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-12u-Half",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "2": false,
+            "4": true,
+            "8": true,
+            "9": true,
+            "10": true,
+            "1": false,
+            "5": true,
+            "6": true,
+            "3": false,
+            "7": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-1d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            2,
+            3
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "4": true,
+            "9": true,
+            "1": false,
+            "10": true,
+            "3": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-2u-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "score": 1.0,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "9": true,
+            "10": true,
+            "1": false,
+            "4": true,
+            "6": true,
+            "7": true,
+            "8": true,
+            "5": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": false,
+            "3": false,
+            "4": true,
+            "1": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "8": true,
+            "7": true,
+            "9": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "5": true,
+            "7": true,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "1": false,
+            "3": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-4d",
+          "predicted_prefer": [
+            2,
+            3
+          ],
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "2": true,
+            "3": true,
+            "10": true,
+            "5": true,
+            "8": true,
+            "1": false,
+            "7": true,
+            "9": true,
+            "6": true,
+            "4": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-7d",
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "gt_prefer": [
+            7,
+            8
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "8": true,
+            "7": true,
+            "9": true,
+            "3": false,
+            "4": true,
+            "1": false,
+            "2": false,
+            "5": false,
+            "6": true,
+            "10": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        },
+        {
+          "environment": "door-6u-8d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "1": false,
+            "2": false,
+            "3": false,
+            "4": true,
+            "5": true,
+            "10": true,
+            "6": false,
+            "7": true,
+            "9": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    },
+    {
+      "task": "ball",
+      "method": "ttt",
+      "rule": "first_reach_and_successor_pair_overlap",
+      "environment_count": 8,
+      "scorable_count": 8,
+      "macro_score": 0.5,
+      "conservative_score_fixed_denominator": 0.5,
+      "decisions": [
+        {
+          "environment": "ball-0",
+          "gt_first_reach": 3,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            3,
+            4
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "3": true,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "10": true,
+            "5": true,
+            "6": true,
+            "7": true,
+            "3": false,
+            "4": true,
+            "9": true,
+            "2": false,
+            "8": false
+          },
+          "threshold_x_by_level": {
+            "1": 407.0199004975124,
+            "10": 407.1161616161616,
+            "5": 407.35748792270533,
+            "6": 406.9191919191919,
+            "7": 406.86341463414635,
+            "3": 406.9646464646465,
+            "4": 407.21938775510205,
+            "9": 406.855,
+            "2": 406.94711538461536,
+            "8": 406.51173708920186
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-1",
+          "gt_first_reach": 4,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "predicted_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "8": false,
+            "1": false,
+            "5": false,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "threshold_x_by_level": {
+            "10": 406.82758620689657,
+            "2": 406.98604651162793,
+            "4": 406.81,
+            "6": 406.75728155339806,
+            "8": 406.6916299559471,
+            "1": 406.75728155339806,
+            "5": 407.04347826086956,
+            "7": 406.91509433962267,
+            "9": 406.85714285714283,
+            "3": 406.97536945812806
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-1dot5",
+          "gt_first_reach": 5,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": false,
+            "6": true,
+            "5": true,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": true
+          },
+          "predicted_reaches_by_level": {
+            "9": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "5": true,
+            "10": true,
+            "3": false,
+            "1": false,
+            "8": true,
+            "7": true
+          },
+          "threshold_x_by_level": {
+            "9": 406.79227053140096,
+            "2": 406.8398058252427,
+            "4": 406.88613861386136,
+            "6": 406.8530805687204,
+            "5": 406.81042654028437,
+            "10": 407.0696517412935,
+            "3": 407.05392156862746,
+            "1": 407.105,
+            "8": 406.8666666666667,
+            "7": 407.04040404040404
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-2",
+          "gt_first_reach": 6,
+          "predicted_first_reach": 5,
+          "gt_prefer": [
+            6,
+            7
+          ],
+          "predicted_prefer": [
+            5,
+            6
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": false,
+            "4": false,
+            "7": true,
+            "2": false,
+            "6": true,
+            "8": true,
+            "9": true
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "3": false,
+            "10": true,
+            "5": true,
+            "4": false,
+            "7": true,
+            "2": false,
+            "6": true,
+            "8": false,
+            "9": true
+          },
+          "threshold_x_by_level": {
+            "1": 406.86224489795916,
+            "3": 406.9704433497537,
+            "10": 406.622009569378,
+            "5": 406.90954773869345,
+            "4": 407.0495049504951,
+            "7": 407.2142857142857,
+            "2": 407.15458937198065,
+            "6": 406.7753303964758,
+            "8": 407.1062801932367,
+            "9": 407.075
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-3",
+          "gt_first_reach": 8,
+          "predicted_first_reach": 6,
+          "gt_prefer": [
+            8,
+            9
+          ],
+          "predicted_prefer": [
+            6,
+            7
+          ],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": true,
+            "4": false,
+            "6": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "5": false,
+            "7": false,
+            "9": true,
+            "10": true,
+            "2": false,
+            "3": false,
+            "8": false,
+            "4": false,
+            "6": true
+          },
+          "threshold_x_by_level": {
+            "1": 407.04545454545456,
+            "5": 406.93401015228426,
+            "7": 407.1010101010101,
+            "9": 406.76576576576576,
+            "10": 406.82027649769583,
+            "2": 406.85972850678735,
+            "3": 407.0406091370558,
+            "8": 406.7020202020202,
+            "4": 407.2182741116751,
+            "6": 406.910447761194
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-4",
+          "gt_first_reach": 9,
+          "predicted_first_reach": 9,
+          "gt_prefer": [
+            9,
+            10
+          ],
+          "predicted_prefer": [
+            9,
+            10
+          ],
+          "score": 1.0,
+          "gt_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": false,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "predicted_reaches_by_level": {
+            "1": false,
+            "7": false,
+            "4": false,
+            "10": true,
+            "6": false,
+            "3": false,
+            "8": false,
+            "9": true,
+            "2": false,
+            "5": false
+          },
+          "threshold_x_by_level": {
+            "1": 407.1725888324873,
+            "7": 406.93023255813955,
+            "4": 406.84263959390864,
+            "10": 406.5981308411215,
+            "6": 406.89719626168227,
+            "3": 406.97115384615387,
+            "8": 406.94,
+            "9": 407.21078431372547,
+            "2": 406.7536945812808,
+            "5": 406.96585365853656
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        },
+        {
+          "environment": "ball-7",
+          "gt_first_reach": 10,
+          "predicted_first_reach": 8,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [
+            8,
+            9
+          ],
+          "score": 0.0,
+          "gt_reaches_by_level": {
+            "8": false,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "8": true,
+            "5": false,
+            "6": false,
+            "3": false,
+            "4": false,
+            "10": true,
+            "9": false,
+            "7": false,
+            "2": false,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "8": 406.9177489177489,
+            "5": 406.86343612334804,
+            "6": 406.73333333333335,
+            "3": 406.81463414634146,
+            "4": 407.03061224489795,
+            "10": 406.65533980582524,
+            "9": 406.9948979591837,
+            "7": 406.7268292682927,
+            "2": 406.9655172413793,
+            "1": 407.09268292682924
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        },
+        {
+          "environment": "ball-9",
+          "gt_first_reach": 10,
+          "predicted_first_reach": 9,
+          "gt_prefer": [
+            10,
+            11
+          ],
+          "predicted_prefer": [
+            9,
+            10
+          ],
+          "score": 0.5,
+          "gt_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": false,
+            "10": true,
+            "1": false
+          },
+          "predicted_reaches_by_level": {
+            "4": false,
+            "6": false,
+            "8": false,
+            "7": false,
+            "2": false,
+            "3": false,
+            "5": false,
+            "9": true,
+            "10": true,
+            "1": false
+          },
+          "threshold_x_by_level": {
+            "4": 406.807881773399,
+            "6": 407.0969387755102,
+            "8": 406.94711538461536,
+            "7": 406.7268292682927,
+            "2": 406.75688073394497,
+            "3": 406.82758620689657,
+            "5": 407.03,
+            "9": 407.0738916256158,
+            "10": 406.57142857142856,
+            "1": 407.26395939086296
+          },
+          "gt_complete": true,
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": true
+        }
+      ]
+    }
+  ],
+  "checkpoint_steps": {
+    "baseline": {
+      "ball": {
+        "ours": 5500,
+        "standard": 5500,
+        "dino": 5500
+      },
+      "door": {
+        "ours": 3715,
+        "standard": 5500,
+        "dino": 5500
+      }
+    },
+    "lora": {
+      "ball": {
+        "lora": 5500
+      },
+      "door": {
+        "lora": 5500
+      }
+    },
+    "ttt": {
+      "ball": {
+        "ttt": 4144
+      },
+      "door": {
+        "ttt": 3656
+      }
+    }
+  },
+  "fairness_note": "Identical factual query identities, GT videos, frame masks and tracking thresholds. LoRA starts from Standard step5500; TTT and historical Ours checkpoints differ. Historical Ours Stage2 includes known-environment initialization. Tracking remains provisional pending the existing held-out visual audit.",
+  "baseline_results_modified": false,
+  "excluded_inputs": "unpaired fixed-initial-frame action sweeps",
+  "door_calibration_caveat": "Nominal door-4d prefer [3,4] is retained; tracked held-out GT previously gave [4,5].",
+  "ttt_lpips_complete": true
+}

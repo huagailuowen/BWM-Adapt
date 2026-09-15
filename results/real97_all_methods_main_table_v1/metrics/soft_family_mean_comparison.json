@@ -1,0 +1,1898 @@
+{
+  "completed_queries": 36,
+  "groups": {
+    "all": {
+      "methods": {
+        "standard": {
+          "queries": 36,
+          "natural_ADE_px": 19.005863828499002,
+          "common_ADE_px": 18.938208390349242,
+          "final_FDE_px": 29.657149833046976,
+          "final_valid_queries": 36,
+          "paired_coverage": 0.9970238095238095,
+          "psnr_db": 34.25291652840152,
+          "ssim": 0.9670740932313796
+        },
+        "stage1": {
+          "queries": 36,
+          "natural_ADE_px": 14.989377290970737,
+          "common_ADE_px": 14.878451626475886,
+          "final_FDE_px": 25.79029841349214,
+          "final_valid_queries": 36,
+          "paired_coverage": 0.9950396825396826,
+          "psnr_db": 33.26917924137544,
+          "ssim": 0.963394949467725
+        },
+        "global_stage2": {
+          "queries": 36,
+          "natural_ADE_px": 19.502814861384067,
+          "common_ADE_px": 19.36471090484706,
+          "final_FDE_px": 37.295173982511486,
+          "final_valid_queries": 36,
+          "paired_coverage": 0.9920634920634921,
+          "psnr_db": 33.37051790796894,
+          "ssim": 0.9629990699731086
+        },
+        "family_stage2": {
+          "queries": 36,
+          "natural_ADE_px": 15.009453309667313,
+          "common_ADE_px": 14.997852468247654,
+          "final_FDE_px": 25.64014543317186,
+          "final_valid_queries": 36,
+          "paired_coverage": 0.9920634920634921,
+          "psnr_db": 33.38253442136373,
+          "ssim": 0.9634909669301458
+        }
+      },
+      "requested_frames": 1008,
+      "all_methods_common_coverage": 0.9841269841269841,
+      "paired_stage2_common_coverage": 0.9871031746031746,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 19.389871784124082,
+        "family_stage2": 15.000127143609596
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 37.295173982511486,
+        "family_stage2": 25.64014543317186
+      },
+      "family_minus_global_ADE_px": -4.389744640514484,
+      "family_better_queries": 19,
+      "family_worse_queries": 17,
+      "tied_queries": 0
+    },
+    "split/train": {
+      "methods": {
+        "standard": {
+          "queries": 18,
+          "natural_ADE_px": 7.635774880297372,
+          "common_ADE_px": 7.591666261189336,
+          "final_FDE_px": 10.56250014405472,
+          "final_valid_queries": 18,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.405854918051766,
+          "ssim": 0.9697589904698956
+        },
+        "stage1": {
+          "queries": 18,
+          "natural_ADE_px": 7.251120761486541,
+          "common_ADE_px": 7.231371455484236,
+          "final_FDE_px": 10.905781742861265,
+          "final_valid_queries": 18,
+          "paired_coverage": 0.9920634920634921,
+          "psnr_db": 34.19169776672289,
+          "ssim": 0.9661244780416965
+        },
+        "global_stage2": {
+          "queries": 18,
+          "natural_ADE_px": 8.78848800029116,
+          "common_ADE_px": 8.795790791516731,
+          "final_FDE_px": 15.740154395570276,
+          "final_valid_queries": 18,
+          "paired_coverage": 0.9861111111111112,
+          "psnr_db": 34.4204816009349,
+          "ssim": 0.9659957056937897
+        },
+        "family_stage2": {
+          "queries": 18,
+          "natural_ADE_px": 7.315188125101108,
+          "common_ADE_px": 7.302202534509269,
+          "final_FDE_px": 10.93393488132122,
+          "final_valid_queries": 18,
+          "paired_coverage": 0.996031746031746,
+          "psnr_db": 34.297805802281715,
+          "ssim": 0.9662095368494911
+        }
+      },
+      "requested_frames": 504,
+      "all_methods_common_coverage": 0.9841269841269841,
+      "paired_stage2_common_coverage": 0.9861111111111112,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 8.78848800029116,
+        "family_stage2": 7.296535792985678
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 15.740154395570276,
+        "family_stage2": 10.93393488132122
+      },
+      "family_minus_global_ADE_px": -1.4919522073054812,
+      "family_better_queries": 8,
+      "family_worse_queries": 10,
+      "tied_queries": 0
+    },
+    "environment/soft-1l/train": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 3.03139211970391,
+          "common_ADE_px": 3.1400741698121006,
+          "final_FDE_px": 3.940396113567671,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.7388845188865,
+          "ssim": 0.9705877740676425
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 4.133289923695812,
+          "common_ADE_px": 4.229980803876013,
+          "final_FDE_px": 3.283002512311098,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9285714285714286,
+          "psnr_db": 34.68685102357132,
+          "ssim": 0.9676198058568117
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 4.728426583761815,
+          "common_ADE_px": 4.794151704791981,
+          "final_FDE_px": 4.009197700254607,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9107142857142857,
+          "psnr_db": 34.96185315520992,
+          "ssim": 0.9674345714061559
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 4.145174697755749,
+          "common_ADE_px": 4.306734130669876,
+          "final_FDE_px": 3.5319711623307186,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9642857142857143,
+          "psnr_db": 34.43508618190238,
+          "ssim": 0.9675467381286109
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 0.8928571428571429,
+      "paired_stage2_common_coverage": 0.9107142857142857,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 4.728426583761815,
+        "family_stage2": 4.2557334569575564
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 4.009197700254607,
+        "family_stage2": 3.5319711623307186
+      },
+      "family_minus_global_ADE_px": -0.4726931268042589,
+      "family_better_queries": 1,
+      "family_worse_queries": 1,
+      "tied_queries": 0
+    },
+    "family/L/train": {
+      "methods": {
+        "standard": {
+          "queries": 10,
+          "natural_ADE_px": 6.658174980647809,
+          "common_ADE_px": 6.679911390669446,
+          "final_FDE_px": 10.53820708819389,
+          "final_valid_queries": 10,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.60787063641551,
+          "ssim": 0.9697834250785217
+        },
+        "stage1": {
+          "queries": 10,
+          "natural_ADE_px": 6.373057804320803,
+          "common_ADE_px": 6.392395980356843,
+          "final_FDE_px": 11.380375844697733,
+          "final_valid_queries": 10,
+          "paired_coverage": 0.9857142857142858,
+          "psnr_db": 34.28155991310028,
+          "ssim": 0.9666565760989544
+        },
+        "global_stage2": {
+          "queries": 10,
+          "natural_ADE_px": 5.651735441749769,
+          "common_ADE_px": 5.664880465955801,
+          "final_FDE_px": 10.617165353465824,
+          "final_valid_queries": 10,
+          "paired_coverage": 0.9821428571428571,
+          "psnr_db": 34.73175137763751,
+          "ssim": 0.9669570689413554
+        },
+        "family_stage2": {
+          "queries": 10,
+          "natural_ADE_px": 6.470761540650439,
+          "common_ADE_px": 6.5030734272332635,
+          "final_FDE_px": 11.49187521169417,
+          "final_valid_queries": 10,
+          "paired_coverage": 0.9928571428571429,
+          "psnr_db": 34.36197219189502,
+          "ssim": 0.9666644747569929
+        }
+      },
+      "requested_frames": 280,
+      "all_methods_common_coverage": 0.9785714285714285,
+      "paired_stage2_common_coverage": 0.9821428571428571,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 5.651735441749769,
+        "family_stage2": 6.492873292490801
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 10.617165353465824,
+        "family_stage2": 11.49187521169417
+      },
+      "family_minus_global_ADE_px": 0.8411378507410319,
+      "family_better_queries": 2,
+      "family_worse_queries": 8,
+      "tied_queries": 0
+    },
+    "both_env_seen/train": {
+      "methods": {
+        "standard": {
+          "queries": 12,
+          "natural_ADE_px": 5.368044366575134,
+          "common_ADE_px": 5.301881437913078,
+          "final_FDE_px": 6.658580663453235,
+          "final_valid_queries": 12,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.728434787215555,
+          "ssim": 0.9708157427762711
+        },
+        "stage1": {
+          "queries": 12,
+          "natural_ADE_px": 7.237869746852508,
+          "common_ADE_px": 7.208245787849052,
+          "final_FDE_px": 9.177510997846142,
+          "final_valid_queries": 12,
+          "paired_coverage": 0.9880952380952381,
+          "psnr_db": 34.25708008327495,
+          "ssim": 0.9663602034958
+        },
+        "global_stage2": {
+          "queries": 12,
+          "natural_ADE_px": 9.554344501528579,
+          "common_ADE_px": 9.565298688366939,
+          "final_FDE_px": 16.46603111735166,
+          "final_valid_queries": 12,
+          "paired_coverage": 0.9791666666666666,
+          "psnr_db": 34.51371662553278,
+          "ssim": 0.9662570126336614
+        },
+        "family_stage2": {
+          "queries": 12,
+          "natural_ADE_px": 7.208888351975482,
+          "common_ADE_px": 7.189409966087723,
+          "final_FDE_px": 9.20831323149171,
+          "final_valid_queries": 12,
+          "paired_coverage": 0.9940476190476191,
+          "psnr_db": 34.380872714115135,
+          "ssim": 0.9665562812412162
+        }
+      },
+      "requested_frames": 336,
+      "all_methods_common_coverage": 0.9761904761904762,
+      "paired_stage2_common_coverage": 0.9791666666666666,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 9.554344501528579,
+        "family_stage2": 7.180909853802336
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 16.46603111735166,
+        "family_stage2": 9.20831323149171
+      },
+      "family_minus_global_ADE_px": -2.3734346477262416,
+      "family_better_queries": 6,
+      "family_worse_queries": 6,
+      "tied_queries": 0
+    },
+    "split/test": {
+      "methods": {
+        "standard": {
+          "queries": 18,
+          "natural_ADE_px": 30.37595277670063,
+          "common_ADE_px": 30.284750519509146,
+          "final_FDE_px": 48.751799522039235,
+          "final_valid_queries": 18,
+          "paired_coverage": 0.9940476190476191,
+          "psnr_db": 33.099978138751275,
+          "ssim": 0.9643891959928639
+        },
+        "stage1": {
+          "queries": 18,
+          "natural_ADE_px": 22.72763382045493,
+          "common_ADE_px": 22.525531797467536,
+          "final_FDE_px": 40.674815084123004,
+          "final_valid_queries": 18,
+          "paired_coverage": 0.998015873015873,
+          "psnr_db": 32.34666071602798,
+          "ssim": 0.9606654208937534
+        },
+        "global_stage2": {
+          "queries": 18,
+          "natural_ADE_px": 30.217141722476963,
+          "common_ADE_px": 29.93363101817738,
+          "final_FDE_px": 58.850193569452685,
+          "final_valid_queries": 18,
+          "paired_coverage": 0.998015873015873,
+          "psnr_db": 32.32055421500297,
+          "ssim": 0.9600024342524272
+        },
+        "family_stage2": {
+          "queries": 18,
+          "natural_ADE_px": 22.703718494233513,
+          "common_ADE_px": 22.693502401986034,
+          "final_FDE_px": 40.3463559850225,
+          "final_valid_queries": 18,
+          "paired_coverage": 0.9880952380952381,
+          "psnr_db": 32.46726304044574,
+          "ssim": 0.9607723970108005
+        }
+      },
+      "requested_frames": 504,
+      "all_methods_common_coverage": 0.9841269841269841,
+      "paired_stage2_common_coverage": 0.9880952380952381,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 29.991255567957005,
+        "family_stage2": 22.703718494233513
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 58.850193569452685,
+        "family_stage2": 40.3463559850225
+      },
+      "family_minus_global_ADE_px": -7.287537073723488,
+      "family_better_queries": 11,
+      "family_worse_queries": 7,
+      "tied_queries": 0
+    },
+    "environment/soft-1l/test": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 38.95215104090528,
+          "common_ADE_px": 38.95215104090528,
+          "final_FDE_px": 64.13838871528603,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.617303692911086,
+          "ssim": 0.9621633336134134
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 11.158026326894252,
+          "common_ADE_px": 11.158026326894252,
+          "final_FDE_px": 16.64251557667777,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.4971792581802,
+          "ssim": 0.9591073929356488
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 14.76610229005027,
+          "common_ADE_px": 14.76610229005027,
+          "final_FDE_px": 32.91174292329946,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.31871935252255,
+          "ssim": 0.9582708351342408
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 11.924877136024742,
+          "common_ADE_px": 11.924877136024742,
+          "final_FDE_px": 21.786095533078285,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.331114773597236,
+          "ssim": 0.9589759456511777
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 14.76610229005027,
+        "family_stage2": 11.924877136024742
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 32.91174292329946,
+        "family_stage2": 21.786095533078285
+      },
+      "family_minus_global_ADE_px": -2.841225154025529,
+      "family_better_queries": 2,
+      "family_worse_queries": 0,
+      "tied_queries": 0
+    },
+    "family/L/test": {
+      "methods": {
+        "standard": {
+          "queries": 10,
+          "natural_ADE_px": 24.59885767098755,
+          "common_ADE_px": 24.62728189221196,
+          "final_FDE_px": 54.09842530316937,
+          "final_valid_queries": 10,
+          "paired_coverage": 0.9928571428571429,
+          "psnr_db": 33.32626395054213,
+          "ssim": 0.9643483106336472
+        },
+        "stage1": {
+          "queries": 10,
+          "natural_ADE_px": 18.457852156879643,
+          "common_ADE_px": 18.35564598738631,
+          "final_FDE_px": 33.62152241334873,
+          "final_valid_queries": 10,
+          "paired_coverage": 0.9964285714285714,
+          "psnr_db": 32.85788234441643,
+          "ssim": 0.961268490009967
+        },
+        "global_stage2": {
+          "queries": 10,
+          "natural_ADE_px": 18.13425848510848,
+          "common_ADE_px": 18.10779063729935,
+          "final_FDE_px": 40.32818675102993,
+          "final_valid_queries": 10,
+          "paired_coverage": 0.9964285714285714,
+          "psnr_db": 33.06240253859931,
+          "ssim": 0.9614580804423654
+        },
+        "family_stage2": {
+          "queries": 10,
+          "natural_ADE_px": 18.403901647198595,
+          "common_ADE_px": 18.414511308155475,
+          "final_FDE_px": 34.09432267453414,
+          "final_valid_queries": 10,
+          "paired_coverage": 0.9857142857142858,
+          "psnr_db": 32.859617173422684,
+          "ssim": 0.9612596826365435
+        }
+      },
+      "requested_frames": 280,
+      "all_methods_common_coverage": 0.9821428571428571,
+      "paired_stage2_common_coverage": 0.9857142857142858,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 18.098693507554756,
+        "family_stage2": 18.403901647198595
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 40.32818675102993,
+        "family_stage2": 34.09432267453414
+      },
+      "family_minus_global_ADE_px": 0.30520813964383475,
+      "family_better_queries": 3,
+      "family_worse_queries": 7,
+      "tied_queries": 0
+    },
+    "both_env_seen/test": {
+      "methods": {
+        "standard": {
+          "queries": 12,
+          "natural_ADE_px": 32.945332726024745,
+          "common_ADE_px": 32.784842489217176,
+          "final_FDE_px": 39.41445093722443,
+          "final_valid_queries": 12,
+          "paired_coverage": 0.9970238095238095,
+          "psnr_db": 32.903659135640936,
+          "ssim": 0.9642145787780211
+        },
+        "stage1": {
+          "queries": 12,
+          "natural_ADE_px": 17.912083197251757,
+          "common_ADE_px": 17.694101970681764,
+          "final_FDE_px": 22.661687327763573,
+          "final_valid_queries": 12,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.51668487035076,
+          "ssim": 0.9613777295314376
+        },
+        "global_stage2": {
+          "queries": 12,
+          "natural_ADE_px": 27.010296921047644,
+          "common_ADE_px": 26.60708740443921,
+          "final_FDE_px": 41.54525218346092,
+          "final_valid_queries": 12,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.43350216941197,
+          "ssim": 0.9606739396016811
+        },
+        "family_stage2": {
+          "queries": 12,
+          "natural_ADE_px": 18.119613287756987,
+          "common_ADE_px": 18.09544776525503,
+          "final_FDE_px": 22.378706399976306,
+          "final_valid_queries": 12,
+          "paired_coverage": 0.9940476190476191,
+          "psnr_db": 32.612291980681135,
+          "ssim": 0.9614628389595374
+        }
+      },
+      "requested_frames": 336,
+      "all_methods_common_coverage": 0.9910714285714286,
+      "paired_stage2_common_coverage": 0.9940476190476191,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 26.701105170562474,
+        "family_stage2": 18.119613287756987
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 41.54525218346092,
+        "family_stage2": 22.378706399976306
+      },
+      "family_minus_global_ADE_px": -8.581491882805494,
+      "family_better_queries": 9,
+      "family_worse_queries": 3,
+      "tied_queries": 0
+    },
+    "environment/soft-2l/train": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 5.763719749670431,
+          "common_ADE_px": 5.763719749670431,
+          "final_FDE_px": 9.34076257230464,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.58713402300086,
+          "ssim": 0.9692789525257545
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 10.532040938264497,
+          "common_ADE_px": 10.532040938264497,
+          "final_FDE_px": 13.325259767399512,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.319951558070755,
+          "ssim": 0.9641249158620353
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 7.8377428673011025,
+          "common_ADE_px": 7.8377428673011025,
+          "final_FDE_px": 12.068339661103128,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.986757495330565,
+          "ssim": 0.9649905293474601
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 10.44326359203978,
+          "common_ADE_px": 10.44326359203978,
+          "final_FDE_px": 13.598133999282519,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.34315912995977,
+          "ssim": 0.9641852278884585
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 7.8377428673011025,
+        "family_stage2": 10.44326359203978
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 12.068339661103128,
+        "family_stage2": 13.598133999282519
+      },
+      "family_minus_global_ADE_px": 2.605520724738678,
+      "family_better_queries": 1,
+      "family_worse_queries": 1,
+      "tied_queries": 0
+    },
+    "environment/soft-2l/test": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 20.757528057372177,
+          "common_ADE_px": 20.757528057372177,
+          "final_FDE_px": 40.415485916392456,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.53820519298729,
+          "ssim": 0.9647699091432069
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 15.12555367148654,
+          "common_ADE_px": 15.12555367148654,
+          "final_FDE_px": 14.234653855834459,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.6143853657624,
+          "ssim": 0.9633036371204295
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 14.819417402001747,
+          "common_ADE_px": 14.819417402001747,
+          "final_FDE_px": 22.60022598993367,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.8186702386976,
+          "ssim": 0.963805018544342
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 14.974181222640397,
+          "common_ADE_px": 14.974181222640397,
+          "final_FDE_px": 14.489601968218885,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.62870930941226,
+          "ssim": 0.9633086589096143
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 14.819417402001747,
+        "family_stage2": 14.974181222640397
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 22.60022598993367,
+        "family_stage2": 14.489601968218885
+      },
+      "family_minus_global_ADE_px": 0.1547638206386508,
+      "family_better_queries": 1,
+      "family_worse_queries": 1,
+      "tied_queries": 0
+    },
+    "environment/soft-4l/train": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 16.527444515887332,
+          "common_ADE_px": 16.527444515887332,
+          "final_FDE_px": 29.281043985366104,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.73990135987107,
+          "ssim": 0.9647629081719855
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 9.657808049807574,
+          "common_ADE_px": 9.657808049807574,
+          "final_FDE_px": 19.28848222559305,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.25960935719637,
+          "ssim": 0.9630881831992189
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 8.898039479305224,
+          "common_ADE_px": 8.898039479305224,
+          "final_FDE_px": 18.47422113397321,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.2645099767074,
+          "ssim": 0.9627792332573857
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 10.121219893010817,
+          "common_ADE_px": 10.121219893010817,
+          "final_FDE_px": 19.131274920263223,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.20132636746453,
+          "ssim": 0.9628851872773558
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 8.898039479305224,
+        "family_stage2": 10.121219893010817
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 18.47422113397321,
+        "family_stage2": 19.131274920263223
+      },
+      "family_minus_global_ADE_px": 1.2231804137055944,
+      "family_better_queries": 0,
+      "family_worse_queries": 2,
+      "tied_queries": 0
+    },
+    "ours_ID_standard_OOD/train": {
+      "methods": {
+        "standard": {
+          "queries": 6,
+          "natural_ADE_px": 12.17123590774185,
+          "common_ADE_px": 12.17123590774185,
+          "final_FDE_px": 18.370339105257692,
+          "final_valid_queries": 6,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.76069517972419,
+          "ssim": 0.9676454858571439
+        },
+        "stage1": {
+          "queries": 6,
+          "natural_ADE_px": 7.277622790754606,
+          "common_ADE_px": 7.277622790754606,
+          "final_FDE_px": 14.362323232891518,
+          "final_valid_queries": 6,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.06093313361877,
+          "ssim": 0.9656530271334898
+        },
+        "global_stage2": {
+          "queries": 6,
+          "natural_ADE_px": 7.256774997816319,
+          "common_ADE_px": 7.256774997816319,
+          "final_FDE_px": 14.288400952007514,
+          "final_valid_queries": 6,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.234011551739144,
+          "ssim": 0.9654730918140468
+        },
+        "family_stage2": {
+          "queries": 6,
+          "natural_ADE_px": 7.5277876713523595,
+          "common_ADE_px": 7.5277876713523595,
+          "final_FDE_px": 14.38517818098024,
+          "final_valid_queries": 6,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.13167197861488,
+          "ssim": 0.9655160480660411
+        }
+      },
+      "requested_frames": 168,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 7.256774997816319,
+        "family_stage2": 7.5277876713523595
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 14.288400952007514,
+        "family_stage2": 14.38517818098024
+      },
+      "family_minus_global_ADE_px": 0.2710126735360401,
+      "family_better_queries": 2,
+      "family_worse_queries": 4,
+      "tied_queries": 0
+    },
+    "environment/soft-4l/test": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 11.744510798115616,
+          "common_ADE_px": 11.886631904237696,
+          "final_FDE_px": 34.338330424642415,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9821428571428571,
+          "psnr_db": 33.503861486182664,
+          "ssim": 0.9658991632681646
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 32.95062914427389,
+          "common_ADE_px": 32.38382364013961,
+          "final_FDE_px": 71.88748426086869,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9821428571428571,
+          "psnr_db": 31.906703882762926,
+          "ssim": 0.959436762559875
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 31.143619264058913,
+          "common_ADE_px": 30.965794376290297,
+          "final_FDE_px": 84.72822731577823,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9821428571428571,
+          "psnr_db": 32.05052322216183,
+          "ssim": 0.9595022662811191
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 33.08222572469197,
+          "common_ADE_px": 33.08222572469197,
+          "final_FDE_px": 70.27432355275829,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9285714285714286,
+          "psnr_db": 31.64237592270289,
+          "ssim": 0.9591980614043187
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 0.9285714285714286,
+      "paired_stage2_common_coverage": 0.9285714285714286,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 30.965794376290297,
+        "family_stage2": 33.08222572469197
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 84.72822731577823,
+        "family_stage2": 70.27432355275829
+      },
+      "family_minus_global_ADE_px": 2.116431348401677,
+      "family_better_queries": 0,
+      "family_worse_queries": 2,
+      "tied_queries": 0
+    },
+    "ours_ID_standard_OOD/test": {
+      "methods": {
+        "standard": {
+          "queries": 6,
+          "natural_ADE_px": 25.237192878052394,
+          "common_ADE_px": 25.284566580093085,
+          "final_FDE_px": 67.42649669166883,
+          "final_valid_queries": 6,
+          "paired_coverage": 0.9880952380952381,
+          "psnr_db": 33.49261614497195,
+          "ssim": 0.9647384304225493
+        },
+        "stage1": {
+          "queries": 6,
+          "natural_ADE_px": 32.35873506686128,
+          "common_ADE_px": 32.18839145103906,
+          "final_FDE_px": 76.70107059684187,
+          "final_valid_queries": 6,
+          "paired_coverage": 0.9940476190476191,
+          "psnr_db": 32.00661240738245,
+          "ssim": 0.9592408036183847
+        },
+        "global_stage2": {
+          "queries": 6,
+          "natural_ADE_px": 36.630831325335606,
+          "common_ADE_px": 36.58671824565372,
+          "final_FDE_px": 93.46007634143625,
+          "final_valid_queries": 6,
+          "paired_coverage": 0.9940476190476191,
+          "psnr_db": 32.09465830618496,
+          "ssim": 0.9586594235539193
+        },
+        "family_stage2": {
+          "queries": 6,
+          "natural_ADE_px": 31.871928907186586,
+          "common_ADE_px": 31.88961167544805,
+          "final_FDE_px": 76.28165515511488,
+          "final_valid_queries": 6,
+          "paired_coverage": 0.9761904761904762,
+          "psnr_db": 32.17720515997497,
+          "ssim": 0.9593915131133263
+        }
+      },
+      "requested_frames": 168,
+      "all_methods_common_coverage": 0.9702380952380952,
+      "paired_stage2_common_coverage": 0.9761904761904762,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 36.571556362746065,
+        "family_stage2": 31.871928907186586
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 93.46007634143625,
+        "family_stage2": 76.28165515511488
+      },
+      "family_minus_global_ADE_px": -4.69962745555948,
+      "family_better_queries": 2,
+      "family_worse_queries": 4,
+      "tied_queries": 0
+    },
+    "environment/soft-1r/train": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 7.93690621720758,
+          "common_ADE_px": 7.93690621720758,
+          "final_FDE_px": 2.464729576127764,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.4934259950883,
+          "ssim": 0.9703852005153384
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 11.214693241216299,
+          "common_ADE_px": 11.214693241216299,
+          "final_FDE_px": 14.659923546056806,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.84360795880541,
+          "ssim": 0.963930288303143
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 11.252166198718983,
+          "common_ADE_px": 11.252166198718983,
+          "final_FDE_px": 16.304315460849462,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.12173203625926,
+          "ssim": 0.9643711026119799
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 11.387059861397017,
+          "common_ADE_px": 11.387059861397017,
+          "final_FDE_px": 14.443203470866582,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.892788813135766,
+          "ssim": 0.964196879890731
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 11.252166198718983,
+        "family_stage2": 11.387059861397017
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 16.304315460849462,
+        "family_stage2": 14.443203470866582
+      },
+      "family_minus_global_ADE_px": 0.1348936626780346,
+      "family_better_queries": 1,
+      "family_worse_queries": 1,
+      "tied_queries": 0
+    },
+    "family/R/train": {
+      "methods": {
+        "standard": {
+          "queries": 6,
+          "natural_ADE_px": 8.543145157639247,
+          "common_ADE_px": 8.543145157639247,
+          "final_FDE_px": 10.1684517811489,
+          "final_valid_queries": 6,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.680275897190974,
+          "ssim": 0.971068785006841
+        },
+        "stage1": {
+          "queries": 6,
+          "natural_ADE_px": 7.75997572751115,
+          "common_ADE_px": 7.75997572751115,
+          "final_FDE_px": 12.505990890926862,
+          "final_valid_queries": 6,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.50990508797767,
+          "ssim": 0.9663633524429062
+        },
+        "global_stage2": {
+          "queries": 6,
+          "natural_ADE_px": 7.965025643895644,
+          "common_ADE_px": 7.965025643895644,
+          "final_FDE_px": 13.522383827044537,
+          "final_valid_queries": 6,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.873138008440066,
+          "ssim": 0.9667073344058047
+        },
+        "family_stage2": {
+          "queries": 6,
+          "natural_ADE_px": 7.808879159368328,
+          "common_ADE_px": 7.808879159368328,
+          "final_FDE_px": 12.408430447247861,
+          "final_valid_queries": 6,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.68653267408855,
+          "ssim": 0.9665966510383441
+        }
+      },
+      "requested_frames": 168,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 7.965025643895644,
+        "family_stage2": 7.808879159368328
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 13.522383827044537,
+        "family_stage2": 12.408430447247861
+      },
+      "family_minus_global_ADE_px": -0.1561464845273147,
+      "family_better_queries": 4,
+      "family_worse_queries": 2,
+      "tied_queries": 0
+    },
+    "environment/soft-1r/test": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 25.577443433286636,
+          "common_ADE_px": 24.76730378152962,
+          "final_FDE_px": 13.4305703136381,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.364438297376275,
+          "ssim": 0.9648744464931605
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 36.714166358111264,
+          "common_ADE_px": 35.397148467241706,
+          "final_FDE_px": 39.90751801988179,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 30.933876301984885,
+          "ssim": 0.9572094175387813
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 56.44647834373477,
+          "common_ADE_px": 54.99700765690308,
+          "final_FDE_px": 91.6196768061941,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 30.29325337456453,
+          "ssim": 0.9548041229326851
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 32.99521901358118,
+          "common_ADE_px": 32.99521901358118,
+          "final_FDE_px": 31.21283651301191,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9821428571428571,
+          "psnr_db": 31.086339999504993,
+          "ssim": 0.9577318102287178
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 0.9821428571428571,
+      "paired_stage2_common_coverage": 0.9821428571428571,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 54.99700765690308,
+        "family_stage2": 32.99521901358118
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 91.6196768061941,
+        "family_stage2": 31.21283651301191
+      },
+      "family_minus_global_ADE_px": -22.001788643321905,
+      "family_better_queries": 2,
+      "family_worse_queries": 0,
+      "tied_queries": 0
+    },
+    "family/R/test": {
+      "methods": {
+        "standard": {
+          "queries": 6,
+          "natural_ADE_px": 31.43383359357007,
+          "common_ADE_px": 31.163787042984396,
+          "final_FDE_px": 44.6991377939795,
+          "final_valid_queries": 6,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.34233258139293,
+          "ssim": 0.9655286543350381
+        },
+        "stage1": {
+          "queries": 6,
+          "natural_ADE_px": 30.536932165175045,
+          "common_ADE_px": 30.097926201551857,
+          "final_FDE_px": 54.42751795954694,
+          "final_valid_queries": 6,
+          "paired_coverage": 1.0,
+          "psnr_db": 31.673467006455667,
+          "ssim": 0.9599177333123662
+        },
+        "global_stage2": {
+          "queries": 6,
+          "natural_ADE_px": 47.80853291770443,
+          "common_ADE_px": 47.32537602209387,
+          "final_FDE_px": 92.85838620644388,
+          "final_valid_queries": 6,
+          "paired_coverage": 1.0,
+          "psnr_db": 31.49389025168041,
+          "ssim": 0.9582219858829921
+        },
+        "family_stage2": {
+          "queries": 6,
+          "natural_ADE_px": 30.301491124382892,
+          "common_ADE_px": 30.301491124382892,
+          "final_FDE_px": 52.22541688086807,
+          "final_valid_queries": 6,
+          "paired_coverage": 0.9940476190476191,
+          "psnr_db": 31.990128235551207,
+          "ssim": 0.9602488843934478
+        }
+      },
+      "requested_frames": 168,
+      "all_methods_common_coverage": 0.9940476190476191,
+      "paired_stage2_common_coverage": 0.9940476190476191,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 47.32537602209387,
+        "family_stage2": 30.301491124382892
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 92.85838620644388,
+        "family_stage2": 52.22541688086807
+      },
+      "family_minus_global_ADE_px": -17.023884897710975,
+      "family_better_queries": 6,
+      "family_worse_queries": 0,
+      "tied_queries": 0
+    },
+    "environment/soft-7r/train": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 14.611687765687211,
+          "common_ADE_px": 14.611687765687211,
+          "final_FDE_px": 20.67774103155837,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.67830314808207,
+          "ssim": 0.9684425022133595
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 8.00386157742588,
+          "common_ADE_px": 8.00386157742588,
+          "final_FDE_px": 16.047665322691863,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.76936046751737,
+          "ssim": 0.965707577694764
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 8.931938773432401,
+          "common_ADE_px": 8.931938773432401,
+          "final_FDE_px": 16.65169142711491,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.14098081062342,
+          "ssim": 0.9651235784134369
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 8.066592832884075,
+          "common_ADE_px": 8.066592832884075,
+          "final_FDE_px": 15.602760728544638,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.08600316356089,
+          "ssim": 0.9656792948101945
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 8.931938773432401,
+        "family_stage2": 8.066592832884075
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 16.65169142711491,
+        "family_stage2": 15.602760728544638
+      },
+      "family_minus_global_ADE_px": -0.8653459405483273,
+      "family_better_queries": 2,
+      "family_worse_queries": 0,
+      "tied_queries": 0
+    },
+    "environment/soft-7r/test": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 30.2066091238332,
+          "common_ADE_px": 30.2066091238332,
+          "final_FDE_px": 91.23755258169815,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.780974282808884,
+          "ssim": 0.964620060848349
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 38.31641336884982,
+          "common_ADE_px": 38.31641336884982,
+          "final_FDE_px": 104.52044398111633,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 31.790597415887802,
+          "ssim": 0.9579461009131045
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 53.63613014176604,
+          "common_ADE_px": 53.63613014176604,
+          "final_FDE_px": 144.4983026922576,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 31.64469991385259,
+          "ssim": 0.9561092434133969
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 37.054880269090546,
+          "common_ADE_px": 37.054880269090546,
+          "final_FDE_px": 105.5704474655832,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.426069843638814,
+          "ssim": 0.9584759521217385
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 53.63613014176604,
+        "family_stage2": 37.054880269090546
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 144.4983026922576,
+        "family_stage2": 105.5704474655832
+      },
+      "family_minus_global_ADE_px": -16.581249872675492,
+      "family_better_queries": 2,
+      "family_worse_queries": 0,
+      "tied_queries": 0
+    },
+    "environment/soft-5r/train": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 3.080841490022943,
+          "common_ADE_px": 3.080841490022943,
+          "final_FDE_px": 7.362884735760563,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 36.869098548402555,
+          "ssim": 0.9743786522918254
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 4.061372363891272,
+          "common_ADE_px": 4.061372363891272,
+          "final_FDE_px": 6.810383804031922,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.91674683761023,
+          "ssim": 0.9694521913308115
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 3.710971959535548,
+          "common_ADE_px": 3.710971959535548,
+          "final_FDE_px": 7.611144593169243,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 36.35670117843753,
+          "ssim": 0.9706273221919968
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 3.9729847838238967,
+          "common_ADE_px": 3.9729847838238967,
+          "final_FDE_px": 7.17932714233236,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 36.08080604556896,
+          "ssim": 0.969913778414107
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 3.710971959535548,
+        "family_stage2": 3.9729847838238967
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 7.611144593169243,
+        "family_stage2": 7.17932714233236
+      },
+      "family_minus_global_ADE_px": 0.2620128242883486,
+      "family_better_queries": 1,
+      "family_worse_queries": 1,
+      "tied_queries": 0
+    },
+    "environment/soft-5r/test": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 38.517448223590364,
+          "common_ADE_px": 38.517448223590364,
+          "final_FDE_px": 29.42929048660225,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.88158516399365,
+          "ssim": 0.9670914556636048
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 16.58021676856404,
+          "common_ADE_px": 16.58021676856404,
+          "final_FDE_px": 18.854591877642704,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.29592730149432,
+          "ssim": 0.9645976814852126
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 33.34299026761248,
+          "common_ADE_px": 33.34299026761248,
+          "final_FDE_px": 42.45717912087994,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.5437174666241,
+          "ssim": 0.963752591302894
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 20.854374090476945,
+          "common_ADE_px": 20.854374090476945,
+          "final_FDE_px": 19.8929666640091,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.45797486350982,
+          "ssim": 0.9645388908298873
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 33.34299026761248,
+        "family_stage2": 20.854374090476945
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 42.45717912087994,
+        "family_stage2": 19.8929666640091
+      },
+      "family_minus_global_ADE_px": -12.488616177135533,
+      "family_better_queries": 2,
+      "family_worse_queries": 0,
+      "tied_queries": 0
+    },
+    "environment/soft-2m/train": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 2.5937430763263607,
+          "common_ADE_px": 2.5937430763263607,
+          "final_FDE_px": 4.976600470882422,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 37.10955224909971,
+          "ssim": 0.9745564434411381
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 3.3709513648057663,
+          "common_ADE_px": 3.3709513648057663,
+          "final_FDE_px": 13.254312567795372,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.98755805052036,
+          "ssim": 0.9702866550702193
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 2.8541215376693665,
+          "common_ADE_px": 2.8541215376693665,
+          "final_FDE_px": 10.794777977063742,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 36.14909239305304,
+          "ssim": 0.971064546924457
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 3.2485992322836594,
+          "common_ADE_px": 3.2485992322836594,
+          "final_FDE_px": 12.77649708246153,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.72260287532919,
+          "ssim": 0.9707215583799667
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 2.8541215376693665,
+        "family_stage2": 3.2485992322836594
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 10.794777977063742,
+        "family_stage2": 12.77649708246153
+      },
+      "family_minus_global_ADE_px": 0.39447769461429305,
+      "family_better_queries": 0,
+      "family_worse_queries": 2,
+      "tied_queries": 0
+    },
+    "environment/soft-2m/test": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 17.779639746336297,
+          "common_ADE_px": 17.779639746336297,
+          "final_FDE_px": 54.896314390860034,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.778936714705296,
+          "ssim": 0.965213079992317
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 7.245888954283397,
+          "common_ADE_px": 7.245888954283397,
+          "final_FDE_px": 11.647674824822143,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.948607291879995,
+          "ssim": 0.9641551100517063
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 4.8294088992496045,
+          "common_ADE_px": 4.8294088992496045,
+          "final_FDE_px": 10.247038509865385,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.53534809707412,
+          "ssim": 0.9653455212848829
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 6.559543424858607,
+          "common_ADE_px": 6.559543424858607,
+          "final_FDE_px": 10.92139787161209,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 34.232716147817854,
+          "ssim": 0.9643152214036852
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 4.8294088992496045,
+        "family_stage2": 6.559543424858607
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 10.247038509865385,
+        "family_stage2": 10.92139787161209
+      },
+      "family_minus_global_ADE_px": 1.7301345256090024,
+      "family_better_queries": 0,
+      "family_worse_queries": 2,
+      "tied_queries": 0
+    },
+    "environment/soft-6m/train": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 5.374575441651006,
+          "common_ADE_px": 5.374575441651006,
+          "final_FDE_px": 5.152232298848597,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.86388103121942,
+          "ssim": 0.9697310471860872
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 4.171198745030361,
+          "common_ADE_px": 4.171198745030361,
+          "final_FDE_px": 7.750822150389632,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.15382957614258,
+          "ssim": 0.9681633205064866
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 3.940346740711333,
+          "common_ADE_px": 3.940346740711333,
+          "final_FDE_px": 7.739290294934424,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.29654386788661,
+          "ssim": 0.968516463771318
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 4.395550288162187,
+          "common_ADE_px": 4.395550288162187,
+          "final_FDE_px": 8.42149889413286,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 35.10768640481922,
+          "ssim": 0.9679836621105729
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 1.0,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 3.940346740711333,
+        "family_stage2": 4.395550288162187
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 7.739290294934424,
+        "family_stage2": 8.42149889413286
+      },
+      "family_minus_global_ADE_px": 0.4552035474508531,
+      "family_better_queries": 0,
+      "family_worse_queries": 2,
+      "tied_queries": 0
+    },
+    "environment/soft-6m/test": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 33.76045871220836,
+          "common_ADE_px": 33.76045871220836,
+          "final_FDE_px": 76.70360706866593,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9821428571428571,
+          "psnr_db": 33.19301266592431,
+          "ssim": 0.9636960671511343
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 25.809162687460116,
+          "common_ADE_px": 25.86493734412776,
+          "final_FDE_px": 53.69528354854059,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.32253592349661,
+          "ssim": 0.960339547382175
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 25.112744570181864,
+          "common_ADE_px": 25.15823021890482,
+          "final_FDE_px": 51.15369901627294,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.58875178254048,
+          "ssim": 0.9603667609672419
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 25.47868072777724,
+          "common_ADE_px": 25.531729032561636,
+          "final_FDE_px": 53.00019444700317,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.463169713583184,
+          "ssim": 0.9605005258139216
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 0.9821428571428571,
+      "paired_stage2_common_coverage": 1.0,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 25.112744570181864,
+        "family_stage2": 25.47868072777724
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 51.15369901627294,
+        "family_stage2": 53.00019444700317
+      },
+      "family_minus_global_ADE_px": 0.3659361575953728,
+      "family_better_queries": 0,
+      "family_worse_queries": 2,
+      "tied_queries": 0
+    },
+    "environment/soft-8/train": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 9.801663546519574,
+          "common_ADE_px": 9.296003924439052,
+          "final_FDE_px": 11.86611051207635,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.572513388815395,
+          "ssim": 0.9657074338159286
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 10.114870649241402,
+          "common_ADE_px": 9.840436015040467,
+          "final_FDE_px": 3.7321837894821424,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.78776507107162,
+          "ssim": 0.9627473645517796
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 26.942637862184654,
+          "common_ADE_px": 26.942637862184654,
+          "final_FDE_px": 48.00841131166975,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9642857142857143,
+          "psnr_db": 31.506163494906332,
+          "ssim": 0.9590540033199182
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 10.05624794455279,
+          "common_ADE_px": 9.777818196312111,
+          "final_FDE_px": 3.720746531676543,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.81079323879473,
+          "ssim": 0.9627735047454222
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 0.9642857142857143,
+      "paired_stage2_common_coverage": 0.9642857142857143,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 26.942637862184654,
+        "family_stage2": 9.777818196312111
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 48.00841131166975,
+        "family_stage2": 3.720746531676543
+      },
+      "family_minus_global_ADE_px": -17.164819665872542,
+      "family_better_queries": 2,
+      "family_worse_queries": 0,
+      "tied_queries": 0
+    },
+    "family/8/train": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 9.801663546519574,
+          "common_ADE_px": 9.296003924439052,
+          "final_FDE_px": 11.86611051207635,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 33.572513388815395,
+          "ssim": 0.9657074338159286
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 10.114870649241402,
+          "common_ADE_px": 9.840436015040467,
+          "final_FDE_px": 3.7321837894821424,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.78776507107162,
+          "ssim": 0.9627473645517796
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 26.942637862184654,
+          "common_ADE_px": 26.942637862184654,
+          "final_FDE_px": 48.00841131166975,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9642857142857143,
+          "psnr_db": 31.506163494906332,
+          "ssim": 0.9590540033199182
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 10.05624794455279,
+          "common_ADE_px": 9.777818196312111,
+          "final_FDE_px": 3.720746531676543,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 32.81079323879473,
+          "ssim": 0.9627735047454222
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 0.9642857142857143,
+      "paired_stage2_common_coverage": 0.9642857142857143,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 26.942637862184654,
+        "family_stage2": 9.777818196312111
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 48.00841131166975,
+        "family_stage2": 3.720746531676543
+      },
+      "family_minus_global_ADE_px": -17.164819665872542,
+      "family_better_queries": 2,
+      "family_worse_queries": 0,
+      "tied_queries": 0
+    },
+    "environment/soft-8/test": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 56.08778585465772,
+          "common_ADE_px": 55.93498408556932,
+          "final_FDE_px": 34.17665580056771,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9821428571428571,
+          "psnr_db": 31.241485751872062,
+          "ssim": 0.9611752477624246
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 20.64864710417108,
+          "common_ADE_px": 20.657777635620672,
+          "final_FDE_px": 34.683169811722564,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 31.81013370280275,
+          "ssim": 0.9598931380568467
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 37.85738432363701,
+          "common_ADE_px": 36.88759791081807,
+          "final_FDE_px": 49.43564975059297,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 31.09130448698896,
+          "ssim": 0.958065548411042
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 21.409484838960033,
+          "common_ADE_px": 21.264491703948305,
+          "final_FDE_px": 35.96933984992754,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9821428571428571,
+          "psnr_db": 31.93689679024464,
+          "ssim": 0.9599065067341424
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 0.9642857142857143,
+      "paired_stage2_common_coverage": 0.9821428571428571,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 37.45170450755768,
+        "family_stage2": 21.409484838960033
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 49.43564975059297,
+        "family_stage2": 35.96933984992754
+      },
+      "family_minus_global_ADE_px": -16.04221966859764,
+      "family_better_queries": 2,
+      "family_worse_queries": 0,
+      "tied_queries": 0
+    },
+    "family/8/test": {
+      "methods": {
+        "standard": {
+          "queries": 2,
+          "natural_ADE_px": 56.08778585465772,
+          "common_ADE_px": 55.93498408556932,
+          "final_FDE_px": 34.17665580056771,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9821428571428571,
+          "psnr_db": 31.241485751872062,
+          "ssim": 0.9611752477624246
+        },
+        "stage1": {
+          "queries": 2,
+          "natural_ADE_px": 20.64864710417108,
+          "common_ADE_px": 20.657777635620672,
+          "final_FDE_px": 34.683169811722564,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 31.81013370280275,
+          "ssim": 0.9598931380568467
+        },
+        "global_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 37.85738432363701,
+          "common_ADE_px": 36.88759791081807,
+          "final_FDE_px": 49.43564975059297,
+          "final_valid_queries": 2,
+          "paired_coverage": 1.0,
+          "psnr_db": 31.09130448698896,
+          "ssim": 0.958065548411042
+        },
+        "family_stage2": {
+          "queries": 2,
+          "natural_ADE_px": 21.409484838960033,
+          "common_ADE_px": 21.264491703948305,
+          "final_FDE_px": 35.96933984992754,
+          "final_valid_queries": 2,
+          "paired_coverage": 0.9821428571428571,
+          "psnr_db": 31.93689679024464,
+          "ssim": 0.9599065067341424
+        }
+      },
+      "requested_frames": 56,
+      "all_methods_common_coverage": 0.9642857142857143,
+      "paired_stage2_common_coverage": 0.9821428571428571,
+      "paired_stage2_ADE_px": {
+        "global_stage2": 37.45170450755768,
+        "family_stage2": 21.409484838960033
+      },
+      "paired_stage2_FDE_px": {
+        "global_stage2": 49.43564975059297,
+        "family_stage2": 35.96933984992754
+      },
+      "family_minus_global_ADE_px": -16.04221966859764,
+      "family_better_queries": 2,
+      "family_worse_queries": 0,
+      "tied_queries": 0
+    }
+  },
+  "latent_updates": {
+    "soft-8": {
+      "family": "8",
+      "global_update_L2": 0.07349627121480933,
+      "family_update_L2": 0.0071371193669087195,
+      "final_Z_difference_L2": 1.3094642850310196
+    },
+    "soft-1l": {
+      "family": "L",
+      "global_update_L2": 0.026127520917361775,
+      "family_update_L2": 0.011331445265503498,
+      "final_Z_difference_L2": 0.8055031608751456
+    },
+    "soft-2l": {
+      "family": "L",
+      "global_update_L2": 0.024679030488572437,
+      "family_update_L2": 0.010490827374382464,
+      "final_Z_difference_L2": 0.8054585210298459
+    },
+    "soft-4l": {
+      "family": "L",
+      "global_update_L2": 0.025387301030316032,
+      "family_update_L2": 0.00859070146083737,
+      "final_Z_difference_L2": 0.8047803561935357
+    },
+    "soft-2m": {
+      "family": "L",
+      "global_update_L2": 0.02216714908011911,
+      "family_update_L2": 0.010018517051162584,
+      "final_Z_difference_L2": 0.8071335222652297
+    },
+    "soft-6m": {
+      "family": "L",
+      "global_update_L2": 0.02014691104728925,
+      "family_update_L2": 0.008888277112540047,
+      "final_Z_difference_L2": 0.8066855365677489
+    },
+    "soft-1r": {
+      "family": "R",
+      "global_update_L2": 0.019543940393603302,
+      "family_update_L2": 0.011111500165808093,
+      "final_Z_difference_L2": 1.651804200636157
+    },
+    "soft-5r": {
+      "family": "R",
+      "global_update_L2": 0.029368841683282063,
+      "family_update_L2": 0.01406609204467536,
+      "final_Z_difference_L2": 1.645930993256717
+    },
+    "soft-7r": {
+      "family": "R",
+      "global_update_L2": 0.02045283264396605,
+      "family_update_L2": 0.00892238075258032,
+      "final_Z_difference_L2": 1.6457629371895595
+    }
+  },
+  "common_future": "native frames 3,6,...,84; exclude observed/padded frames",
+  "original_metrics": "outputs/eval_real97_soft_balanced9_static_matched_20260914_v1",
+  "new_inference": "outputs/infer_real97_soft_balanced9_family_mean_static_20260914_v1",
+  "known_family_prior": true,
+  "formal_metric_approved": false,
+  "manual_review_required": true,
+  "source_model_and_table_steps": 5500,
+  "caveat": "Standard training environment set/history contract differs; the two Stage2 variants share checkpoint, table, supports, queries, seeds and update schedule."
+}
