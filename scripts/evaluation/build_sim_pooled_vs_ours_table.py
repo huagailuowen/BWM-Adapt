@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import csv
 import html
 import json
@@ -17,6 +18,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "results/sim_standard_pooled_vs_ours_v1"
+GRAVITY_OBJECT_SOURCE = (
+    "results/gravity/gravity80_uniform5id5ood_strict_v1/methods/ours/"
+    "step_4300/seed_20260712/video_metrics/object_centric/object_summary.json"
+)
 
 
 def load_json(path: str | Path) -> Any:
@@ -233,6 +238,19 @@ def multibackground_records() -> list[dict[str, Any]]:
     return [pooled, ours]
 
 
+def replace_gravity_object_metrics(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    summaries = load_json(GRAVITY_OBJECT_SOURCE)["aggregation"]["summary"]
+    ade = mean_key(summaries, "centroid_ade_px")
+    fde = mean_key(summaries, "centroid_fde_px")
+    if ade is None or fde is None:
+        raise ValueError("Gravity step4300 requires both centroid ADE and FDE.")
+    for row in records:
+        if row["task"] == "Gravity" and row["method"] == "Ours":
+            row["object_mean_error"] = ade
+            row["object_final_error"] = fde
+    return records
+
+
 def build_records() -> list[dict[str, Any]]:
     records = event80_records() + multibackground_records()
     definitions = [
@@ -334,7 +352,7 @@ def build_records() -> list[dict[str, Any]]:
         ),
     ])
 
-    return records
+    return replace_gravity_object_metrics(records)
 
 
 def display(value: float | None, kind: str) -> str:
@@ -384,6 +402,13 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
             },
         },
         "additional_provenance": {
+            "gravity_ours_object_only": {
+                "source": GRAVITY_OBJECT_SOURCE,
+                "checkpoint_step": 4300,
+                "replaced_metrics": ["object_mean_error", "object_final_error"],
+                "other_metrics_checkpoint_step": 3837,
+                "note": "Mixed-checkpoint summary requested by user; all other scores are preserved.",
+            },
             "multi_background_ours_misresume": {
                 "benchmark_config": "configs/evaluation/multi_background_pushbox/misresume_step4400_complete_benchmark.yaml",
                 "checkpoint": "outputs/push_box_matchedphysics5bg30fric_shared_c32_random_roi10x_agent_resume4000_stage1_8700_104188/step-4400.safetensors",
@@ -529,7 +554,7 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
 
     footer_y = table_top + header_height + len(body) * row_height + 25
     draw.text((margin, footer_y), "Task-specific metric: endpoint error (Event80/multi-background), final displacement error (gravity/collision/mass×friction), bar tilt MAE (balance), and yellow-light score MAE.", font=fonts["foot"], fill="#52606d")
-    draw.text((margin, footer_y + 40), "All reported LPIPS values use the official AlexNet network; blank cells indicate unavailable or withheld metrics.", font=fonts["foot"], fill="#7a4b00")
+    draw.text((margin, footer_y + 40), "Official AlexNet LPIPS. Gravity Ours: ADE/FDE from step 4300; other metrics from step 3837 (mixed checkpoints, by request).", font=fonts["foot"], fill="#7a4b00")
     image.save(OUTPUT / "sim_standard_pooled_vs_ours.png", dpi=(220, 220))
 
     svg: list[str] = [
@@ -565,13 +590,19 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
             else:
                 svg_centered(value, left, top, right, top + row_height, size=20, fill=color, weight=weight)
     svg.append(f'<text x="{margin}" y="{footer_y+18}" font-family="Georgia,serif" font-size="17" fill="#52606d">Task-specific metric: endpoint error (Event80/multi-background), final displacement error (gravity/collision/mass×friction), bar tilt MAE (balance), and yellow-light score MAE.</text>')
-    svg.append(f'<text x="{margin}" y="{footer_y+58}" font-family="Georgia,serif" font-size="17" fill="#7a4b00">All reported LPIPS values use the official AlexNet network; blank cells indicate unavailable or withheld metrics.</text>')
+    svg.append(f'<text x="{margin}" y="{footer_y+58}" font-family="Georgia,serif" font-size="17" fill="#7a4b00">Official AlexNet LPIPS. Gravity Ours: ADE/FDE from step 4300; other metrics from step 3837 (mixed checkpoints, by request).</text>')
     svg.append("</svg>")
     (OUTPUT / "sim_standard_pooled_vs_ours.svg").write_text("\n".join(svg) + "\n", encoding="utf-8")
 
 
 def main() -> None:
-    records = build_records()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--refresh-gravity-object-only", action="store_true")
+    args = parser.parse_args()
+    if args.refresh_gravity_object_only:
+        records = replace_gravity_object_metrics(load_json(OUTPUT / "sim_standard_pooled_vs_ours.json"))
+    else:
+        records = build_records()
     write_outputs(records)
     print(f"[done] rows={len(records)} output={OUTPUT}")
 

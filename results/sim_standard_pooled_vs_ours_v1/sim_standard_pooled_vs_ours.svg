@@ -135,9 +135,9 @@
 <rect x="1370" y="637" width="180" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="1460.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">0.020</text>
 <rect x="1550" y="637" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1660.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">7.34 px</text>
+<text x="1660.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">7.51 px</text>
 <rect x="1770" y="637" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="1880.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">11.07 px</text>
+<text x="1880.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">12.46 px</text>
 <rect x="1990" y="637" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="2100.0" y="682.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">82.4%</text>
 <rect x="2210" y="637" width="330" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
@@ -303,5 +303,5 @@
 <rect x="2210" y="1245" width="330" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="2375.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">13.57</text>
 <text x="60" y="1364" font-family="Georgia,serif" font-size="17" fill="#52606d">Task-specific metric: endpoint error (Event80/multi-background), final displacement error (gravity/collision/mass×friction), bar tilt MAE (balance), and yellow-light score MAE.</text>
-<text x="60" y="1404" font-family="Georgia,serif" font-size="17" fill="#7a4b00">All reported LPIPS values use the official AlexNet network; blank cells indicate unavailable or withheld metrics.</text>
+<text x="60" y="1404" font-family="Georgia,serif" font-size="17" fill="#7a4b00">Official AlexNet LPIPS. Gravity Ours: ADE/FDE from step 4300; other metrics from step 3837 (mixed checkpoints, by request).</text>
 </svg>

@@ -1,0 +1,31 @@
+task_id,task,method_id,method,psnr,ssim,lpips,object_metric_name,object_metric_unit,object_metric_value,action_success
+event80,Push-box Friction,standard,Standard Pooled WM,31.1126110289,0.9512804455,0.066700095,Centroid ADE,px,11.0626324,0.32
+event80,Push-box Friction,lora,LoRA TTA,32.0305892732,0.9534704348,0.0581931916,Centroid ADE,px,8.19015242,0.4
+event80,Push-box Friction,dino,DINOv2 Context,30.6967826631,0.9494627636,0.0681499333,Centroid ADE,px,11.8141519,0.48
+event80,Push-box Friction,ttt_kqv,TTT-KQV,30.7789604187,0.948839946,0.0648913885,Centroid ADE,px,10.8136638,0.32
+event80,Push-box Friction,ours,Ours,31.975629637,0.9512595724,0.0495121968,Centroid ADE,px,3.85398252,0.68
+gravity,Gravity,standard,Standard Pooled WM,32.5094810698,0.9522585897,0.0344998174,Centroid ADE,px,21.4246314,0.2352941176
+gravity,Gravity,lora,LoRA TTA,33.3280329598,0.9540976238,0.023058321,Centroid ADE,px,7.90046979,0.4705882353
+gravity,Gravity,dino,DINOv2 Context,34.39044507344563,0.9568447320187679,0.01641299572462837,Centroid ADE,px,3.8972750934033256,0.8823529411764706
+gravity,Gravity,ttt_kqv,TTT-KQV,33.3080467436,0.9548797975,0.029088736,Centroid ADE,px,18.95723597,0.3529411765
+gravity,Gravity,ours,Ours,33.3889486737,0.950408559,0.0202085289,Centroid ADE,px,7.513311640978145,0.8235294118
+mass_collision,Mass Collision,standard,Standard Pooled WM,29.8049897194,0.9623012794,0.0904242676,Centroid ADE,px,21.9328527,0.3888888889
+mass_collision,Mass Collision,lora,LoRA TTA,30.0492417336,0.9619245981,0.069110339,Centroid ADE,px,15.87042263,0.3333333333
+mass_collision,Mass Collision,dino,DINOv2 Context,31.03859622478485,0.9667951221959512,0.053974001808092,Centroid ADE,px,8.526421727304418,0.3888888888888889
+mass_collision,Mass Collision,ttt_kqv,TTT-KQV,29.3845044136,0.960043644,0.084207404,Centroid ADE,px,20.97531743,0.5555555556
+mass_collision,Mass Collision,ours,Ours,31.1501887798,0.9625413722,0.0537618943,Centroid ADE,px,6.45219353,0.6111111111
+light_switch,Light Switch,standard,Standard Pooled WM,32.6189145406,0.9479967998,0.0186951045,Lamp MAE,score,0.1034960864,0.5
+light_switch,Light Switch,lora,LoRA TTA,34.3807664235,0.9522285989,0.013379099,Lamp MAE,score,0.0381124189,0.875
+light_switch,Light Switch,dino,DINOv2 Context,33.0738995234,0.9522954091,0.016034239,Lamp MAE,score,0.1000418959,0.5
+light_switch,Light Switch,ttt_kqv,TTT-KQV,32.6964925448,0.9522860012,0.016106703,Lamp MAE,score,0.1045886648,0.5
+light_switch,Light Switch,ours,Ours,33.4537340482,0.9443145757,0.0149639813,Lamp MAE,score,0.0358176758,0.875
+mass_balance,Mass Balance,standard,Standard Pooled WM,32.9205344473,0.9604870589,0.024793747,Bar Tilt MAE,deg,1.2440945434,0.4
+mass_balance,Mass Balance,lora,LoRA TTA,25.0171887398,0.8865342236,0.0628337131,Bar Tilt MAE,deg,1.9245402889,0.4
+mass_balance,Mass Balance,dino,DINOv2 Context,33.2519247464,0.9620577002,0.023964699,Bar Tilt MAE,deg,1.2733094998,0.4
+mass_balance,Mass Balance,ttt_kqv,TTT-KQV,32.1670852252,0.9568346087,0.030535396,Bar Tilt MAE,deg,2.3578835273,0.3
+mass_balance,Mass Balance,ours,Ours,33.5094529833,0.9639204866,,Bar Tilt MAE,deg,0.7616631395,0.7
+mass_friction,Mass x Friction,standard,Standard Pooled WM,31.0774675369,0.9648366005,0.0609880909,Centroid ADE,px,16.0218932,0.2916666667
+mass_friction,Mass x Friction,lora,LoRA TTA,29.8653152704,0.9610607465,0.070110374,Centroid ADE,px,16.82824858,0.1666666667
+mass_friction,Mass x Friction,dino,DINOv2 Context,,,,Centroid ADE,px,,
+mass_friction,Mass x Friction,ttt_kqv,TTT-KQV,,,,Centroid ADE,px,,
+mass_friction,Mass x Friction,ours,Ours,30.6733222961,0.9630712652,0.0499914565,Centroid ADE,px,8.14806081,0.5416666667

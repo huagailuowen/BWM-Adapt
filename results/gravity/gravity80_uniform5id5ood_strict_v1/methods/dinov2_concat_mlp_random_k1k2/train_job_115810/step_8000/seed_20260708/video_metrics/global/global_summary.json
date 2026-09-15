@@ -1,0 +1,170 @@
+{
+  "environment": [
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0005",
+      "lpips": 0.01208588977654775,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 35.339019775390625,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.9590215546185852,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0205",
+      "lpips": 0.013078043547769388,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 35.06393347846137,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.9584161565386317,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0405",
+      "lpips": 0.01653979956689808,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 34.140545739067925,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.9565092150413709,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0595",
+      "lpips": 0.024184047451449767,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 33.273624420166016,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.9541446814120143,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0795",
+      "lpips": 0.012375265152917968,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 35.12674458821615,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.9573989200027478,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0085",
+      "lpips": 0.013805228388971753,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 34.9455435011122,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.9581073239201403,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0245",
+      "lpips": 0.013444023103349738,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 34.94057252671983,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.9581104944746784,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0395",
+      "lpips": 0.015878337021503184,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 34.13901011149088,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.9564652614471909,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0555",
+      "lpips": 0.02465214456121127,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 33.061106787787544,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.954662915027424,
+      "support_size": 1
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0715",
+      "lpips": 0.018087178675664797,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 33.87434980604384,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.9556107977048948,
+      "support_size": 1
+    }
+  ],
+  "seed": [
+    {
+      "count": 5,
+      "domain": "id",
+      "lpips": 0.01565260909911659,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 34.58877360026042,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.9570981055226699,
+      "support_size": 1
+    },
+    {
+      "count": 5,
+      "domain": "ood",
+      "lpips": 0.017173382350140147,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 34.19211654663086,
+      "seed": 20260708,
+      "split": "evaluation",
+      "ssim": 0.9565913585148657,
+      "support_size": 1
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "lpips": 0.01565260909911659,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 34.58877360026042,
+      "split": "evaluation",
+      "ssim": 0.9570981055226699,
+      "support_size": 1
+    },
+    {
+      "count": 1,
+      "domain": "ood",
+      "lpips": 0.017173382350140147,
+      "method": "dinov2_concat_mlp_random_k1k2",
+      "psnr": 34.19211654663086,
+      "split": "evaluation",
+      "ssim": 0.9565913585148657,
+      "support_size": 1
+    }
+  ]
+}

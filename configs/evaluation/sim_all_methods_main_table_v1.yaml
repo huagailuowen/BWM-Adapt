@@ -24,26 +24,34 @@ tasks:
     label: Gravity
     object_metric: Centroid ADE
     object_unit: px
-    dino_variant: transformer_fusion
+    dino_variant: concat_mlp_random_k1k2
     values:
       standard: {psnr: 32.5094810698, ssim: 0.9522585897, lpips: 0.0344998174, object: 21.4246314, action_success: 0.2352941176}
       lora: {psnr: 33.3280329598, ssim: 0.9540976238, lpips: 0.0230583210, object: 7.90046979, action_success: 0.4705882353}
-      dino: {psnr: null, ssim: null, lpips: null, object: null, action_success: null}
+      dino: {psnr: 34.39044507344563, ssim: 0.9568447320187679, lpips: 0.01641299572462837, object: 3.8972750934033256, action_success: 0.8823529411764706}
       ttt_kqv: {psnr: 33.3080467436, ssim: 0.9548797975, lpips: 0.0290887360, object: 18.95723597, action_success: 0.3529411765}
-      ours: {psnr: 33.3889486737, ssim: 0.9504085590, lpips: 0.0202085289, object: 7.34081366, action_success: 0.8235294118}
+      ours: {psnr: 33.3889486737, ssim: 0.9504085590, lpips: 0.0202085289, object: 7.513311640978145, action_success: 0.8235294118}
     source: results/gravity/gravity80_uniform5id5ood_strict_v1
+    metric_provenance:
+      dino: results/gravity/gravity80_uniform5id5ood_strict_v1/methods/dinov2_concat_mlp_random_k1k2/train_job_115810/step_8000/seed_20260708
+      ours_centroid_ade_fde: results/gravity/gravity80_uniform5id5ood_strict_v1/methods/ours/step_4300/seed_20260712/video_metrics/object_centric/object_summary.json
+      ours_centroid_fde_px: 12.458558096459185
+      ours_other_metrics_checkpoint_step: 3837
+      note: User-requested metric-specific checkpoint selection; this row is not a single-checkpoint result. Step4300 LPIPS is unavailable; retain all three step3837 global metrics.
   - id: mass_collision
     label: Mass Collision
     object_metric: Centroid ADE
     object_unit: px
-    dino_variant: transformer_fusion
+    dino_variant: concat_mlp_random_k1k2
     values:
       standard: {psnr: 29.8049897194, ssim: 0.9623012794, lpips: 0.0904242676, object: 21.9328527, action_success: 0.3888888889}
       lora: {psnr: 30.0492417336, ssim: 0.9619245981, lpips: 0.0691103390, object: 15.87042263, action_success: 0.3333333333, marker: prior_protocol}
-      dino: {psnr: null, ssim: null, lpips: null, object: null, action_success: null}
+      dino: {psnr: 31.03859622478485, ssim: 0.9667951221959512, lpips: 0.053974001808092, object: 8.526421727304418, action_success: 0.3888888888888889}
       ttt_kqv: {psnr: 29.3845044136, ssim: 0.9600436440, lpips: 0.0842074040, object: 20.97531743, action_success: 0.5555555556}
       ours: {psnr: 31.1501887798, ssim: 0.9625413722, lpips: 0.0537618943, object: 6.45219353, action_success: 0.6111111111}
     source: results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1
+    metric_provenance:
+      dino: results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1/methods/dinov2_concat_mlp_random_k1k2/train_job_115811/step_3662/seed_20260827
   - id: light_switch
     label: Light Switch
     object_metric: Lamp MAE
@@ -85,7 +93,8 @@ tasks:
     source: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1
 notes:
   - Lower is better for LPIPS and the task-specific object/physical metric; higher is better for Action Success.
-  - DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Light Switch and Mass Balance; Gravity and Mass Collision are withheld pending final reruns.
+  - DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Gravity, Mass Collision, Light Switch, and Mass Balance; Mass x Friction remains pending.
+  - Gravity Ours centroid ADE/FDE use checkpoint4300 by request; PSNR, SSIM, LPIPS, and action success retain checkpoint3837. This is a mixed-checkpoint summary, not a single-checkpoint evaluation.
   - Mass Balance Ours values marked with an asterisk use the completed fixed-pose 5-ID/5-OOD nearest-unbalanced-support test, while baseline rows use workspace-random data; available values participate in column ranking.
   - Mass Collision LoRA values marked with a dagger come from the earlier compatible no-leak balanced-support run rather than the high-mass-2x result root.
   - A double dash denotes an unfinished or unavailable evaluation, not zero performance.
