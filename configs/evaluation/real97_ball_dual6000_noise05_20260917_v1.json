@@ -1,0 +1,35 @@
+{
+  "disable_context_clamp": true,
+  "stage1_replica": 0,
+  "noise_seed": 20260913,
+  "noise_min": -0.5,
+  "noise_max": 0.5,
+  "noise_interpretation": "Independent uniform noise per coordinate; not an L2-radius bound",
+  "tasks": {
+    "ball": {
+      "source_prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114807/ball_prep",
+      "source_inference": "outputs/infer_real97_ball_dual6000_cluster_mean_20260917_v1",
+      "training_run": "outputs/real97_ball_dual_modelonly_resume5500_500steps_6x10_20260916_v1_job117982",
+      "training_config": "configs/train/train_real97_ball_dual_modelonly_resume5500_500steps_6x10_2gpu_20260916_v1.yaml",
+      "action_stats": "data/real97_ball_20260912_dual_latent_lr003_v1/action_stats.json",
+      "prepared": "outputs/evaluation_real97_ball_dual6000_noise05_20260917_v1/ball_prep",
+      "initial_context": "corresponding_environment_table_plus_uniform_noise",
+      "require_exact_original_support": true,
+      "expected_latents": 16,
+      "model_step": 6000,
+      "table_step": 6000
+    }
+  },
+  "stage2": {
+    "inner_lr_schedule": "0.3:10,0.15:10,0.05:10,0.015:10",
+    "inner_steps": 40,
+    "context_precision": "float32",
+    "regularization": 0,
+    "hard_bounds": null,
+    "roi": false,
+    "inference_light_augmentation": false
+  },
+  "stage1_reuse_source": "outputs/infer_real97_ball_dual6000_cluster_mean_20260917_v1",
+  "output": "outputs/infer_real97_ball_dual6000_noise05_20260917_v1",
+  "fairness": "Known-environment z0 plus noise initialization ablation; exact original supports/queries, unchanged weights; previous cluster-mean outputs retained"
+}

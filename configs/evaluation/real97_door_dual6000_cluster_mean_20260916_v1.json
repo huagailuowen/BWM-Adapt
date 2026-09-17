@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "disable_context_clamp": true,
+  "stage1_replica": 0,
+  "stage2_initialization": "explicit_training_cluster_mean",
+  "noise_seed": 20260913,
+  "noise_min": 0.0,
+  "noise_max": 0.0,
+  "tasks": {
+    "door": {
+      "source_prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114799/door_prep",
+      "source_inference": "outputs/infer_real97_door_ours_reference_job114799",
+      "training_run": "outputs/real97_door_dual_modelonly_resume5500_500steps_6x10_20260916_v1_job117981",
+      "training_config": "configs/train/train_real97_door_dual_modelonly_resume5500_500steps_6x10_2gpu_20260916_v1.yaml",
+      "action_stats": "data/real97_door_20260912_dual_latent_lr003_v1/action_stats.json",
+      "prepared": "outputs/evaluation_real97_door_dual6000_cluster_mean_20260916_v1/door_prep",
+      "initial_context": "explicit_training_cluster_mean",
+      "require_exact_original_support": true,
+      "expected_latents": 20,
+      "model_step": 6000,
+      "table_step": 6000,
+      "initialization_groups": {
+        "12u11d_pair": [2, 3],
+        "core17": [0, 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+      },
+      "excluded_from_group_means": [{"source_virtual_group_id": 19, "environment": "door-6u-8d", "replica": 1}],
+      "environment_initialization_group": {
+        "door-0": "core17",
+        "door-12u-Half-11d-Half": "12u11d_pair",
+        "door-12u-Half": "core17",
+        "door-2u-1d": "core17",
+        "door-2u-4d": "core17",
+        "door-3u-4d": "core17",
+        "door-3u": "core17",
+        "door-4d": "core17",
+        "door-6u-7d": "core17",
+        "door-6u-8d": "core17"
+      }
+    }
+  },
+  "stage2": {
+    "inner_lr_schedule": "0.3:10,0.15:10,0.05:10,0.015:10",
+    "inner_steps": 40,
+    "context_precision": "float32",
+    "regularization": 0.0,
+    "hard_bounds": null,
+    "roi": false,
+    "inference_light_augmentation": false
+  },
+  "known_family_prior": true,
+  "query_GT_used_for_initialization": false,
+  "assignment_provenance": "User-requested training-table clusters; 12u11d replicas 0/1 form a pair; exclude 6u8d replica1 from the remaining core mean. Centers computed in full 32D, not reconstructed from PCA.",
+  "output": "outputs/infer_real97_door_dual6000_cluster_mean_after117981_v1"
+}

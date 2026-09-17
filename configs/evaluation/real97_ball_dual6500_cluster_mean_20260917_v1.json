@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "disable_context_clamp": true,
+  "stage1_replica": 0,
+  "noise_seed": 20260913,
+  "noise_min": 0.0,
+  "noise_max": 0.0,
+  "tasks": {
+    "ball": {
+      "source_prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114807/ball_prep",
+      "source_inference": "outputs/infer_real97_ball_ours_reference_job114807",
+      "training_run": "outputs/real97_ball_dual_joint_resume6000_500steps_c005_6x10_20260917_v1_job118302",
+      "training_config": "configs/train/train_real97_ball_dual_joint_resume6000_500steps_c005_6x10_2gpu_20260917_v1.yaml",
+      "action_stats": "outputs/real97_ball_dual_joint_resume6000_500steps_c005_6x10_20260917_v1_job118302/input_manifest/action_stats.json",
+      "prepared": "outputs/evaluation_real97_ball_dual6500_cluster_mean_20260917_v1/ball_prep",
+      "initial_context": "explicit_training_cluster_mean",
+      "require_exact_original_support": true,
+      "expected_latents": 16,
+      "model_step": 6500,
+      "table_step": 6500
+    }
+  },
+  "stage2": {
+    "inner_lr_schedule": "0.3:10,0.15:10,0.05:10,0.015:10",
+    "inner_steps": 40,
+    "context_precision": "float32",
+    "regularization": 0,
+    "hard_bounds": null,
+    "roi": false,
+    "inference_light_augmentation": false
+  },
+  "known_family_prior": true,
+  "query_GT_used_for_initialization": false,
+  "output": "outputs/infer_real97_ball_dual6500_cluster_mean_20260917_v1",
+  "training_dependency_job_id": 118302,
+  "completion_policy": "afterok plus exact step-6500 completed model/table; no earlier checkpoint fallback",
+  "cluster_policy": "Recompute full-32D two-means on final table; split replicas select z0 cluster"
+}

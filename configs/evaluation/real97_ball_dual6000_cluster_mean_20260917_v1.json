@@ -1,0 +1,18 @@
+{
+ "disable_context_clamp":true,"stage1_replica":0,"noise_seed":20260913,"noise_min":0,"noise_max":0,
+ "tasks":{"ball":{
+ "source_prepared":"outputs/evaluation_real97_support_overrides_20260911_v1/job114807/ball_prep",
+ "source_inference":"outputs/infer_real97_ball_ours_reference_job114807",
+ "training_run":"outputs/real97_ball_dual_modelonly_resume5500_500steps_6x10_20260916_v1_job117982",
+ "training_config":"configs/train/train_real97_ball_dual_modelonly_resume5500_500steps_6x10_2gpu_20260916_v1.yaml",
+ "action_stats":"data/real97_ball_20260912_dual_latent_lr003_v1/action_stats.json",
+ "prepared":"outputs/evaluation_real97_ball_dual6000_cluster_mean_20260917_v1/ball_prep",
+ "initial_context":"explicit_training_cluster_mean","require_exact_original_support":true,
+ "expected_latents":16,"model_step":6000,"table_step":6000,
+ "initialization_groups":{"cluster_A":[2,5,7,8,9,10,13],"cluster_B":[0,1,3,4,6,11,12,14,15]},
+ "environment_initialization_group":{"ball-0":"cluster_B","ball-1":"cluster_A","ball-1dot5":"cluster_B","ball-2":"cluster_B","ball-3":"cluster_A","ball-4":"cluster_A","ball-7":"cluster_B","ball-9":"cluster_B"}
+ }},
+ "stage2":{"inner_lr_schedule":"0.3:10,0.15:10,0.05:10,0.015:10","inner_steps":40,"context_precision":"float32","regularization":0,"hard_bounds":null,"roi":false,"inference_light_augmentation":false},
+ "known_family_prior":true,"query_GT_used_for_initialization":false,
+ "assignment_policy":"Two full-32D training clusters; same-cluster replicas use that center; cross-cluster replicas choose z0 cluster, never outcome-based selection"
+}

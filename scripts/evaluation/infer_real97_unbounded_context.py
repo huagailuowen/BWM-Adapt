@@ -104,6 +104,18 @@ def main():
             initial = target + noise
         elif policy == 'mean_training_table':
             initial = torch.tensor(table['mean_context'], dtype=torch.float32)
+        elif policy == 'explicit_training_cluster_mean':
+            group = setting['environment_initialization_group'][environment]
+            member_ids = setting['initialization_groups'][group]
+            source_table = read_json(prepared / 'reference/context_table.json')
+            member_rows = [row for row in source_table['records']
+                           if int(row['source_virtual_group_id']) in member_ids]
+            if len(member_rows) != len(set(member_ids)) or len(member_ids) != len(set(member_ids)):
+                raise ValueError('Missing or duplicate cluster members')
+            initial = torch.stack([torch.tensor(row['context'], dtype=torch.float32)
+                                   for row in member_rows]).mean(0)
+            meta.update(initialization_group=group, cluster_source_virtual_group_ids=member_ids,
+                        known_family_prior=True, query_GT_used_for_initialization=False)
         else:
             raise ValueError(f'Unsupported explicit context initialization: {policy}')
         if not config.get('disable_context_clamp'):
@@ -128,6 +140,9 @@ def main():
             'initial_distance_to_training_context': float((initial-target).norm()),
             'initial_coordinates_outside_previous_bounds': int(((initial < -1) | (initial > 1)).sum()),
         }
+        if policy == 'explicit_training_cluster_mean':
+            record.update(initialization_group=group, cluster_source_virtual_group_ids=member_ids,
+                          known_family_prior=True)
         write_json(initializations / (environment + '.json'), record)
         print('[unbounded_initialization]', json.dumps(record), flush=True)
         result = original_adapt(*positional, **keyword)

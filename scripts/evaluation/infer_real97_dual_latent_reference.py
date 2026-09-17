@@ -61,14 +61,23 @@ def main():
         for name, point in endpoints:
             x, y = xy(point)
             parts.append(f'<polygon points="{x},{y-7} {x-6},{y+5} {x+6},{y+5}" fill="{colors[name]}" stroke="black"><title>{html.escape(name)} inference-time Z</title></polygon>')
-        x, y = xy(np.zeros(2))
-        parts.append(f'<path d="M{x-5},{y}H{x+5} M{x},{y-5}V{y+5}" stroke="black" stroke-width="2"><title>Shared initial Z: mean of all training latents</title></path>')
+        groups = config['tasks'][cli.task].get('initialization_groups')
+        if groups:
+            for name, ids in groups.items():
+                members = [row['context'] for row in records if int(row['source_virtual_group_id']) in ids]
+                point = (np.asarray(members).reshape(len(members), -1).mean(0) - mean) @ axes[:2].T
+                x, y = xy(point)
+                parts.append(f'<path d="M{x-5},{y}H{x+5} M{x},{y-5}V{y+5}" stroke="black" stroke-width="2"><title>{html.escape(name)} initial cluster mean</title></path>')
+        else:
+            x, y = xy(np.zeros(2))
+            parts.append(f'<path d="M{x-5},{y}H{x+5} M{x},{y-5}V{y+5}" stroke="black" stroke-width="2"><title>Shared initial Z: mean of all training latents</title></path>')
         for i, env in enumerate(all_environments):
             name = env["environment"]
             parts.append(f'<text x="785" y="{65+i*27}" fill="{colors[name]}" font-family="sans-serif" font-size="12">{html.escape(name)}</text>')
         total = max(float(np.sum(singular ** 2)), 1e-12)
         parts.append(f'<text x="55" y="587" font-family="sans-serif" font-size="13">PC1 {100*singular[0]**2/total:.1f}%; PC2 {100*singular[1]**2/total:.1f}%; fitted on all {len(records)} training latents.</text>')
-        parts.append('<text x="55" y="609" font-family="sans-serif" font-size="12">Same environment: same color. Large circles: selected Stage1 replica. Black cross: common mean initialization.</text></svg>')
+        start_label = 'cluster mean initializations' if groups else 'common mean initialization'
+        parts.append(f'<text x="55" y="609" font-family="sans-serif" font-size="12">Same environment: same color. Large circles: selected Stage1 replica. Black cross: {start_label}.</text></svg>')
         path.write_text("\n".join(parts))
 
     reference.pca_plot = plot
@@ -94,8 +103,8 @@ def main():
         os.replace(path, destination)
     write_json(cli.output / "grids/level_order.json", {"row_order": ["GT", "Stage1", "Stage2"], "grids": order})
     write_json(cli.output / "dual_latent_inference_complete.json", {
-        "task": cli.task, "model_step": 5500, "table_step": 5500,
-        "stage1_replica": config["stage1_replica"], "stage2_initialization": "mean_of_all_trained_latents",
+        "task": cli.task, "model_step": config['tasks'][cli.task]['model_step'], "table_step": config['tasks'][cli.task]['table_step'],
+        "stage1_replica": config["stage1_replica"], "stage2_initialization": config['tasks'][cli.task]['initial_context'],
         "mean_latent_count": len(table["records"]), "effective_context_bounds": None,
         "exact_original_support_and_queries": True, "level_sorted_split_grids_complete": True,
     })
