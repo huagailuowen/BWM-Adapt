@@ -21,10 +21,14 @@ class HostSnapshot:
 
 
 class SelectiveSavedTensorStorage:
-    def __init__(self, model, *, gpu_budget_gib=12.0):
+    def __init__(self, model, *, gpu_budget_gib=12.0, host_budget_gib=None, pin_memory=True):
         self.gpu_budget = int(float(gpu_budget_gib) * 1024 ** 3)
         if self.gpu_budget < 0:
             raise ValueError("Saved-tensor CUDA budget must be nonnegative.")
+        self.host_budget = None if host_budget_gib is None else int(float(host_budget_gib) * 1024 ** 3)
+        if self.host_budget is not None and self.host_budget < 0:
+            raise ValueError("Saved-tensor host budget must be nonnegative.")
+        self.pin_memory = bool(pin_memory)
         self.parameters = {
             (tensor.device, tensor.untyped_storage().data_ptr())
             for tensor in (*model.parameters(), *model.buffers())
@@ -43,6 +47,7 @@ class SelectiveSavedTensorStorage:
             "snapshot_cache_hits": 0,
             "host_snapshot_count": 0,
             "host_snapshot_bytes": 0,
+            "host_snapshot_peak_bytes": 0,
             "host_restore_count": 0,
             "host_restore_bytes": 0,
             "extra_gpu_storage_peak_bytes": 0,
@@ -55,6 +60,7 @@ class SelectiveSavedTensorStorage:
         self.cache.clear()
         self.gpu_storages.clear()
         self.gpu_bytes = 0
+        self.host_bytes = 0
 
     def scope(self):
         return torch.autograd.graph.saved_tensors_hooks(self.pack, self.unpack)
@@ -87,8 +93,17 @@ class SelectiveSavedTensorStorage:
                 )
             packed = tensor.detach()
         else:
+            host_bytes = tensor.numel() * tensor.element_size()
+            if self.host_budget is not None and self.host_bytes + host_bytes > self.host_budget:
+                raise MemoryError(
+                    "TTT saved-tensor host budget exceeded before allocating another snapshot: "
+                    f"live={self.host_bytes / 1024**3:.2f} GiB, "
+                    f"request={host_bytes / 1024**3:.2f} GiB, "
+                    f"limit={self.host_budget / 1024**3:.2f} GiB per rank. "
+                    "Use segmented pure fast-state recomputation rather than increasing host RAM."
+                )
             stream = torch.cuda.current_stream(tensor.device)
-            host = torch.empty_like(tensor, device="cpu", pin_memory=True, requires_grad=False)
+            host = torch.empty_like(tensor, device="cpu", pin_memory=self.pin_memory, requires_grad=False)
             host.copy_(tensor.detach(), non_blocking=True)
             tensor.record_stream(stream)
             ready = torch.cuda.Event()
@@ -96,6 +111,10 @@ class SelectiveSavedTensorStorage:
             packed = HostSnapshot(host, tensor.device, ready)
             self.statistics["host_snapshot_count"] += 1
             self.statistics["host_snapshot_bytes"] += tensor.numel() * tensor.element_size()
+            self.host_bytes += host_bytes
+            self.statistics["host_snapshot_peak_bytes"] = max(
+                self.statistics["host_snapshot_peak_bytes"], self.host_bytes,
+            )
         # A weak reference avoids keeping the offloaded source alive on CUDA.
         # Tensor versions distinguish snapshots made before/after in-place writes.
         self.cache[key] = (weakref.ref(tensor), packed)

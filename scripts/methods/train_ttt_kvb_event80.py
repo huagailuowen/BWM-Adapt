@@ -54,6 +54,10 @@ def add_ttt_kvb_config(parser: argparse.ArgumentParser) -> argparse.ArgumentPars
         default=False,
     )
     group.add_argument("--ttt_sequence_length", type=int, default=6)
+    group.add_argument(
+        "--ttt_detach_every_chunks", type=int, default=0,
+        help="Opt-in truncated outer gradients: backward every N chunks, then carry detached fast-state values; 0 keeps the full stream graph.",
+    )
     group.add_argument("--ttt_environments_per_rank", type=int, default=1)
     group.add_argument("--ttt_layers", type=str, default="uniform:8")
     group.add_argument("--ttt_expansion", type=int, default=4)
@@ -77,6 +81,9 @@ def add_ttt_kvb_config(parser: argparse.ArgumentParser) -> argparse.ArgumentPars
     )
     group.add_argument("--ttt_saved_tensor_policy", choices=("legacy", "selective"), default="legacy")
     group.add_argument("--ttt_gpu_saved_tensor_budget_gib", type=float, default=12.0)
+    group.add_argument("--ttt_host_saved_tensor_budget_gib", type=float, default=None)
+    group.add_argument("--ttt_pin_saved_tensor_memory", action=argparse.BooleanOptionalAction, default=True)
+    group.add_argument("--ttt_scan_checkpoint_updates", type=int, default=0)
     group.add_argument("--ttt_backward_per_stream", action=argparse.BooleanOptionalAction, default=False)
     group.add_argument("--ttt_sync_per_update", action=argparse.BooleanOptionalAction, default=False)
     return parser
@@ -142,6 +149,13 @@ def main() -> None:
         args.use_gradient_checkpointing = False
         args.use_gradient_checkpointing_offload = False
 
+    if int(args.ttt_detach_every_chunks) < 0:
+        raise ValueError("ttt_detach_every_chunks must be nonnegative")
+    if int(args.ttt_detach_every_chunks):
+        if args.ttt_protocol != "oneminute_write_then_predict" or not args.ttt_backward_per_stream:
+            raise ValueError("Chunk-boundary detach requires causal write-then-predict and backward_per_stream")
+        if int(args.ttt_sequence_length) <= 0 or int(args.ttt_sequence_length) % int(args.ttt_detach_every_chunks):
+            raise ValueError("ttt_detach_every_chunks must divide the positive sequence length")
     set_global_seed(args.seed)
     runtime_config = prepare_runtime_config(args)
     accelerator = accelerate.Accelerator(
@@ -211,6 +225,7 @@ def main() -> None:
         gate_init=args.ttt_gate_init,
         gate_vector=args.ttt_gate_vector,
         serial_after_attention=args.ttt_serial_after_attention,
+        scan_checkpoint_updates=args.ttt_scan_checkpoint_updates,
     )
     if args.ttt_protocol == "oneminute_write_then_predict":
         model.use_gradient_checkpointing = False
@@ -264,6 +279,8 @@ def main() -> None:
         from wan_video_action.methods.baselines.ttt_kvb.activation_storage import SelectiveSavedTensorStorage
         saved_storage = SelectiveSavedTensorStorage(
             accelerator.unwrap_model(model), gpu_budget_gib=args.ttt_gpu_saved_tensor_budget_gib,
+            host_budget_gib=args.ttt_host_saved_tensor_budget_gib,
+            pin_memory=args.ttt_pin_saved_tensor_memory,
         )
     if args.ttt_backward_per_stream and args.ttt_protocol != "oneminute_write_then_predict":
         raise ValueError("Stream backward is supported only for the causal write-then-predict branch.")
@@ -278,12 +295,18 @@ def main() -> None:
         print(
             "[ttt_kvb_prequential] "
             f"layers={installation.layer_indices} sequence_length={args.ttt_sequence_length} "
+            f"detach_every_chunks={args.ttt_detach_every_chunks} "
             f"environments_per_rank={args.ttt_environments_per_rank} "
             f"protocol={args.ttt_protocol} updates_per_chunk={updates_per_chunk} "
             f"layer_local_updates_per_stream=dynamic "
             f"gate_init={args.ttt_gate_init} base_inner_lr={args.ttt_base_inner_lr} "
             f"gradient_checkpointing={accelerator.unwrap_model(model).use_gradient_checkpointing} "
-            f"saved_tensor_cpu_offload={args.ttt_saved_tensor_cpu_offload}",
+            f"saved_tensor_cpu_offload={args.ttt_saved_tensor_cpu_offload} "
+            f"saved_tensor_policy={args.ttt_saved_tensor_policy} "
+            f"scan_checkpoint_updates={args.ttt_scan_checkpoint_updates} "
+            f"gpu_saved_tensor_budget_gib={args.ttt_gpu_saved_tensor_budget_gib} "
+            f"host_saved_tensor_budget_gib={args.ttt_host_saved_tensor_budget_gib} "
+            f"pin_saved_tensor_memory={args.ttt_pin_saved_tensor_memory}",
             flush=True,
         )
 
@@ -292,6 +315,7 @@ def main() -> None:
         disable=not accelerator.is_local_main_process,
     )
     sequence_length = int(args.ttt_sequence_length)
+    backprop_segment_length = int(args.ttt_detach_every_chunks) or sequence_length
     for update_index in iterator:
         step = update_index + 1
         update_started_wall = time.time()
@@ -325,9 +349,19 @@ def main() -> None:
             for position, sample_index in enumerate(episode.indices):
                 chunk = dataset[sample_index]
                 is_final_query = position == sequence_length - 1
-                synchronize = is_final_query and (
-                    not args.ttt_sync_per_update or episode_number == len(episodes) - 1
+                is_segment_end = (position + 1) % backprop_segment_length == 0 or is_final_query
+                synchronize = is_segment_end and (
+                    not args.ttt_sync_per_update
+                    or (is_final_query and episode_number == len(episodes) - 1)
                 )
+                if args.ttt_detach_every_chunks and step == 1:
+                    print(
+                        f"[ttt_segment_chunk] rank={accelerator.process_index} step={step} "
+                        f"environment={episode.environment_id} chunk={position + 1}/{sequence_length} "
+                        f"segment={position // backprop_segment_length + 1} "
+                        f"cuda_allocated_gib={torch.cuda.memory_allocated(accelerator.device) / 1024**3:.3f}",
+                        flush=True,
+                    )
                 sync_context = (
                     nullcontext() if synchronize else accelerator.no_sync(model)
                 )
@@ -348,7 +382,7 @@ def main() -> None:
                             loss = model(chunk)
                         if args.ttt_backward_per_stream:
                             stream_losses.append(loss)
-                            if is_final_query:
+                            if is_segment_end:
                                 stream_loss = torch.stack(stream_losses).sum() / float(sequence_length * len(episodes))
                                 accelerator.backward(stream_loss)
                                 stream_losses.clear()
@@ -371,6 +405,23 @@ def main() -> None:
                     # graph-free.
                         with torch.no_grad():
                             unwrapped_model(chunk)
+
+                if args.ttt_detach_every_chunks and is_segment_end:
+                    if not is_final_query:
+                        # Backward is complete. Carry the learned numerical state,
+                        # not its old graph; do not reset to initial fast weights.
+                        controller.detach_fast_state()
+                        if saved_storage is not None:
+                            saved_storage.begin_stream()
+                    if step == 1 or (int(args.log_steps) > 0 and step % int(args.log_steps) == 0):
+                        print(
+                            f"[ttt_segment_backward] rank={accelerator.process_index} step={step} "
+                            f"environment={episode.environment_id} end_chunk={position + 1} "
+                            f"state_carried={not is_final_query} "
+                            f"cuda_allocated_gib={torch.cuda.memory_allocated(accelerator.device) / 1024**3:.3f}",
+                            flush=True,
+                        )
+                    del loss
 
             if int(args.log_steps) > 0 and step % int(args.log_steps) == 0:
                 state_norms = controller.state_norms()

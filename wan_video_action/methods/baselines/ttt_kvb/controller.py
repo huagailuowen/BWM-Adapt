@@ -37,6 +37,21 @@ class TTTKVBController:
         self._write_statistics.clear()
         self.query_state_indices = None
 
+    def detach_fast_state(self) -> None:
+        """Keep learned state values while truncating the cross-chunk graph.
+
+        Call only after the preceding segment's backward has completed and
+        outside an active read/write context. Each tensor becomes a gradient-
+        enabled leaf so subsequent inner updates can differentiate locally.
+        Initial fast weights are not reloaded and write statistics are retained.
+        """
+        if self.mode != TTTKVBMode.DISABLED or self.batch_size is None:
+            raise RuntimeError("Detach fast state between segments, after leaving the model context")
+        self._states = {
+            layer_id: state.detached(requires_grad=True)
+            for layer_id, state in self._states.items()
+        }
+
     def clear(self) -> None:
         self.mode = TTTKVBMode.DISABLED
         self.batch_size = None

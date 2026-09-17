@@ -85,6 +85,7 @@ def install_ttt_kvb(
     gate_init: float = 0.0,
     gate_vector: bool = False,
     serial_after_attention: bool = False,
+    scan_checkpoint_updates: int = 0,
 ) -> TTTKVBInstallation:
     """Attach TTT branches after the Wan checkpoint has been loaded.
 
@@ -112,6 +113,7 @@ def install_ttt_kvb(
             base_inner_lr=base_inner_lr,
             inner_batch_size=inner_batch_size,
             write_token_budget=write_token_budget,
+            scan_checkpoint_updates=scan_checkpoint_updates,
         )
         reference = attention.q.weight
         memory.to(device=reference.device, dtype=reference.dtype)

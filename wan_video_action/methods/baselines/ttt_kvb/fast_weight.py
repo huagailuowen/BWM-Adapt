@@ -15,6 +15,7 @@ from typing import Iterable
 import torch
 from torch import nn
 import torch.nn.functional as F
+from torch.utils.checkpoint import checkpoint
 
 
 @dataclass(frozen=True)
@@ -77,6 +78,7 @@ class TTTMLPMemory(nn.Module):
         inner_batch_size: int = 64,
         write_token_budget: int = 512,
         norm_eps: float = 1e-6,
+        scan_checkpoint_updates: int = 0,
     ) -> None:
         super().__init__()
         if dim % num_heads != 0:
@@ -92,6 +94,9 @@ class TTTMLPMemory(nn.Module):
         self.inner_batch_size = int(inner_batch_size)
         self.write_token_budget = int(write_token_budget)
         self.norm_eps = float(norm_eps)
+        self.scan_checkpoint_updates = int(scan_checkpoint_updates)
+        if self.scan_checkpoint_updates < 0:
+            raise ValueError("scan_checkpoint_updates must be nonnegative")
 
         # Independent learned views match the general TTT formulation.  A Wan
         # QKV-sharing variant can be added separately without changing state
@@ -246,6 +251,23 @@ class TTTMLPMemory(nn.Module):
                 statistics.append(stats)
         return state, statistics
 
+    def _checkpointed_scan_segment(self, tokens: torch.Tensor, *state_tensors):
+        """Pure segment: explicit fast state in/out, no controller mutation.
+
+        Non-reentrant checkpointing preserves the higher-order gradients from
+        the inner autograd.grad calls. Replaying the entire Wan block would not
+        be safe because the controller owns mutable cross-chunk state.
+        """
+        state = TTTKVBState(*state_tensors)
+        chunk_size = self.inner_batch_size if self.inner_batch_size > 0 else int(tokens.shape[1])
+        outputs, statistics = [], []
+        for start in range(0, int(tokens.shape[1]), chunk_size):
+            token_batch = tokens[:, start : start + chunk_size]
+            state, stats = self._update_once(token_batch, state, differentiable=True)
+            outputs.append(self.read(token_batch, state))
+            statistics.append(stats)
+        return (*state.tensors, torch.cat(outputs, dim=1), statistics)
+
     def write_then_read(
         self,
         x: torch.Tensor,
@@ -266,6 +288,20 @@ class TTTMLPMemory(nn.Module):
             chunk_size = self.inner_batch_size if self.inner_batch_size > 0 else int(x.shape[1])
             outputs = []
             statistics = []
+            if differentiable and self.scan_checkpoint_updates:
+                segment_size = chunk_size * self.scan_checkpoint_updates
+                for start in range(0, int(x.shape[1]), segment_size):
+                    result = checkpoint(
+                        self._checkpointed_scan_segment,
+                        x[:, start : start + segment_size],
+                        *state.tensors,
+                        use_reentrant=False,
+                        preserve_rng_state=False,
+                    )
+                    state = TTTKVBState(*result[:4])
+                    outputs.append(result[4])
+                    statistics.extend(result[5])
+                return state, torch.cat(outputs, dim=1), statistics
             for start in range(0, int(x.shape[1]), chunk_size):
                 token_batch = x[:, start : start + chunk_size]
                 state, stats = self._update_once(

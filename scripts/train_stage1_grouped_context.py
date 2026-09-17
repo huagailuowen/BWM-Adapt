@@ -774,6 +774,10 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_curriculum_new_context_steps", type=int, default=200)
     group.add_argument("--grouped_context_curriculum_mid_context_steps", type=int, default=0)
     group.add_argument("--grouped_context_curriculum_all_context_steps", type=int, default=200)
+    group.add_argument(
+        "--grouped_context_curriculum_alternation_steps", type=int, default=0,
+        help="Default-curriculum frequency ablation: repartition the existing C/model budgets into equal N-step blocks; zero preserves legacy phases.",
+    )
     group.add_argument("--grouped_context_curriculum_model_steps", type=int, default=200)
     group.add_argument("--grouped_context_curriculum_variant", type=str, default="default")
     group.add_argument("--grouped_context_curriculum_joint_steps", type=int, default=0)
@@ -2147,6 +2151,15 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
         getattr(args, "grouped_context_curriculum_initial_refinement_steps", 0) or 0
     )
     variant = str(getattr(args, "grouped_context_curriculum_variant", "default") or "default").strip().lower()
+    alternation_steps = int(getattr(args, "grouped_context_curriculum_alternation_steps", 0) or 0)
+    if alternation_steps < 0:
+        raise ValueError("grouped_context_curriculum_alternation_steps must be nonnegative")
+    if alternation_steps and (
+        variant != "default" or all_context_steps <= 0
+        or all_context_steps != model_steps
+        or (2 * all_context_steps) % alternation_steps != 0
+    ):
+        raise ValueError("Frequency ablation requires the default curriculum, equal positive C/model budgets, and a block size dividing each budget")
     two_new_context = variant in ("two_new_context", "high_model_mid", "high_model_mid_new")
     original_plus_tail = variant in (
         "original_1000_plus_c_model",
@@ -2291,6 +2304,15 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
                 ("all_context", all_context_steps, active_indices, active_indices),
                 ("model", model_steps, active_indices, []),
             ]
+            if alternation_steps:
+                # Keep the original 2*C + 2*M budget and activation timing;
+                # change only how frequently the two frozen phases alternate.
+                phases = [("new_context", new_context_steps, new_indices, new_indices)]
+                for _ in range((2 * all_context_steps) // alternation_steps):
+                    phases.extend([
+                        ("all_context", alternation_steps, active_indices, active_indices),
+                        ("model", alternation_steps, active_indices, []),
+                    ])
         if round_id == 1 and initial_refinement_steps > 0:
             refinement_cycle_steps = all_context_steps + model_steps
             if refinement_cycle_steps <= 0 or initial_refinement_steps % refinement_cycle_steps != 0:
@@ -2339,7 +2361,7 @@ def _curriculum_phase_for_step(args, group_order: list[int], step: int) -> dict:
         }
     if post_cycle_steps > 0:
         post_context_steps = post_cycle_steps
-        post_model_steps = model_steps
+        post_model_steps = alternation_steps or model_steps
         cycle_duration = post_context_steps + post_model_steps
         cycle_offset = max(0, current_step - offset - 1)
         cycle_index = cycle_offset // cycle_duration
