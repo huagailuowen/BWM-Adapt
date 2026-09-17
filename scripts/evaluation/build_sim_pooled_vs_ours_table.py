@@ -87,7 +87,7 @@ def generic_record(
         "object_final_error": object_final_error,
         "object_metric_label": object_metric_label,
         "object_metric_unit": object_metric_unit,
-        "action_success": weighted_action(action_paths),
+        "action_success": _mass_friction_first_crossing_or_original_action(action_paths),
         "task_metric": mean_key(task_rows, task_metric_key),
         "task_metric_label": task_metric_label,
         "task_metric_higher_is_better": task_metric_higher_is_better,
@@ -364,7 +364,19 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
         "comparison": "Ours versus standard pooled world model",
         "global_metrics": "PSNR/SSIM/LPIPS are averaged over the available ID/OOD environment summaries.",
         "object_metrics": "Mean/final object-state error: centroid ADE/FDE in pixels for moving objects; yellow-lamp score MAE/final absolute error for LightSwitch.",
-        "action_metric": "Task success on complete candidate sets whose targets are reachable in GT.",
+        "action_metric": "Task-specific action score. Mass Friction uses first-crossing +/-1 action-level match at three fixed target lines; other tasks retain GT-reachable task success.",
+        "mass_friction_action_protocol": {
+            "status": "post_hoc_revision_user_selected",
+            "thresholds": [0.62, 0.75, 0.92],
+            "selector": "raw_first_crossing",
+            "metric": "within_one_level_rate",
+            "score": "1 for absolute action-rank error <= 1; otherwise 0. No predicted crossing scores 0.",
+            "aggregation": "Equal reachable-environment weight within each threshold, then equal threshold weight.",
+            "is_strict_task_success": False,
+            "previous_strict_success": {"standard_pooled_wm": 0.2916666667, "ours": 0.5416666667},
+            "config": "configs/evaluation/action_tasks/mass_friction_first_crossing_within_one_v1.yaml",
+            "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/action_first_crossing_v1/summary.json",
+        },
         "query_protocol": "Each pooled baseline reuses the exact Ours transfer plan; pooled WM ignores support by design.",
         "superseded_for_leakage": [
             "Mass collision: job 90515 / evaluation 90735",
@@ -401,7 +413,7 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
 
     columns = [
         "Task", "Method", "N", "PSNR ↑", "SSIM ↑", "LPIPS ↓",
-        "Object mean error ↓", "Object final error ↓", "Action success ↑", "Task-specific metric",
+        "Object mean error ↓", "Object final error ↓", "Action score ↑", "Task-specific metric",
     ]
     body = []
     for row in records:
@@ -482,7 +494,7 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
     image = Image.new("RGB", (width, height), "white")
     draw = ImageDraw.Draw(image)
     draw.text((margin, 36), "Simulation Benchmarks: Ours vs. Standard Pooled World Model", font=fonts["title"], fill="#17324d")
-    draw.text((margin, 98), "Shared frozen support/query protocols; the pooled baseline receives no test-time adaptation.", font=fonts["subtitle"], fill="#52606d")
+    draw.text((margin, 98), "Mass Friction action: +/-1 level at three fixed target lines (post-hoc revision). Other tasks: original success.", font=fonts["subtitle"], fill="#52606d")
 
     x_edges = [margin]
     for item in column_widths:
@@ -536,7 +548,7 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         '<rect width="100%" height="100%" fill="white"/>',
         f'<text x="{margin}" y="68" font-family="Georgia,serif" font-size="42" font-weight="700" fill="#17324d">Simulation Benchmarks: Ours vs. Standard Pooled World Model</text>',
-        f'<text x="{margin}" y="120" font-family="Georgia,serif" font-size="23" fill="#52606d">Shared frozen support/query protocols; the pooled baseline receives no test-time adaptation.</text>',
+        f'<text x="{margin}" y="120" font-family="Georgia,serif" font-size="23" fill="#52606d">Mass Friction action: +/-1 level at three fixed target lines (post-hoc revision). Other tasks: original success.</text>',
     ]
 
     def svg_centered(text: str, left: int, top: int, right: int, bottom: int, *, size: int, fill: str, weight: str = "400") -> None:
@@ -568,6 +580,39 @@ def write_outputs(records: list[dict[str, Any]]) -> None:
     svg.append(f'<text x="{margin}" y="{footer_y+58}" font-family="Georgia,serif" font-size="17" fill="#7a4b00">All reported LPIPS values use the official AlexNet network; blank cells indicate unavailable or withheld metrics.</text>')
     svg.append("</svg>")
     (OUTPUT / "sim_standard_pooled_vs_ours.svg").write_text("\n".join(svg) + "\n", encoding="utf-8")
+
+
+def _mass_friction_first_crossing_or_original_action(action_paths):
+    """Use the selected Mass Friction metric without changing other tasks."""
+    paths = [str(path) for path in action_paths]
+    mass_paths = [path for path in paths if "/mass_friction/" in path]
+    if not mass_paths:
+        return weighted_action(paths)
+    if len(mass_paths) != len(paths):
+        raise ValueError("Cannot mix Mass Friction and other action protocols")
+    methods = set()
+    for path in paths:
+        if "/standard_pooled_wm/" in path:
+            methods.add("standard_pooled_wm")
+        elif "/ours/" in path:
+            methods.add("ours")
+        else:
+            raise ValueError(f"Unmapped Mass Friction action method: {path}")
+    if len(methods) != 1:
+        raise ValueError("Cannot combine action scores from different methods")
+    source = Path(__file__).resolve().parents[2] / (
+        "results/mass_friction/"
+        "joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/"
+        "metrics/action_first_crossing_v1/summary.json"
+    )
+    summary = json.loads(source.read_text())
+    matches = [row for row in summary if
+               row["method"] in methods and row["domain"] == "all"
+               and row["selector"] == "raw_first_crossing"
+               and row["threshold_set"] == "original_target_lines"]
+    if len(matches) != 1:
+        raise ValueError("Expected exactly one three-target within-one-level score")
+    return float(matches[0]["within_one_level_rate"])
 
 
 def main() -> None:

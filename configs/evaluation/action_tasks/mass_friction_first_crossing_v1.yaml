@@ -1,0 +1,20 @@
+version: 1
+analysis_status: exploratory_post_hoc
+candidate_protocol_config: configs/evaluation/action_tasks/mass_friction_target_precision_v1.yaml
+output_dir: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/action_first_crossing_v1
+object_index: 0
+coordinate: terminal_y_normalized
+comparison: strictly_greater
+selectors: [raw_first_crossing, isotonic_first_crossing]
+# These thresholds are fixed before looking at any score from this evaluator.
+# The main set uses the existing target rectangles' lower y boundaries.
+# The uniform set is a complete sensitivity analysis, not a best-threshold search.
+threshold_sets:
+  original_target_lines: [0.62, 0.75, 0.92]
+  uniform_target_lines: [0.600, 0.625, 0.650, 0.675, 0.700, 0.725, 0.750, 0.775, 0.800, 0.825, 0.850, 0.875, 0.900, 0.925, 0.950]
+score_by_absolute_rank_error: {0: 1.0, 1: 0.5}
+other_rank_error_score: 0.0
+prediction_never_crosses_score: 0.0
+missing_crossing_rank_error: maximum_action_rank_gap
+aggregation: equal_threshold_weight_then_equal_reachable_environment_weight
+preserve_formal_results: true

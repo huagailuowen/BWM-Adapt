@@ -1,0 +1,31 @@
+version: 1
+kind: table_metric_selection
+task: mass_friction
+status: post_hoc_revision_user_selected
+label: First-crossing +/-1 action-level match
+source_config: configs/evaluation/action_tasks/mass_friction_first_crossing_v1.yaml
+source_summary: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/action_first_crossing_v1/summary.json
+source_metric: within_one_level_rate
+selector: raw_first_crossing
+threshold_set: original_target_lines
+thresholds: [0.62, 0.75, 0.92]
+coordinate: terminal_y_normalized
+comparison: strictly_greater
+absolute_action_rank_error_tolerance: 1
+score_within_tolerance: 1
+score_outside_tolerance: 0
+prediction_never_crosses_score: 0
+ground_truth_unreachable: exclude_identically_for_all_methods_per_threshold
+aggregation: equal_threshold_weight_then_equal_reachable_environment_weight
+environment_count: 10
+domains: {id: 5, ood: 5}
+reachable_environment_threshold_pairs: 24
+is_strict_task_success: false
+table_storage_field: action_success
+table_display_label: Action Score
+preserve_original_action_evaluation_files: true
+notes:
+  - The table storage key is retained for compatibility; this task uses a tolerant action-level matching score, not strict task success.
+  - One level below the GT minimum may not physically reach the target, but receives one point under this selected definition.
+  - This protocol was selected after observing results and must be described as a post-hoc revision, not preregistered evaluation.
+  - The uniform-threshold and isotonic analyses remain available as supplementary results but are not used for this table.

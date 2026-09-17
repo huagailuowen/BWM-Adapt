@@ -132,15 +132,20 @@ def stage_weights(config, train, selected):
 
 
 def prepare_manifest(config, train, metric, output):
-    reference = json.loads(resolve(config['reference_plan']).read_text())
+    reference_paths = config.get('reference_plans') or [config['reference_plan']]
+    reference = [row for path in reference_paths for row in json.loads(resolve(path).read_text())]
     metadata = jsonl(metric['metadata_jsonl'])
     training_rows = jsonl(train['dataset']['dataset_metadata_path'])
     manifest = yaml.safe_load(resolve(train['dinov2_amortized_context']['dinov2_active_environment_manifest']).read_text())
     selection = manifest['selection']
     env_key = selection['environment_key']
-    value_key = selection['physical_value_key']
+    value_keys = selection.get('physical_value_keys') or [selection['physical_value_key']]
+    def physical_value(row):
+        return tuple(float(row[key]) for key in value_keys)
+    def same_physics(left, right):
+        return all(math.isclose(a, b, rel_tol=1e-6, abs_tol=1e-9) for a, b in zip(left, right))
     active_ids = set(selection['active_environment_ids'])
-    active_values = {float(row[value_key]) for row in training_rows if row[env_key] in active_ids}
+    active_values = {physical_value(row) for row in training_rows if row[env_key] in active_ids}
     if len(active_values) != int(selection['active_environment_count']):
         raise RuntimeError('Training physical-value membership is incomplete.')
     rows = []
@@ -151,18 +156,18 @@ def prepare_manifest(config, train, metric, output):
         queries = [int(index) for index in original['target_indices']]
         if source in queries or len(queries) != len(set(queries)):
             raise ValueError('Support/query overlap or duplicate queries.')
-        physical = float(metadata[source][value_key])
+        physical = physical_value(metadata[source])
         if physical in seen_environments:
             raise ValueError('Repeated environment in the reference plan.')
         seen_environments.add(physical)
-        if any(not math.isclose(float(metadata[index][value_key]), physical, rel_tol=1e-6, abs_tol=1e-9)
-               for index in queries):
+        if any(not same_physics(physical_value(metadata[index]), physical)
+                for index in queries):
             raise ValueError('A reference query belongs to a different physical environment.')
-        domain = 'id' if any(math.isclose(physical, value, rel_tol=1e-6, abs_tol=1e-9)
+        domain = 'id' if any(same_physics(physical, value)
                              for value in active_values) else 'ood'
         rows.append({**original, 'support_indices': [source], 'query_indices': queries,
                      'domain': domain, 'environment_id': metadata[source][env_key],
-                     'physical_value': physical})
+                     'physical_value': physical[0] if len(physical) == 1 else list(physical)})
         all_queries.extend(queries)
     if len(rows) != config['expected_environments'] or len(all_queries) != config['expected_queries']:
         raise ValueError('Reference environment/query count differs from the standard protocol.')

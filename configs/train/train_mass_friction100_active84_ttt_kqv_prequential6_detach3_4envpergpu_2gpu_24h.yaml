@@ -47,6 +47,9 @@ ttt_kvb:
   ttt_action_key: "action_id"
   ttt_distinct_actions: true
   ttt_sequence_length: 6
+  # Two three-chunk backward segments, carrying numerical fast-state values.
+  # The optimizer still steps once after all four six-chunk environments.
+  ttt_detach_every_chunks: 3
   ttt_environments_per_rank: 4
   ttt_layers: "uniform:8"
   ttt_expansion: 4
@@ -58,8 +61,9 @@ ttt_kvb:
   ttt_serial_after_attention: true
   ttt_saved_tensor_cpu_offload: false
   ttt_saved_tensor_policy: "selective"
-  # Preserve all tokens and full higher-order gradients; recompute only pure
-  # fast-state segments. Do not enable checkpoint replay of mutable Wan blocks.
+  # Preserve all tokens and within-segment higher-order gradients. Truncate
+  # cross-chunk gradients only at the explicit three-chunk detach boundary.
+  # Do not enable checkpoint replay of mutable Wan blocks.
   ttt_scan_checkpoint_updates: 8
   ttt_gpu_saved_tensor_budget_gib: 64.0
   ttt_host_saved_tensor_budget_gib: 24.0
@@ -83,7 +87,7 @@ training:
   min_timestep_boundary: 0.0
   batch_size: 1
 output:
-  output_path: "./outputs/method_benchmarks/joint_mass_friction/ttt_kqv_prequential6_4envpergpu/seed_20260719/checkpoints"
+  output_path: "./outputs/method_benchmarks/joint_mass_friction/ttt_kqv_prequential6_detach3_4envpergpu/seed_20260719/checkpoints"
   remove_prefix_in_ckpt: "pipe.dit."
   save_steps: 200
   checkpoint_save_minutes: 60

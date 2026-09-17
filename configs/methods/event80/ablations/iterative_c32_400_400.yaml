@@ -1,0 +1,38 @@
+extends: ../common.yaml
+experiment:
+  id: iterative_c32_400_400
+method:
+  slug: iterative_c32_400_400
+  family: ablation
+  latent_dim: 32
+  code_scope: per_environment
+  alternating_updates: true
+  jointly_update_model_and_latent: false
+  initialization: uniform_0_1
+source:
+  legacy_train_config: configs/train/train_push_box_event80_iterative_c32_400_400_2gpu_24h.yaml
+  training_environment_manifest: configs/methods/event80/manifests/ours_88823_step7272_active35.yaml
+training:
+  curriculum_wave_steps: 1000
+  initial_model_steps: 300
+  model_warmup_steps: 100
+  initial_environments: 5
+  add_environments_per_wave: 5
+  total_active_environments: 35
+  new_environment_code_only_steps: 200
+  alternating_phase_steps: 400
+  alternating_pairs_per_wave: 1
+  all_context_updates_per_wave: 400
+  model_updates_per_wave: 400
+  post_curriculum_phase_steps: 400
+  model_learning_rate: 1.0e-05
+  environment_code_learning_rate: 0.03
+  new_environment_code_learning_rate: 0.15
+  world_size: 2
+  environments_per_rank: 4
+  clips_per_environment: 4
+  effective_clips_per_update: 32
+runtime:
+  train:
+    entrypoint: scripts/train_stage1_grouped_context.py
+  implementation_status: frequency_ablation_ready

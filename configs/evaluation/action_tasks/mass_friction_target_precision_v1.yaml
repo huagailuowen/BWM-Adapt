@@ -1,0 +1,21 @@
+version: 1
+analysis_status: exploratory_post_hoc
+task: mass_friction
+protocol_config: configs/evaluation/action_tasks/mass_friction_ours_step7172_id5ood5_informative_v1.yaml
+output_dir: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/action_target_precision_v1
+reference_method: ours
+expected_environments: 10
+expected_reachable_environment_targets: 24
+precision_target_ids: [short_displacement, medium_displacement]
+selection_strategy: nearest_center_tiebreak
+image_width: 224
+image_height: 224
+ground_truth_match_atol: 0.000001
+# Keep the existing targets, eligible environments, candidates, success policies,
+# support observations, and minimum-reaching rule for the long target unchanged.
+# Never promote this outcome-informed analysis to the primary table automatically.
+methods:
+  ours: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours/step_7172/seed_20260720/action_evaluation
+  dinov2_concat_mlp: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/dinov2_concat_mlp_random_k1k2/train_job_116348/step_5000/seed_20260720/action_evaluation
+  standard_pooled_wm: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/standard_pooled_wm/step_3277/seed_20260719/action_evaluation
+  lora_tta: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/lora_tta/pooled_step_3277/seed_20260719/action_evaluation

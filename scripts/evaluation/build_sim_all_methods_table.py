@@ -16,7 +16,7 @@ from PIL import Image, ImageDraw, ImageFont
 METRICS = (
     ("lpips", "LPIPS", "min"),
     ("object", "Object / Physical", "min"),
-    ("action_success", "Action Success", "max"),
+    ("action_success", "Action Score", "max"),
 )
 
 
@@ -252,7 +252,7 @@ def render(config: dict, output_dir: Path) -> None:
     notes = [
         "Bold: best. Object/physical metrics are task-specific and listed in each header.",
         "* Mass Balance Ours uses the completed fixed-pose 5-ID/5-OOD test; baseline rows use workspace-random data.",
-        "\u2020 Mass Collision LoRA uses the earlier compatible no-leak balanced-support protocol. -- indicates pending/unavailable.",
+        "\u2020 Collision LoRA: prior protocol. Mass Friction action: +/-1 level at y=0.62/0.75/0.92 (post-hoc revision); --: unavailable.",
         "DINOv2: Transformer for Friction; concat-MLP for Gravity/Collision/Light/Balance. Mass x Friction is pending.",
     ]
     note_y = table_bottom + 48

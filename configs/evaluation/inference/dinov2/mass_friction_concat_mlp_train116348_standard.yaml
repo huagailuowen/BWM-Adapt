@@ -1,0 +1,20 @@
+task: mass_friction
+method: dinov2_concat_mlp_random_k1k2
+train_job_id: 116348
+train_config: configs/train/train_mass_friction100_active84_dinov2_concat_mlp_random_k1k2_total6_4envpergpu_2gpu_24h.yaml
+checkpoint_dir: outputs/method_benchmarks/joint_mass_friction/dinov2_concat_mlp_random_k1k2_total6_4envpergpu/seed_20260719_job_116348/checkpoints
+required_checkpoint_step: null
+reference_plans:
+  - results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours/step_7172/seed_20260720/id_same_environment_other_actions/transfer_plan.json
+  - results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours/step_7172/seed_20260720/ood_same_environment_other_actions/transfer_plan.json
+metric_template: configs/evaluation/action_tasks/mass_friction_ours_step7172_id5ood5_informative_v1.yaml
+output_base: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/dinov2_concat_mlp_random_k1k2/train_job_116348
+expected_environments: 10
+expected_queries: 80
+seed: 20260720
+fps: 10
+num_inference_steps: 25
+cfg_scale: 1.0
+quality: 6
+# Reuse the formal Ours support/actions, targets, and minimum-reaching rule.
+# Classify environments by the joint (mass, friction) values in the active manifest.

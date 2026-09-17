@@ -258,6 +258,34 @@ def evaluate_task_action_choice(
             )
         )
         selected = selectable[0]
+    elif effective_selection_strategy == "nearest_center_tiebreak":
+        if target.kind != "point_rectangle":
+            raise ValueError("nearest_center_tiebreak requires a point_rectangle target.")
+        region = target.parameters["region"]
+        center = (
+            (float(region["x_min"]) + float(region["x_max"])) / 2.0,
+            (float(region["y_min"]) + float(region["y_max"])) / 2.0,
+        )
+
+        def center_distance(record: Mapping[str, Any]) -> float:
+            point = _point(record.get("selection_value"))
+            if point is None:
+                return float("inf")
+            return hypot(point[0] - center[0], point[1] - center[1])
+
+        selected = min(
+            selectable,
+            key=lambda record: (
+                target.distance(record.get("selection_value")),
+                center_distance(record),
+                _action_sort_key(record),
+            ),
+        )
+        selection_details = {
+            "target_center": list(center),
+            "selected_predicted_center_distance": center_distance(selected),
+            "uses_ground_truth_for_selection": False,
+        }
     elif effective_selection_strategy == "boundary_crossing":
         selected, selection_details = _boundary_crossing_choice(selectable, target)
     elif effective_selection_strategy == "first_reaching":
