@@ -162,7 +162,7 @@ class SafeTTTLogger:
                     "config": self.cfg, "deadline_epoch": self.deadline,
                     "sampling": "independent_rank_uniform_env_episode_window_then_shuffle",
                     "per_rank_chunks": (
-                        f"5 environments x {self.cfg.get('ttt_streams_per_environment', 1)} 
+                        f"5 environments x {self.cfg.get('ttt_streams_per_environment', 1)} "
                         f"independent streams x {self.cfg['ttt_sequence_length']} distinct episodes"
                     ),
                     "physical_environments_per_rank": 5,

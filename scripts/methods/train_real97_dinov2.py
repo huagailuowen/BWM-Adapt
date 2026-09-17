@@ -82,7 +82,10 @@ def save_checkpoint(accelerator, model, args, step, *, protected=False, reason="
             "step": step, "reason": reason, "protected": protected,
             "method": "dinov2_concat_mlp", "model_and_head_same_checkpoint": True,
             "context_table": False, "full_optimizer_resume_state": False,
-            "support_k_choices": [1, 2], "context_dim": args.dinov2_output_dim,
+            "support_k_choices": [int(value.strip()) for value in str(args.dinov2_support_k_choices).split(",")],
+            "query_topup_from_support": args.dinov2_query_topup_from_support,
+            "query_min_count": int(args.dinov2_queries_per_environment) if args.dinov2_query_topup_from_support else 0,
+            "context_dim": args.dinov2_output_dim,
             "checkpoint": str(target), "args": vars(args),
         })
         atomic_json(marker, {"step": step, "checkpoint": target.name, "reason": reason})
@@ -109,14 +112,23 @@ def save_checkpoint(accelerator, model, args, step, *, protected=False, reason="
 
 def main():
     parser = add_dinov2_config(wan_parser())
+    parser.add_argument(
+        "--dinov2_query_topup_from_support", action="store_true", default=False,
+        help="Opt in to K=1..4 and reuse selected supports to reach the minimum query count.",
+    )
     if "--frame_stride" not in parser._option_string_actions:
         parser.add_argument("--frame_stride", type=int, default=1)
     args = parser.parse_args()
     if args.config is not None:
         args = merge_yaml_and_args(args.config, parser, args)
     choices = tuple(int(value.strip()) for value in str(args.dinov2_support_k_choices).split(","))
-    if choices != (1, 2) or args.dinov2_aggregation_mode != "concat_mlp":
-        raise ValueError("This runner requires concat_mlp and support K choices 1,2.")
+    query_topup = bool(args.dinov2_query_topup_from_support)
+    expected_choices = (1, 2, 3, 4) if query_topup else (1, 2)
+    if choices != expected_choices or args.dinov2_aggregation_mode != "concat_mlp":
+        raise ValueError(f"This runner requires concat_mlp and support K choices {expected_choices}.")
+    min_queries = int(args.dinov2_queries_per_environment) if query_topup else 0
+    if query_topup and min_queries != 4:
+        raise ValueError("The support-reuse branch requires a minimum of four queries.")
     if int(args.num_history_frames) != 1:
         raise ValueError("This Ball/Door entrypoint does not yet support Soft history5.")
     if args.spatial_loss_mode != "none":
@@ -152,6 +164,8 @@ def main():
     sampler = PooledEpisodeSampler(SimpleNamespace(**sampler_args))
     if sampler.episodes_per_env <= max(choices):
         raise ValueError("Each environment must have at least one disjoint query.")
+    if query_topup and sampler.episodes_per_env != 6:
+        raise ValueError("The support-reuse branch requires six distinct episodes per environment.")
     if any(row.get("action_semantics") != args.action_type for row in sampler.rows):
         raise ValueError("Manifest action semantics do not match the training config.")
     dataset = build_dataset(args, runtime_config)
@@ -211,13 +225,17 @@ def main():
                 "environments_per_rank": sampler.envs_per_rank,
                 "trajectories_per_environment": sampler.episodes_per_env,
                 "support_k_choices": choices, "support_selection": "uniform_without_replacement",
-                "query_count": "total_trajectories_minus_K", "world_size": 2,
-                "support_query_episode_disjoint": True, "context_table": False,
+                "query_count": "max(total_trajectories_minus_K,4)" if query_topup else "total_trajectories_minus_K",
+                "query_topup_from_support": query_topup, "query_min_count": min_queries,
+                "query_topup_selection": "uniform_without_replacement_from_selected_supports" if query_topup else "none",
+                "world_size": 2,
+                "support_query_episode_disjoint": not query_topup, "context_table": False,
                 "deadline_epoch": deadline, "args": vars(args),
             }, handle, indent=2, default=str)
         print(
             f"[dino_real97] per_rank={sampler.envs_per_rank}x{sampler.episodes_per_env} "
-            f"support_K=1,2 query=remaining max_updates={args.dinov2_max_updates} "
+            f"support_K={','.join(map(str, choices))} query={'max(remaining,4)' if query_topup else 'remaining'} "
+            f"query_topup_from_support={query_topup} max_updates={args.dinov2_max_updates} "
             f"deadline_epoch={deadline} support_augmentation=True", flush=True,
         )
     stop_flag = torch.zeros((), device=accelerator.device, dtype=torch.int32)
@@ -233,9 +251,13 @@ def main():
             support_indices = rng.sample(indices, rng.choice(choices))
             support_set = set(support_indices)
             query_indices = [index for index in indices if index not in support_set]
+            if query_topup and len(query_indices) < min_queries:
+                query_indices.extend(rng.sample(support_indices, min_queries - len(query_indices)))
             episodes.append((env, support_indices, query_indices))
         total_queries = sum(len(query) for _, _, query in episodes)
         total_supports = sum(len(support) for _, support, _ in episodes)
+        total_unique = sum(len(set(support) | set(query)) for _, support, query in episodes)
+        total_reused = sum(len(set(support) & set(query)) for _, support, query in episodes)
         optimizer.zero_grad(set_to_none=True)
         detached_loss = torch.zeros((), device=accelerator.device, dtype=torch.float32)
         query_counter = 0
@@ -270,7 +292,7 @@ def main():
         should_stop = bool(stop_flag.item())
         if step % max(1, int(args.log_steps)) == 0:
             values = torch.tensor(
-                [float(total_supports), float(total_queries)],
+                [float(total_supports), float(total_queries), float(total_unique), float(total_reused)],
                 device=accelerator.device, dtype=torch.float32,
             )
             counts = accelerator.reduce(values, reduction="sum").tolist()
@@ -283,7 +305,9 @@ def main():
                     "lr_head": optimizer.param_groups[1]["lr"],
                     "global_support_chunks": int(counts[0]),
                     "global_query_chunks": int(counts[1]),
-                    "global_total_chunks": int(sum(counts)),
+                    "global_total_chunks": int(sum(counts[:2])),
+                    "global_unique_chunks": int(counts[2]),
+                    "global_reused_support_queries": int(counts[3]),
                     "seconds_per_step": (now - previous_time) / max(1, int(args.log_steps)),
                     "timestamp": time.time(),
                 }
@@ -296,6 +320,9 @@ def main():
                             "environment_index": env,
                             "support": [sampler.rows[i]["sample_id"] for i in support],
                             "query": [sampler.rows[i]["sample_id"] for i in query],
+                            "reused_support_as_query": [
+                                sampler.rows[i]["sample_id"] for i in query if i in set(support)
+                            ],
                         } for env, support, query in episodes],
                     }) + "\n")
                 print("[dino_train] " + json.dumps(record), flush=True)

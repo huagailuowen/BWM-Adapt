@@ -1,0 +1,16 @@
+{
+  "training_job_id": 117462,
+  "training_run": "outputs/real97_train_real97_soft_static_balanced9_ttt_write_then_predict_5x6_gpu_resident_2gpu_20260914_v1_job117462",
+  "reference_cohort": "outputs/infer_real97_soft_balanced9_dual_static1_train115613_job116188",
+  "output": "outputs/infer_real97_soft_ttt_static_reference_after117462_v1",
+  "checkpoint_policy": "latest_complete_protected_final_or_wallclock",
+  "support_k": 4,
+  "expected_queries": 36,
+  "expected_test_queries": 18,
+  "num_inference_steps": 50,
+  "seed": 20260910,
+  "support_noise_seed_offset": 1000003,
+  "fps": 6.666666666666667,
+  "main_metric_environments": ["soft-1l", "soft-2l", "soft-1r", "soft-5r", "soft-2m", "soft-8"],
+  "inference_augmentation": false
+}
