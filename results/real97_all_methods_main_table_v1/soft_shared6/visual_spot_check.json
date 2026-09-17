@@ -1,0 +1,66 @@
+{
+  "audit_type": "visual contact-sheet spot check",
+  "selection": "first test query by index in each of the fixed shared-six environments; not selected by method wins",
+  "query_count": 6,
+  "total_shared6_test_queries": 12,
+  "methods": [
+    "gt",
+    "standard",
+    "stage1",
+    "ours",
+    "dino"
+  ],
+  "native_frames": [
+    0,
+    27,
+    54,
+    84
+  ],
+  "sampled_panels": 120,
+  "observed_frames_included_for_identity_check": true,
+  "findings": "No obvious wrong-object detections in the reviewed panels. All six reviewed final-frame panels for each method track the depicted silver endpoint.",
+  "boundary_rule": "Center of the visible in-frame box; not inferred full-object center outside the image.",
+  "numeric_metrics_modified": false,
+  "thresholds_modified": false,
+  "queries_removed": false,
+  "scope_limits": [
+    "Not an exhaustive video or 12-query audit.",
+    "No manually annotated pixel-center ground truth or measured localization error.",
+    "Intermediate-frame jumps/misses outside sampled times have not been ruled out.",
+    "Generated blur and boundary clipping limit exact center precision."
+  ],
+  "formal_metric_approved": false,
+  "sampled_visual_review_complete": true,
+  "cases": [
+    {
+      "key": "q0002_soft-1l_test_ep000004",
+      "image": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_soft_dino_matched_20260916_v1/cases/q0002_soft-1l_test_ep000004/all_methods_contact_sheet.jpg",
+      "finding": "All sampled boxes remain on the silver endpoint. Some lower-edge clipping is visible; center follows the visible box. Predicted endpoint differences remain visible independently of the detector."
+    },
+    {
+      "key": "q0006_soft-2l_test_ep000001",
+      "image": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_soft_dino_matched_20260916_v1/cases/q0006_soft-2l_test_ep000001/all_methods_contact_sheet.jpg",
+      "finding": "All methods track the silver endpoint at the sampled times, including partly clipped lower-edge observations. No confusion with the blue markers."
+    },
+    {
+      "key": "q0014_soft-1r_test_ep000002",
+      "image": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_soft_dino_matched_20260916_v1/cases/q0014_soft-1r_test_ep000002/all_methods_contact_sheet.jpg",
+      "finding": "The GT endpoint moves to the right and upward by frame84; the model endpoints remain lower. Sampled boxes follow the actual depicted objects, not the GT trajectory."
+    },
+    {
+      "key": "q0022_soft-5r_test_ep000005",
+      "image": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_soft_dino_matched_20260916_v1/cases/q0022_soft-5r_test_ep000005/all_methods_contact_sheet.jpg",
+      "finding": "GT and predictions move right. Sampled detector boxes remain on the silver object; early lower-edge clipping does not produce a switch to the robot."
+    },
+    {
+      "key": "q0026_soft-2m_test_ep000014",
+      "image": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_soft_dino_matched_20260916_v1/cases/q0026_soft-2m_test_ep000014/all_methods_contact_sheet.jpg",
+      "finding": "The small endpoint starts near the left blue marker but the boxes identify the endpoint, not the marker. At frame84 boxes follow the silver object, including the partly clipped GT/Stage1 views."
+    },
+    {
+      "key": "q0034_soft-8_test_ep000005",
+      "image": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_soft_dino_matched_20260916_v1/cases/q0034_soft-8_test_ep000005/all_methods_contact_sheet.jpg",
+      "finding": "All sampled boxes identify the endpoint through leftward motion and the return segment. Lower-edge clipping and generated blur are present; no obvious object-identity switch."
+    }
+  ]
+}

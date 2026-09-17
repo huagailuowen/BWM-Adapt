@@ -1,0 +1,96 @@
+{
+  "cohort": "shared_training_environments_6",
+  "environments": [
+    "soft-1l",
+    "soft-2l",
+    "soft-1r",
+    "soft-5r",
+    "soft-2m",
+    "soft-8"
+  ],
+  "test_queries": 12,
+  "queries_per_environment": 2,
+  "source": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_soft_dino_matched_20260916_v1/per_query.json",
+  "source_sha256": "a33036042d8986a093a5e9e57a1230d5dee7c4c1d7214dad02350247addeeaa8",
+  "methods": {
+    "standard": {
+      "queries": 12,
+      "ADE_px": 32.784842489217176,
+      "FDE_px": 39.41445093722443,
+      "paired_coverage": 0.9970238095238095,
+      "common_coverage": 0.9910714285714286
+    },
+    "stage1": {
+      "queries": 12,
+      "ADE_px": 17.694101970681768,
+      "FDE_px": 22.661687327763573,
+      "paired_coverage": 1.0,
+      "common_coverage": 0.9910714285714286
+    },
+    "ours": {
+      "queries": 12,
+      "ADE_px": 18.095447765255027,
+      "FDE_px": 22.378706399976302,
+      "paired_coverage": 0.9940476190476191,
+      "common_coverage": 0.9910714285714286
+    },
+    "dino": {
+      "queries": 12,
+      "ADE_px": 21.190663456420264,
+      "FDE_px": 29.165079924373444,
+      "paired_coverage": 0.9970238095238095,
+      "common_coverage": 0.9910714285714286
+    }
+  },
+  "primary_metrics": [
+    "ADE_px",
+    "FDE_px"
+  ],
+  "action_metric": false,
+  "image_metrics": "retained in original supplemental evaluation, not main metrics",
+  "aggregation": "per-query mean, then equal query mean; two queries per environment",
+  "ADE_mask": "common valid frames for GT, Standard, Stage1, family Stage2, DINO",
+  "FDE": "actual final eligible future frame; no last-detected-frame substitution",
+  "native_future_frames": [
+    3,
+    6,
+    9,
+    12,
+    15,
+    18,
+    21,
+    24,
+    27,
+    30,
+    33,
+    36,
+    39,
+    42,
+    45,
+    48,
+    51,
+    54,
+    57,
+    60,
+    63,
+    66,
+    69,
+    72,
+    75,
+    78,
+    81,
+    84
+  ],
+  "coordinate_size": [
+    512,
+    256
+  ],
+  "cohort_selection": "Defined by shared training coverage; promoted to main after inspecting DINO scores",
+  "full_nine_environment_results_retained": true,
+  "formal_metric_approved": false,
+  "manual_dino_tracking_review_complete": false,
+  "sampled_visual_review_complete": true,
+  "sampled_visual_review": "visual_spot_check.json",
+  "sampled_review_queries": 6,
+  "sampled_review_panels": 120
+}

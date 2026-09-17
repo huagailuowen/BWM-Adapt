@@ -6,13 +6,21 @@ Only held-out test-query metrics are shown; Support episodes come from train.
 
 [Download the wide CSV table](real97_all_methods_main_table.csv).
 
+Current Soft main metric: the shared-six test cohort, ADE/FDE and LPIPS, revised
+2026-09-17 to include TTT. See the table below and
+[matched five-method scores](metrics/soft_ttt_comparison.json).
+The previous [wide SVG](real97_main_results.svg) /
+[PNG](real97_main_results.png) are archived nine-environment figures and do not
+reflect this Soft cohort revision. Door/Ball columns are unchanged.
+
 ## Methods and missing entries
 
 - `Ours` means Stage2 inference, not direct Stage1 table lookup.
 - Door and Ball use the accepted historical Ours reference runs, not the newer
   dual-latent experiments.
-- Soft uses the accepted final family-mean initialization. Only Standard and
-  Ours are included for Soft. Soft has no action-selection metric.
+- Soft Ours uses the accepted final family-mean initialization. Standard, DINO,
+  TTT, and Ours are compared on the same six jointly seen environments. Stage1 is a
+  separate reference. Soft main metrics are ADE/FDE/LPIPS, with no action score.
 - Stick balance is intentionally left blank for every method.
 - Blank entries mean unavailable or intentionally omitted, never zero.
 - PSNR and SSIM are higher-is-better. LPIPS, ADE, and FDE are lower-is-better.
@@ -74,15 +82,25 @@ Intentionally unfilled pending the selected evaluation results.
 
 ## Soft pull
 
-18 held-out queries, two per environment across 9 environments. There is no
-action metric for this task. LPIPS was computed using AlexNet v0.1 on RGB
-frames resized to the native crop size of 512 x 256. It uses every aligned
-future frame, independently of the object-tracking validity mask. The entries were filled after the compute-node scoring job completed.
+The main cohort is now **12 held-out queries across six shared training
+environments**: `soft-1l`, `soft-2l`, `soft-1r`, `soft-5r`, `soft-2m`, `soft-8`.
+Each environment contributes two queries. The same membership applies to all
+methods. This cohort was defined by Standard's training coverage before the
+DINO scores were available; its promotion to the main table occurred after
+inspection of those scores. Do not describe the main-metric revision as
+preregistered or the complete nine-environment benchmark.
 
-| Method | PSNR | SSIM | LPIPS | ADE (px) | FDE (px) |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| Standard | 33.10 | 0.9644 | 0.07745 | 30.28 | 48.75 |
-| Ours | 32.47 | 0.9608 | 0.07921 | 22.69 | 40.35 |
+| Method | ADE (px) | FDE (px) | LPIPS |
+| --- | ---: | ---: | ---: |
+| Standard | 32.78 | 39.41 | 0.07958 |
+| DINOv2 concat-MLP | 21.19 | 29.17 | 0.07087 |
+| TTT | 18.23 | 29.69 | 0.06439 |
+| Ours | 18.10 | 22.38 | 0.07555 |
+| Ours Stage1 (reference) | 17.69 | 22.66 | 0.07536 |
+
+Soft PSNR/SSIM remain omitted from the main CSV; LPIPS has been restored at the
+user's request. There is no action metric. LPIPS uses AlexNet v0.1 on the same
+28 future frames, resized to 512x256, without the object-detection mask.
 
 Ours starts from the mean of the trained latent rows in the known L, R, or 8
 family; `1R` belongs to R. Both trained replicas of each environment are
@@ -92,23 +110,27 @@ training Supports only, with no hard Z bounds and no ROI weighting.
 
 Standard uses five repeated initial frames and Ours uses one initial frame.
 Metrics align the common 28 future timestamps, native frames 3, 6, ..., 84,
-rather than aligning raw output-video indices. ADE retains the existing
-common-valid-frame mask across Standard, Stage1, global-mean Stage2, and
-family-mean Stage2. Only Standard and the final family-mean Ours are displayed;
-the metric mask was not recomputed when hiding the other columns. FDE uses
-the eligible final frame, not an earlier last-detected frame.
+rather than aligning raw output-video indices. ADE uses frames with valid
+centers for GT, Standard, Stage1, final family-mean Stage2, DINO, and TTT. FDE uses
+the actual eligible final frame, not an earlier last-detected frame; all 12
+final frames are valid for all displayed methods. Average within each query,
+then equally across the 12 queries. Pixel units refer to the 512x256 crop.
 
-### Training-coverage caveat
+### Full nine-environment supplementary result
 
-Ours trained on all nine evaluated environments, but Standard did not train on
-`soft-4l`, `soft-7r`, or `soft-6m`. The main Soft table therefore does not have
-equal training-environment coverage. The same completed evaluation also reports
-the six jointly seen environments, with 12 held-out queries:
+The original 18-query evaluation is retained, including `soft-4l`, `soft-7r`,
+and `soft-6m`, which Standard did not see in training. Ours and DINO trained
+on all nine environments. TTT is included below; the shared-six cohort remains
+the main result rather than selecting environments based on method wins:
 
-| Method | PSNR | SSIM | LPIPS | ADE (px) | FDE (px) |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| Standard | 32.90 | 0.9642 | 0.07953 | 32.78 | 39.41 |
-| Ours | 32.61 | 0.9615 | 0.07549 | 18.10 | 22.38 |
+| Method | ADE (px) | FDE (px) |
+| --- | ---: | ---: |
+| Standard | 30.28 | 48.75 |
+| DINOv2 concat-MLP | 22.34 | 36.48 |
+| TTT | 21.06 | 39.35 |
+| Ours | 22.69 | 40.35 |
+
+[Complete per-environment and full-nine scores](../real97_soft_dino_matched_20260916_v1/README.md).
 
 ## Interpretation and limitations
 
@@ -118,7 +140,7 @@ the six jointly seen environments, with 12 held-out queries:
   environment information.
 - Training budgets differ. Standard, DINO, and the Standard base for LoRA use
   step 5500. Ours uses Door step 3715, Ball step 5500, and Soft step 5500.
-  TTT uses Door step 3656 and Ball step 4144.
+  TTT uses Door step 3656, Ball step 4144, and Soft step 3658.
 - Tracking-derived scores remain provisional. Soft has sampled visual audits
   covering all nine environments, not exhaustive frame-by-frame human labels.
   Ball/Door retain their source calibration and audit caveats, including the
@@ -133,6 +155,10 @@ the six jointly seen environments, with 12 held-out queries:
 - [Soft final family-mean comparison summary](metrics/soft_family_mean_comparison.json)
 - [Soft LPIPS summary](soft_lpips/summary.json)
 - [Soft per-query LPIPS](soft_lpips/per_query.json)
+- [Current shared-six Soft main metric](soft_shared6/summary.json)
+- [Soft five-method metrics including TTT and LPIPS](metrics/soft_ttt_comparison.json)
+- [Soft five-method per-query object metrics](metrics/soft_ttt_per_query.json)
+- [Shared-six selected query IDs and per-query metrics](soft_shared6/per_query.json)
 - [Door accepted reference protocol](../door_close/real97_train_support_train_test_query_v1/README.md)
 - [Ball accepted reference protocol](../ball_friction/real97_train_support_train_test_query_v1/README.md)
 
