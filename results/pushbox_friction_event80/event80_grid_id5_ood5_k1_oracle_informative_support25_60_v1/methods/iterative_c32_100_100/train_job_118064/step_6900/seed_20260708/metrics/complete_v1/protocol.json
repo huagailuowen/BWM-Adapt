@@ -1,0 +1,20 @@
+{
+  "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
+  "aggregation": "equal weight per environment after averaging its nine queries",
+  "dataset_root": "/hai/scratch/cyzhou05/projects/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine",
+  "future_start_frame": 1,
+  "ground_truth_window": "metadata start_frame and length (65-105 for Event80)",
+  "lpips_implementation": "official lpips package",
+  "lpips_network": "alex",
+  "metadata_path": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl",
+  "methods": {
+    "iterative_c32_100_100": "methods/iterative_c32_100_100/train_job_118064/step_6900/seed_20260708"
+  },
+  "object_metric": "main-camera pushed-block centroid ADE/FDE",
+  "offscreen_handling": "hold final observed centroid after confirmed exit",
+  "query_ground_truth_used_for_action_selection": false,
+  "source_protocol": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json",
+  "support_is_excluded_from_query_metrics": true,
+  "support_size": 1,
+  "tracker_type": "event80"
+}

@@ -215,7 +215,7 @@
     "object_final_error": 29.245446992901304,
     "object_metric_label": "Object-centroid error",
     "object_metric_unit": "px",
-    "action_success": 0.2916666666666667,
+    "action_success": 0.35000000000000003,
     "task_metric": 29.052051157120463,
     "task_metric_label": "Final displacement error (px) ↓",
     "task_metric_higher_is_better": false
@@ -232,7 +232,7 @@
     "object_final_error": 13.722182582732096,
     "object_metric_label": "Object-centroid error",
     "object_metric_unit": "px",
-    "action_success": 0.5416666666666666,
+    "action_success": 0.6972222222222223,
     "task_metric": 13.568359888792504,
     "task_metric_label": "Final displacement error (px) ↓",
     "task_metric_higher_is_better": false

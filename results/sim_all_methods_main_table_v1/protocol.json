@@ -254,7 +254,7 @@
         "ours": {
           "psnr": 33.5094529833,
           "ssim": 0.9639204866,
-          "lpips": null,
+          "lpips": 0.02179223984213812,
           "object": 0.7616631395,
           "action_success": 0.7,
           "marker": "cross_dataset"
@@ -267,31 +267,49 @@
     },
     {
       "id": "mass_friction",
+      "action_metric": "first_crossing_within_one_action_level",
+      "action_metric_label": "First-crossing +/-1 level match",
+      "action_thresholds": [
+        0.62,
+        0.75,
+        0.92
+      ],
+      "action_selection": "raw_first_crossing",
+      "action_aggregation": "equal_threshold_weight_then_equal_reachable_environment_weight",
+      "action_protocol_status": "post_hoc_revision_user_selected",
+      "action_source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/action_first_crossing_v1/summary.json",
+      "action_protocol": "configs/evaluation/action_tasks/mass_friction_first_crossing_within_one_v1.yaml",
+      "previous_strict_action_success": {
+        "standard": 0.2916666667,
+        "lora": 0.1666666667,
+        "dino": 0.625,
+        "ours": 0.5416666667
+      },
       "label": "Mass x Friction",
       "object_metric": "Centroid ADE",
       "object_unit": "px",
-      "dino_variant": "pending",
+      "dino_variant": "completed_recorded_run",
       "values": {
         "standard": {
           "psnr": 31.0774675369,
           "ssim": 0.9648366005,
           "lpips": 0.0609880909,
           "object": 16.0218932,
-          "action_success": 0.2916666667
+          "action_success": 0.35000000000000003
         },
         "lora": {
           "psnr": 29.8653152704,
           "ssim": 0.9610607465,
           "lpips": 0.070110374,
           "object": 16.82824858,
-          "action_success": 0.1666666667
+          "action_success": 0.26666666666666666
         },
         "dino": {
-          "psnr": null,
-          "ssim": null,
-          "lpips": null,
-          "object": null,
-          "action_success": null
+          "psnr": 31.36671099662781,
+          "ssim": 0.9664255161998703,
+          "lpips": 0.05650115123717114,
+          "object": 11.811561397574742,
+          "action_success": 0.6083333333333333
         },
         "ttt_kqv": {
           "psnr": null,
@@ -305,7 +323,7 @@
           "ssim": 0.9630712652,
           "lpips": 0.0499914565,
           "object": 8.14806081,
-          "action_success": 0.5416666667
+          "action_success": 0.6972222222222223
         }
       },
       "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1"
@@ -313,7 +331,7 @@
   ],
   "notes": [
     "Lower is better for LPIPS and the task-specific object/physical metric; higher is better for Action Success.",
-    "DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Gravity, Mass Collision, Light Switch, and Mass Balance; Mass x Friction remains pending.",
+    "DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Gravity, Mass Collision, Light Switch, and Mass Balance; the completed Mass x Friction DINOv2 evaluation is included.",
     "Mass Balance Ours values marked with an asterisk use the completed fixed-pose 5-ID/5-OOD nearest-unbalanced-support test, while baseline rows use workspace-random data; available values participate in column ranking.",
     "Mass Collision LoRA values marked with a dagger come from the earlier compatible no-leak balanced-support run rather than the high-mass-2x result root.",
     "A double dash denotes an unfinished or unavailable evaluation, not zero performance."

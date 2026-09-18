@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="820" viewBox="0 0 1240 820">
+<defs><linearGradient id="fric"><stop offset="0%" stop-color="#2463eb" /><stop offset="24%" stop-color="#1d829d" /><stop offset="44%" stop-color="#1da348" /><stop offset="68%" stop-color="#8ba029" /><stop offset="83%" stop-color="#f59c0b" /><stop offset="100%" stop-color="#dc2626" /></linearGradient></defs>
+<rect width="100%" height="100%" fill="#fbfaf6" />
+<rect x="105" y="120" width="1055" height="555" rx="7" fill="#fffdf8" stroke="#d8d2c7" />
+<text x="620.0" y="39" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="24" font-weight="650" fill="#17212b">iterative_c32_400_400: active Z only</text>
+<text x="620.0" y="72" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="14" fill="#6c675f">PCA fitted on 30 active training-time Z-table entries | 10 final inference-time Z values | update paths omitted</text>
+<line x1="105.00" y1="120" x2="105.00" y2="675" stroke="#ded9ce" opacity=".72" />
+<text x="105.00" y="700" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-2.29</text>
+<line x1="316.00" y1="120" x2="316.00" y2="675" stroke="#ded9ce" opacity=".72" />
+<text x="316.00" y="700" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-1.71</text>
+<line x1="527.00" y1="120" x2="527.00" y2="675" stroke="#ded9ce" opacity=".72" />
+<text x="527.00" y="700" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-1.13</text>
+<line x1="738.00" y1="120" x2="738.00" y2="675" stroke="#ded9ce" opacity=".72" />
+<text x="738.00" y="700" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-0.554</text>
+<line x1="949.00" y1="120" x2="949.00" y2="675" stroke="#ded9ce" opacity=".72" />
+<text x="949.00" y="700" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">0.0261</text>
+<line x1="1160.00" y1="120" x2="1160.00" y2="675" stroke="#ded9ce" opacity=".72" />
+<text x="1160.00" y="700" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">0.606</text>
+<line x1="105" y1="675.00" x2="1160" y2="675.00" stroke="#ded9ce" opacity=".72" />
+<text x="94" y="679.00" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-1.6</text>
+<line x1="105" y1="564.00" x2="1160" y2="564.00" stroke="#ded9ce" opacity=".72" />
+<text x="94" y="568.00" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-1.1</text>
+<line x1="105" y1="453.00" x2="1160" y2="453.00" stroke="#ded9ce" opacity=".72" />
+<text x="94" y="457.00" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-0.605</text>
+<line x1="105" y1="342.00" x2="1160" y2="342.00" stroke="#ded9ce" opacity=".72" />
+<text x="94" y="346.00" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">-0.108</text>
+<line x1="105" y1="231.00" x2="1160" y2="231.00" stroke="#ded9ce" opacity=".72" />
+<text x="94" y="235.00" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">0.39</text>
+<line x1="105" y1="120.00" x2="1160" y2="120.00" stroke="#ded9ce" opacity=".72" />
+<text x="94" y="124.00" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">0.887</text>
+<circle cx="774.11" cy="158.28" r="5.5" fill="#2463eb" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.002</title></circle>
+<circle cx="835.09" cy="163.71" r="5.5" fill="#2368df" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.01</title></circle>
+<circle cx="845.06" cy="253.03" r="5.5" fill="#226bd7" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.0148</title></circle>
+<circle cx="845.91" cy="245.46" r="5.5" fill="#216fcc" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.018</title></circle>
+<circle cx="886.13" cy="261.79" r="5.5" fill="#2173c4" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.0228</title></circle>
+<circle cx="921.87" cy="267.16" r="5.5" fill="#2173c4" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.026</title></circle>
+<circle cx="928.70" cy="276.12" r="5.5" fill="#2077b8" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.0308</title></circle>
+<circle cx="945.84" cy="285.79" r="5.5" fill="#2077b8" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.034</title></circle>
+<circle cx="955.27" cy="294.25" r="5.5" fill="#1f7ab0" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.0388</title></circle>
+<circle cx="958.04" cy="270.68" r="5.5" fill="#1e7fa5" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.042</title></circle>
+<circle cx="968.97" cy="267.02" r="5.5" fill="#1d829d" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.0468</title></circle>
+<circle cx="967.71" cy="296.96" r="5.5" fill="#1d829d" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.05</title></circle>
+<circle cx="836.46" cy="263.71" r="5.5" fill="#1c8a89" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.0575</title></circle>
+<circle cx="999.43" cy="296.18" r="5.5" fill="#1c8a89" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.0625</title></circle>
+<circle cx="1008.24" cy="330.27" r="5.5" fill="#1a9276" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.07</title></circle>
+<circle cx="177.76" cy="352.23" r="5.5" fill="#189964" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.075</title></circle>
+<circle cx="1003.53" cy="332.28" r="5.5" fill="#189964" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.08</title></circle>
+<circle cx="992.25" cy="282.57" r="5.5" fill="#179e57" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.085</title></circle>
+<circle cx="1044.35" cy="330.90" r="5.5" fill="#1da348" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.09</title></circle>
+<circle cx="1025.03" cy="354.60" r="5.5" fill="#25a346" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.0975</title></circle>
+<circle cx="1079.11" cy="344.34" r="5.5" fill="#2ea243" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.1025</title></circle>
+<circle cx="1079.85" cy="356.38" r="5.5" fill="#3fa23f" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.11</title></circle>
+<circle cx="1052.03" cy="352.08" r="5.5" fill="#3fa23f" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.115</title></circle>
+<circle cx="1067.62" cy="371.93" r="5.5" fill="#60a135" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.1225</title></circle>
+<circle cx="1060.63" cy="380.54" r="5.5" fill="#7aa12e" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.1275</title></circle>
+<circle cx="1087.24" cy="373.10" r="5.5" fill="#8ba029" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.135</title></circle>
+<circle cx="1061.36" cy="377.01" r="5.5" fill="#a4a022" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.14</title></circle>
+<circle cx="1080.01" cy="384.26" r="5.5" fill="#b59f1d" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.1475</title></circle>
+<circle cx="1068.68" cy="380.30" r="5.5" fill="#f3930d" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.172222</title></circle>
+<circle cx="629.19" cy="636.72" r="5.5" fill="#dc2626" fill-opacity=".86" stroke="#fffdf8" stroke-width="1.3"><title>training-time table mu=0.2</title></circle>
+<polygon points="896.01,254.18 887.81,270.38 904.21,270.38" fill="#2463eb" stroke="#2463eb" stroke-width="1.5" stroke-linejoin="round"><title>inference-time ID sample=0 mu=0.002 step=40</title></polygon>
+<polygon points="879.58,243.02 871.38,259.22 887.78,259.22" fill="#2463eb" stroke="#111827" stroke-width="2.0" stroke-linejoin="round"><title>inference-time OOD sample=10 mu=0.0036 step=40</title></polygon>
+<polygon points="915.74,263.04 907.54,279.24 923.94,279.24" fill="#2077b8" stroke="#111827" stroke-width="2.0" stroke-linejoin="round"><title>inference-time OOD sample=193 mu=0.0324 step=40</title></polygon>
+<polygon points="912.58,262.97 904.38,279.17 920.78,279.17" fill="#2077b8" stroke="#2077b8" stroke-width="1.5" stroke-linejoin="round"><title>inference-time ID sample=203 mu=0.034 step=40</title></polygon>
+<polygon points="953.82,298.05 945.62,314.25 962.02,314.25" fill="#1a8e7e" stroke="#111827" stroke-width="2.0" stroke-linejoin="round"><title>inference-time OOD sample=374 mu=0.0675 step=40</title></polygon>
+<polygon points="956.96,306.08 948.76,322.28 965.16,322.28" fill="#189964" stroke="#189964" stroke-width="1.5" stroke-linejoin="round"><title>inference-time ID sample=404 mu=0.075 step=40</title></polygon>
+<polygon points="990.76,344.77 982.56,360.97 998.96,360.97" fill="#60a135" stroke="#60a135" stroke-width="1.5" stroke-linejoin="round"><title>inference-time ID sample=596 mu=0.1225 step=40</title></polygon>
+<polygon points="991.70,346.02 983.50,362.22 999.90,362.22" fill="#60a135" stroke="#111827" stroke-width="2.0" stroke-linejoin="round"><title>inference-time OOD sample=606 mu=0.125 step=40</title></polygon>
+<polygon points="1003.13,356.02 994.93,372.22 1011.33,372.22" fill="#e2441f" stroke="#111827" stroke-width="2.0" stroke-linejoin="round"><title>inference-time OOD sample=788 mu=0.194444 step=40</title></polygon>
+<polygon points="990.71,354.83 982.51,371.03 998.91,371.03" fill="#dc2626" stroke="#dc2626" stroke-width="1.5" stroke-linejoin="round"><title>inference-time ID sample=798 mu=0.2 step=40</title></polygon>
+<text x="632.5" y="737" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="15" fill="#25313a">PC1 (50.4% active variance)</text>
+<text x="28" y="397.5" transform="rotate(-90 28 397.5)" text-anchor="middle" font-family="DejaVu Sans,sans-serif" font-size="15" fill="#25313a">PC2 (29.6% active variance)</text>
+<circle cx="120" cy="778" r="6" fill="#4fa23a" stroke="#fffdf8" stroke-width="1.2" />
+<text x="136" y="783" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#4b5359">training time active Z-table</text>
+<polygon points="385,769 377,785 393,785" fill="#e2441f" stroke="#111827" stroke-width="2.0" stroke-linejoin="round" />
+<text x="403" y="783" font-family="DejaVu Sans,sans-serif" font-size="12" fill="#4b5359">inference time final Z (OOD)</text>
+<rect x="910" y="772" width="210" height="14" rx="2" fill="url(#fric)" stroke="#8b857b" stroke-width=".6" />
+<text x="900" y="783" text-anchor="end" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">low mu</text>
+<text x="1130" y="783" font-family="DejaVu Sans,sans-serif" font-size="11" fill="#746f66">high mu</text>
+</svg>

@@ -1,0 +1,31 @@
+{
+  "source": "outputs/eval_real916_stick_visible_tail_20260917_v2/summary.json",
+  "cohort": "full_test45",
+  "image_and_ADE_queries": 45,
+  "FDE_valid_queries": 35,
+  "methods": {
+    "Standard": {
+      "psnr": 31.86913226149008,
+      "ssim": 0.943002809455876,
+      "lpips": 0.04715593008235329,
+      "ade_px": 5.362994976328737,
+      "fde_px": 11.716340358060213
+    },
+    "Ours": {
+      "psnr": 30.91416155356946,
+      "ssim": 0.9341767385504838,
+      "lpips": 0.04858560030255912,
+      "ade_px": 2.8236118820909346,
+      "fde_px": 5.771887516903543
+    },
+    "Ours Stage1 (reference)": {
+      "psnr": 32.176069204250986,
+      "ssim": 0.94401810971891,
+      "lpips": 0.041567000180150734,
+      "ade_px": 2.2401551412494483,
+      "fde_px": 4.8100294440895075
+    }
+  },
+  "action_metric_separate_cohort": "seed20260927_test36_post_hoc",
+  "legacy_stick_object_metric_alias": "stick_ade_px"
+}

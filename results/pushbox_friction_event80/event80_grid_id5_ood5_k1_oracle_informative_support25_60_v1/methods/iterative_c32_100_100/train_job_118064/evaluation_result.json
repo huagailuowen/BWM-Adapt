@@ -1,0 +1,8 @@
+{
+  "method": "iterative_c32_100_100",
+  "training_job_id": 118064,
+  "checkpoint_step": 6900,
+  "actual_active_environment_count": 35,
+  "source_scoreboard": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/iterative_c32_100_100/train_job_118064/step_6900/seed_20260708/metrics/complete_v1/scoreboard.csv",
+  "output_root": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/iterative_c32_100_100/train_job_118064/step_6900/seed_20260708"
+}

@@ -1,0 +1,7 @@
+{
+  "checkpoint_step": 6300,
+  "checkpoint": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/evaluation_checkpoints/event80_iterative_c32_400_400_train118065/step-6300.safetensors",
+  "context_table": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/evaluation_checkpoints/event80_iterative_c32_400_400_train118065/step-6300.context_table.json",
+  "source_checkpoint": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/method_benchmarks/pushbox_friction_event80/iterative_c32_400_400/seed_20260708_job_118065/checkpoints/step-6300.safetensors",
+  "source_context_table": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/method_benchmarks/pushbox_friction_event80/iterative_c32_400_400/seed_20260708_job_118065/checkpoints/step-6300.context_table.json"
+}

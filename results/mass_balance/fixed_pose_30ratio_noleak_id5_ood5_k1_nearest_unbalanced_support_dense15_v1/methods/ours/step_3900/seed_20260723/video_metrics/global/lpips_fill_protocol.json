@@ -1,0 +1,16 @@
+{
+  "aggregation": "mean frames, then queries per environment, then environments",
+  "batch_size": 8,
+  "cross_dataset_marker_preserved": true,
+  "device": "cuda",
+  "environment_count": 10,
+  "job_id": "119155",
+  "lpips": 0.02179223984213812,
+  "manifest_sha256": "2339b597697e8df0b3708c236051b76051e90afcb0da3f61d6bd25c9bd0bce68",
+  "network": "official lpips alex",
+  "other_metrics_preserved": true,
+  "query_count": 140,
+  "temporal_alignment": "existing manifest start/stride/count",
+  "videos_regenerated": false,
+  "view": "main only, first 224 pixels"
+}

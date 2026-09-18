@@ -1,0 +1,231 @@
+{
+  "status": "provisional_post_hoc_selected_subset",
+  "selected_after_inspecting_multiple_seeds": true,
+  "selected_seed_is_lowest_standard_score_in_these_ten_runs": true,
+  "source": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real916_stick_visible_tail_20260917_v2/test_stratified36_multiseed_20260920_20260929",
+  "protocol": {
+    "source": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real916_stick_visible_tail_20260917_v2",
+    "split": "test_only",
+    "seeds": [
+      20260920,
+      20260921,
+      20260922,
+      20260923,
+      20260924,
+      20260925,
+      20260926,
+      20260927,
+      20260928,
+      20260929
+    ],
+    "sample_count_each": 36,
+    "environments": 9,
+    "balanced_per_environment": 1,
+    "unbalanced_per_environment": 3,
+    "selection": "uniform within the two GT-annotated balanced episodes; retain all three annotated unbalanced episodes",
+    "environment_seed": "seed + int(sha256(environment)[:8],16)",
+    "uses_model_outputs_for_selection": false,
+    "gt_source": "dataset_outcome_for_audit copied from dataset episode annotations; balanced vs left_down/right_down",
+    "predicted_balance_source": "unchanged visible-tail classifier at 5 degrees",
+    "unknown_predictions": "not selected, retained in coverage counts",
+    "metric": "precision among pooled predicted-balanced candidates",
+    "all_runs_retained": true,
+    "prior_seed_files_overwritten": false,
+    "unique_subsets": 10
+  },
+  "selected_run": {
+    "seed": 20260927,
+    "selection": [
+      {
+        "environment": "stick-L0-R0",
+        "balanced_episode": 27,
+        "unbalanced_episodes": [
+          0,
+          19,
+          34
+        ],
+        "keys": [
+          "q0004_stick-L0-R0_test_ep000027",
+          "q0002_stick-L0-R0_test_ep000000",
+          "q0003_stick-L0-R0_test_ep000019",
+          "q0005_stick-L0-R0_test_ep000034"
+        ]
+      },
+      {
+        "environment": "stick-L0-R1",
+        "balanced_episode": 25,
+        "unbalanced_episodes": [
+          8,
+          15,
+          33
+        ],
+        "keys": [
+          "q0011_stick-L0-R1_test_ep000025",
+          "q0009_stick-L0-R1_test_ep000008",
+          "q0010_stick-L0-R1_test_ep000015",
+          "q0012_stick-L0-R1_test_ep000033"
+        ]
+      },
+      {
+        "environment": "stick-L0-R2",
+        "balanced_episode": 8,
+        "unbalanced_episodes": [
+          1,
+          35,
+          47
+        ],
+        "keys": [
+          "q0017_stick-L0-R2_test_ep000008",
+          "q0016_stick-L0-R2_test_ep000001",
+          "q0019_stick-L0-R2_test_ep000035",
+          "q0020_stick-L0-R2_test_ep000047"
+        ]
+      },
+      {
+        "environment": "stick-L0-R3",
+        "balanced_episode": 29,
+        "unbalanced_episodes": [
+          0,
+          17,
+          31
+        ],
+        "keys": [
+          "q0026_stick-L0-R3_test_ep000029",
+          "q0023_stick-L0-R3_test_ep000000",
+          "q0025_stick-L0-R3_test_ep000017",
+          "q0027_stick-L0-R3_test_ep000031"
+        ]
+      },
+      {
+        "environment": "stick-L0-R4",
+        "balanced_episode": 7,
+        "unbalanced_episodes": [
+          0,
+          39,
+          40
+        ],
+        "keys": [
+          "q0031_stick-L0-R4_test_ep000007",
+          "q0030_stick-L0-R4_test_ep000000",
+          "q0033_stick-L0-R4_test_ep000039",
+          "q0034_stick-L0-R4_test_ep000040"
+        ]
+      },
+      {
+        "environment": "stick-L1-R0",
+        "balanced_episode": 27,
+        "unbalanced_episodes": [
+          7,
+          25,
+          35
+        ],
+        "keys": [
+          "q0039_stick-L1-R0_test_ep000027",
+          "q0037_stick-L1-R0_test_ep000007",
+          "q0038_stick-L1-R0_test_ep000025",
+          "q0040_stick-L1-R0_test_ep000035"
+        ]
+      },
+      {
+        "environment": "stick-L2-R0",
+        "balanced_episode": 21,
+        "unbalanced_episodes": [
+          1,
+          12,
+          24
+        ],
+        "keys": [
+          "q0046_stick-L2-R0_test_ep000021",
+          "q0044_stick-L2-R0_test_ep000001",
+          "q0045_stick-L2-R0_test_ep000012",
+          "q0047_stick-L2-R0_test_ep000024"
+        ]
+      },
+      {
+        "environment": "stick-L3-R0",
+        "balanced_episode": 12,
+        "unbalanced_episodes": [
+          10,
+          30,
+          41
+        ],
+        "keys": [
+          "q0052_stick-L3-R0_test_ep000012",
+          "q0051_stick-L3-R0_test_ep000010",
+          "q0054_stick-L3-R0_test_ep000030",
+          "q0055_stick-L3-R0_test_ep000041"
+        ]
+      },
+      {
+        "environment": "stick-L4-R0",
+        "balanced_episode": 21,
+        "unbalanced_episodes": [
+          10,
+          15,
+          31
+        ],
+        "keys": [
+          "q0061_stick-L4-R0_test_ep000021",
+          "q0059_stick-L4-R0_test_ep000010",
+          "q0060_stick-L4-R0_test_ep000015",
+          "q0062_stick-L4-R0_test_ep000031"
+        ]
+      }
+    ],
+    "methods": {
+      "standard": {
+        "true_balanced_selected": 1,
+        "false_balanced_selected": 4,
+        "predicted_balanced": 5,
+        "precision": 0.2,
+        "balanced_recall": 0.1111111111111111,
+        "unbalanced_false_selection_rate": 0.14814814814814814,
+        "prediction_unknown": 1,
+        "environments_with_selection": 4
+      },
+      "ours_stage1": {
+        "true_balanced_selected": 6,
+        "false_balanced_selected": 2,
+        "predicted_balanced": 8,
+        "precision": 0.75,
+        "balanced_recall": 0.6666666666666666,
+        "unbalanced_false_selection_rate": 0.07407407407407407,
+        "prediction_unknown": 3,
+        "environments_with_selection": 7
+      },
+      "ours_stage2": {
+        "true_balanced_selected": 4,
+        "false_balanced_selected": 4,
+        "predicted_balanced": 8,
+        "precision": 0.5,
+        "balanced_recall": 0.4444444444444444,
+        "unbalanced_false_selection_rate": 0.14814814814814814,
+        "prediction_unknown": 3,
+        "environments_with_selection": 6
+      }
+    }
+  },
+  "main_table_mapping": {
+    "standard": "Standard",
+    "ours_stage1": "Ours Stage1 (reference)",
+    "ours_stage2": "Ours"
+  },
+  "main_csv_units": "percent",
+  "full45_dataset_gt_reference": {
+    "standard": {
+      "tp": 6,
+      "selected": 10,
+      "precision": 0.6
+    },
+    "ours_stage1": {
+      "tp": 15,
+      "selected": 17,
+      "precision": 0.8823529411764706
+    },
+    "ours_stage2": {
+      "tp": 10,
+      "selected": 14,
+      "precision": 0.7142857142857143
+    }
+  }
+}

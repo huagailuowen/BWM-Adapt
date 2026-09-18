@@ -1,9 +1,28 @@
 {
-  "generated_at": "2026-09-15T02:57:08.637677+00:00",
+  "generated_at": "2026-09-16T17:39:45.175312+00:00",
   "comparison": "Ours versus standard pooled world model",
   "global_metrics": "PSNR/SSIM/LPIPS are averaged over the available ID/OOD environment summaries.",
   "object_metrics": "Mean/final object-state error: centroid ADE/FDE in pixels for moving objects; yellow-lamp score MAE/final absolute error for LightSwitch.",
-  "action_metric": "Task success on complete candidate sets whose targets are reachable in GT.",
+  "action_metric": "Task-specific action score. Mass Friction uses first-crossing +/-1 action-level match at three fixed target lines; other tasks retain GT-reachable task success.",
+  "mass_friction_action_protocol": {
+    "status": "post_hoc_revision_user_selected",
+    "thresholds": [
+      0.62,
+      0.75,
+      0.92
+    ],
+    "selector": "raw_first_crossing",
+    "metric": "within_one_level_rate",
+    "score": "1 for absolute action-rank error <= 1; otherwise 0. No predicted crossing scores 0.",
+    "aggregation": "Equal reachable-environment weight within each threshold, then equal threshold weight.",
+    "is_strict_task_success": false,
+    "previous_strict_success": {
+      "standard_pooled_wm": 0.2916666667,
+      "ours": 0.5416666667
+    },
+    "config": "configs/evaluation/action_tasks/mass_friction_first_crossing_within_one_v1.yaml",
+    "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/action_first_crossing_v1/summary.json"
+  },
   "query_protocol": "Each pooled baseline reuses the exact Ours transfer plan; pooled WM ignores support by design.",
   "superseded_for_leakage": [
     "Mass collision: job 90515 / evaluation 90735",

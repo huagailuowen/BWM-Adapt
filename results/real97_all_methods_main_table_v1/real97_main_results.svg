@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="668" viewBox="0 0 2560 668">
+<title>Real-world prediction: four-task results</title>
+<desc>Soft: shared six environments, twelve test queries. Stick image/object: full 45 test queries, common GT/Standard/Ours Stage2/LoRA tracking mask, 33 valid FDE queries; action: post-hoc seed20260927 subset of 36 queries. Ours denotes Stage2; Stage1 is not displayed. Missing values are not zero.</desc>
+<rect width="2560" height="668" fill="#FAFBF9"/>
+<line x1="30" y1="22" x2="2500" y2="22" stroke="#182D35" stroke-width="2"/>
+<text x="46" y="143" text-anchor="start" font-family="DejaVu Sans, sans-serif" font-size="21" font-weight="700" fill="#687A80">METHOD</text>
+<text x="628.0" y="63" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#182D35">DOOR CLOSE</text>
+<text x="628.0" y="96" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="400" fill="#687A80">100 test queries; action: 9 environments</text>
+<text x="412.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">LPIPS ↓</text>
+<text x="556.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">ADE ↓</text>
+<text x="700.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">FDE ↓</text>
+<text x="844.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">Action ↑</text>
+<line x1="352" y1="165" x2="904" y2="165" stroke="#D5DEDA" stroke-width="2"/>
+<text x="1204.0" y="63" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#182D35">BALL FRICTION</text>
+<text x="1204.0" y="96" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="400" fill="#687A80">80 test queries / 8 environments</text>
+<text x="988.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">LPIPS ↓</text>
+<text x="1132.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">ADE ↓</text>
+<text x="1276.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">FDE ↓</text>
+<text x="1420.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">Action ↑</text>
+<line x1="928" y1="165" x2="1480" y2="165" stroke="#D5DEDA" stroke-width="2"/>
+<text x="1780.0" y="63" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#182D35">STICK BALANCE</text>
+<text x="1780.0" y="96" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="400" fill="#687A80">Image/object: 45 queries; action: 36*</text>
+<text x="1564.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">LPIPS ↓</text>
+<text x="1708.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">ADE ↓</text>
+<text x="1852.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">FDE ↓</text>
+<text x="1996.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">Action ↑</text>
+<line x1="1504" y1="165" x2="2056" y2="165" stroke="#D5DEDA" stroke-width="2"/>
+<text x="2284.0" y="63" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#182D35">SOFT PULL</text>
+<text x="2284.0" y="96" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="16" font-weight="400" fill="#687A80">Shared 6 environments / 12 test queries</text>
+<text x="2140.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">LPIPS ↓</text>
+<text x="2284.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">ADE ↓</text>
+<text x="2428.0" y="143" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="700" fill="#687A80">FDE ↓</text>
+<line x1="2080" y1="165" x2="2488" y2="165" stroke="#D5DEDA" stroke-width="2"/>
+<line x1="30" y1="165" x2="325" y2="165" stroke="#D5DEDA" stroke-width="2"/>
+<text x="46" y="223" text-anchor="start" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#182D35">Standard</text>
+<text x="412.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.05700</text>
+<text x="556.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">21.82</text>
+<text x="700.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">41.22</text>
+<text x="844.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">38.89%</text>
+<text x="988.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.03153</text>
+<text x="1132.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">28.36</text>
+<text x="1276.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">64.42</text>
+<text x="1420.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">37.50%</text>
+<text x="1564.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.04716</text>
+<text x="1708.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">5.29</text>
+<text x="1852.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">11.40</text>
+<text x="1996.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">20.00%</text>
+<text x="2140.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.07958</text>
+<text x="2284.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">32.78</text>
+<text x="2428.0" y="223" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">39.41</text>
+<line x1="42" y1="250" x2="2488" y2="250" stroke="#E7ECE9" stroke-width="1"/>
+<text x="46" y="295" text-anchor="start" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#182D35">LoRA TTA</text>
+<text x="412.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.04946</text>
+<text x="556.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">17.35</text>
+<text x="700.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">32.14</text>
+<text x="844.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">44.44%</text>
+<text x="988.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.03697</text>
+<text x="1132.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">36.82</text>
+<text x="1276.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">70.02</text>
+<text x="1420.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">56.25%</text>
+<text x="1564.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">0.04111</text>
+<text x="1708.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">3.63</text>
+<text x="1852.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">7.24</text>
+<text x="1996.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">40.00%</text>
+<text x="2140.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#A0ACA9">–</text>
+<text x="2284.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#A0ACA9">–</text>
+<text x="2428.0" y="295" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#A0ACA9">–</text>
+<line x1="42" y1="322" x2="2488" y2="322" stroke="#E7ECE9" stroke-width="1"/>
+<text x="46" y="367" text-anchor="start" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#182D35">DINOv2</text>
+<text x="412.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.05490</text>
+<text x="556.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">21.12</text>
+<text x="700.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">38.90</text>
+<text x="844.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">44.44%</text>
+<text x="988.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">0.02942</text>
+<text x="1132.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">25.52</text>
+<text x="1276.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">54.33</text>
+<text x="1420.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">37.50%</text>
+<text x="1564.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#A0ACA9">–</text>
+<text x="1708.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#A0ACA9">–</text>
+<text x="1852.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#A0ACA9">–</text>
+<text x="1996.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#A0ACA9">–</text>
+<text x="2140.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.07087</text>
+<text x="2284.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">21.19</text>
+<text x="2428.0" y="367" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">29.17</text>
+<line x1="42" y1="394" x2="2488" y2="394" stroke="#E7ECE9" stroke-width="1"/>
+<text x="46" y="439" text-anchor="start" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#182D35">TTT</text>
+<text x="412.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.05164</text>
+<text x="556.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">19.87</text>
+<text x="700.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">35.93</text>
+<text x="844.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">38.89%</text>
+<text x="988.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.03238</text>
+<text x="1132.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">29.66</text>
+<text x="1276.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">67.32</text>
+<text x="1420.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">50.00%</text>
+<text x="1564.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#A0ACA9">–</text>
+<text x="1708.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#A0ACA9">–</text>
+<text x="1852.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#A0ACA9">–</text>
+<text x="1996.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="400" fill="#A0ACA9">–</text>
+<text x="2140.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">0.06439</text>
+<text x="2284.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">18.23</text>
+<text x="2428.0" y="439" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">29.69</text>
+<line x1="42" y1="466" x2="2488" y2="466" stroke="#E7ECE9" stroke-width="1"/>
+<rect x="30" y="468" width="2470" height="66" rx="7" fill="#E8F3EF"/>
+<rect x="30" y="468" width="5" height="66" rx="0" fill="#087D78"/>
+<text x="46" y="511" text-anchor="start" font-family="DejaVu Sans, sans-serif" font-size="27" font-weight="700" fill="#087D78">Ours</text>
+<text x="412.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">0.04760</text>
+<text x="556.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">14.07</text>
+<text x="700.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">23.08</text>
+<text x="844.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">77.78%</text>
+<text x="988.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.03282</text>
+<text x="1132.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">21.74</text>
+<text x="1276.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">40.55</text>
+<text x="1420.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">56.25%</text>
+<text x="1564.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.04859</text>
+<text x="1708.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">2.78</text>
+<text x="1852.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">5.66</text>
+<text x="1996.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">50.00%</text>
+<text x="2140.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="400" fill="#182D35">0.07555</text>
+<text x="2284.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">18.10</text>
+<text x="2428.0" y="511" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" font-weight="700" fill="#087D78">22.38</text>
+<line x1="30" y1="544" x2="2500" y2="544" stroke="#182D35" stroke-width="2"/>
+<text x="30" y="576" text-anchor="start" font-family="DejaVu Sans, sans-serif" font-size="18" font-weight="400" fill="#687A80">* Stick action: post-hoc selected seed 20260927, 1 balanced + 3 unbalanced per environment; provisional.</text>
+<text x="30" y="604" text-anchor="start" font-family="DejaVu Sans, sans-serif" font-size="18" font-weight="400" fill="#687A80">ADE/FDE: pixels. Door/Ball action: pair overlap. Stick action: precision. Ours = Stage2. Missing = not available.</text>
+</svg>

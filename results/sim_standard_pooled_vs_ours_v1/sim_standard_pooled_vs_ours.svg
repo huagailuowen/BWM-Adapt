@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="2600" height="1466" viewBox="0 0 2600 1466">
 <rect width="100%" height="100%" fill="white"/>
 <text x="60" y="68" font-family="Georgia,serif" font-size="42" font-weight="700" fill="#17324d">Simulation Benchmarks: Ours vs. Standard Pooled World Model</text>
-<text x="60" y="120" font-family="Georgia,serif" font-size="23" fill="#52606d">Shared frozen support/query protocols; the pooled baseline receives no test-time adaptation.</text>
+<text x="60" y="120" font-family="Georgia,serif" font-size="23" fill="#52606d">Mass Friction action: +/-1 level at three fixed target lines (post-hoc revision). Other tasks: original success.</text>
 <rect x="60" y="165" width="520" height="92" fill="#17324d" stroke="#17324d"/>
 <text x="320.0" y="218.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="white">Task</text>
 <rect x="580" y="165" width="330" height="92" fill="#17324d" stroke="#17324d"/>
@@ -19,7 +19,7 @@
 <rect x="1770" y="165" width="220" height="92" fill="#17324d" stroke="#17324d"/>
 <text x="1880.0" y="218.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="white">Object final error ↓</text>
 <rect x="1990" y="165" width="220" height="92" fill="#17324d" stroke="#17324d"/>
-<text x="2100.0" y="218.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="white">Action success ↑</text>
+<text x="2100.0" y="218.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="white">Action score ↑</text>
 <rect x="2210" y="165" width="330" height="92" fill="#17324d" stroke="#17324d"/>
 <text x="2375.0" y="218.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="white">Task-specific metric</text>
 <rect x="60" y="257" width="520" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
@@ -279,7 +279,7 @@
 <rect x="1770" y="1169" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="1880.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">29.25 px</text>
 <rect x="1990" y="1169" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="2100.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">29.2%</text>
+<text x="2100.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">35.0%</text>
 <rect x="2210" y="1169" width="330" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="2375.0" y="1214.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="400" fill="#27313a">29.05</text>
 <rect x="60" y="1245" width="520" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
@@ -299,7 +299,7 @@
 <rect x="1770" y="1245" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="1880.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">13.72 px</text>
 <rect x="1990" y="1245" width="220" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
-<text x="2100.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">54.2%</text>
+<text x="2100.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">69.7%</text>
 <rect x="2210" y="1245" width="330" height="76" fill="#f6f8fa" stroke="#c8d2dc"/>
 <text x="2375.0" y="1290.0" text-anchor="middle" font-family="Georgia,serif" font-size="20" font-weight="700" fill="#27313a">13.57</text>
 <text x="60" y="1364" font-family="Georgia,serif" font-size="17" fill="#52606d">Task-specific metric: endpoint error (Event80/multi-background), final displacement error (gravity/collision/mass×friction), bar tilt MAE (balance), and yellow-light score MAE.</text>

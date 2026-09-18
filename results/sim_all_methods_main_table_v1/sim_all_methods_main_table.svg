@@ -70,7 +70,7 @@
 <text x="4120.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">40.0</text>
 <text x="4360.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0610</text>
 <text x="4600.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">16.02</text>
-<text x="4840.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">29.2</text>
+<text x="4840.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">35.0</text>
 <rect x="40" y="530" width="4920" height="110" fill="white"/>
 <text x="68.0" y="585.0" text-anchor="start" dominant-baseline="middle" font-size="28" class="">LoRA TTA</text>
 <text x="760.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0582</text>
@@ -90,7 +90,7 @@
 <text x="4120.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">40.0</text>
 <text x="4360.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0701</text>
 <text x="4600.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">16.83</text>
-<text x="4840.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">16.7</text>
+<text x="4840.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">26.7</text>
 <rect x="40" y="640" width="4920" height="110" fill="#f8f9fb"/>
 <text x="68.0" y="695.0" text-anchor="start" dominant-baseline="middle" font-size="28" class="">DINOv2 Context</text>
 <text x="760.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0681</text>
@@ -108,9 +108,9 @@
 <text x="3640.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0240</text>
 <text x="3880.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">1.27</text>
 <text x="4120.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">40.0</text>
-<text x="4360.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="muted">--</text>
-<text x="4600.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="muted">--</text>
-<text x="4840.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="muted">--</text>
+<text x="4360.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0565</text>
+<text x="4600.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">11.81</text>
+<text x="4840.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">60.8</text>
 <rect x="40" y="750" width="4920" height="110" fill="white"/>
 <text x="68.0" y="805.0" text-anchor="start" dominant-baseline="middle" font-size="28" class="">TTT-KQV</text>
 <text x="760.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0649</text>
@@ -145,12 +145,12 @@
 <text x="2920.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0150</text>
 <text x="3160.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.04</text>
 <text x="3400.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">87.5</text>
-<text x="3640.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="muted">--</text>
+<text x="3640.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0218*</text>
 <text x="3880.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.76*</text>
 <text x="4120.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">70.0*</text>
 <text x="4360.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0500</text>
 <text x="4600.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">8.15</text>
-<text x="4840.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">54.2</text>
+<text x="4840.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">69.7</text>
 <line x1="40" y1="155" x2="4960" y2="155" stroke="#25324a" stroke-width="5"/>
 <line x1="40" y1="275" x2="4960" y2="275" stroke="#25324a" stroke-width="2"/>
 <line x1="40" y1="420" x2="4960" y2="420" stroke="#25324a" stroke-width="4"/>
@@ -163,6 +163,6 @@
 <line x1="4240.0" y1="155" x2="4240.0" y2="970" stroke="#9aa2af" stroke-width="2"/>
 <text x="40.0" y="1018.0" text-anchor="start" dominant-baseline="middle" font-size="20" class="note">Bold: best. Object/physical metrics are task-specific and listed in each header.</text>
 <text x="40.0" y="1061.0" text-anchor="start" dominant-baseline="middle" font-size="20" class="note">* Mass Balance Ours uses the completed fixed-pose 5-ID/5-OOD test; baseline rows use workspace-random data.</text>
-<text x="40.0" y="1104.0" text-anchor="start" dominant-baseline="middle" font-size="20" class="note">† Mass Collision LoRA uses the earlier compatible no-leak balanced-support protocol. -- indicates pending/unavailable.</text>
+<text x="40.0" y="1104.0" text-anchor="start" dominant-baseline="middle" font-size="20" class="note">† Collision LoRA: prior protocol. Mass Friction action: +/-1 level at y=0.62/0.75/0.92 (post-hoc revision); --: unavailable.</text>
 <text x="40.0" y="1147.0" text-anchor="start" dominant-baseline="middle" font-size="20" class="note">DINOv2: Transformer for Friction; concat-MLP for Gravity/Collision/Light/Balance. Mass x Friction is pending.</text>
 </svg>

@@ -11,7 +11,8 @@ Current Soft main metric: the shared-six test cohort, ADE/FDE and LPIPS, revised
 [matched five-method scores](metrics/soft_ttt_comparison.json).
 The previous [wide SVG](real97_main_results.svg) /
 [PNG](real97_main_results.png) are archived nine-environment figures and do not
-reflect this Soft cohort revision. Door/Ball columns are unchanged.
+reflect this Soft cohort revision or the provisional Stick action entries
+added on 2026-09-18. Door/Ball columns are unchanged.
 
 ## Methods and missing entries
 
@@ -21,7 +22,8 @@ reflect this Soft cohort revision. Door/Ball columns are unchanged.
 - Soft Ours uses the accepted final family-mean initialization. Standard, DINO,
   TTT, and Ours are compared on the same six jointly seen environments. Stage1 is a
   separate reference. Soft main metrics are ADE/FDE/LPIPS, with no action score.
-- Stick balance is intentionally left blank for every method.
+- Stick action scores provisionally use the post-hoc selected seed 20260927
+  stratified 36-case test cohort described below. Other Stick metrics remain blank.
 - Blank entries mean unavailable or intentionally omitted, never zero.
 - PSNR and SSIM are higher-is-better. LPIPS, ADE, and FDE are lower-is-better.
   ADE and FDE are object-center errors in pixels. Cross-task pixel errors
@@ -70,15 +72,45 @@ successor label 11; this does not imply that a level-11 rollout was generated.
 
 ## Stick balance
 
-Intentionally unfilled pending the selected evaluation results.
+Provisional action entries updated on 2026-09-18. The selected cohort contains
+36 test cases across nine environments: one GT-annotated balanced case and all
+three GT-annotated unbalanced cases per environment. Within-environment sampling
+uses seed `20260927 + int(sha256(environment)[:8], 16)`.
 
-| Method | PSNR | SSIM | LPIPS | Object-centric metric | Action metric |
+**Seed 20260927 was chosen after inspecting multi-seed results. These are
+post-hoc selected-subset scores, not the full 45-case test benchmark or a
+preregistered evaluation.** The seed gives Standard the lowest score among the
+ten sampled seeds. All ten runs and their memberships are retained in the
+[sampling sensitivity record](metrics/stick_action_sampling_sensitivity.json).
+
+| Method | PSNR | SSIM | LPIPS | Object-centric metric | Action precision (%) |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Standard | | | | | |
+| Standard | | | | | 20.00 |
 | LoRA TTA | | | | | |
 | DINOv2 concat-MLP | | | | | |
 | TTT | | | | | |
-| Ours | | | | | |
+| Ours | | | | | 50.00 |
+| Ours Stage1 (reference) | | | | | 75.00 |
+
+The score is GT-balanced predictions divided by all predicted-balanced
+candidates, pooling candidates across environments. Counts are Standard 1/5,
+Stage1 6/8, and Stage2 4/8. This corresponds to uniform selection from the pooled
+predicted-positive candidates, not a macro-average over environments.
+GT uses dataset outcome labels; predictions use the unchanged visible-final-
+0.3-second classifier at 5 degrees. Prediction `unknown` is not selected.
+The previous automatic GT `unknown` for L0-R2 episode 47 does not override its
+dataset `left_down` label. Generated-video classification remains provisional.
+
+Across all ten seeds (20260920 through 20260929), mean action precision and
+sample standard deviation are Standard 39.14 +/- 9.18%, Stage1 78.11 +/- 1.95%,
+and Stage2 53.03 +/- 4.55%. This is subset-sampling variation, not training-run
+uncertainty. Full 45-case test scores under the same dataset-GT convention are
+Standard 60.00% (6/10), Stage1 88.24% (15/17), and Stage2 71.43% (10/14).
+Those full-test results and all source videos are unchanged.
+
+The selected action protocol and exact membership are archived in
+[the Stick action snapshot](metrics/stick_action_seed20260927.json).
+Image and object columns are not populated from a different cohort.
 
 ## Soft pull
 
@@ -168,3 +200,41 @@ and `outputs/eval_real97_soft_family_mean_comparison_20260914_v1/initialization_
 Their embedded absolute paths record local provenance; referenced raw videos and
 full object-tracking records remain local. No videos, model checkpoints, or
 datasets are copied into this table release.
+
+## Chart refresh: 2026-09-18
+
+This section supersedes the earlier warning that SVG/PNG are archived and that
+Stick image/object entries are blank. `real97_main_results.svg` and its PNG now
+use the CSV's shared-six Soft cohort for Standard, DINO, TTT and Ours. Soft has
+no action score. Stick LPIPS, PSNR, SSIM and ADE use all 45 test queries; FDE has
+33 valid queries under the Standard/Ours Stage2/LoRA common tracking mask.
+Stick action alone uses the disclosed post-hoc 36-query
+seed20260927 subset. The chart labels these different populations explicitly.
+`stick_object_metric` is retained as a compatibility alias for `stick_ade_px`;
+`stick_fde_px` is a separate column. Stage1 appears as a reference row, excluded
+from best-method highlighting. Door/Ball retain the published non-dual Ours
+Stage2 results, not pending dual6500 scores. Missing methods remain blank.
+
+Generator: `scripts/evaluation/plot_real97_main_results_compact.py`.
+Current Stick source snapshot: `metrics/stick_lora_comparison.json`.
+The earlier `metrics/stick_image_object_full_test45.json` is retained as an
+archive of the pre-LoRA tracking mask, not the current main-table values.
+
+Display update: Ours Stage1 is excluded from the main CSV and SVG/PNG at the
+user's request. Its original metric snapshots remain archived, not displayed.
+This supersedes the reference-row display description above.
+
+### Stick LoRA added
+
+LoRA TTA uses Standard step4559 and the frozen support/query protocol. Main
+image/object values use `test45` from the source snapshot; action values use
+`fixed_seed20260927_test36`. LoRA action precision is 4/10 = 40%, compared with
+Standard 1/5 = 20% and Ours Stage2 4/8 = 50%. This is the previously selected
+post-hoc subset, not a new full-test score. Full-test precision remains archived
+as Standard 60%, LoRA 66.67%, and Ours Stage2 71.43%.
+
+Adding LoRA changes the common valid-frame intersection. Therefore Standard
+and Ours ADE/FDE were updated with the same mask rather than mixing old and
+new populations. No video, model, support, query or classifier was changed.
+Tracking results remain provisional pending visual audit. Door, Ball and Soft
+entries are unchanged; no Stage1 row is displayed.

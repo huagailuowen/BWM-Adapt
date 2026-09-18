@@ -23,9 +23,9 @@ mass_balance,Mass Balance,standard,Standard Pooled WM,32.9205344473,0.9604870589
 mass_balance,Mass Balance,lora,LoRA TTA,25.0171887398,0.8865342236,0.0628337131,Bar Tilt MAE,deg,1.9245402889,0.4
 mass_balance,Mass Balance,dino,DINOv2 Context,33.2519247464,0.9620577002,0.023964699,Bar Tilt MAE,deg,1.2733094998,0.4
 mass_balance,Mass Balance,ttt_kqv,TTT-KQV,32.1670852252,0.9568346087,0.030535396,Bar Tilt MAE,deg,2.3578835273,0.3
-mass_balance,Mass Balance,ours,Ours,33.5094529833,0.9639204866,,Bar Tilt MAE,deg,0.7616631395,0.7
-mass_friction,Mass x Friction,standard,Standard Pooled WM,31.0774675369,0.9648366005,0.0609880909,Centroid ADE,px,16.0218932,0.2916666667
-mass_friction,Mass x Friction,lora,LoRA TTA,29.8653152704,0.9610607465,0.070110374,Centroid ADE,px,16.82824858,0.1666666667
-mass_friction,Mass x Friction,dino,DINOv2 Context,,,,Centroid ADE,px,,
+mass_balance,Mass Balance,ours,Ours,33.5094529833,0.9639204866,0.02179223984213812,Bar Tilt MAE,deg,0.7616631395,0.7
+mass_friction,Mass x Friction,standard,Standard Pooled WM,31.0774675369,0.9648366005,0.0609880909,Centroid ADE,px,16.0218932,0.35000000000000003
+mass_friction,Mass x Friction,lora,LoRA TTA,29.8653152704,0.9610607465,0.070110374,Centroid ADE,px,16.82824858,0.26666666666666666
+mass_friction,Mass x Friction,dino,DINOv2 Context,31.36671099662781,0.9664255161998703,0.05650115123717114,Centroid ADE,px,11.811561397574742,0.6083333333333333
 mass_friction,Mass x Friction,ttt_kqv,TTT-KQV,,,,Centroid ADE,px,,
-mass_friction,Mass x Friction,ours,Ours,30.6733222961,0.9630712652,0.0499914565,Centroid ADE,px,8.14806081,0.5416666667
+mass_friction,Mass x Friction,ours,Ours,30.6733222961,0.9630712652,0.0499914565,Centroid ADE,px,8.14806081,0.6972222222222223
