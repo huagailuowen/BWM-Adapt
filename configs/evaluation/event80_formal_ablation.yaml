@@ -4,7 +4,7 @@ output_dir: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_inf
 source_scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv
 source_protocol: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/protocol.json
 support_query_manifest: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json
-selection_note: User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10; include Ours as the reference.
+selection_note: User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10, then added the 100/100 and 400/400 iteration-frequency ablations; include Ours as the reference.
 notes:
   - Existing reported metrics are reused; no video generation or metric recomputation.
   - Blank metric cells mean unavailable or pending, never zero.
@@ -12,6 +12,9 @@ notes:
   - C4 and direct-token jobs use two GPUs, 4 environments x 4 actions per rank, the intended original active35 pool, and the 1000-step alternating curriculum.
   - The evaluated C4 checkpoint is step6300 with 30 actually active environments; direct-token step7700 and reference C32 step7272 use 35. C4 is not a strict dimension-only comparison at matched active-environment count.
   - The 1000-step pure-joint variant, C1, C128, new-C200/joint800, shuffled groups, and per-trajectory codes are not selected for this formal table.
+  - The iteration-frequency runs retain initial model-only 300 steps and new-code-only 200 steps per 1000-step wave; the remaining 800 steps alternate all-active code and model updates in 100/100 or 400/400 blocks.
+  - Both iteration-frequency runs used two GPUs with 4 environments x 4 chunks per rank and a 24-hour training limit. Evaluation uses the latest complete model/code-table pair, not a later context-only snapshot.
+  - The 100/100 checkpoint is step6900 with 35 active environments; the 400/400 checkpoint is step6300 with 30. The latter is not a matched-active-count comparison with the reference; the frozen evaluation support/query identities are unchanged.
 rows:
   - method: ours
     label: Ours (random C32)
@@ -69,3 +72,19 @@ rows:
     checkpoint_step: 7000
     status: scored
     setting: Historical small-range random-initialization C32 run; retain the recorded training configuration.
+  - method: iterative_c32_100_100
+    label: Alternating Z/model (100/100)
+    candidate: iteration_frequency_100_100
+    source_job: 118064
+    checkpoint_step: 6900
+    status: scored
+    source_scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/iterative_c32_100_100/train_job_118064/step_6900/seed_20260708/metrics/complete_v1/scoreboard.csv
+    setting: C32; initial model300; each wave new-C200 then (all-C100/model100) x4; two GPUs with 4env x4chunks per rank; 24-hour limit; 35 actually active environments at step6900.
+  - method: iterative_c32_400_400
+    label: Alternating Z/model (400/400)
+    candidate: iteration_frequency_400_400
+    source_job: 118065
+    checkpoint_step: 6300
+    status: scored
+    source_scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/iterative_c32_400_400/train_job_118065/step_6300/seed_20260708/metrics/complete_v1/scoreboard.csv
+    setting: C32; initial model300; each wave new-C200 then all-C400/model400; two GPUs with 4env x4chunks per rank; 24-hour limit; 30 actually active environments at step6300 of the intended 35.

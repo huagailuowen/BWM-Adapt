@@ -72,7 +72,7 @@ tasks:
       lora: {psnr: 25.0171887398, ssim: 0.8865342236, lpips: 0.0628337131, object: 1.9245402889, action_success: 0.40}
       dino: {psnr: 33.2519247464, ssim: 0.9620577002, lpips: 0.0239646990, object: 1.2733094998, action_success: 0.40}
       ttt_kqv: {psnr: 32.1670852252, ssim: 0.9568346087, lpips: 0.0305353960, object: 2.3578835273, action_success: 0.30}
-      ours: {psnr: 33.5094529833, ssim: 0.9639204866, lpips: null, object: 0.7616631395, action_success: 0.70, marker: cross_dataset}
+      ours: {psnr: 33.5094529833, ssim: 0.9639204866, lpips: 0.02179223984213812, object: 0.7616631395, action_success: 0.70, marker: cross_dataset}
     source:
       baselines: results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1
       ours: results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1
@@ -89,7 +89,7 @@ tasks:
     label: Mass x Friction
     object_metric: Centroid ADE
     object_unit: px
-    dino_variant: pending
+    dino_variant: completed_recorded_run
     values:
       standard: {psnr: 31.0774675369, ssim: 0.9648366005, lpips: 0.0609880909, object: 16.0218932, action_success: 0.35000000000000003}
       lora: {psnr: 29.8653152704, ssim: 0.9610607465, lpips: 0.0701103740, object: 16.82824858, action_success: 0.26666666666666666}
@@ -99,7 +99,7 @@ tasks:
     source: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1
 notes:
   - Lower is better for LPIPS and the task-specific object/physical metric; higher is better for Action Success.
-  - DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Gravity, Mass Collision, Light Switch, and Mass Balance; Mass x Friction remains pending.
+  - DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Gravity, Mass Collision, Light Switch, and Mass Balance; the completed Mass x Friction DINOv2 evaluation is included.
   - Mass Balance Ours values marked with an asterisk use the completed fixed-pose 5-ID/5-OOD nearest-unbalanced-support test, while baseline rows use workspace-random data; available values participate in column ranking.
   - Mass Collision LoRA values marked with a dagger come from the earlier compatible no-leak balanced-support run rather than the high-mass-2x result root.
   - A double dash denotes an unfinished or unavailable evaluation, not zero performance.

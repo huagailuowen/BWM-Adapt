@@ -266,6 +266,81 @@ def render(config: dict, output_dir: Path) -> None:
     image.save(output_dir / "sim_all_methods_main_table.png")
 
 
+def render_detailed(config: dict, output_dir: Path) -> None:
+    """Detailed companion, sourced from the same values as the compact table."""
+    widths = [310, 420, 180, 180, 180, 370, 240]
+    left, top, header_height, row_height = 60, 170, 75, 64
+    tasks, methods = config['tasks'], config['methods']
+    count = len(tasks) * len(methods)
+    bottom = top + header_height + count * row_height
+    notes = [
+        'Object metric: centroid ADE (px); Light Switch: lamp MAE; Mass Balance: bar-tilt MAE (deg).',
+        'Action Score uses each task\'s recorded protocol; Mass x Friction uses first-crossing +/-1 level match.',
+        '* Mass Balance Ours: fixed-pose; baselines: workspace-random. Not a matched-dataset comparison.',
+        'Dagger: Mass Collision LoRA uses the earlier recorded protocol. Missing results are --, not zero.',
+        'Historical runs and their recorded settings are retained. See protocol.json for provenance and caveats.',
+    ]
+    width, height = sum(widths) + 2 * left, bottom + 235
+    image = Image.new('RGB', (width, height), 'white')
+    draw = ImageDraw.Draw(image)
+    svg = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+           '<rect width="100%" height="100%" fill="white"/>',
+           '<g fill="#111" font-family="DejaVu Serif,serif">']
+    def text(x, y, value, size=25, bold=False, center=False):
+        draw.text((x, y), value, font=load_font(size, bold), fill='#111', anchor='mm' if center else 'lm')
+        anchor = 'middle' if center else 'start'
+        weight = 700 if bold else 400
+        svg.append(f'<text x="{x}" y="{y}" text-anchor="{anchor}" dominant-baseline="middle" font-size="{size}" font-weight="{weight}">{html.escape(value)}</text>')
+    def line(y, weight):
+        draw.line((left, y, width - left, y), fill='#111', width=weight)
+        svg.append(f'<line x1="{left}" x2="{width-left}" y1="{y}" y2="{y}" stroke="#111" stroke-width="{weight}"/>')
+    headers = ['Task', 'Method', 'PSNR (up)', 'SSIM (up)', 'LPIPS (down)', 'Object metric (down)', 'Action Score (up)']
+    text(width / 2, 60, 'Simulation benchmark: detailed metrics', 40, True, True)
+    text(width / 2, 115, 'Recorded formal evaluations; task-specific protocols and caveats retained', 25, center=True)
+    line(top, 4)
+    x = left
+    for label, cell_width in zip(headers, widths):
+        text(x + 12, top + header_height / 2, label, 23, True)
+        x += cell_width
+    line(top + header_height, 2)
+    markdown = ['# Simulation benchmark: detailed metrics', '',
+                '| ' + ' | '.join(headers) + ' |', '| ' + ' | '.join(['---'] * len(headers)) + ' |']
+    index = 0
+    for task in tasks:
+        for method in methods:
+            value = task['values'][method['id']]
+            def fmt(key, precision, scale=1):
+                number = value.get(key)
+                return '--' if number is None else f'{number * scale:.{precision}f}'
+            action = fmt('action_success', 1, 100)
+            if action != '--':
+                action += '%'
+            cells = [task['label'], method['label'] + marker_suffix(value.get('marker')),
+                     fmt('psnr', 3), fmt('ssim', 4), fmt('lpips', 4),
+                     fmt('object', 4) + ' ' + task['object_unit'], action]
+            y = top + header_height + row_height * (index + 0.5)
+            x = left
+            for column, (cell, cell_width) in enumerate(zip(cells, widths)):
+                text(x + 12, y, cell if column or method == methods[0] else '', 24,
+                     bold=column == 1 and method['id'] == 'ours')
+                x += cell_width
+            markdown.append('| ' + ' | '.join(cells) + ' |')
+            index += 1
+        line(top + header_height + index * row_height, 1)
+    line(bottom, 4)
+    for index, note in enumerate(notes):
+        text(left, bottom + 40 + index * 37, note, 21)
+    svg.append('</g></svg>')
+    stem = output_dir / 'sim_all_methods_main_table_detailed'
+    stem.with_suffix('.svg').write_text('\n'.join(svg) + '\n')
+    image.save(stem.with_suffix('.png'))
+    markdown.extend(['', '## Scope and provenance', '', *['- ' + note for note in config.get('notes', [])],
+                     '', *['- ' + note for note in notes], '',
+                     'Detailed numeric data: `sim_all_methods_main_table_detailed.csv`.',
+                     'Full recorded configuration and sources: `protocol.json`.', ''])
+    stem.with_suffix('.md').write_text('\n'.join(markdown))
+
+
 def main() -> None:
     args = parse_args()
     config_path = Path(args.config)
@@ -278,6 +353,7 @@ def main() -> None:
         json.dump(config, handle, indent=2)
         handle.write("\n")
     render(config, output_dir)
+    render_detailed(config, output_dir)
 
 
 if __name__ == "__main__":
