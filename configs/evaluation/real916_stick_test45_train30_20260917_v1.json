@@ -1,0 +1,14 @@
+{
+  "seed": 20260917,
+  "manifest": "data/real916_stick_lift15_driftstable_v1",
+  "original_prepared": "outputs/evaluation_real916_stick_final_20260917_v1",
+  "original_ours_inference": "outputs/infer_real916_stick_ours_step3900_final_20260917_v1",
+  "source_metrics": "outputs/eval_real916_stick_visible_tail_20260917_v2",
+  "prepared": "outputs/evaluation_real916_stick_add_train15_20260917_v1",
+  "ours_output": "outputs/infer_real916_stick_ours_add_train15_20260917_v1",
+  "standard_output": "outputs/infer_real916_stick_standard_add_train15_20260917_v1",
+  "metrics_output": "outputs/eval_real916_stick_test45_train30_20260917_v1",
+  "geometry_config": "configs/evaluation/stick_common_reference_rigid_review_v3.json",
+  "fusion_config": "configs/evaluation/stick_fused_terminal_review_v4.json",
+  "contact_config": "configs/evaluation/stick_terminal_contact_boundary_v8.json"
+}

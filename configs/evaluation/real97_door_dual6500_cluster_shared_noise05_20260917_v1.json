@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "disable_context_clamp": true,
+  "stage1_replica": 0,
+  "noise_seed": 20260918,
+  "noise_min": -0.5,
+  "noise_max": 0.5,
+  "noise_scope": "one fixed vector shared across all clusters and environments within this task",
+  "tasks": {
+    "door": {
+      "source_prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114799/door_prep",
+      "source_inference": "outputs/infer_real97_door_ours_reference_job114799",
+      "training_run": "outputs/real97_door_dual_joint_resume6000_500steps_c005_6x10_20260917_v1_job118301",
+      "training_config": "configs/train/train_real97_door_dual_joint_resume6000_500steps_c005_6x10_2gpu_20260917_v1.yaml",
+      "action_stats": "outputs/real97_door_dual_joint_resume6000_500steps_c005_6x10_20260917_v1_job118301/input_manifest/action_stats.json",
+      "prepared": "outputs/evaluation_real97_door_dual6500_cluster_shared_noise05_20260917_v1/door_prep",
+      "initial_context": "explicit_training_cluster_mean_plus_shared_noise",
+      "require_exact_original_support": true,
+      "expected_latents": 20,
+      "model_step": 6500,
+      "table_step": 6500
+    }
+  },
+  "stage2": {
+    "inner_lr_schedule": "0.3:10,0.15:10,0.05:10,0.015:10",
+    "inner_steps": 40,
+    "context_precision": "float32",
+    "regularization": 0,
+    "hard_bounds": null,
+    "roi": false,
+    "inference_light_augmentation": false
+  },
+  "known_family_prior": true,
+  "query_GT_used_for_initialization": false,
+  "output": "outputs/infer_real97_door_dual6500_cluster_shared_noise05_20260917_v1",
+  "cluster_policy": "Same final-table membership and assignment policy as the zero-noise dual6500 comparison; only initialization noise changes",
+  "noise_resampling_per_environment": false,
+  "stage1_unchanged": true,
+  "old_outputs_modified": false
+}

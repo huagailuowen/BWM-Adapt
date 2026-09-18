@@ -1,0 +1,21 @@
+{
+  "source_metrics": "outputs/eval_real916_stick_visible_tail_20260917_v2",
+  "output": "outputs/eval_real916_stick_visible_tail_20260917_v2/action_mixed_pool",
+  "added_train_keys": [
+    "q0000_stick-L0-R0_train_ep000029",
+    "q0001_stick-L0-R0_train_ep000031",
+    "q0007_stick-L0-R1_train_ep000012",
+    "q0008_stick-L0-R1_train_ep000044",
+    "q0014_stick-L0-R2_train_ep000043",
+    "q0015_stick-L0-R2_train_ep000054",
+    "q0021_stick-L0-R3_train_ep000036",
+    "q0028_stick-L0-R4_train_ep000043",
+    "q0029_stick-L0-R4_train_ep000009",
+    "q0035_stick-L1-R0_train_ep000009",
+    "q0036_stick-L1-R0_train_ep000054",
+    "q0043_stick-L2-R0_train_ep000014",
+    "q0049_stick-L3-R0_train_ep000049",
+    "q0056_stick-L4-R0_train_ep000033",
+    "q0057_stick-L4-R0_train_ep000028"
+  ]
+}

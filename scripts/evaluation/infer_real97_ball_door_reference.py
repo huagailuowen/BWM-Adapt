@@ -16,7 +16,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--prepared", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--stage2-only", action="store_true",
+                        help="Generate GT and Stage2 only; never run Stage1 predictions")
     own = parser.parse_args()
+    prediction_kinds = ("stage2",) if own.stage2_only else ("stage1", "stage2")
+    factual_kinds = ("gt",) + prediction_kinds
+    factual_label = "gt_stage2" if own.stage2_only else "gt_stage1_stage2"
     require_compute()
     import torch
     import imageio.v2 as imageio
@@ -34,6 +39,7 @@ def main():
         "model_step": setting["model_step"], "table_step": setting["table_step"],
         "frames_per_second": fps, "formal_metric_approved": False,
         "counterfactuals_have_paired_GT": False,
+        "stage2_only": own.stage2_only,
     })
     sys.path.insert(0, str(ROOT / "scripts"))
     import infer_stage2_ttt as ttt
@@ -121,7 +127,7 @@ def main():
             if row["episode_index"] in {support_rows[i]["episode_index"] for i in env["support_indices"]}:
                 raise RuntimeError("Query episode overlaps support")
             key = f'q{index:04d}_{name}_{row["dataset_split"]}_L{int(row["action_level"]):02d}_ep{row["episode_index"]:06d}'
-            paths = {kind: own.output / "raw" / kind / (key + ".mp4") for kind in ("gt", "stage1", "stage2")}
+            paths = {kind: own.output / "raw" / kind / (key + ".mp4") for kind in factual_kinds}
             marker = own.output / "completed" / (key + ".json")
             if not marker.is_file():
                 sample = dataset[index]
@@ -131,6 +137,8 @@ def main():
                 paths["gt"].parent.mkdir(parents=True, exist_ok=True)
                 save_video(sample["video"], output_path=str(paths["gt"]), fps=fps, quality=8)
                 for kind, z in (("stage1", lookup[float(env["environment_index"])]), ("stage2", adapted)):
+                    if kind not in prediction_kinds:
+                        continue
                     variant = own.output / "completed_variants" / (key + "_" + kind + ".json")
                     if not variant.exists():
                         seed = int(plan["protocol"]["seed"]) + index
@@ -146,7 +154,7 @@ def main():
             column = [
                 np.vstack([labeled(videos[kind][frame],
                            f'{kind} | {row["dataset_split"]} L{row["action_level"]} ep{row["episode_index"]}')
-                           for kind in ("gt", "stage1", "stage2")])
+                           for kind in factual_kinds])
                 for frame in range(args.num_frames)
             ]
             write_video(own.output / "comparisons" / (key + ".mp4"), column, fps)
@@ -158,7 +166,7 @@ def main():
                 "extension_results": extension_results,
             })
             print("[query_done] " + key, flush=True)
-        write_video(own.output / "grids" / (name + "_gt_stage1_stage2_train_test.mp4"),
+        write_video(own.output / "grids" / (name + "_" + factual_label + "_train_test.mp4"),
                     (np.hstack([column[frame] for column in columns]) for frame in range(args.num_frames)), fps)
         pca_plot(own.output / "training_inference_Z_pca.svg", table, contexts,
                  [item for item in plan["environments"] if item["environment"] in contexts])
@@ -178,12 +186,14 @@ def main():
             sample["action"] = template["action"]
             key = f'{name}_anchorq{anchor_index:04d}_L{int(row["action_level"]):02d}'
             paths = {kind: own.output / "extensions/raw" / kind / (key + ".mp4")
-                     for kind in ("stage1", "stage2")}
+                     for kind in prediction_kinds}
             marker = own.output / "extensions/completed" / (key + ".json")
             if not marker.exists():
                 delta = torch.as_tensor(template["action"]).float().reshape(-1, 14)[0] - torch.as_tensor(
                     anchor["action"]).float().reshape(-1, 14)[0]
                 for kind, z in (("stage1", lookup[float(env["environment_index"])]), ("stage2", adapted)):
+                    if kind not in prediction_kinds:
+                        continue
                     variant = own.output / "extensions/completed_variants" / (key + "_" + kind + ".json")
                     if not variant.exists():
                         seed = int(plan["protocol"]["seed"]) + 100000 + anchor_index
@@ -199,7 +209,7 @@ def main():
             videos = {kind: imageio.mimread(str(path)) for kind, path in paths.items()}
             column = [
                 np.vstack([labeled(videos[kind][frame], f'{kind} L{row["action_level"]} | counterfactual NO paired GT')
-                           for kind in ("stage1", "stage2")])
+                           for kind in prediction_kinds])
                 for frame in range(args.num_frames)
             ]
             write_video(own.output / "extensions/comparisons" / (key + ".mp4"), column, fps)

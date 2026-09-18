@@ -1,0 +1,95 @@
+{
+  "version": "dual6500_stage1_vs_formal_nondual_ours_20260918_v1",
+  "expected_checkpoint_step": 6500,
+  "calibration": "configs/evaluation/real97_object_calibration_v3.json",
+  "baseline_scores": "outputs/eval_real97_ball_door_scores_20260912_v2",
+  "source_fps": 20,
+  "resize_mode": "letterbox",
+  "door_prefer": {
+    "door-0": [
+      1,
+      2
+    ],
+    "door-2u-1d": [
+      2,
+      3
+    ],
+    "door-3u": [
+      3,
+      4
+    ],
+    "door-2u-4d": [
+      4,
+      5
+    ],
+    "door-4d": [
+      3,
+      4
+    ],
+    "door-3u-4d": [
+      5,
+      6
+    ],
+    "door-6u-7d": [
+      7,
+      8
+    ],
+    "door-6u-8d": [
+      8,
+      9
+    ],
+    "door-12u-Half": [
+      9,
+      10
+    ]
+  },
+  "door_action_excluded": [
+    "door-12u-Half-11d-Half"
+  ],
+  "door_closure": {
+    "policy": "one_sided_edge_gap",
+    "minimum_plausible_gap_px": -5,
+    "closed_max_gap_px": 18,
+    "open_min_gap_px": 22,
+    "calibration_split": "train"
+  },
+  "ball_marker": {
+    "hue_min": 85,
+    "hue_max": 135,
+    "saturation_min": 65,
+    "value_min": 45,
+    "minimum_area": 5,
+    "maximum_area": 1600,
+    "minimum_x_fraction": 0.5,
+    "maximum_extent": 80
+  },
+  "ball_exit": {
+    "near_boundary_px": 12,
+    "minimum_rightward_velocity_px": 1.0
+  },
+  "audit_levels": [
+    2,
+    5,
+    9
+  ],
+  "tracking_status": "train_gt_calibrated_pending_heldout_overlay_audit",
+  "formal_reference_source": "results/real97_all_methods_main_table_v1/real97_all_methods_main_table.csv",
+  "output": "outputs/eval_real97_door_dual6500_stage1_20260918_v1",
+  "formal_reference": {
+    "psnr": 30.15,
+    "ssim": 0.9117,
+    "lpips": 0.0476,
+    "ade_px": 14.07,
+    "fde_px": 23.08,
+    "action_pair_overlap_pct": 77.78
+  },
+  "tasks": {
+    "door": {
+      "native_size": [
+        640,
+        480
+      ],
+      "ours": "outputs/infer_real97_door_dual6500_cluster_mean_20260917_v1"
+    }
+  }
+}

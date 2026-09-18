@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "disable_context_clamp": true,
+  "stage1_replica": 0,
+  "stage2_only": true,
+  "tasks": {
+    "ball": {
+      "source_prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114807/ball_prep",
+      "source_inference": "outputs/infer_real97_ball_ours_reference_job114807",
+      "training_run": "outputs/real97_ball_dual_joint_resume6000_500steps_c005_6x10_20260917_v1_job118302",
+      "training_config": "configs/train/train_real97_ball_dual_joint_resume6000_500steps_c005_6x10_2gpu_20260917_v1.yaml",
+      "action_stats": "outputs/real97_ball_dual_joint_resume6000_500steps_c005_6x10_20260917_v1_job118302/input_manifest/action_stats.json",
+      "prepared": "outputs/evaluation_real97_ball_dual6500_cluster_roi10_stage2_20260917_v1/ball_prep",
+      "initial_context": "explicit_training_cluster_mean",
+      "require_exact_original_support": true,
+      "expected_latents": 16,
+      "model_step": 6500,
+      "table_step": 6500
+    }
+  },
+  "stage2": {
+    "inner_lr_schedule": "0.3:10,0.15:10,0.05:10,0.015:10",
+    "inner_steps": 40,
+    "context_precision": "float32",
+    "regularization": 0,
+    "hard_bounds": null,
+    "roi": true,
+    "spatial_loss": {
+      "spatial_loss_mode": "fixed_polygon",
+      "spatial_loss_roi_weight": 10,
+      "spatial_loss_roi_view_indices": "all",
+      "spatial_loss_roi_source_width": 320,
+      "spatial_loss_roi_source_height": 160,
+      "spatial_loss_roi_polygon": "44,85;320,62;320,96;44,119"
+    },
+    "spatial_weight_normalization": "mean_one; ROI/background ratio 10:1",
+    "inference_light_augmentation": false
+  },
+  "known_family_prior": true,
+  "query_GT_used_for_initialization": false,
+  "output": "outputs/infer_real97_ball_dual6500_cluster_roi10_stage2_20260917_v1",
+  "cluster_policy": "Same final-table cluster membership as the uniform-loss dual6500 comparison; no initialization noise",
+  "approved_roi_preview": "outputs/roi_visualizations/real97_dual6500_roi10_proposal/ball_roi10_proposal.svg",
+  "roi_scope": "ball motion corridor to right image boundary",
+  "fixed_roi_across_environments_and_frames": true,
+  "old_outputs_modified": false
+}

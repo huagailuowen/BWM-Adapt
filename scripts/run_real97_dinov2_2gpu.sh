@@ -117,4 +117,4 @@ PORT=$((20000 + SLURM_JOB_ID % 10000))
 exec .venv/bin/python -m torch.distributed.run \
   --nnodes=1 --nproc_per_node=2 --rdzv_backend=c10d --rdzv_endpoint="localhost:$PORT" \
   --rdzv_id="${SLURM_JOB_ID}_dino" \
-  scripts/methods/train_real97_dinov2.py --config "$RUN/runtime.yaml" --find_unused_parameters
+  "${BWM_DINO_TRAIN_ENTRYPOINT:-scripts/methods/train_real97_dinov2.py}" --config "$RUN/runtime.yaml" --find_unused_parameters

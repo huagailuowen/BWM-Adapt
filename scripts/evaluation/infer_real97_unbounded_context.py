@@ -31,6 +31,16 @@ def read_jsonl(path):
         return [json.loads(line) for line in handle if line.strip()]
 
 
+def sample_cluster_shared_noise(config, shape):
+    """One seeded coordinate-wise noise vector, independent of environment ID."""
+    import torch
+    low, high = float(config['noise_min']), float(config['noise_max'])
+    if not math.isfinite(low) or not math.isfinite(high) or low > high:
+        raise ValueError('Invalid shared initialization noise range')
+    generator = torch.Generator(device='cpu').manual_seed(int(config['noise_seed']))
+    return torch.rand(shape, generator=generator, dtype=torch.float32) * (high - low) + low
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=Path, required=True)
@@ -82,6 +92,15 @@ def main():
     environments = {row['environment']: row for row in plan['environments']}
     initializations = output / 'initializations'
     original_adapt = core._adapt_ttt_state
+    shared_noise = None
+    if setting['initial_context'] == 'explicit_training_cluster_mean_plus_shared_noise':
+        shared_noise = sample_cluster_shared_noise(config, next(iter(targets.values())).shape)
+        write_json(output / 'shared_initialization_noise.json', {
+            'seed': int(config['noise_seed']), 'range_per_coordinate': [config['noise_min'], config['noise_max']],
+            'noise': shared_noise.tolist(), 'noise_l2': float(shared_noise.norm()),
+            'scope': 'one identical vector for every cluster and environment in this task',
+            'resampled_per_environment': False, 'hard_bounds': None,
+        })
 
     @functools.wraps(original_adapt)
     def adapt_with_policy(*positional, **keyword):
@@ -104,7 +123,14 @@ def main():
             initial = target + noise
         elif policy == 'mean_training_table':
             initial = torch.tensor(table['mean_context'], dtype=torch.float32)
-        elif policy == 'explicit_training_cluster_mean':
+        elif policy == 'global_table_box_random_shared':
+            trial = int(config['global_random_trial'])
+            seed = int(config['global_random_seed'])
+            initial = torch.tensor(config['global_random_starts'][trial], dtype=torch.float32).reshape_as(target)
+            meta.update(global_random_trial=trial, known_family_prior=False,
+                        query_GT_used_for_initialization=False,
+                        initialization_scope='same global start for every environment')
+        elif policy in ('explicit_training_cluster_mean', 'explicit_training_cluster_mean_plus_shared_noise'):
             group = setting['environment_initialization_group'][environment]
             member_ids = setting['initialization_groups'][group]
             source_table = read_json(prepared / 'reference/context_table.json')
@@ -114,6 +140,12 @@ def main():
                 raise ValueError('Missing or duplicate cluster members')
             initial = torch.stack([torch.tensor(row['context'], dtype=torch.float32)
                                    for row in member_rows]).mean(0)
+            if shared_noise is not None:
+                seed = int(config['noise_seed'])
+                noise = shared_noise.clone()
+                initial = initial + noise
+                meta.update(shared_noise=True, shared_noise_seed=seed,
+                            noise_scope='task_global_same_vector', noise_l2=float(noise.norm()))
             meta.update(initialization_group=group, cluster_source_virtual_group_ids=member_ids,
                         known_family_prior=True, query_GT_used_for_initialization=False)
         else:
@@ -140,9 +172,12 @@ def main():
             'initial_distance_to_training_context': float((initial-target).norm()),
             'initial_coordinates_outside_previous_bounds': int(((initial < -1) | (initial > 1)).sum()),
         }
-        if policy == 'explicit_training_cluster_mean':
+        if policy in ('explicit_training_cluster_mean', 'explicit_training_cluster_mean_plus_shared_noise'):
             record.update(initialization_group=group, cluster_source_virtual_group_ids=member_ids,
                           known_family_prior=True)
+            if shared_noise is not None:
+                record.update(cluster_center=(initial-noise).tolist(), shared_noise=True,
+                              noise_scope='task_global_same_vector')
         write_json(initializations / (environment + '.json'), record)
         print('[unbounded_initialization]', json.dumps(record), flush=True)
         result = original_adapt(*positional, **keyword)
@@ -177,6 +212,8 @@ def main():
     synchronize_contexts()
     sys.argv = [str(ROOT / 'scripts/evaluation/infer_real97_ball_door_reference.py'),
                 '--prepared', str(prepared), '--output', str(output)]
+    if config.get('stage2_only', False):
+        sys.argv.append('--stage2-only')
     reference.main()
     synchronize_contexts()
     records, trajectory = [], []

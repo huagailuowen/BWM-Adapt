@@ -1,0 +1,12 @@
+{
+  "source_metrics": "outputs/eval_real916_stick_final_matched_20260917_v1",
+  "prepared": "outputs/evaluation_real916_stick_final_20260917_v1",
+  "output": "outputs/eval_real916_stick_visible_tail_20260917_v2",
+  "geometry_config": "configs/evaluation/stick_common_reference_rigid_review_v3.json",
+  "fusion_config": "configs/evaluation/stick_fused_terminal_review_v4.json",
+  "contact_config": "configs/evaluation/stick_terminal_contact_boundary_v8.json",
+  "hold_seconds": 0.3,
+  "workers": 8,
+  "require_commanded_lift_end": false,
+  "formal_metric_approved": false
+}

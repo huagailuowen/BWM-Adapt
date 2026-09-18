@@ -105,6 +105,25 @@ def prepare(config_path, task):
         ttt_adapt_scope="context", spatial_loss_mode="none",
         ttt_disable_context_clamp=True,
     )
+    if config["stage2"].get("roi", False):
+        spatial = config["stage2"]["spatial_loss"]
+        required = {
+            "spatial_loss_mode", "spatial_loss_roi_weight", "spatial_loss_roi_view_indices",
+            "spatial_loss_roi_source_width", "spatial_loss_roi_source_height",
+            "spatial_loss_roi_polygon",
+        }
+        if set(spatial) != required or spatial["spatial_loss_mode"] != "fixed_polygon":
+            raise ValueError("Explicit fixed-polygon spatial loss configuration required")
+        if float(spatial["spatial_loss_roi_weight"]) < 1:
+            raise ValueError("ROI weight must be at least one")
+        plan["protocol"]["ttt"].update(copy.deepcopy(spatial))
+        plan["spatial_loss_provenance"] = {
+            "scope": "support-only Stage2 context adaptation",
+            "settings": copy.deepcopy(spatial),
+            "weight_normalization": "divide spatial weights by their mean",
+            "background_relative_weight": 1.0,
+            "query_GT_used_for_adaptation": False,
+        }
     plan["protocol"].setdefault("tasks", {})[task] = copy.deepcopy(plan["setting"])
     plan["experiment"].setdefault("tasks", {})[task] = copy.deepcopy(plan["setting"])
     plan.update(prepared=str(prepared), source_reference=str(source),
