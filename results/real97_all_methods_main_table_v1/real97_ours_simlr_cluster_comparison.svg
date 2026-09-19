@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2060" height="1040" viewBox="0 0 2060 1040">
+<title>Real-world Ours: official results versus sim-LR mean-initialized Stage2</title>
+<desc>Independent comparison, not a replacement main table. Checkpoints and initialization also differ. Missing LPIPS is pending, not zero.</desc>
+<rect width="2060" height="1040" fill="white"/>
+<text x="55" y="63" text-anchor="start" font-family="DejaVu Serif, serif" font-size="33" font-weight="700" fill="#202020">Real-world Ours: Stage2 learning-rate / initialization comparison</text>
+<text x="55" y="105" text-anchor="start" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">New schedule: 3.0 / 1.5 / 0.5 / 0.15, 10 steps each (40 total). No ROI or Z clamp.</text>
+<text x="55" y="143" text-anchor="start" font-family="DejaVu Serif, serif" font-size="22" font-weight="400" fill="#4c5960">Door / Ball: dual6500 cluster centers; Soft: L / R / 8 means; Stick: full-table mean.</text>
+<line x1="55" y1="173" x2="2005" y2="173" stroke="#222222" stroke-width="3"/>
+<text x="65" y="211" text-anchor="start" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#202020">Task</text>
+<text x="350" y="211" text-anchor="start" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#202020">Variant</text>
+<text x="800" y="211" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#202020">Test N</text>
+<text x="980" y="211" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#202020">PSNR ↑</text>
+<text x="1170" y="211" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#202020">SSIM ↑</text>
+<text x="1370" y="211" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#202020">LPIPS ↓</text>
+<text x="1570" y="211" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#202020">ADE ↓</text>
+<text x="1755" y="211" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#202020">FDE ↓</text>
+<text x="1930" y="211" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#202020">Action % ↑</text>
+<line x1="55" y1="230" x2="2005" y2="230" stroke="#222222" stroke-width="1"/>
+<text x="65" y="292" text-anchor="start" font-family="DejaVu Serif, serif" font-size="25" font-weight="700" fill="#202020">Door close</text>
+<text x="350" y="272" text-anchor="start" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#333333">Official Ours</text>
+<text x="800" y="272" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#202020">100</text>
+<text x="980" y="271" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">30.15</text>
+<text x="1170" y="271" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.9117</text>
+<text x="1370" y="271" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.04760</text>
+<text x="1570" y="271" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">14.07</text>
+<text x="1755" y="271" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">23.08</text>
+<text x="1930" y="271" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">77.78</text>
+<rect x="56" y="295" width="1948" height="54" fill="#eef4f6"/>
+<text x="350" y="329" text-anchor="start" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#20596c">Sim-LR / mean init</text>
+<text x="800" y="329" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#202020">100</text>
+<text x="980" y="328" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">32.07</text>
+<text x="1170" y="328" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.9266</text>
+<text x="1370" y="328" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.03361</text>
+<text x="1570" y="328" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">9.01</text>
+<text x="1755" y="328" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">15.75</text>
+<text x="1930" y="328" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">61.11</text>
+<line x1="55" y1="351" x2="2005" y2="351" stroke="#aeb6bb" stroke-width="1"/>
+<text x="65" y="406" text-anchor="start" font-family="DejaVu Serif, serif" font-size="25" font-weight="700" fill="#202020">Ball friction</text>
+<text x="350" y="386" text-anchor="start" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#333333">Official Ours</text>
+<text x="800" y="386" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#202020">80</text>
+<text x="980" y="385" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">34.16</text>
+<text x="1170" y="385" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.9529</text>
+<text x="1370" y="385" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.03282</text>
+<text x="1570" y="385" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">21.74</text>
+<text x="1755" y="385" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">40.55</text>
+<text x="1930" y="385" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">56.25</text>
+<rect x="56" y="409" width="1948" height="54" fill="#eef4f6"/>
+<text x="350" y="443" text-anchor="start" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#20596c">Sim-LR / mean init</text>
+<text x="800" y="443" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#202020">80</text>
+<text x="980" y="442" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">35.96</text>
+<text x="1170" y="442" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.9600</text>
+<text x="1370" y="442" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.02883</text>
+<text x="1570" y="442" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">20.36</text>
+<text x="1755" y="442" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">41.14</text>
+<text x="1930" y="442" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">56.25</text>
+<line x1="55" y1="465" x2="2005" y2="465" stroke="#aeb6bb" stroke-width="1"/>
+<text x="65" y="520" text-anchor="start" font-family="DejaVu Serif, serif" font-size="25" font-weight="700" fill="#202020">Stick balance</text>
+<text x="350" y="500" text-anchor="start" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#333333">Official Ours</text>
+<text x="800" y="500" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#202020">45</text>
+<text x="980" y="499" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">30.91</text>
+<text x="1170" y="499" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.9342</text>
+<text x="1370" y="499" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.04859</text>
+<text x="1570" y="499" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">2.78</text>
+<text x="1755" y="499" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">5.66</text>
+<text x="1930" y="499" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">50.00</text>
+<rect x="56" y="523" width="1948" height="54" fill="#eef4f6"/>
+<text x="350" y="557" text-anchor="start" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#20596c">Sim-LR / mean init</text>
+<text x="800" y="557" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#202020">45</text>
+<text x="980" y="556" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">32.05</text>
+<text x="1170" y="556" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.9427</text>
+<text x="1370" y="556" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.04175</text>
+<text x="1570" y="556" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">2.27</text>
+<text x="1755" y="556" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">5.01</text>
+<text x="1930" y="556" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">83.33</text>
+<line x1="55" y1="579" x2="2005" y2="579" stroke="#aeb6bb" stroke-width="1"/>
+<text x="65" y="634" text-anchor="start" font-family="DejaVu Serif, serif" font-size="25" font-weight="700" fill="#202020">Soft pull</text>
+<text x="350" y="614" text-anchor="start" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#333333">Official Ours</text>
+<text x="800" y="614" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#202020">12</text>
+<text x="980" y="613" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">32.61</text>
+<text x="1170" y="613" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.9615</text>
+<text x="1370" y="613" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.07555</text>
+<text x="1570" y="613" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">18.10</text>
+<text x="1755" y="613" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">22.38</text>
+<text x="1930" y="613" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">81.82</text>
+<rect x="56" y="637" width="1948" height="54" fill="#eef4f6"/>
+<text x="350" y="671" text-anchor="start" font-family="DejaVu Serif, serif" font-size="24" font-weight="700" fill="#20596c">Sim-LR / mean init</text>
+<text x="800" y="671" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="24" font-weight="400" fill="#202020">12</text>
+<text x="980" y="670" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">32.58</text>
+<text x="1170" y="670" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.9614</text>
+<text x="1370" y="670" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">0.07529</text>
+<text x="1570" y="670" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">18.24</text>
+<text x="1755" y="670" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">22.59</text>
+<text x="1930" y="670" text-anchor="middle" font-family="DejaVu Serif, serif" font-size="23" font-weight="400" fill="#202020">81.82</text>
+<line x1="55" y1="693" x2="2005" y2="693" stroke="#aeb6bb" stroke-width="1"/>
+<line x1="55" y1="704" x2="2005" y2="704" stroke="#222222" stroke-width="3"/>
+<text x="55" y="748" text-anchor="start" font-family="DejaVu Serif, serif" font-size="20" font-weight="400" fill="#444444">ADE / FDE: pixels. Each metric keeps its existing task-specific protocol; rows are not averaged across tasks.</text>
+<text x="55" y="782" text-anchor="start" font-family="DejaVu Serif, serif" font-size="20" font-weight="400" fill="#444444">Door action: preferred adjacent-level overlap (9 eligible environments); Ball: first-reach successor overlap (8).</text>
+<text x="55" y="816" text-anchor="start" font-family="DejaVu Serif, serif" font-size="20" font-weight="400" fill="#444444">Stick action: fixed 36-query seed20260927 subset; new model selects 6, with 5 truly balanced (83.33%).</text>
+<text x="55" y="850" text-anchor="start" font-family="DejaVu Serif, serif" font-size="20" font-weight="400" fill="#444444">Stick image / ADE: all 45 test queries; FDE: 33 valid old queries versus 36 new, not an identical valid subset.</text>
+<text x="55" y="884" text-anchor="start" font-family="DejaVu Serif, serif" font-size="20" font-weight="400" fill="#444444">Soft: shared 6 environments / 12 test queries; action is onset Success@6 degrees on 11 GT-positive queries.</text>
+<text x="55" y="918" text-anchor="start" font-family="DejaVu Serif, serif" font-size="20" font-weight="400" fill="#444444">The Stick subset and Soft 6-degree threshold were previously chosen post hoc; those choices remain unchanged.</text>
+<text x="55" y="952" text-anchor="start" font-family="DejaVu Serif, serif" font-size="20" font-weight="400" fill="#444444">This is not LR-only: official Door / Ball are nondual; the new runs use dual6500 and different initialization.</text>
+<text x="55" y="986" text-anchor="start" font-family="DejaVu Serif, serif" font-size="20" font-weight="400" fill="#444444">Automatic tracking, pending new visual audit. Blue shading identifies the new variant, not the winning score.</text>
+</svg>

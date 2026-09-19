@@ -1,0 +1,106 @@
+{
+  "official_csv": "real97_all_methods_main_table.csv",
+  "new_summary": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/outputs/eval_real97_simlr_summary_20260918_v1/summary.json",
+  "snapshot_rows": [
+    {
+      "task": "door",
+      "variant": "Official Ours",
+      "queries": 100,
+      "psnr": 30.15,
+      "ssim": 0.9117,
+      "lpips": 0.0476,
+      "ade_px": 14.07,
+      "fde_px": 23.08,
+      "action_pct": 77.78
+    },
+    {
+      "task": "door",
+      "variant": "Sim-LR / mean init",
+      "queries": 100,
+      "psnr": 32.0701943005731,
+      "ssim": 0.9266010343314189,
+      "lpips": 0.033606871645897624,
+      "ade_px": 9.010265096610665,
+      "fde_px": 15.75,
+      "action_pct": 61.111111111111114
+    },
+    {
+      "task": "ball",
+      "variant": "Official Ours",
+      "queries": 80,
+      "psnr": 34.16,
+      "ssim": 0.9529,
+      "lpips": 0.03282,
+      "ade_px": 21.74,
+      "fde_px": 40.55,
+      "action_pct": 56.25
+    },
+    {
+      "task": "ball",
+      "variant": "Sim-LR / mean init",
+      "queries": 80,
+      "psnr": 35.95538321371308,
+      "ssim": 0.9600084427272801,
+      "lpips": 0.02883335013175383,
+      "ade_px": 20.35599041476744,
+      "fde_px": 41.135775005603364,
+      "action_pct": 56.25
+    },
+    {
+      "task": "stick",
+      "variant": "Official Ours",
+      "queries": 45,
+      "psnr": 30.91,
+      "ssim": 0.93418,
+      "lpips": 0.04859,
+      "ade_px": 2.78,
+      "fde_px": 5.66,
+      "action_pct": 50.0
+    },
+    {
+      "task": "stick",
+      "variant": "Sim-LR / mean init",
+      "queries": 45,
+      "psnr": 32.04638067005488,
+      "ssim": 0.942710754845238,
+      "lpips": 0.0417545146176657,
+      "ade_px": 2.2689623546872233,
+      "fde_px": 5.013995412611595,
+      "action_pct": 83.33333333333334
+    },
+    {
+      "task": "soft",
+      "variant": "Official Ours",
+      "queries": 12,
+      "psnr": 32.61,
+      "ssim": 0.96146,
+      "lpips": 0.07555,
+      "ade_px": 18.1,
+      "fde_px": 22.38,
+      "action_pct": 81.82
+    },
+    {
+      "task": "soft",
+      "variant": "Sim-LR / mean init",
+      "queries": 12,
+      "psnr": 32.580126985822666,
+      "ssim": 0.9614342379249438,
+      "lpips": 0.0752927090839616,
+      "ade_px": 18.243872733558394,
+      "fde_px": 22.5899627137585,
+      "action_pct": 81.81818181818181
+    }
+  ],
+  "notes": [
+    "ADE / FDE: pixels. Each metric keeps its existing task-specific protocol; rows are not averaged across tasks.",
+    "Door action: preferred adjacent-level overlap (9 eligible environments); Ball: first-reach successor overlap (8).",
+    "Stick action: fixed 36-query seed20260927 subset; new model selects 6, with 5 truly balanced (83.33%).",
+    "Stick image / ADE: all 45 test queries; FDE: 33 valid old queries versus 36 new, not an identical valid subset.",
+    "Soft: shared 6 environments / 12 test queries; action is onset Success@6 degrees on 11 GT-positive queries.",
+    "The Stick subset and Soft 6-degree threshold were previously chosen post hoc; those choices remain unchanged.",
+    "This is not LR-only: official Door / Ball are nondual; the new runs use dual6500 and different initialization.",
+    "Automatic tracking, pending new visual audit. Blue shading identifies the new variant, not the winning score."
+  ],
+  "formal_main_table_modified": false,
+  "pending_lpips": false
+}
