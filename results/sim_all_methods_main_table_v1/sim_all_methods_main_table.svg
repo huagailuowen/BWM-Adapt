@@ -82,9 +82,9 @@
 <text x="2200.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0691†</text>
 <text x="2440.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">15.87†</text>
 <text x="2680.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">33.3†</text>
-<text x="2920.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0134</text>
-<text x="3160.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.04</text>
-<text x="3400.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">87.5</text>
+<text x="2920.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="muted">--</text>
+<text x="3160.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="muted">--</text>
+<text x="3400.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">50.0</text>
 <text x="3640.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0628</text>
 <text x="3880.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">1.92</text>
 <text x="4120.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">40.0</text>
@@ -142,8 +142,8 @@
 <text x="2200.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0538</text>
 <text x="2440.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">6.45</text>
 <text x="2680.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">61.1</text>
-<text x="2920.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0150</text>
-<text x="3160.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.04</text>
+<text x="2920.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0150</text>
+<text x="3160.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.03</text>
 <text x="3400.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">87.5</text>
 <text x="3640.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0218*</text>
 <text x="3880.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.76*</text>

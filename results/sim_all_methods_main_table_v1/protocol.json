@@ -199,12 +199,12 @@
           "action_success": 0.5
         },
         "lora": {
-          "psnr": 34.3807664235,
-          "ssim": 0.9522285989,
-          "lpips": 0.013379099,
-          "object": 0.0381124189,
-          "object_final": 0.0559152028,
-          "action_success": 0.875
+          "psnr": null,
+          "ssim": null,
+          "lpips": null,
+          "object": null,
+          "object_final": null,
+          "action_success": 0.5
         },
         "dino": {
           "psnr": 33.0738995234,
@@ -215,23 +215,25 @@
           "action_success": 0.5
         },
         "ttt_kqv": {
-          "psnr": 32.6964925448,
-          "ssim": 0.9522860012,
-          "lpips": 0.016106703,
-          "object": 0.1045886648,
-          "object_final": 0.1885491217,
+          "psnr": 32.6917781512,
+          "ssim": 0.9523160458,
+          "lpips": 0.0160710784,
+          "object": 0.1047955153,
+          "object_final": 0.1887117762,
           "action_success": 0.5
         },
         "ours": {
-          "psnr": 33.4537340482,
-          "ssim": 0.9443145757,
-          "lpips": 0.0149639813,
-          "object": 0.0358176758,
-          "object_final": 0.0495825201,
+          "psnr": 33.5172878583,
+          "ssim": 0.9442166709,
+          "lpips": 0.0150229902,
+          "object": 0.0342745937,
+          "object_final": 0.0473541531,
           "action_success": 0.875
         }
       },
-      "source": "results/lightswitch/physicalpress33_all4env_support8_query15_v1"
+      "source": "results/lightswitch/physicalpress33_all4env_support8_query15_v1",
+      "support_protocol": "red1_blue1_k2_disjoint_queries",
+      "support_size": 2
     },
     {
       "id": "mass_balance",
@@ -364,6 +366,7 @@
     "DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Gravity, Mass Collision, Light Switch, and Mass Balance; the completed Mass x Friction DINOv2 evaluation is included.",
     "Mass Balance Ours values marked with an asterisk use the completed fixed-pose 5-ID/5-OOD nearest-unbalanced-support test, while baseline rows use workspace-random data; available values participate in column ranking.",
     "Mass Collision LoRA values marked with a dagger come from the earlier compatible no-leak balanced-support run rather than the high-mass-2x result root.",
-    "A double dash denotes an unfinished or unavailable evaluation, not zero performance."
+    "A double dash denotes an unfinished or unavailable evaluation, not zero performance.",
+    "Light Switch uses the fixed red-one plus blue-one K=2 support protocol for Ours, DINOv2, LoRA-TTA, and TTT-KQV; Standard pooled does not consume support. LoRA-TTA K=2 video metrics are pending and are not mixed with its prior K=1 values."
   ]
 }

@@ -163,13 +163,13 @@
 <text x="2072" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">50.0%</text>
 <text x="72" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">LoRA TTA</text>
-<text x="802" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">34.381</text>
-<text x="982" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9522</text>
-<text x="1162" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0134</text>
+<text x="802" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
+<text x="982" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
+<text x="1162" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
 <text x="1342" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Lamp Intensity (score)</text>
-<text x="1652" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0381</text>
-<text x="1862" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0559</text>
-<text x="2072" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">87.5%</text>
+<text x="1652" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
+<text x="1862" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
+<text x="2072" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">50.0%</text>
 <text x="72" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">DINOv2 Context</text>
 <text x="802" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.074</text>
@@ -181,21 +181,21 @@
 <text x="2072" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">50.0%</text>
 <text x="72" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">TTT-KQV</text>
-<text x="802" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.696</text>
+<text x="802" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.692</text>
 <text x="982" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9523</text>
 <text x="1162" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0161</text>
 <text x="1342" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Lamp Intensity (score)</text>
-<text x="1652" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1046</text>
-<text x="1862" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1885</text>
+<text x="1652" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1048</text>
+<text x="1862" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1887</text>
 <text x="2072" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">50.0%</text>
 <text x="72" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="700">Ours</text>
-<text x="802" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.454</text>
-<text x="982" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9443</text>
+<text x="802" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.517</text>
+<text x="982" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9442</text>
 <text x="1162" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0150</text>
 <text x="1342" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Lamp Intensity (score)</text>
-<text x="1652" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0358</text>
-<text x="1862" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0496</text>
+<text x="1652" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0343</text>
+<text x="1862" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0474</text>
 <text x="2072" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">87.5%</text>
 <line x1="60" x2="2320" y1="1525" y2="1525" stroke="#111" stroke-width="1"/>
 <text x="72" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Mass Balance</text>

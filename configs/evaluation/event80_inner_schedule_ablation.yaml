@@ -22,11 +22,26 @@ rows:
     steps: 40
     schedule: "15/7.5/2.5/0.75 (10 each)"
     scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/scaled_x5_40/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - key: scaled_x10_40
+    label: Staged LR x10
+    steps: 40
+    schedule: "30/15/5/1.5 (10 each)"
+    scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/scaled_x10_40/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv
   - key: scaled_div5_40
     label: Staged LR /5
     steps: 40
     schedule: "0.6/0.3/0.1/0.03 (10 each)"
     scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/scaled_div5_40/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - key: scaled_div10_40
+    label: Staged LR /10
+    steps: 40
+    schedule: "0.3/0.15/0.05/0.015 (10 each)"
+    scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/scaled_div10_40/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - key: proportional_10
+    label: Proportional 10 steps
+    steps: 10
+    schedule: "3.0/1.5/0.5/0.15 (2/3/2/3)"
+    scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/proportional_10/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv
   - key: proportional_20
     label: Proportional 20 steps
     steps: 20

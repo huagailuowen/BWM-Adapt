@@ -56,6 +56,19 @@
       "action_success_all": 0.8
     },
     {
+      "key": "scaled_x10_40",
+      "label": "Staged LR x10",
+      "steps": 40,
+      "schedule": "30/15/5/1.5 (10 each)",
+      "source_scoreboard": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/scaled_x10_40/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv",
+      "psnr_main": 35.01772143046061,
+      "ssim_main": 0.9717450872229205,
+      "lpips_multiview": 0.05081592305666871,
+      "centroid_ade_px": 4.171534609657474,
+      "centroid_fde_px": 8.439997271623437,
+      "action_success_all": 0.68
+    },
+    {
       "key": "scaled_div5_40",
       "label": "Staged LR /5",
       "steps": 40,
@@ -66,6 +79,32 @@
       "lpips_multiview": 0.05990944986955987,
       "centroid_ade_px": 7.424048873877373,
       "centroid_fde_px": 16.727381197234717,
+      "action_success_all": 0.4
+    },
+    {
+      "key": "scaled_div10_40",
+      "label": "Staged LR /10",
+      "steps": 40,
+      "schedule": "0.3/0.15/0.05/0.015 (10 each)",
+      "source_scoreboard": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/scaled_div10_40/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv",
+      "psnr_main": 34.451408788892955,
+      "ssim_main": 0.9709388858576615,
+      "lpips_multiview": 0.06311088740411733,
+      "centroid_ade_px": 8.886859445318262,
+      "centroid_fde_px": 19.87206820003584,
+      "action_success_all": 0.36
+    },
+    {
+      "key": "proportional_10",
+      "label": "Proportional 10 steps",
+      "steps": 10,
+      "schedule": "3.0/1.5/0.5/0.15 (2/3/2/3)",
+      "source_scoreboard": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/proportional_10/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv",
+      "psnr_main": 34.55201454162598,
+      "ssim_main": 0.9710204667349656,
+      "lpips_multiview": 0.059933945122692324,
+      "centroid_ade_px": 7.495394311069816,
+      "centroid_fde_px": 16.55657726728811,
       "action_success_all": 0.4
     },
     {

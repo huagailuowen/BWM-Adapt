@@ -93,7 +93,8 @@ def main() -> None:
             ]
         )
 
-    fig, ax = plt.subplots(figsize=(17.2, 5.6), facecolor="white")
+    figure_height = max(5.6, 1.2 + 0.55 * len(records))
+    fig, ax = plt.subplots(figsize=(17.2, figure_height), facecolor="white")
     ax.axis("off")
     table = ax.table(
         cellText=cells,

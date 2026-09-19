@@ -1,0 +1,47 @@
+output_csv: results/sim_all_methods_main_table_v1/ours_formal_train_test_latents_pca.csv
+tasks:
+  - task: event80
+    checkpoint_step: 7272
+    context_table: outputs/curc32r65ib2-nc015_88823/step-7272.context_table.json
+    active_manifest: configs/methods/event80/manifests/ours_88823_step7272_active35.yaml
+    train_metadata: data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl
+    eval_metadata: data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl
+    result_root: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours/step_7272/seed_20260708
+  - task: gravity
+    checkpoint_step: 3837
+    context_table: outputs/gravity80_full61_c32_oldrandom_s1_89152/step-3837.context_table.json
+    active_manifest: configs/methods/gravity/manifests/ours_89152_step3837_active25.yaml
+    train_metadata: data/gravity_bwm_full61_20260710/train.jsonl
+    eval_metadata: data/gravity_bwm_full61_20260710/train.jsonl
+    result_root: results/gravity/gravity80_uniform5id5ood_strict_v1/methods/ours/step_3837/seed_20260712
+  - task: mass_collision
+    checkpoint_step: 4300
+    context_table: outputs/mass20of30_collision_noleak_mainview_c32_oldrandom_8action_highmass2x_s1_108592/step-4300.context_table.json
+    active_manifest: configs/methods/mass_collision/manifests/noleak_original20_train.yaml
+    train_metadata: data/mass_collision_noleak_original20_mainview_bwm_full61_20260827/train.jsonl
+    eval_metadata: data/mass_collision_noleak_all30_mainview_bwm_full61_20260828/train.jsonl
+    result_root: results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1/methods/ours_action8_highmass2x/step_4300/seed_20260827
+  - task: light_switch
+    checkpoint_step: 3100
+    context_table: outputs/lightswitch_physicalpress33jitter11to22_maincam_group20_c32_3wave1400_actions8_high2gpu_107549/step-3100.context_table.json
+    active_manifest: configs/methods/lightswitch/manifests/physicalpress_active12_train.yaml
+    train_metadata: data/lightswitch_randominitial_absolute_eef_physicalpress33jitter11to22_maincam_group20_20260827/physical_press_event_group20_train.jsonl
+    eval_metadata: data/lightswitch_randominitial_absolute_eef_physicalpress33jitter11to22_maincam_group20_20260827/physical_press_event_group20_train.jsonl
+    result_root: results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/ours_red1_blue1_k2_inner40/step_3100/seed_20260828
+    inference_domain: id
+    domain_note: Formal K=2 evaluation uses one fixed red-button support and one fixed blue-button support with disjoint queries over four known causal classes; context_group_domain separately reports nuisance-group membership.
+  - task: mass_balance
+    checkpoint_step: 3900
+    context_table: outputs/mass_balance_fixed_pose_30ratio_train20_mainview_4env8chunk_c32_oldrandom_stage1_4300_110422/step-3900.context_table.json
+    active_manifest: configs/methods/mass_balance/manifests/workspace_random_30ratio_train20.yaml
+    train_metadata: data/mass_balance_fixed_pose_30ratio_train20_mainview_stride2_41f_20260902/train.jsonl
+    eval_metadata: results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_dense15_v1/protocol/combined_train_test.jsonl
+    result_root: results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1/methods/ours/step_3900/seed_20260723
+    domain_note: Ours is the formal fixed-pose run; the active manifest supplies only the same original 20 physical ratios, not the random-background data.
+  - task: mass_friction
+    checkpoint_step: 7172
+    context_table: outputs/checkpoint_backups/mass_friction100_resume91267_step7172_20260722/step-7172.context_table.json
+    active_manifest: configs/methods/mass_friction/manifests/ours_91267_step7172_active84.yaml
+    train_metadata: data/mass_friction_joint100_bwm_full61_20260718/train.jsonl
+    eval_metadata: data/mass_friction_joint100_bwm_full61_20260718/train.jsonl
+    result_root: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours/step_7172/seed_20260720

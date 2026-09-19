@@ -18,10 +18,10 @@
 | Mass Collision | TTT-KQV | 29.385 | 0.9600 | 0.0842 | Object Centroid (px) | 20.9753 | 29.2930 | 55.6% |
 | Mass Collision | Ours | 31.150 | 0.9625 | 0.0538 | Object Centroid (px) | 6.4522 | 8.1321 | 61.1% |
 | Light Switch | Standard Pooled WM | 32.619 | 0.9480 | 0.0187 | Lamp Intensity (score) | 0.1035 | 0.1882 | 50.0% |
-| Light Switch | LoRA TTA | 34.381 | 0.9522 | 0.0134 | Lamp Intensity (score) | 0.0381 | 0.0559 | 87.5% |
+| Light Switch | LoRA TTA | -- | -- | -- | Lamp Intensity (score) | -- | -- | 50.0% |
 | Light Switch | DINOv2 Context | 33.074 | 0.9523 | 0.0160 | Lamp Intensity (score) | 0.1000 | 0.1837 | 50.0% |
-| Light Switch | TTT-KQV | 32.696 | 0.9523 | 0.0161 | Lamp Intensity (score) | 0.1046 | 0.1885 | 50.0% |
-| Light Switch | Ours | 33.454 | 0.9443 | 0.0150 | Lamp Intensity (score) | 0.0358 | 0.0496 | 87.5% |
+| Light Switch | TTT-KQV | 32.692 | 0.9523 | 0.0161 | Lamp Intensity (score) | 0.1048 | 0.1887 | 50.0% |
+| Light Switch | Ours | 33.517 | 0.9442 | 0.0150 | Lamp Intensity (score) | 0.0343 | 0.0474 | 87.5% |
 | Mass Balance | Standard Pooled WM | 32.921 | 0.9605 | 0.0248 | Bar Tilt (deg) | 1.2441 | 4.7822 | 40.0% |
 | Mass Balance | LoRA TTA | 25.017 | 0.8865 | 0.0628 | Bar Tilt (deg) | 1.9245 | 7.7828 | 40.0% |
 | Mass Balance | DINOv2 Context | 33.252 | 0.9621 | 0.0240 | Bar Tilt (deg) | 1.2733 | 4.9727 | 40.0% |
@@ -40,6 +40,7 @@
 - Mass Balance Ours values marked with an asterisk use the completed fixed-pose 5-ID/5-OOD nearest-unbalanced-support test, while baseline rows use workspace-random data; available values participate in column ranking.
 - Mass Collision LoRA values marked with a dagger come from the earlier compatible no-leak balanced-support run rather than the high-mass-2x result root.
 - A double dash denotes an unfinished or unavailable evaluation, not zero performance.
+- Light Switch uses the fixed red-one plus blue-one K=2 support protocol for Ours, DINOv2, LoRA-TTA, and TTT-KQV; Standard pooled does not consume support. LoRA-TTA K=2 video metrics are pending and are not mixed with its prior K=1 values.
 
 - Object/physical errors use each task's named metric; Mean covers the full sequence and Final the last frame.
 - Action Score uses each task's recorded protocol; Mass x Friction uses first-crossing +/-1 level match.

@@ -15,10 +15,10 @@ mass_collision,Mass Collision,dino,DINOv2 Context,31.03859622478485,0.9667951221
 mass_collision,Mass Collision,ttt_kqv,TTT-KQV,29.3845044136,0.960043644,0.084207404,Object Centroid,px,20.97531743,29.2930041061,0.5555555556
 mass_collision,Mass Collision,ours,Ours,31.1501887798,0.9625413722,0.0537618943,Object Centroid,px,6.45219353,8.1321381985,0.6111111111
 light_switch,Light Switch,standard,Standard Pooled WM,32.6189145406,0.9479967998,0.0186951045,Lamp Intensity,score,0.1034960864,0.1881967035,0.5
-light_switch,Light Switch,lora,LoRA TTA,34.3807664235,0.9522285989,0.013379099,Lamp Intensity,score,0.0381124189,0.0559152028,0.875
+light_switch,Light Switch,lora,LoRA TTA,,,,Lamp Intensity,score,,,0.5
 light_switch,Light Switch,dino,DINOv2 Context,33.0738995234,0.9522954091,0.016034239,Lamp Intensity,score,0.1000418959,0.1836749078,0.5
-light_switch,Light Switch,ttt_kqv,TTT-KQV,32.6964925448,0.9522860012,0.016106703,Lamp Intensity,score,0.1045886648,0.1885491217,0.5
-light_switch,Light Switch,ours,Ours,33.4537340482,0.9443145757,0.0149639813,Lamp Intensity,score,0.0358176758,0.0495825201,0.875
+light_switch,Light Switch,ttt_kqv,TTT-KQV,32.6917781512,0.9523160458,0.0160710784,Lamp Intensity,score,0.1047955153,0.1887117762,0.5
+light_switch,Light Switch,ours,Ours,33.5172878583,0.9442166709,0.0150229902,Lamp Intensity,score,0.0342745937,0.0473541531,0.875
 mass_balance,Mass Balance,standard,Standard Pooled WM,32.9205344473,0.9604870589,0.024793747,Bar Tilt,deg,1.2440945434,4.7821744132,0.4
 mass_balance,Mass Balance,lora,LoRA TTA,25.0171887398,0.8865342236,0.0628337131,Bar Tilt,deg,1.9245402889,7.7827585869,0.4
 mass_balance,Mass Balance,dino,DINOv2 Context,33.2519247464,0.9620577002,0.023964699,Bar Tilt,deg,1.2733094998,4.9726544196,0.4
