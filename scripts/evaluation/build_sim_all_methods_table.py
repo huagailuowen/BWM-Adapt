@@ -81,6 +81,7 @@ def write_csv(config: dict, output_dir: Path) -> None:
                 f"{task['id']}_ssim",
                 f"{task['id']}_lpips",
                 f"{task['id']}_object_metric_value",
+                f"{task['id']}_object_metric_final_value",
                 f"{task['id']}_object_metric_name",
                 f"{task['id']}_object_metric_unit",
                 f"{task['id']}_action_success",
@@ -97,6 +98,7 @@ def write_csv(config: dict, output_dir: Path) -> None:
                 row[f"{task['id']}_ssim"] = values.get("ssim")
                 row[f"{task['id']}_lpips"] = values.get("lpips")
                 row[f"{task['id']}_object_metric_value"] = values.get("object")
+                row[f"{task['id']}_object_metric_final_value"] = values.get("object_final")
                 row[f"{task['id']}_object_metric_name"] = task["object_metric"]
                 row[f"{task['id']}_object_metric_unit"] = task["object_unit"]
                 row[f"{task['id']}_action_success"] = values.get("action_success")
@@ -112,7 +114,8 @@ def write_csv(config: dict, output_dir: Path) -> None:
         "lpips",
         "object_metric_name",
         "object_metric_unit",
-        "object_metric_value",
+        "object_metric_mean_error",
+        "object_metric_final_error",
         "action_success",
     ]
     with (output_dir / "sim_all_methods_main_table_detailed.csv").open("w", newline="") as handle:
@@ -132,7 +135,8 @@ def write_csv(config: dict, output_dir: Path) -> None:
                         "lpips": values.get("lpips"),
                         "object_metric_name": task["object_metric"],
                         "object_metric_unit": task["object_unit"],
-                        "object_metric_value": values.get("object"),
+                        "object_metric_mean_error": values.get("object"),
+                        "object_metric_final_error": values.get("object_final"),
                         "action_success": values.get("action_success"),
                     }
                 )
@@ -268,13 +272,13 @@ def render(config: dict, output_dir: Path) -> None:
 
 def render_detailed(config: dict, output_dir: Path) -> None:
     """Detailed companion, sourced from the same values as the compact table."""
-    widths = [310, 420, 180, 180, 180, 370, 240]
+    widths = [310, 420, 180, 180, 180, 310, 210, 210, 260]
     left, top, header_height, row_height = 60, 170, 75, 64
     tasks, methods = config['tasks'], config['methods']
     count = len(tasks) * len(methods)
     bottom = top + header_height + count * row_height
     notes = [
-        'Object metric: centroid ADE (px); Light Switch: lamp MAE; Mass Balance: bar-tilt MAE (deg).',
+        'Object/physical errors use each task\'s named metric; Mean covers the full sequence and Final the last frame.',
         'Action Score uses each task\'s recorded protocol; Mass x Friction uses first-crossing +/-1 level match.',
         '* Mass Balance Ours: fixed-pose; baselines: workspace-random. Not a matched-dataset comparison.',
         'Dagger: Mass Collision LoRA uses the earlier recorded protocol. Missing results are --, not zero.',
@@ -294,7 +298,8 @@ def render_detailed(config: dict, output_dir: Path) -> None:
     def line(y, weight):
         draw.line((left, y, width - left, y), fill='#111', width=weight)
         svg.append(f'<line x1="{left}" x2="{width-left}" y1="{y}" y2="{y}" stroke="#111" stroke-width="{weight}"/>')
-    headers = ['Task', 'Method', 'PSNR (up)', 'SSIM (up)', 'LPIPS (down)', 'Object metric (down)', 'Action Score (up)']
+    headers = ['Task', 'Method', 'PSNR (up)', 'SSIM (up)', 'LPIPS (down)',
+               'Object / Physical Metric', 'Mean Error (down)', 'Final Error (down)', 'Action Score (up)']
     text(width / 2, 60, 'Simulation benchmark: detailed metrics', 40, True, True)
     text(width / 2, 115, 'Recorded formal evaluations; task-specific protocols and caveats retained', 25, center=True)
     line(top, 4)
@@ -315,9 +320,10 @@ def render_detailed(config: dict, output_dir: Path) -> None:
             action = fmt('action_success', 1, 100)
             if action != '--':
                 action += '%'
+            metric_label = f"{task['object_metric']} ({task['object_unit']})"
             cells = [task['label'], method['label'] + marker_suffix(value.get('marker')),
                      fmt('psnr', 3), fmt('ssim', 4), fmt('lpips', 4),
-                     fmt('object', 4) + ' ' + task['object_unit'], action]
+                     metric_label, fmt('object', 4), fmt('object_final', 4), action]
             y = top + header_height + row_height * (index + 0.5)
             x = left
             for column, (cell, cell_width) in enumerate(zip(cells, widths)):

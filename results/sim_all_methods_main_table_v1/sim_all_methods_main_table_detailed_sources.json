@@ -1,0 +1,140 @@
+{
+  "render_job_id": "119366",
+  "metrics_recomputed": false,
+  "aggregation": "Same arithmetic mean of formal domain summaries as recorded ADE.",
+  "sources": [
+    {
+      "task": "event80",
+      "method": "standard",
+      "source": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv",
+      "sha256": "6c3596460ba572fed6cf7968019c08a79547d09c8794907f1d4a6ed75f168256",
+      "centroid_fde_px": 24.41156699321046
+    },
+    {
+      "task": "event80",
+      "method": "lora",
+      "source": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv",
+      "sha256": "6c3596460ba572fed6cf7968019c08a79547d09c8794907f1d4a6ed75f168256",
+      "centroid_fde_px": 19.1901566461295
+    },
+    {
+      "task": "event80",
+      "method": "dino",
+      "source": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv",
+      "sha256": "6c3596460ba572fed6cf7968019c08a79547d09c8794907f1d4a6ed75f168256",
+      "centroid_fde_px": 26.17030102681226
+    },
+    {
+      "task": "event80",
+      "method": "ttt_kqv",
+      "source": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv",
+      "sha256": "6c3596460ba572fed6cf7968019c08a79547d09c8794907f1d4a6ed75f168256",
+      "centroid_fde_px": 23.86751288446616
+    },
+    {
+      "task": "event80",
+      "method": "ours",
+      "source": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv",
+      "sha256": "6c3596460ba572fed6cf7968019c08a79547d09c8794907f1d4a6ed75f168256",
+      "centroid_fde_px": 7.593104764861884
+    },
+    {
+      "task": "gravity",
+      "method": "standard",
+      "source": "results/gravity/gravity80_uniform5id5ood_strict_v1/methods/standard_pooled_wm/step_5218/seed_20260712/video_metrics/object_centric/object_summary.json",
+      "sha256": "7591b8800b14dc5a0dbaaab825be54261f609011aeedee97c14bc44747686c02",
+      "centroid_fde_px": 34.87792105616442
+    },
+    {
+      "task": "gravity",
+      "method": "lora",
+      "source": "results/gravity/gravity80_uniform5id5ood_strict_v1/methods/lora_tta/pooled_step_5218/seed_20260712/video_metrics/object_centric/object_summary.json",
+      "sha256": "70e5c4498e4ce2dea7bc3b35c5f70659d918a4368fdb5cfb6024165f51f31e33",
+      "centroid_fde_px": 13.713670388335597
+    },
+    {
+      "task": "gravity",
+      "method": "dino",
+      "source": "results/gravity/gravity80_uniform5id5ood_strict_v1/methods/dinov2_concat_mlp_random_k1k2/train_job_115810/step_8000/seed_20260708/video_metrics/object_centric/object_summary.json",
+      "sha256": "e314cea0bf477014747fc6d35dc080e59de4203555478f83faaa38b345c45b9d",
+      "centroid_fde_px": 5.8150374957984425
+    },
+    {
+      "task": "gravity",
+      "method": "ttt_kqv",
+      "source": "results/gravity/gravity80_uniform5id5ood_strict_v1/methods/ttt_kqv_prequential4/step_2600/seed_20260708/video_metrics/object_centric/object_summary.json",
+      "sha256": "99db5a7db19b389512b2a6a85a2849925a0fce2354e7813b61109184fdb79f61",
+      "centroid_fde_px": 30.935494825647403
+    },
+    {
+      "task": "gravity",
+      "method": "ours",
+      "source": "results/gravity/gravity80_uniform5id5ood_strict_v1/methods/ours/step_3837/seed_20260712/video_metrics/object_centric/object_summary.json",
+      "sha256": "4698c57a792237eb03d6d5cabf25696f33788e7c751f5d6d8f8b44f2751ca33e",
+      "centroid_fde_px": 11.06526133075015
+    },
+    {
+      "task": "mass_collision",
+      "method": "standard",
+      "source": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/standard_pooled_wm/step_8000/seed_20260827/video_metrics/object_centric/object_summary.json",
+      "sha256": "94e31c5c89ca528cc19f71276653b3a2847683ece98782d73befdfc4038567de",
+      "centroid_fde_px": 25.736414534042392
+    },
+    {
+      "task": "mass_collision",
+      "method": "lora",
+      "source": "results/mass_collision/noleak_grid_id5_ood5_k1_balanced_visible_or_min_action_v4/methods/lora_tta/pooled_step_8000/seed_20260827/video_metrics/object_centric/object_summary.json",
+      "sha256": "327ae557c0687d686bd8d897410f1617364f83f58b7765d04a7961d832ab1887",
+      "centroid_fde_px": 24.587731234800625
+    },
+    {
+      "task": "mass_collision",
+      "method": "dino",
+      "source": "results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1/methods/dinov2_concat_mlp_random_k1k2/train_job_115811/step_3662/seed_20260827/video_metrics/object_centric/object_summary.json",
+      "sha256": "14172a99e45a37c673084ba346cf03a4516a12ff03f8030e81ddfdbd13e69624",
+      "centroid_fde_px": 10.210078616896226
+    },
+    {
+      "task": "mass_collision",
+      "method": "ttt_kqv",
+      "source": "results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1/methods/ttt_kqv_prequential8/step_1255/seed_20260827/video_metrics/object_centric/object_summary.json",
+      "sha256": "8c8958cf5a99213b0933ef71792ef07d1f8ca70a2c5e4d892c75a5f8b723d280",
+      "centroid_fde_px": 29.29300410611116
+    },
+    {
+      "task": "mass_collision",
+      "method": "ours",
+      "source": "results/mass_collision/noleak_highmass2x_grid_id5_ood5_k1_balanced_visible_or_min_action_v1/methods/ours_action8_highmass2x/step_4300/seed_20260827/video_metrics/object_centric/object_summary.json",
+      "sha256": "1270d3157dd5020cbcf4a4afa26527fb38a6e092996e5d58612315c5b894bf29",
+      "centroid_fde_px": 8.132138198450617
+    },
+    {
+      "task": "mass_friction",
+      "method": "standard",
+      "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/standard_pooled_wm/step_3277/seed_20260719/video_metrics/object_centric/object_summary.json",
+      "sha256": "1cc41d3bf01cd0105e548f06c138eb0de32dfb253e1dc763eddb9e93eb04924d",
+      "centroid_fde_px": 29.245446992901304
+    },
+    {
+      "task": "mass_friction",
+      "method": "lora",
+      "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/lora_tta/pooled_step_3277/seed_20260719/video_metrics/object_centric/object_summary.json",
+      "sha256": "8da6719fa39136f79a21eee978401daf1a6435414a884cffe5b3ef2e38b3b6ef",
+      "centroid_fde_px": 26.930177560960608
+    },
+    {
+      "task": "mass_friction",
+      "method": "dino",
+      "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/dinov2_concat_mlp_random_k1k2/train_job_116348/step_5000/seed_20260720/video_metrics/object_centric/object_summary.json",
+      "sha256": "79784bd33b9484df6d4528c22e6b6f166c5fadadc9e6aa17db8be0f67d4539c1",
+      "centroid_fde_px": 19.075632446773817
+    },
+    {
+      "task": "mass_friction",
+      "method": "ours",
+      "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours/step_7172/seed_20260720/video_metrics/object_centric/object_summary.json",
+      "sha256": "8d182f765836509e9889e0fe9e8de0a57c38721ebc7165ea5767ab2f5e98833e",
+      "centroid_fde_px": 13.722182582732096
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+output_dir: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/inner_schedule_ablation_v1
+
+rows:
+  - key: ours
+    label: Standard staged (Ours)
+    steps: 40
+    schedule: "3.0/1.5/0.5/0.15 (10 each)"
+    scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv
+    method: ours
+  - key: constant_max_40
+    label: Constant maximum
+    steps: 40
+    schedule: "3.0 (40)"
+    scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/constant_max_40/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - key: constant_min_40
+    label: Constant minimum
+    steps: 40
+    schedule: "0.15 (40)"
+    scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/constant_min_40/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - key: scaled_x5_40
+    label: Staged LR x5
+    steps: 40
+    schedule: "15/7.5/2.5/0.75 (10 each)"
+    scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/scaled_x5_40/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - key: scaled_div5_40
+    label: Staged LR /5
+    steps: 40
+    schedule: "0.6/0.3/0.1/0.03 (10 each)"
+    scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/scaled_div5_40/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - key: proportional_20
+    label: Proportional 20 steps
+    steps: 20
+    schedule: "3.0/1.5/0.5/0.15 (5 each)"
+    scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/proportional_20/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - key: proportional_60
+    label: Proportional 60 steps
+    steps: 60
+    schedule: "3.0/1.5/0.5/0.15 (15 each)"
+    scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/proportional_60/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - key: proportional_80
+    label: Proportional 80 steps
+    steps: 80
+    schedule: "3.0/1.5/0.5/0.15 (20 each)"
+    scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_inner_schedule_ablation/proportional_80/step_7272/seed_20260708/metrics/complete_v1/scoreboard.csv

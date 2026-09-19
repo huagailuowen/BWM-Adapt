@@ -1,235 +1,297 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="2400" viewBox="0 0 2000 2400">
+<svg xmlns="http://www.w3.org/2000/svg" width="2380" height="2400" viewBox="0 0 2380 2400">
 <rect width="100%" height="100%" fill="white"/>
 <g fill="#111" font-family="DejaVu Serif,serif">
-<text x="1000.0" y="60" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="700">Simulation benchmark: detailed metrics</text>
-<text x="1000.0" y="115" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="400">Recorded formal evaluations; task-specific protocols and caveats retained</text>
-<line x1="60" x2="1940" y1="170" y2="170" stroke="#111" stroke-width="4"/>
+<text x="1190.0" y="60" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="700">Simulation benchmark: detailed metrics</text>
+<text x="1190.0" y="115" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="400">Recorded formal evaluations; task-specific protocols and caveats retained</text>
+<line x1="60" x2="2320" y1="170" y2="170" stroke="#111" stroke-width="4"/>
 <text x="72" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="700">Task</text>
 <text x="382" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="700">Method</text>
 <text x="802" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="700">PSNR (up)</text>
 <text x="982" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="700">SSIM (up)</text>
 <text x="1162" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="700">LPIPS (down)</text>
-<text x="1342" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="700">Object metric (down)</text>
-<text x="1712" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="700">Action Score (up)</text>
-<line x1="60" x2="1940" y1="245" y2="245" stroke="#111" stroke-width="2"/>
+<text x="1342" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="700">Object / Physical Metric</text>
+<text x="1652" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="700">Mean Error (down)</text>
+<text x="1862" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="700">Final Error (down)</text>
+<text x="2072" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="700">Action Score (up)</text>
+<line x1="60" x2="2320" y1="245" y2="245" stroke="#111" stroke-width="2"/>
 <text x="72" y="277.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Push-box Friction</text>
 <text x="382" y="277.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Standard Pooled WM</text>
 <text x="802" y="277.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">31.113</text>
 <text x="982" y="277.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9513</text>
 <text x="1162" y="277.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0667</text>
-<text x="1342" y="277.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">11.0626 px</text>
-<text x="1712" y="277.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.0%</text>
+<text x="1342" y="277.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="277.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">11.0626</text>
+<text x="1862" y="277.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">24.4116</text>
+<text x="2072" y="277.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.0%</text>
 <text x="72" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">LoRA TTA</text>
 <text x="802" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.031</text>
 <text x="982" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9535</text>
 <text x="1162" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0582</text>
-<text x="1342" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">8.1902 px</text>
-<text x="1712" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">40.0%</text>
+<text x="1342" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">8.1902</text>
+<text x="1862" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">19.1902</text>
+<text x="2072" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">40.0%</text>
 <text x="72" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">DINOv2 Context</text>
 <text x="802" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">30.697</text>
 <text x="982" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9495</text>
 <text x="1162" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0681</text>
-<text x="1342" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">11.8142 px</text>
-<text x="1712" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">48.0%</text>
+<text x="1342" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">11.8142</text>
+<text x="1862" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">26.1703</text>
+<text x="2072" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">48.0%</text>
 <text x="72" y="469.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="469.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">TTT-KQV</text>
 <text x="802" y="469.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">30.779</text>
 <text x="982" y="469.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9488</text>
 <text x="1162" y="469.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0649</text>
-<text x="1342" y="469.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">10.8137 px</text>
-<text x="1712" y="469.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.0%</text>
+<text x="1342" y="469.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="469.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">10.8137</text>
+<text x="1862" y="469.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">23.8675</text>
+<text x="2072" y="469.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.0%</text>
 <text x="72" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="700">Ours</text>
 <text x="802" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">31.976</text>
 <text x="982" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9513</text>
 <text x="1162" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0495</text>
-<text x="1342" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">3.8540 px</text>
-<text x="1712" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">68.0%</text>
-<line x1="60" x2="1940" y1="565" y2="565" stroke="#111" stroke-width="1"/>
+<text x="1342" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">3.8540</text>
+<text x="1862" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">7.5931</text>
+<text x="2072" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">68.0%</text>
+<line x1="60" x2="2320" y1="565" y2="565" stroke="#111" stroke-width="1"/>
 <text x="72" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Gravity</text>
 <text x="382" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Standard Pooled WM</text>
 <text x="802" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.509</text>
 <text x="982" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9523</text>
 <text x="1162" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0345</text>
-<text x="1342" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">21.4246 px</text>
-<text x="1712" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">23.5%</text>
+<text x="1342" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">21.4246</text>
+<text x="1862" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">34.8779</text>
+<text x="2072" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">23.5%</text>
 <text x="72" y="661.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="661.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">LoRA TTA</text>
 <text x="802" y="661.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.328</text>
 <text x="982" y="661.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9541</text>
 <text x="1162" y="661.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0231</text>
-<text x="1342" y="661.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">7.9005 px</text>
-<text x="1712" y="661.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">47.1%</text>
+<text x="1342" y="661.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="661.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">7.9005</text>
+<text x="1862" y="661.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">13.7137</text>
+<text x="2072" y="661.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">47.1%</text>
 <text x="72" y="725.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="725.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">DINOv2 Context</text>
 <text x="802" y="725.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">34.390</text>
 <text x="982" y="725.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9568</text>
 <text x="1162" y="725.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0164</text>
-<text x="1342" y="725.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">3.8973 px</text>
-<text x="1712" y="725.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">88.2%</text>
+<text x="1342" y="725.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="725.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">3.8973</text>
+<text x="1862" y="725.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">5.8150</text>
+<text x="2072" y="725.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">88.2%</text>
 <text x="72" y="789.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="789.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">TTT-KQV</text>
 <text x="802" y="789.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.308</text>
 <text x="982" y="789.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9549</text>
 <text x="1162" y="789.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0291</text>
-<text x="1342" y="789.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">18.9572 px</text>
-<text x="1712" y="789.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">35.3%</text>
+<text x="1342" y="789.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="789.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">18.9572</text>
+<text x="1862" y="789.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">30.9355</text>
+<text x="2072" y="789.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">35.3%</text>
 <text x="72" y="853.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="853.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="700">Ours</text>
 <text x="802" y="853.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.389</text>
 <text x="982" y="853.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9504</text>
 <text x="1162" y="853.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0202</text>
-<text x="1342" y="853.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">7.3408 px</text>
-<text x="1712" y="853.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">82.4%</text>
-<line x1="60" x2="1940" y1="885" y2="885" stroke="#111" stroke-width="1"/>
+<text x="1342" y="853.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="853.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">7.3408</text>
+<text x="1862" y="853.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">11.0653</text>
+<text x="2072" y="853.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">82.4%</text>
+<line x1="60" x2="2320" y1="885" y2="885" stroke="#111" stroke-width="1"/>
 <text x="72" y="917.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Mass Collision</text>
 <text x="382" y="917.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Standard Pooled WM</text>
 <text x="802" y="917.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">29.805</text>
 <text x="982" y="917.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9623</text>
 <text x="1162" y="917.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0904</text>
-<text x="1342" y="917.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">21.9329 px</text>
-<text x="1712" y="917.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">38.9%</text>
+<text x="1342" y="917.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="917.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">21.9329</text>
+<text x="1862" y="917.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">25.7364</text>
+<text x="2072" y="917.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">38.9%</text>
 <text x="72" y="981.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="981.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">LoRA TTA†</text>
 <text x="802" y="981.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">30.049</text>
 <text x="982" y="981.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9619</text>
 <text x="1162" y="981.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0691</text>
-<text x="1342" y="981.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">15.8704 px</text>
-<text x="1712" y="981.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.3%</text>
+<text x="1342" y="981.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="981.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">15.8704</text>
+<text x="1862" y="981.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">24.5877</text>
+<text x="2072" y="981.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.3%</text>
 <text x="72" y="1045.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1045.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">DINOv2 Context</text>
 <text x="802" y="1045.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">31.039</text>
 <text x="982" y="1045.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9668</text>
 <text x="1162" y="1045.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0540</text>
-<text x="1342" y="1045.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">8.5264 px</text>
-<text x="1712" y="1045.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">38.9%</text>
+<text x="1342" y="1045.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="1045.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">8.5264</text>
+<text x="1862" y="1045.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">10.2101</text>
+<text x="2072" y="1045.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">38.9%</text>
 <text x="72" y="1109.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1109.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">TTT-KQV</text>
 <text x="802" y="1109.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">29.385</text>
 <text x="982" y="1109.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9600</text>
 <text x="1162" y="1109.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0842</text>
-<text x="1342" y="1109.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">20.9753 px</text>
-<text x="1712" y="1109.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">55.6%</text>
+<text x="1342" y="1109.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="1109.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">20.9753</text>
+<text x="1862" y="1109.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">29.2930</text>
+<text x="2072" y="1109.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">55.6%</text>
 <text x="72" y="1173.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1173.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="700">Ours</text>
 <text x="802" y="1173.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">31.150</text>
 <text x="982" y="1173.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9625</text>
 <text x="1162" y="1173.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0538</text>
-<text x="1342" y="1173.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">6.4522 px</text>
-<text x="1712" y="1173.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">61.1%</text>
-<line x1="60" x2="1940" y1="1205" y2="1205" stroke="#111" stroke-width="1"/>
+<text x="1342" y="1173.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="1173.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">6.4522</text>
+<text x="1862" y="1173.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">8.1321</text>
+<text x="2072" y="1173.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">61.1%</text>
+<line x1="60" x2="2320" y1="1205" y2="1205" stroke="#111" stroke-width="1"/>
 <text x="72" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Light Switch</text>
 <text x="382" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Standard Pooled WM</text>
 <text x="802" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.619</text>
 <text x="982" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9480</text>
 <text x="1162" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0187</text>
-<text x="1342" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1035 score</text>
-<text x="1712" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">50.0%</text>
+<text x="1342" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Lamp Intensity (score)</text>
+<text x="1652" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1035</text>
+<text x="1862" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1882</text>
+<text x="2072" y="1237.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">50.0%</text>
 <text x="72" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">LoRA TTA</text>
 <text x="802" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">34.381</text>
 <text x="982" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9522</text>
 <text x="1162" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0134</text>
-<text x="1342" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0381 score</text>
-<text x="1712" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">87.5%</text>
+<text x="1342" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Lamp Intensity (score)</text>
+<text x="1652" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0381</text>
+<text x="1862" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0559</text>
+<text x="2072" y="1301.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">87.5%</text>
 <text x="72" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">DINOv2 Context</text>
 <text x="802" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.074</text>
 <text x="982" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9523</text>
 <text x="1162" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0160</text>
-<text x="1342" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1000 score</text>
-<text x="1712" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">50.0%</text>
+<text x="1342" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Lamp Intensity (score)</text>
+<text x="1652" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1000</text>
+<text x="1862" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1837</text>
+<text x="2072" y="1365.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">50.0%</text>
 <text x="72" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">TTT-KQV</text>
 <text x="802" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.696</text>
 <text x="982" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9523</text>
 <text x="1162" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0161</text>
-<text x="1342" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1046 score</text>
-<text x="1712" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">50.0%</text>
+<text x="1342" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Lamp Intensity (score)</text>
+<text x="1652" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1046</text>
+<text x="1862" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.1885</text>
+<text x="2072" y="1429.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">50.0%</text>
 <text x="72" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="700">Ours</text>
 <text x="802" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.454</text>
 <text x="982" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9443</text>
 <text x="1162" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0150</text>
-<text x="1342" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0358 score</text>
-<text x="1712" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">87.5%</text>
-<line x1="60" x2="1940" y1="1525" y2="1525" stroke="#111" stroke-width="1"/>
+<text x="1342" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Lamp Intensity (score)</text>
+<text x="1652" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0358</text>
+<text x="1862" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0496</text>
+<text x="2072" y="1493.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">87.5%</text>
+<line x1="60" x2="2320" y1="1525" y2="1525" stroke="#111" stroke-width="1"/>
 <text x="72" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Mass Balance</text>
 <text x="382" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Standard Pooled WM</text>
 <text x="802" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.921</text>
 <text x="982" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9605</text>
 <text x="1162" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0248</text>
-<text x="1342" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">1.2441 deg</text>
-<text x="1712" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">40.0%</text>
+<text x="1342" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Bar Tilt (deg)</text>
+<text x="1652" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">1.2441</text>
+<text x="1862" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">4.7822</text>
+<text x="2072" y="1557.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">40.0%</text>
 <text x="72" y="1621.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1621.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">LoRA TTA</text>
 <text x="802" y="1621.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">25.017</text>
 <text x="982" y="1621.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.8865</text>
 <text x="1162" y="1621.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0628</text>
-<text x="1342" y="1621.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">1.9245 deg</text>
-<text x="1712" y="1621.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">40.0%</text>
+<text x="1342" y="1621.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Bar Tilt (deg)</text>
+<text x="1652" y="1621.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">1.9245</text>
+<text x="1862" y="1621.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">7.7828</text>
+<text x="2072" y="1621.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">40.0%</text>
 <text x="72" y="1685.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1685.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">DINOv2 Context</text>
 <text x="802" y="1685.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.252</text>
 <text x="982" y="1685.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9621</text>
 <text x="1162" y="1685.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0240</text>
-<text x="1342" y="1685.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">1.2733 deg</text>
-<text x="1712" y="1685.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">40.0%</text>
+<text x="1342" y="1685.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Bar Tilt (deg)</text>
+<text x="1652" y="1685.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">1.2733</text>
+<text x="1862" y="1685.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">4.9727</text>
+<text x="2072" y="1685.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">40.0%</text>
 <text x="72" y="1749.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1749.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">TTT-KQV</text>
 <text x="802" y="1749.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">32.167</text>
 <text x="982" y="1749.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9568</text>
 <text x="1162" y="1749.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0305</text>
-<text x="1342" y="1749.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">2.3579 deg</text>
-<text x="1712" y="1749.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">30.0%</text>
+<text x="1342" y="1749.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Bar Tilt (deg)</text>
+<text x="1652" y="1749.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">2.3579</text>
+<text x="1862" y="1749.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">9.5113</text>
+<text x="2072" y="1749.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">30.0%</text>
 <text x="72" y="1813.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1813.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="700">Ours*</text>
 <text x="802" y="1813.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">33.509</text>
 <text x="982" y="1813.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9639</text>
 <text x="1162" y="1813.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0218</text>
-<text x="1342" y="1813.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.7617 deg</text>
-<text x="1712" y="1813.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">70.0%</text>
-<line x1="60" x2="1940" y1="1845" y2="1845" stroke="#111" stroke-width="1"/>
+<text x="1342" y="1813.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Bar Tilt (deg)</text>
+<text x="1652" y="1813.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.7617</text>
+<text x="1862" y="1813.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">2.4564</text>
+<text x="2072" y="1813.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">70.0%</text>
+<line x1="60" x2="2320" y1="1845" y2="1845" stroke="#111" stroke-width="1"/>
 <text x="72" y="1877.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Mass x Friction</text>
 <text x="382" y="1877.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Standard Pooled WM</text>
 <text x="802" y="1877.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">31.077</text>
 <text x="982" y="1877.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9648</text>
 <text x="1162" y="1877.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0610</text>
-<text x="1342" y="1877.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">16.0219 px</text>
-<text x="1712" y="1877.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">35.0%</text>
+<text x="1342" y="1877.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="1877.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">16.0219</text>
+<text x="1862" y="1877.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">29.2454</text>
+<text x="2072" y="1877.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">35.0%</text>
 <text x="72" y="1941.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="1941.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">LoRA TTA</text>
 <text x="802" y="1941.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">29.865</text>
 <text x="982" y="1941.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9611</text>
 <text x="1162" y="1941.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0701</text>
-<text x="1342" y="1941.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">16.8282 px</text>
-<text x="1712" y="1941.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">26.7%</text>
+<text x="1342" y="1941.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="1941.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">16.8282</text>
+<text x="1862" y="1941.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">26.9302</text>
+<text x="2072" y="1941.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">26.7%</text>
 <text x="72" y="2005.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="2005.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">DINOv2 Context</text>
 <text x="802" y="2005.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">31.367</text>
 <text x="982" y="2005.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9664</text>
 <text x="1162" y="2005.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0565</text>
-<text x="1342" y="2005.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">11.8116 px</text>
-<text x="1712" y="2005.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">60.8%</text>
+<text x="1342" y="2005.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="2005.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">11.8116</text>
+<text x="1862" y="2005.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">19.0756</text>
+<text x="2072" y="2005.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">60.8%</text>
 <text x="72" y="2069.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="2069.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">TTT-KQV</text>
 <text x="802" y="2069.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
 <text x="982" y="2069.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
 <text x="1162" y="2069.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
-<text x="1342" y="2069.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">-- px</text>
-<text x="1712" y="2069.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
+<text x="1342" y="2069.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="2069.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
+<text x="1862" y="2069.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
+<text x="2072" y="2069.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">--</text>
 <text x="72" y="2133.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="2133.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="700">Ours</text>
 <text x="802" y="2133.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">30.673</text>
 <text x="982" y="2133.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.9631</text>
 <text x="1162" y="2133.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">0.0500</text>
-<text x="1342" y="2133.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">8.1481 px</text>
-<text x="1712" y="2133.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">69.7%</text>
-<line x1="60" x2="1940" y1="2165" y2="2165" stroke="#111" stroke-width="1"/>
-<line x1="60" x2="1940" y1="2165" y2="2165" stroke="#111" stroke-width="4"/>
-<text x="60" y="2205" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400">Object metric: centroid ADE (px); Light Switch: lamp MAE; Mass Balance: bar-tilt MAE (deg).</text>
+<text x="1342" y="2133.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
+<text x="1652" y="2133.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">8.1481</text>
+<text x="1862" y="2133.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">13.7222</text>
+<text x="2072" y="2133.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">69.7%</text>
+<line x1="60" x2="2320" y1="2165" y2="2165" stroke="#111" stroke-width="1"/>
+<line x1="60" x2="2320" y1="2165" y2="2165" stroke="#111" stroke-width="4"/>
+<text x="60" y="2205" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400">Object/physical errors use each task&#x27;s named metric; Mean covers the full sequence and Final the last frame.</text>
 <text x="60" y="2242" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400">Action Score uses each task&#x27;s recorded protocol; Mass x Friction uses first-crossing +/-1 level match.</text>
 <text x="60" y="2279" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400">* Mass Balance Ours: fixed-pose; baselines: workspace-random. Not a matched-dataset comparison.</text>
 <text x="60" y="2316" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400">Dagger: Mass Collision LoRA uses the earlier recorded protocol. Missing results are --, not zero.</text>

@@ -1,0 +1,40 @@
+method: ours_inner_schedule_ablation
+checkpoint: outputs/curc32r65ib2-nc015_88823/step-7272.safetensors
+context_table: outputs/curc32r65ib2-nc015_88823/step-7272.context_table.json
+method_manifest: configs/methods/event80/manifests/ours_88823_step7272_active35.yaml
+training_config: configs/train/train_push_box_event_tap_segmented80_pushmotion41f_10chunk_curriculum_c32_random_stage1_15300.yaml
+benchmark_root: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1
+protocol_path: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json
+metric_template: configs/evaluation/event80/informative_support_complete_benchmark.yaml
+
+checkpoint_step: 7272
+seed: 20260708
+context_clamp_min: 0.0
+context_clamp_max: 1.0
+inner_grad_clip: 1.0
+context_reg_weight: 0.001
+num_inference_steps: 25
+fps: 20
+
+variants:
+  - name: constant_max_40
+    inner_steps: 40
+    inner_lr_schedule: "3.0:40"
+  - name: constant_min_40
+    inner_steps: 40
+    inner_lr_schedule: "0.15:40"
+  - name: scaled_x5_40
+    inner_steps: 40
+    inner_lr_schedule: "15.0:10,7.5:10,2.5:10,0.75:10"
+  - name: scaled_div5_40
+    inner_steps: 40
+    inner_lr_schedule: "0.6:10,0.3:10,0.1:10,0.03:10"
+  - name: proportional_20
+    inner_steps: 20
+    inner_lr_schedule: "3.0:5,1.5:5,0.5:5,0.15:5"
+  - name: proportional_60
+    inner_steps: 60
+    inner_lr_schedule: "3.0:15,1.5:15,0.5:15,0.15:15"
+  - name: proportional_80
+    inner_steps: 80
+    inner_lr_schedule: "3.0:20,1.5:20,0.5:20,0.15:20"

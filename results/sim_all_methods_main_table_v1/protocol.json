@@ -28,7 +28,7 @@
     {
       "id": "event80",
       "label": "Push-box Friction",
-      "object_metric": "Centroid ADE",
+      "object_metric": "Object Centroid",
       "object_unit": "px",
       "dino_variant": "transformer_fusion",
       "values": {
@@ -37,6 +37,7 @@
           "ssim": 0.9512804455,
           "lpips": 0.066700095,
           "object": 11.0626324,
+          "object_final": 24.4115669932,
           "action_success": 0.32
         },
         "lora": {
@@ -44,6 +45,7 @@
           "ssim": 0.9534704348,
           "lpips": 0.0581931916,
           "object": 8.19015242,
+          "object_final": 19.1901566461,
           "action_success": 0.4
         },
         "dino": {
@@ -51,6 +53,7 @@
           "ssim": 0.9494627636,
           "lpips": 0.0681499333,
           "object": 11.8141519,
+          "object_final": 26.1703010268,
           "action_success": 0.48
         },
         "ttt_kqv": {
@@ -58,6 +61,7 @@
           "ssim": 0.948839946,
           "lpips": 0.0648913885,
           "object": 10.8136638,
+          "object_final": 23.8675128845,
           "action_success": 0.32
         },
         "ours": {
@@ -65,6 +69,7 @@
           "ssim": 0.9512595724,
           "lpips": 0.0495121968,
           "object": 3.85398252,
+          "object_final": 7.5931047649,
           "action_success": 0.68
         }
       },
@@ -73,7 +78,7 @@
     {
       "id": "gravity",
       "label": "Gravity",
-      "object_metric": "Centroid ADE",
+      "object_metric": "Object Centroid",
       "object_unit": "px",
       "dino_variant": "concat_mlp_random_k1k2",
       "values": {
@@ -82,6 +87,7 @@
           "ssim": 0.9522585897,
           "lpips": 0.0344998174,
           "object": 21.4246314,
+          "object_final": 34.8779210562,
           "action_success": 0.2352941176
         },
         "lora": {
@@ -89,6 +95,7 @@
           "ssim": 0.9540976238,
           "lpips": 0.023058321,
           "object": 7.90046979,
+          "object_final": 13.7136703883,
           "action_success": 0.4705882353
         },
         "dino": {
@@ -96,6 +103,7 @@
           "ssim": 0.9568447320187679,
           "lpips": 0.01641299572462837,
           "object": 3.8972750934033256,
+          "object_final": 5.8150374958,
           "action_success": 0.8823529411764706
         },
         "ttt_kqv": {
@@ -103,6 +111,7 @@
           "ssim": 0.9548797975,
           "lpips": 0.029088736,
           "object": 18.95723597,
+          "object_final": 30.9354948256,
           "action_success": 0.3529411765
         },
         "ours": {
@@ -110,6 +119,7 @@
           "ssim": 0.950408559,
           "lpips": 0.0202085289,
           "object": 7.34081366,
+          "object_final": 11.0652613308,
           "action_success": 0.8235294118
         }
       },
@@ -122,7 +132,7 @@
     {
       "id": "mass_collision",
       "label": "Mass Collision",
-      "object_metric": "Centroid ADE",
+      "object_metric": "Object Centroid",
       "object_unit": "px",
       "dino_variant": "concat_mlp_random_k1k2",
       "values": {
@@ -131,6 +141,7 @@
           "ssim": 0.9623012794,
           "lpips": 0.0904242676,
           "object": 21.9328527,
+          "object_final": 25.736414534,
           "action_success": 0.3888888889
         },
         "lora": {
@@ -138,6 +149,7 @@
           "ssim": 0.9619245981,
           "lpips": 0.069110339,
           "object": 15.87042263,
+          "object_final": 24.5877312348,
           "action_success": 0.3333333333,
           "marker": "prior_protocol"
         },
@@ -146,6 +158,7 @@
           "ssim": 0.9667951221959512,
           "lpips": 0.053974001808092,
           "object": 8.526421727304418,
+          "object_final": 10.2100786169,
           "action_success": 0.3888888888888889
         },
         "ttt_kqv": {
@@ -153,6 +166,7 @@
           "ssim": 0.960043644,
           "lpips": 0.084207404,
           "object": 20.97531743,
+          "object_final": 29.2930041061,
           "action_success": 0.5555555556
         },
         "ours": {
@@ -160,6 +174,7 @@
           "ssim": 0.9625413722,
           "lpips": 0.0537618943,
           "object": 6.45219353,
+          "object_final": 8.1321381985,
           "action_success": 0.6111111111
         }
       },
@@ -171,7 +186,7 @@
     {
       "id": "light_switch",
       "label": "Light Switch",
-      "object_metric": "Lamp MAE",
+      "object_metric": "Lamp Intensity",
       "object_unit": "score",
       "dino_variant": "concat_mlp",
       "values": {
@@ -180,6 +195,7 @@
           "ssim": 0.9479967998,
           "lpips": 0.0186951045,
           "object": 0.1034960864,
+          "object_final": 0.1881967035,
           "action_success": 0.5
         },
         "lora": {
@@ -187,6 +203,7 @@
           "ssim": 0.9522285989,
           "lpips": 0.013379099,
           "object": 0.0381124189,
+          "object_final": 0.0559152028,
           "action_success": 0.875
         },
         "dino": {
@@ -194,6 +211,7 @@
           "ssim": 0.9522954091,
           "lpips": 0.016034239,
           "object": 0.1000418959,
+          "object_final": 0.1836749078,
           "action_success": 0.5
         },
         "ttt_kqv": {
@@ -201,6 +219,7 @@
           "ssim": 0.9522860012,
           "lpips": 0.016106703,
           "object": 0.1045886648,
+          "object_final": 0.1885491217,
           "action_success": 0.5
         },
         "ours": {
@@ -208,6 +227,7 @@
           "ssim": 0.9443145757,
           "lpips": 0.0149639813,
           "object": 0.0358176758,
+          "object_final": 0.0495825201,
           "action_success": 0.875
         }
       },
@@ -216,7 +236,7 @@
     {
       "id": "mass_balance",
       "label": "Mass Balance",
-      "object_metric": "Bar Tilt MAE",
+      "object_metric": "Bar Tilt",
       "object_unit": "deg",
       "unranked_metrics": [
         "lpips"
@@ -228,6 +248,7 @@
           "ssim": 0.9604870589,
           "lpips": 0.024793747,
           "object": 1.2440945434,
+          "object_final": 4.7821744132,
           "action_success": 0.4
         },
         "lora": {
@@ -235,6 +256,7 @@
           "ssim": 0.8865342236,
           "lpips": 0.0628337131,
           "object": 1.9245402889,
+          "object_final": 7.7827585869,
           "action_success": 0.4
         },
         "dino": {
@@ -242,6 +264,7 @@
           "ssim": 0.9620577002,
           "lpips": 0.023964699,
           "object": 1.2733094998,
+          "object_final": 4.9726544196,
           "action_success": 0.4
         },
         "ttt_kqv": {
@@ -249,6 +272,7 @@
           "ssim": 0.9568346087,
           "lpips": 0.030535396,
           "object": 2.3578835273,
+          "object_final": 9.5113131844,
           "action_success": 0.3
         },
         "ours": {
@@ -256,6 +280,7 @@
           "ssim": 0.9639204866,
           "lpips": 0.02179223984213812,
           "object": 0.7616631395,
+          "object_final": 2.4563853256,
           "action_success": 0.7,
           "marker": "cross_dataset"
         }
@@ -286,7 +311,7 @@
         "ours": 0.5416666667
       },
       "label": "Mass x Friction",
-      "object_metric": "Centroid ADE",
+      "object_metric": "Object Centroid",
       "object_unit": "px",
       "dino_variant": "completed_recorded_run",
       "values": {
@@ -295,6 +320,7 @@
           "ssim": 0.9648366005,
           "lpips": 0.0609880909,
           "object": 16.0218932,
+          "object_final": 29.2454469929,
           "action_success": 0.35000000000000003
         },
         "lora": {
@@ -302,6 +328,7 @@
           "ssim": 0.9610607465,
           "lpips": 0.070110374,
           "object": 16.82824858,
+          "object_final": 26.930177561,
           "action_success": 0.26666666666666666
         },
         "dino": {
@@ -309,6 +336,7 @@
           "ssim": 0.9664255161998703,
           "lpips": 0.05650115123717114,
           "object": 11.811561397574742,
+          "object_final": 19.0756324468,
           "action_success": 0.6083333333333333
         },
         "ttt_kqv": {
@@ -316,6 +344,7 @@
           "ssim": null,
           "lpips": null,
           "object": null,
+          "object_final": null,
           "action_success": null
         },
         "ours": {
@@ -323,6 +352,7 @@
           "ssim": 0.9630712652,
           "lpips": 0.0499914565,
           "object": 8.14806081,
+          "object_final": 13.7221825827,
           "action_success": 0.6972222222222223
         }
       },

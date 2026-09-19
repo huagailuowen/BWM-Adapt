@@ -7,7 +7,7 @@
 <text x="1000.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Push-box Friction</text>
 <text x="760.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
 <text x="760.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="1000.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Centroid ADE</text>
+<text x="1000.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
 <text x="1000.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
 <text x="1240.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
 <text x="1240.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
@@ -15,7 +15,7 @@
 <text x="1720.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Gravity</text>
 <text x="1480.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
 <text x="1480.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="1720.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Centroid ADE</text>
+<text x="1720.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
 <text x="1720.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
 <text x="1960.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
 <text x="1960.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
@@ -23,7 +23,7 @@
 <text x="2440.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Mass Collision</text>
 <text x="2200.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
 <text x="2200.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="2440.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Centroid ADE</text>
+<text x="2440.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
 <text x="2440.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
 <text x="2680.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
 <text x="2680.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
@@ -31,7 +31,7 @@
 <text x="3160.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Light Switch</text>
 <text x="2920.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
 <text x="2920.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="3160.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Lamp MAE</text>
+<text x="3160.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Lamp Intensity</text>
 <text x="3160.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(score) down</text>
 <text x="3400.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
 <text x="3400.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
@@ -39,7 +39,7 @@
 <text x="3880.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Mass Balance</text>
 <text x="3640.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
 <text x="3640.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="3880.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Bar Tilt MAE</text>
+<text x="3880.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Bar Tilt</text>
 <text x="3880.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(deg) down</text>
 <text x="4120.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
 <text x="4120.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
@@ -47,7 +47,7 @@
 <text x="4600.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Mass x Friction</text>
 <text x="4360.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
 <text x="4360.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="4600.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Centroid ADE</text>
+<text x="4600.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
 <text x="4600.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
 <text x="4840.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
 <text x="4840.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
