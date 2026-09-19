@@ -1,4 +1,63 @@
-# Real97 main results
+## Current release: Stick DINO / TTT completed (2026-09-19)
+
+The CSV and compact SVG/PNG main charts now include Stick DINO and TTT. Only their previously empty Stick cells were filled. All current sim-LR Ours scores, other baseline scores, and Soft Onset@6deg scores are preserved.
+
+| Stick method | PSNR | SSIM | LPIPS | ADE px | FDE px | Action precision, fixed36 % |
+|---|---:|---:|---:|---:|---:|---:|
+| DINOv2 concat-MLP | 33.58 | 0.95292 | 0.03640 | 2.80 | 7.54 | 20.00 |
+| TTT | 33.38 | 0.95224 | 0.03948 | 4.49 | 10.40 | 25.00 |
+| Current Ours, sim-LR | 32.05 | 0.94271 | 0.04175 | 2.27 | 5.01 | 83.33 |
+
+Image metrics and ADE use the full 45 test queries. DINO/TTT FDE each has 35 valid queries; current Ours has 36. DINO/TTT use their recorded common tracking masks with GT/Standard/historical Ours, not a new common mask with current sim-LR Ours. Thus this is a source-score compilation, not a newly matched-mask comparison. Missing tracks are not assigned zero error.
+
+Action preserves the existing post-hoc seed20260927 fixed36 subset: DINO 1/5, TTT 2/8, current Ours 5/6 predicted-balanced candidates are GT-balanced. For transparency, DINO and TTT full45 action precision is 8/12 (66.67%) and 7/13 (53.85%), respectively. These full45 numbers are not substituted into the fixed36 main column.
+
+Baseline provenance: [DINO](metrics/stick_dino_completed_codecfix_20260919.json), [TTT](metrics/stick_ttt_completed_codecfix_20260919.json). Only each baseline's own scores are promoted from these snapshots; their historical Ours comparison rows are NOT the current Ours. Scoring uses canonical reference GT after an all-frame export-codec audit; raw predictions are unchanged. Additional manual visual auditing remains pending.
+
+Current Ours provenance: [sim-LR selection](metrics/ours_simlr_mean_selected_20260918.json), superseded for Soft's latest common-mask scores by the following Soft section. Stage2 uses 3.0/1.5/0.5/0.15 for ten updates each, no ROI or hard Z bounds. Door/Ball use dual6500 cluster centers; Stick3900 uses the whole-table mean; Soft5500 uses L/R/8 family means.
+
+The current main latent figure is the [sim-LR training/inference PCA](train_inference_latents_simlr_20260918_v1/train_inference_pca_preview.svg), with [source manifest](train_inference_latents_simlr_20260918_v1/manifest.json). It retains training-only PCA bases and original environment colors; circles denote training and black-bordered triangles denote inference. Latest third-latent training plots are separate experiments, not replacements for this selected result.
+
+Soft includes its action-related sliding-onset Success@6deg metric, currently 81.82% (9/11) for Ours; the previous "no Soft action metric" statements below are historical.
+
+## Current Soft baselines: static9 Standard / LoRA, shared6 evaluation (2026-09-19)
+
+This section supersedes earlier Soft Standard, LoRA and Ours entries. Main and detailed charts use the fixed shared-six test cohort (12 queries). Other tasks and DINO/TTT entries are unchanged.
+Environments: soft-1l, soft-2l, soft-1r, soft-5r, soft-2m, soft-8. Training uses all nine environments for the new Standard/LoRA, checkpoint5148; this chart is a six-environment evaluation, not six-environment training.
+All three methods observe one initial frame. Ours is the selected step5500 sim-LR / family-mean run.
+
+| Method | PSNR | SSIM | LPIPS | ADE px | FDE px | Onset@6deg % |
+|---|---:|---:|---:|---:|---:|---:|
+| Standard | 33.32 | 0.96502 | 0.07207 | 21.71 | 35.90 | 63.64 |
+| LoRA TTA | 33.63 | 0.96536 | 0.06862 | 18.63 | 26.20 | 63.64 |
+| Ours | 32.58 | 0.96143 | 0.07534 | 18.06 | 22.59 | 81.82 |
+
+ADE uses the common GT/newStandard/newLoRA/currentOurs valid-frame mask; DINO/TTT retain their historical masks on the same query cohort. FDE uses the actual final eligible frame. Do not assume all five methods share identical valid-frame masks.
+Onset success uses the previously post-hoc selected6deg threshold, 11 GT-positive queries. Automated tracking has not received an additional manual audit.
+All-nine results remain in `metrics/soft_static9_standard_lora_full_summary_20260919.json`; the shared-six comparison is not a claim of superiority over all nine environments.
+
+---
+## Current Ours: sim-LR and mean initialization (2026-09-18)
+
+This section supersedes historical Ours entries below. Main and detailed tables now use the user-selected sim-LR results; baseline rows are unchanged.
+Stage2: 3.0 / 1.5 / 0.5 / 0.15, ten updates each; no ROI or hard Z bounds.
+Door/Ball: dual6500 cluster centers. Stick3900: full-table mean. Soft5500: L/R/8 means.
+
+| Task | PSNR | SSIM | LPIPS | ADE px | FDE px | Action % |
+|---|---:|---:|---:|---:|---:|---:|
+| door | 32.07 | 0.92660 | 0.03361 | 9.01 | 15.75 | 61.11 |
+| ball | 35.96 | 0.96001 | 0.02883 | 20.36 | 41.14 | 56.25 |
+| stick | 32.05 | 0.94271 | 0.04175 | 2.27 | 5.01 | 83.33 |
+| soft | 32.58 | 0.96143 | 0.07529 | 18.24 | 22.59 | 81.82 |
+
+Stick FDE uses 36 valid new-Ours queries; baseline counts/masks are not changed. Do not assume identical valid-frame sets across versions.
+Stick action remains the post-hoc seed20260927 fixed36 subset (5/6 selected candidates correct). Soft onset remains the previously post-hoc selected <=6-degree rule (9/11).
+Automatic tracking has not received an additional manual audit. Changing checkpoint/initialization as well as LR prevents attributing differences solely to LR.
+Full precision and provenance: `metrics/ours_simlr_mean_selected_20260918.json`.
+Historical Ours row: `metrics/ours_before_simlr_promotion_20260918.json`.
+
+---
+# Historical Real97 main results archive (superseded by the current sections above)
 
 Compiled on 2026-09-14 from completed evaluations. This is a table-only
 compilation, not a new inference or scoring run. Source outputs are unchanged.
@@ -238,3 +297,45 @@ and Ours ADE/FDE were updated with the same mask rather than mixing old and
 new populations. No video, model, support, query or classifier was changed.
 Tracking results remain provisional pending visual audit. Door, Ball and Soft
 entries are unchanged; no Stage1 row is displayed.
+
+
+## Soft onset score added: post-hoc Success@6 degrees
+
+This update supersedes the earlier statement that Soft has no action-related
+metric. The main and detailed figures now display **onset Success@6 degrees**.
+This measures the rotation error at the detected start of sliding, not the
+success of executing a model-selected action.
+
+The cohort is the existing shared-six twelve-query test set. Eleven GT videos
+have detected sliding; these eleven form the success-rate denominator. The
+remaining fully observed GT video has no detected onset within the window and
+is reported separately for false positives. No methods miss a positive onset
+or predict a false onset in the negative video under this rule.
+
+Onset is the first of three consecutive valid frames whose signed horizontal
+displacement from that video's initial visible-box center exceeds eight pixels
+in the same direction. The angle error compares cumulative target rotation at
+the predicted and GT onset timestamps. Success means error <= 6 degrees.
+
+| Method | Successes / GT-positive queries | Success@6 degrees |
+| --- | ---: | ---: |
+| Standard | 6/11 | 54.55% |
+| LoRA TTA | unavailable | |
+| DINOv2 concat-MLP | 8/11 | 72.73% |
+| TTT | 8/11 | 72.73% |
+| Ours | 9/11 | 81.82% |
+
+**The six-degree tolerance was selected after inspecting the method-by-threshold
+comparison. This is a post-hoc, provisional main-table entry, not an independently
+validated or preregistered metric.** The 5/6/7/8/9/10-degree comparison showed that
+6 through 9 degrees give the same counts. Onset labels have not been manually
+audited. Pixel-threshold sensitivity is retained, including settings where the
+method ordering differs.
+
+[Exact protocol, counts and successful query IDs](metrics/soft_onset_success6_posthoc.json).
+[Original exploratory results and sensitivity analyses](soft_sliding_onset_exploratory_v1/README.md).
+All image/object metrics, raw predictions, dataset splits, and training runs are unchanged.
+
+## Combined training / inference latent archive
+
+The selected sim-LR run is archived in [train_inference_latents_simlr_20260918_v1/index.html](train_inference_latents_simlr_20260918_v1/index.html): one combined table (99 rows), all 32-dimensional training/inference Z values, initial Z, complete trajectories, configs and a four-task PCA preview. No model binaries or videos.
