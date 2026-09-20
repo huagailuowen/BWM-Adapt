@@ -5,9 +5,9 @@
       "decision_count": 15,
       "headline_task_success_rate": 0.3076923076923077,
       "mean_action_coverage": 1.0,
-      "mean_regret": 0.044131672802442914,
+      "mean_regret": 0.04297134007961019,
       "oracle_reachable_complete_count": 13,
-      "selected_is_oracle_rate": 0.23076923076923078,
+      "selected_is_oracle_rate": 0.15384615384615385,
       "uniform_random_success_rate": 0.16923076923076924,
       "valid_decision_count": 15
     },
@@ -16,9 +16,9 @@
       "decision_count": 15,
       "headline_task_success_rate": 0.3333333333333333,
       "mean_action_coverage": 1.0,
-      "mean_regret": 0.04002266242118554,
+      "mean_regret": 0.03914229905090281,
       "oracle_reachable_complete_count": 12,
-      "selected_is_oracle_rate": 0.25,
+      "selected_is_oracle_rate": 0.16666666666666666,
       "uniform_random_success_rate": 0.17500000000000002,
       "valid_decision_count": 15
     }
@@ -51,9 +51,9 @@
       "decision_count": 5,
       "headline_task_success_rate": 0.75,
       "mean_action_coverage": 1.0,
-      "mean_regret": 0.004561011904761908,
+      "mean_regret": 0.0007899305555555403,
       "oracle_reachable_complete_count": 4,
-      "selected_is_oracle_rate": 0.75,
+      "selected_is_oracle_rate": 0.5,
       "uniform_random_success_rate": 0.15,
       "valid_decision_count": 5
     },
@@ -84,9 +84,9 @@
       "decision_count": 5,
       "headline_task_success_rate": 0.75,
       "mean_action_coverage": 1.0,
-      "mean_regret": 0.003384936635944691,
+      "mean_regret": 0.0007438465250965143,
       "oracle_reachable_complete_count": 4,
-      "selected_is_oracle_rate": 0.75,
+      "selected_is_oracle_rate": 0.5,
       "uniform_random_success_rate": 0.15,
       "valid_decision_count": 5
     }
@@ -119,9 +119,9 @@
       "decision_count": 10,
       "headline_task_success_rate": 0.75,
       "mean_action_coverage": 1.0,
-      "mean_regret": 0.003972974270353299,
+      "mean_regret": 0.0007668885403260273,
       "oracle_reachable_complete_count": 8,
-      "selected_is_oracle_rate": 0.75,
+      "selected_is_oracle_rate": 0.5,
       "uniform_random_success_rate": 0.15,
       "valid_decision_count": 10
     }
@@ -132,9 +132,9 @@
     "decision_count": 30,
     "headline_task_success_rate": 0.32,
     "mean_action_coverage": 1.0,
-    "mean_regret": 0.04215934781943938,
+    "mean_regret": 0.041133400385830646,
     "oracle_reachable_complete_count": 25,
-    "selected_is_oracle_rate": 0.24,
+    "selected_is_oracle_rate": 0.16,
     "uniform_random_success_rate": 0.172,
     "valid_decision_count": 30
   },

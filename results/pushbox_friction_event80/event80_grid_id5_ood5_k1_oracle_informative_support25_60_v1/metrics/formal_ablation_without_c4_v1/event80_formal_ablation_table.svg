@@ -25,7 +25,7 @@
 <text x="1870.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.976</text>
 <text x="2170.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9513</text>
 <text x="2470.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0495</text>
-<text x="2830.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">68%</text>
+<text x="2830.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">72%</text>
 <line x1="90" y1="420" x2="3040" y2="420" stroke="#111111" stroke-width="1"/>
 <text x="105" y="470.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">Joint model-Z (700-step cycle)</text>
 <text x="1210.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">7.03</text>
@@ -33,21 +33,21 @@
 <text x="1870.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.203</text>
 <text x="2170.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9465</text>
 <text x="2470.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0657</text>
-<text x="2830.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">64%</text>
+<text x="2830.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">68%</text>
 <text x="105" y="570.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">No curriculum + joint</text>
 <text x="1210.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">5.68</text>
 <text x="1550.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">12.28</text>
 <text x="1870.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.697</text>
 <text x="2170.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9507</text>
 <text x="2470.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0547</text>
-<text x="2830.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">60%</text>
+<text x="2830.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">64%</text>
 <text x="105" y="670.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">No curriculum + iterative</text>
 <text x="1210.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">6.17</text>
 <text x="1550.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">12.81</text>
 <text x="1870.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.799</text>
 <text x="2170.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">0.9514</text>
 <text x="2470.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0549</text>
-<text x="2830.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">56%</text>
+<text x="2830.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">60%</text>
 <text x="105" y="770.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">Direct token (3072-D)</text>
 <text x="1210.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">94.50</text>
 <text x="1550.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">80.49</text>
@@ -61,7 +61,7 @@
 <text x="1870.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">30.638</text>
 <text x="2170.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9466</text>
 <text x="2470.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0631</text>
-<text x="2830.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">56%</text>
+<text x="2830.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">64%</text>
 <text x="105" y="970.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">C32 random [-0.05, 0.05]</text>
 <text x="1210.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">4.81</text>
 <text x="1550.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">9.73</text>

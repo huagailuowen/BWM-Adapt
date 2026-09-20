@@ -1,10 +1,19 @@
 {
-  "method_count": 8,
+  "method_count": 9,
   "methods": [
     {
-      "method": "all_active_joint_no_curriculum",
+      "method": "all_active_iterative_no_curriculum",
       "new_long": 0.75,
       "new_overall": 0.6,
+      "new_random_long": 0.25,
+      "new_random_overall": 0.172,
+      "old_long": 0.75,
+      "old_overall": 0.56
+    },
+    {
+      "method": "all_active_joint_no_curriculum",
+      "new_long": 0.875,
+      "new_overall": 0.64,
       "new_random_long": 0.25,
       "new_random_overall": 0.172,
       "old_long": 0.75,
@@ -12,8 +21,8 @@
     },
     {
       "method": "dinov2_amortized_context",
-      "new_long": 0.25,
-      "new_overall": 0.32,
+      "new_long": 0.5,
+      "new_overall": 0.48,
       "new_random_long": 0.25,
       "new_random_overall": 0.172,
       "old_long": 0.5,
@@ -40,7 +49,7 @@
     {
       "method": "lora_tta",
       "new_long": 0.75,
-      "new_overall": 0.4,
+      "new_overall": 0.48,
       "new_random_long": 0.25,
       "new_random_overall": 0.172,
       "old_long": 0.75,
@@ -48,8 +57,8 @@
     },
     {
       "method": "ours",
-      "new_long": 0.625,
-      "new_overall": 0.68,
+      "new_long": 0.75,
+      "new_overall": 0.72,
       "new_random_long": 0.25,
       "new_random_overall": 0.172,
       "old_long": 0.625,
@@ -67,7 +76,7 @@
     {
       "method": "ttt_kqv",
       "new_long": 0.25,
-      "new_overall": 0.24,
+      "new_overall": 0.32,
       "new_random_long": 0.25,
       "new_random_overall": 0.172,
       "old_long": 0.25,

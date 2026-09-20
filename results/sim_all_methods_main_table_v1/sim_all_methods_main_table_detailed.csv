@@ -1,9 +1,9 @@
 task_id,task,method_id,method,psnr,ssim,lpips,object_metric_name,object_metric_unit,object_metric_mean_error,object_metric_final_error,action_success
 event80,Push-box Friction,standard,Standard Pooled WM,31.1126110289,0.9512804455,0.066700095,Object Centroid,px,11.0626324,24.4115669932,0.32
-event80,Push-box Friction,lora,LoRA TTA,32.0305892732,0.9534704348,0.0581931916,Object Centroid,px,8.19015242,19.1901566461,0.4
+event80,Push-box Friction,lora,LoRA TTA,32.0305892732,0.9534704348,0.0581931916,Object Centroid,px,8.19015242,19.1901566461,0.48
 event80,Push-box Friction,dino,DINOv2 Context,30.6967826631,0.9494627636,0.0681499333,Object Centroid,px,11.8141519,26.1703010268,0.48
 event80,Push-box Friction,ttt_kqv,TTT-KQV,30.7789604187,0.948839946,0.0648913885,Object Centroid,px,10.8136638,23.8675128845,0.32
-event80,Push-box Friction,ours,Ours,31.975629637,0.9512595724,0.0495121968,Object Centroid,px,3.85398252,7.5931047649,0.68
+event80,Push-box Friction,ours,Ours,31.975629637,0.9512595724,0.0495121968,Object Centroid,px,3.85398252,7.5931047649,0.72
 gravity,Gravity,standard,Standard Pooled WM,32.5094810698,0.9522585897,0.0344998174,Object Centroid,px,21.4246314,34.8779210562,0.2352941176
 gravity,Gravity,lora,LoRA TTA,33.3280329598,0.9540976238,0.023058321,Object Centroid,px,7.90046979,13.7136703883,0.4705882353
 gravity,Gravity,dino,DINOv2 Context,34.39044507344563,0.9568447320187679,0.01641299572462837,Object Centroid,px,3.8972750934033256,5.8150374958,0.8823529411764706

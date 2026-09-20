@@ -108,7 +108,12 @@ def main() -> None:
     scoreboard_path = root / "scoreboard.json"
     scoreboard = json.loads(scoreboard_path.read_text())
     for row in scoreboard:
-        summary = summaries[str(row["method"])]
+        summary = summaries.get(str(row["method"]))
+        if summary is None:
+            # Aggregated scoreboards may include rows copied from another
+            # metrics root. Re-score local candidate caches here and let the
+            # aggregation step refresh externally sourced rows afterwards.
+            continue
         overall = summary["overall"]
         row.update(
             {
@@ -141,7 +146,8 @@ def main() -> None:
     benchmark_path = root / "benchmark_summary.json"
     benchmark = json.loads(benchmark_path.read_text())
     for method, summary in summaries.items():
-        benchmark[method]["action_selection"] = summary
+        if method in benchmark:
+            benchmark[method]["action_selection"] = summary
     _write_json(benchmark_path, benchmark)
 
     _write_json(

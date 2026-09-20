@@ -3,10 +3,10 @@
 | Task | Method | PSNR (up) | SSIM (up) | LPIPS (down) | Object / Physical Metric | Mean Error (down) | Final Error (down) | Action Score (up) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Push-box Friction | Standard Pooled WM | 31.113 | 0.9513 | 0.0667 | Object Centroid (px) | 11.0626 | 24.4116 | 32.0% |
-| Push-box Friction | LoRA TTA | 32.031 | 0.9535 | 0.0582 | Object Centroid (px) | 8.1902 | 19.1902 | 40.0% |
+| Push-box Friction | LoRA TTA | 32.031 | 0.9535 | 0.0582 | Object Centroid (px) | 8.1902 | 19.1902 | 48.0% |
 | Push-box Friction | DINOv2 Context | 30.697 | 0.9495 | 0.0681 | Object Centroid (px) | 11.8142 | 26.1703 | 48.0% |
 | Push-box Friction | TTT-KQV | 30.779 | 0.9488 | 0.0649 | Object Centroid (px) | 10.8137 | 23.8675 | 32.0% |
-| Push-box Friction | Ours | 31.976 | 0.9513 | 0.0495 | Object Centroid (px) | 3.8540 | 7.5931 | 68.0% |
+| Push-box Friction | Ours | 31.976 | 0.9513 | 0.0495 | Object Centroid (px) | 3.8540 | 7.5931 | 72.0% |
 | Gravity | Standard Pooled WM | 32.509 | 0.9523 | 0.0345 | Object Centroid (px) | 21.4246 | 34.8779 | 23.5% |
 | Gravity | LoRA TTA | 33.328 | 0.9541 | 0.0231 | Object Centroid (px) | 7.9005 | 13.7137 | 47.1% |
 | Gravity | DINOv2 Context | 34.390 | 0.9568 | 0.0164 | Object Centroid (px) | 3.8973 | 5.8150 | 88.2% |
@@ -35,6 +35,7 @@
 
 ## Scope and provenance
 
+- Push-box Friction short-range success uses normalized image-y 0.595-0.68; if no predicted action reaches the long-range target, selection maximizes predicted image-y rounded to three decimals and breaks ties toward the higher action level.
 - Lower is better for LPIPS and the task-specific object/physical metric; higher is better for Action Success.
 - DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Gravity, Mass Collision, Light Switch, and Mass Balance; the completed Mass x Friction DINOv2 evaluation is included.
 - Mass Balance Ours values marked with an asterisk use the completed fixed-pose 5-ID/5-OOD nearest-unbalanced-support test, while baseline rows use workspace-random data; available values participate in column ranking.

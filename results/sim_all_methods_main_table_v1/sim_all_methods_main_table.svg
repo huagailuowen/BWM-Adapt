@@ -75,7 +75,7 @@
 <text x="68.0" y="585.0" text-anchor="start" dominant-baseline="middle" font-size="28" class="">LoRA TTA</text>
 <text x="760.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0582</text>
 <text x="1000.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">8.19</text>
-<text x="1240.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">40.0</text>
+<text x="1240.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">48.0</text>
 <text x="1480.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0231</text>
 <text x="1720.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">7.90</text>
 <text x="1960.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">47.1</text>
@@ -135,7 +135,7 @@
 <text x="68.0" y="915.0" text-anchor="start" dominant-baseline="middle" font-size="28" class="bold">Ours</text>
 <text x="760.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0495</text>
 <text x="1000.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">3.85</text>
-<text x="1240.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">68.0</text>
+<text x="1240.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">72.0</text>
 <text x="1480.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0202</text>
 <text x="1720.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">7.34</text>
 <text x="1960.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">82.4</text>

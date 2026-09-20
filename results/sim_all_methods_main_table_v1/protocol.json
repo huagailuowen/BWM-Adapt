@@ -46,7 +46,7 @@
           "lpips": 0.0581931916,
           "object": 8.19015242,
           "object_final": 19.1901566461,
-          "action_success": 0.4
+          "action_success": 0.48
         },
         "dino": {
           "psnr": 30.6967826631,
@@ -70,7 +70,7 @@
           "lpips": 0.0495121968,
           "object": 3.85398252,
           "object_final": 7.5931047649,
-          "action_success": 0.68
+          "action_success": 0.72
         }
       },
       "source": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv"
@@ -362,6 +362,7 @@
     }
   ],
   "notes": [
+    "Push-box Friction short-range success uses normalized image-y 0.595-0.68; if no predicted action reaches the long-range target, selection maximizes predicted image-y rounded to three decimals and breaks ties toward the higher action level.",
     "Lower is better for LPIPS and the task-specific object/physical metric; higher is better for Action Success.",
     "DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Gravity, Mass Collision, Light Switch, and Mass Balance; the completed Mass x Friction DINOv2 evaluation is included.",
     "Mass Balance Ours values marked with an asterisk use the completed fixed-pose 5-ID/5-OOD nearest-unbalanced-support test, while baseline rows use workspace-random data; available values participate in column ranking.",

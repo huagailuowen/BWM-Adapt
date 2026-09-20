@@ -111,10 +111,10 @@
       "setting": "C32; initial model300; each wave new-C200 then all-C400/model400; two GPUs with 4env x4chunks per rank; 24-hour limit; 30 actually active environments at step6300 of the intended 35."
     }
   ],
-  "source_scoreboard_sha256": "6c3596460ba572fed6cf7968019c08a79547d09c8794907f1d4a6ed75f168256",
+  "source_scoreboard_sha256": "c42318fc9a05b031aaca158541111e689a9c2e464c7435b2bd2905fab19bb693",
   "additional_scoreboard_sources": {
     "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/all_active_joint_no_curriculum/step_5200/seed_20260708/metrics/complete_v1/scoreboard.csv": {
-      "sha256": "29677cc795fe98bf6c0187a6571f0a8e21298f7a21b8e0d8f708ebbeadd9fd02",
+      "sha256": "8e1e336193572638f5a9fbb244ffe27e1645d1ae1739d2d941d9ced5242b2eb2",
       "protocol_snapshot": {
         "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
         "aggregation": "equal weight per environment after averaging its nine queries",
@@ -137,7 +137,7 @@
       }
     },
     "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_4/train_job_115984/step_6300/seed_20260708/metrics/complete_v1/scoreboard.csv": {
-      "sha256": "de19a1145d923fa37c95a110e47cd625fe0e40ec42ca877012fa966a2f9af108",
+      "sha256": "833bb1c889850a0819888508476ace338a353ad639806f5000f10f079eeb1512",
       "protocol_snapshot": {
         "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
         "aggregation": "equal weight per environment after averaging its nine queries",
@@ -160,7 +160,7 @@
       }
     },
     "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_direct_environment_token/train_job_115985/step_7700/seed_20260708/metrics/complete_v1/scoreboard.csv": {
-      "sha256": "08688ac72341a4bdef4883049991e91193b09d64857e41db9f3101c34a159dd3",
+      "sha256": "0d3dafc23720dfe6bde83c7c45c247cabe07cea046689c8a78292865d643265d",
       "protocol_snapshot": {
         "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
         "aggregation": "equal weight per environment after averaging its nine queries",
@@ -183,7 +183,7 @@
       }
     },
     "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/iterative_c32_100_100/train_job_118064/step_6900/seed_20260708/metrics/complete_v1/scoreboard.csv": {
-      "sha256": "ddb96db5ea0b6fb5b7f0e7bdba2005a9c259f5aa7517852a5cc77dfc912f62a6",
+      "sha256": "06cefe94b12f39a2a18ec357a5b89e8ee097972482b35039714554dcf768db7d",
       "protocol_snapshot": {
         "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
         "aggregation": "equal weight per environment after averaging its nine queries",
@@ -206,7 +206,7 @@
       }
     },
     "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/iterative_c32_400_400/train_job_118065/step_6300/seed_20260708/metrics/complete_v1/scoreboard.csv": {
-      "sha256": "fa26e20c3550fe563f0d02d2bc93ca61f9e7d968d1ad655be35ee900a1bfcd45",
+      "sha256": "e19cf02258ff39f949701ec9750db559c9bb4d551d6d9310fe17a3e6819d0ac9",
       "protocol_snapshot": {
         "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
         "aggregation": "equal weight per environment after averaging its nine queries",
@@ -229,7 +229,7 @@
       }
     }
   },
-  "render_job_id": "119138",
+  "render_job_id": "local_rescore_20260920",
   "source_protocol_snapshot": {
     "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
     "aggregation": "equal weight per environment after averaging its nine queries",

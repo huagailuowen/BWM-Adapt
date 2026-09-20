@@ -78,10 +78,10 @@
       "setting": "Historical small-range random-initialization C32 run; retain the recorded training configuration."
     }
   ],
-  "source_scoreboard_sha256": "6c3596460ba572fed6cf7968019c08a79547d09c8794907f1d4a6ed75f168256",
+  "source_scoreboard_sha256": "c42318fc9a05b031aaca158541111e689a9c2e464c7435b2bd2905fab19bb693",
   "additional_scoreboard_sources": {
     "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/all_active_joint_no_curriculum/step_5200/seed_20260708/metrics/complete_v1/scoreboard.csv": {
-      "sha256": "29677cc795fe98bf6c0187a6571f0a8e21298f7a21b8e0d8f708ebbeadd9fd02",
+      "sha256": "8e1e336193572638f5a9fbb244ffe27e1645d1ae1739d2d941d9ced5242b2eb2",
       "protocol_snapshot": {
         "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
         "aggregation": "equal weight per environment after averaging its nine queries",
@@ -104,7 +104,7 @@
       }
     },
     "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_direct_environment_token/train_job_115985/step_7700/seed_20260708/metrics/complete_v1/scoreboard.csv": {
-      "sha256": "08688ac72341a4bdef4883049991e91193b09d64857e41db9f3101c34a159dd3",
+      "sha256": "0d3dafc23720dfe6bde83c7c45c247cabe07cea046689c8a78292865d643265d",
       "protocol_snapshot": {
         "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
         "aggregation": "equal weight per environment after averaging its nine queries",
@@ -127,7 +127,7 @@
       }
     }
   },
-  "render_job_id": "117963",
+  "render_job_id": "local_rescore_20260920",
   "source_protocol_snapshot": {
     "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
     "aggregation": "equal weight per environment after averaging its nine queries",

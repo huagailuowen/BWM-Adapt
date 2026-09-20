@@ -14,7 +14,7 @@
       "lpips_multiview": 0.04951219680822558,
       "centroid_ade_px": 3.853982523115905,
       "centroid_fde_px": 7.593104764861884,
-      "action_success_all": 0.68
+      "action_success_all": 0.72
     },
     {
       "key": "constant_max_40",
@@ -53,7 +53,7 @@
       "lpips_multiview": 0.04875153717067506,
       "centroid_ade_px": 3.521208050605691,
       "centroid_fde_px": 6.693324167141364,
-      "action_success_all": 0.8
+      "action_success_all": 0.76
     },
     {
       "key": "scaled_x10_40",
@@ -79,7 +79,7 @@
       "lpips_multiview": 0.05990944986955987,
       "centroid_ade_px": 7.424048873877373,
       "centroid_fde_px": 16.727381197234717,
-      "action_success_all": 0.4
+      "action_success_all": 0.48
     },
     {
       "key": "scaled_div10_40",
@@ -105,7 +105,7 @@
       "lpips_multiview": 0.059933945122692324,
       "centroid_ade_px": 7.495394311069816,
       "centroid_fde_px": 16.55657726728811,
-      "action_success_all": 0.4
+      "action_success_all": 0.48
     },
     {
       "key": "proportional_20",
@@ -118,7 +118,7 @@
       "lpips_multiview": 0.0539878946625524,
       "centroid_ade_px": 6.129256414169313,
       "centroid_fde_px": 13.177815564786295,
-      "action_success_all": 0.6
+      "action_success_all": 0.52
     },
     {
       "key": "proportional_60",
@@ -131,7 +131,7 @@
       "lpips_multiview": 0.05028175684726901,
       "centroid_ade_px": 4.133774620352697,
       "centroid_fde_px": 8.356973158359557,
-      "action_success_all": 0.72
+      "action_success_all": 0.68
     },
     {
       "key": "proportional_80",
@@ -153,6 +153,6 @@
     "lpips_multiview": 0.048235013066894476,
     "centroid_ade_px": 3.521208050605691,
     "centroid_fde_px": 6.693324167141364,
-    "action_success_all": 0.8
+    "action_success_all": 0.76
   }
 }

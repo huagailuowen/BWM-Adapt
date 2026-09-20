@@ -15,10 +15,10 @@ tasks:
     dino_variant: transformer_fusion
     values:
       standard: {psnr: 31.1126110289, ssim: 0.9512804455, lpips: 0.0667000950, object: 11.0626324, object_final: 24.4115669932, action_success: 0.32}
-      lora: {psnr: 32.0305892732, ssim: 0.9534704348, lpips: 0.0581931916, object: 8.19015242, object_final: 19.1901566461, action_success: 0.40}
+      lora: {psnr: 32.0305892732, ssim: 0.9534704348, lpips: 0.0581931916, object: 8.19015242, object_final: 19.1901566461, action_success: 0.48}
       dino: {psnr: 30.6967826631, ssim: 0.9494627636, lpips: 0.0681499333, object: 11.8141519, object_final: 26.1703010268, action_success: 0.48}
       ttt_kqv: {psnr: 30.7789604187, ssim: 0.9488399460, lpips: 0.0648913885, object: 10.8136638, object_final: 23.8675128845, action_success: 0.32}
-      ours: {psnr: 31.9756296370, ssim: 0.9512595724, lpips: 0.0495121968, object: 3.85398252, object_final: 7.5931047649, action_success: 0.68}
+      ours: {psnr: 31.9756296370, ssim: 0.9512595724, lpips: 0.0495121968, object: 3.85398252, object_final: 7.5931047649, action_success: 0.72}
     source: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv
   - id: gravity
     label: Gravity
@@ -100,6 +100,7 @@ tasks:
       ours: {psnr: 30.6733222961, ssim: 0.9630712652, lpips: 0.0499914565, object: 8.14806081, object_final: 13.7221825827, action_success: 0.6972222222222223}
     source: results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1
 notes:
+  - Push-box Friction short-range success uses normalized image-y 0.595-0.68; if no predicted action reaches the long-range target, selection maximizes predicted image-y rounded to three decimals and breaks ties toward the higher action level.
   - Lower is better for LPIPS and the task-specific object/physical metric; higher is better for Action Success.
   - DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Gravity, Mass Collision, Light Switch, and Mass Balance; the completed Mass x Friction DINOv2 evaluation is included.
   - Mass Balance Ours values marked with an asterisk use the completed fixed-pose 5-ID/5-OOD nearest-unbalanced-support test, while baseline rows use workspace-random data; available values participate in column ranking.

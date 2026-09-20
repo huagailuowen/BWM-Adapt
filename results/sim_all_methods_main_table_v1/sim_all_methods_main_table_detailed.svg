@@ -31,7 +31,7 @@
 <text x="1342" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
 <text x="1652" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">8.1902</text>
 <text x="1862" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">19.1902</text>
-<text x="2072" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">40.0%</text>
+<text x="2072" y="341.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">48.0%</text>
 <text x="72" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400"></text>
 <text x="382" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">DINOv2 Context</text>
 <text x="802" y="405.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">30.697</text>
@@ -58,7 +58,7 @@
 <text x="1342" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Object Centroid (px)</text>
 <text x="1652" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">3.8540</text>
 <text x="1862" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">7.5931</text>
-<text x="2072" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">68.0%</text>
+<text x="2072" y="533.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">72.0%</text>
 <line x1="60" x2="2320" y1="565" y2="565" stroke="#111" stroke-width="1"/>
 <text x="72" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Gravity</text>
 <text x="382" y="597.0" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400">Standard Pooled WM</text>

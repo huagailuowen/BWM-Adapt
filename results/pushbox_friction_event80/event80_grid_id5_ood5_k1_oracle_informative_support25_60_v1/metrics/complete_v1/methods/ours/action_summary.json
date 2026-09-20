@@ -14,11 +14,11 @@
     "ood": {
       "complete_decision_count": 15,
       "decision_count": 15,
-      "headline_task_success_rate": 0.6666666666666666,
+      "headline_task_success_rate": 0.75,
       "mean_action_coverage": 1.0,
-      "mean_regret": 0.022189728825229876,
+      "mean_regret": 0.010835562158563211,
       "oracle_reachable_complete_count": 12,
-      "selected_is_oracle_rate": 0.4166666666666667,
+      "selected_is_oracle_rate": 0.5,
       "uniform_random_success_rate": 0.17500000000000002,
       "valid_decision_count": 15
     }
@@ -60,11 +60,11 @@
     "ood/long_push": {
       "complete_decision_count": 5,
       "decision_count": 5,
-      "headline_task_success_rate": 0.5,
+      "headline_task_success_rate": 0.75,
       "mean_action_coverage": 1.0,
-      "mean_regret": 0.03637745365321701,
+      "mean_regret": 0.0023149536532170167,
       "oracle_reachable_complete_count": 4,
-      "selected_is_oracle_rate": 0.0,
+      "selected_is_oracle_rate": 0.25,
       "uniform_random_success_rate": 0.25,
       "valid_decision_count": 5
     },
@@ -95,11 +95,11 @@
     "long_push": {
       "complete_decision_count": 10,
       "decision_count": 10,
-      "headline_task_success_rate": 0.625,
+      "headline_task_success_rate": 0.75,
       "mean_action_coverage": 1.0,
-      "mean_regret": 0.0359891456410415,
+      "mean_regret": 0.0189578956410415,
       "oracle_reachable_complete_count": 8,
-      "selected_is_oracle_rate": 0.125,
+      "selected_is_oracle_rate": 0.25,
       "uniform_random_success_rate": 0.25,
       "valid_decision_count": 10
     },
@@ -130,11 +130,11 @@
   "overall": {
     "complete_decision_count": 30,
     "decision_count": 30,
-    "headline_task_success_rate": 0.68,
+    "headline_task_success_rate": 0.72,
     "mean_action_coverage": 1.0,
-    "mean_regret": 0.025093702524544615,
+    "mean_regret": 0.019643702524544615,
     "oracle_reachable_complete_count": 25,
-    "selected_is_oracle_rate": 0.48,
+    "selected_is_oracle_rate": 0.52,
     "uniform_random_success_rate": 0.172,
     "valid_decision_count": 30
   },

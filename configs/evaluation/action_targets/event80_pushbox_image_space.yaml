@@ -14,7 +14,7 @@ targets:
     region:
       x_min: 0.49
       x_max: 0.57
-      y_min: 0.58
+      y_min: 0.595
       y_max: 0.68
   - id: medium_push
     region:
@@ -24,6 +24,8 @@ targets:
       y_max: 0.82
   - id: long_push
     selection_strategy: first_reaching
+    first_reaching_fallback: max_y_then_highest_action
+    fallback_round_decimals: 3
     success_policy: minimum_reaching
     max_action_steps_above_minimum: 2
     region:

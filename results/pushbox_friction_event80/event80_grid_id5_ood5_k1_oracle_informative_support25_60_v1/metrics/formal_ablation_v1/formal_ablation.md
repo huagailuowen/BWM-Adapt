@@ -4,16 +4,16 @@ User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10, then ad
 
 | Method | Object ADE (px) lower | Object FDE (px) lower | PSNR (MV) higher | SSIM (MV) higher | LPIPS (MV) lower | Action success higher |
 | --- | --- | --- | --- | --- | --- | --- |
-| Ours (random C32) | 3.85 | 7.59 | 31.976 | 0.9513 | 0.0495 | 68% |
-| Joint model-Z (700-step cycle) | 7.03 | 15.66 | 31.203 | 0.9465 | 0.0657 | 64% |
-| No curriculum + joint | 5.68 | 12.28 | 31.697 | 0.9507 | 0.0547 | 60% |
-| No curriculum + iterative | 6.17 | 12.81 | 31.799 | 0.9514 | 0.0549 | 56% |
-| C=4 + MLP | 3.71 | 7.22 | 29.353 | 0.9494 | 0.0546 | 76% |
+| Ours (random C32) | 3.85 | 7.59 | 31.976 | 0.9513 | 0.0495 | 72% |
+| Joint model-Z (700-step cycle) | 7.03 | 15.66 | 31.203 | 0.9465 | 0.0657 | 68% |
+| No curriculum + joint | 5.68 | 12.28 | 31.697 | 0.9507 | 0.0547 | 64% |
+| No curriculum + iterative | 6.17 | 12.81 | 31.799 | 0.9514 | 0.0549 | 60% |
+| C=4 + MLP | 3.71 | 7.22 | 29.353 | 0.9494 | 0.0546 | 68% |
 | Direct token (3072-D) | 94.50 | 80.49 | 15.218 | 0.3555 | 0.7626 | 24% |
-| C32 shared initialization | 7.94 | 15.98 | 30.638 | 0.9466 | 0.0631 | 56% |
+| C32 shared initialization | 7.94 | 15.98 | 30.638 | 0.9466 | 0.0631 | 64% |
 | C32 random [-0.05, 0.05] | 4.81 | 9.73 | 32.172 | 0.9509 | 0.0495 | 60% |
-| Alternating Z/model (100/100) | 5.41 | 11.50 | 32.208 | 0.9531 | 0.0484 | 52% |
-| Alternating Z/model (400/400) | 4.31 | 8.80 | 32.430 | 0.9528 | 0.0507 | 60% |
+| Alternating Z/model (100/100) | 5.41 | 11.50 | 32.208 | 0.9531 | 0.0484 | 56% |
+| Alternating Z/model (400/400) | 4.31 | 8.80 | 32.430 | 0.9528 | 0.0507 | 68% |
 
 ## Protocol and scope
 

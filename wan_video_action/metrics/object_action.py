@@ -34,10 +34,21 @@ class RectangleTarget:
     selection_strategy: str = "nearest"
     success_policy: str = "target_reach"
     max_action_steps_above_minimum: int = 0
+    first_reaching_fallback: str = "nearest"
+    fallback_round_decimals: int | None = None
 
     def __post_init__(self) -> None:
         if self.x_min > self.x_max or self.y_min > self.y_max:
             raise ValueError(f"Invalid rectangle for target {self.target_id!r}")
+        if self.first_reaching_fallback not in {
+            "nearest",
+            "max_y_then_highest_action",
+        }:
+            raise ValueError(
+                f"Unknown first-reaching fallback {self.first_reaching_fallback!r}"
+            )
+        if self.fallback_round_decimals is not None and self.fallback_round_decimals < 0:
+            raise ValueError("fallback_round_decimals must be non-negative")
 
     @classmethod
     def from_mapping(cls, value: Mapping[str, Any]) -> "RectangleTarget":
@@ -52,6 +63,14 @@ class RectangleTarget:
             success_policy=str(value.get("success_policy", "target_reach")),
             max_action_steps_above_minimum=int(
                 value.get("max_action_steps_above_minimum", 0)
+            ),
+            first_reaching_fallback=str(
+                value.get("first_reaching_fallback", "nearest")
+            ),
+            fallback_round_decimals=(
+                int(value["fallback_round_decimals"])
+                if value.get("fallback_round_decimals") is not None
+                else None
             ),
         )
 
@@ -84,6 +103,10 @@ class RectangleTarget:
             output["max_action_steps_above_minimum"] = (
                 self.max_action_steps_above_minimum
             )
+        if self.first_reaching_fallback != "nearest":
+            output["first_reaching_fallback"] = self.first_reaching_fallback
+        if self.fallback_round_decimals is not None:
+            output["fallback_round_decimals"] = self.fallback_round_decimals
         return output
 
 
@@ -152,7 +175,25 @@ def evaluate_action_choice(
             for record in ordered_selectable
             if target.contains(record.get("selection_xy"))
         ]
-        selected = predicted_reaching[0] if predicted_reaching else selectable[0]
+        if predicted_reaching:
+            selected = predicted_reaching[0]
+        elif target.first_reaching_fallback == "nearest":
+            selected = selectable[0]
+        elif target.first_reaching_fallback == "max_y_then_highest_action":
+            decimals = target.fallback_round_decimals
+            selected = max(
+                selectable,
+                key=lambda record: (
+                    round(float(_point(record["selection_xy"])[1]), decimals)
+                    if decimals is not None
+                    else float(_point(record["selection_xy"])[1]),
+                    _action_sort_key(record),
+                ),
+            )
+        else:  # Guarded by RectangleTarget.__post_init__.
+            raise ValueError(
+                f"Unknown first-reaching fallback {target.first_reaching_fallback!r}"
+            )
         selection_details = {
             "predicted_reaching_action_ids": [
                 str(record["action_id"]) for record in predicted_reaching
@@ -162,7 +203,13 @@ def evaluate_action_choice(
                 if predicted_reaching
                 else None
             ),
-            "used_nearest_fallback": not predicted_reaching,
+            "used_fallback": not predicted_reaching,
+            "used_nearest_fallback": (
+                not predicted_reaching
+                and target.first_reaching_fallback == "nearest"
+            ),
+            "fallback_strategy": target.first_reaching_fallback,
+            "fallback_round_decimals": target.fallback_round_decimals,
         }
     else:
         raise ValueError(f"Unknown selection strategy {target.selection_strategy!r}")

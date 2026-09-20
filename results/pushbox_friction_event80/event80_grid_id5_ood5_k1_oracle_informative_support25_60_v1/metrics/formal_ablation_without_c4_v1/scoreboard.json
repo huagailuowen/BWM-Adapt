@@ -13,7 +13,7 @@
     "psnr_multiview": 31.975629636976453,
     "ssim_multiview": 0.951259572390053,
     "lpips_multiview": 0.04951219680822558,
-    "action_success_all": 0.68,
+    "action_success_all": 0.72,
     "environment_count": 10,
     "query_count": 90,
     "action_eligible_decisions_all": 25
@@ -31,7 +31,7 @@
     "psnr_multiview": 31.203474744160967,
     "ssim_multiview": 0.9465033932692475,
     "lpips_multiview": 0.06571767023868032,
-    "action_success_all": 0.64,
+    "action_success_all": 0.68,
     "environment_count": 10,
     "query_count": 90,
     "action_eligible_decisions_all": 25
@@ -49,7 +49,7 @@
     "psnr_multiview": 31.696891170077855,
     "ssim_multiview": 0.9506561475992203,
     "lpips_multiview": 0.05469606659478612,
-    "action_success_all": 0.6,
+    "action_success_all": 0.64,
     "environment_count": 10,
     "query_count": 90,
     "action_eligible_decisions_all": 25
@@ -67,7 +67,7 @@
     "psnr_multiview": 31.799470074971516,
     "ssim_multiview": 0.9514290887117385,
     "lpips_multiview": 0.05491223529809051,
-    "action_success_all": 0.56,
+    "action_success_all": 0.6,
     "environment_count": 10,
     "query_count": 90,
     "action_eligible_decisions_all": 25
@@ -105,7 +105,7 @@
     "psnr_multiview": 30.63829097747803,
     "ssim_multiview": 0.9465510469343927,
     "lpips_multiview": 0.06312063518497679,
-    "action_success_all": 0.56,
+    "action_success_all": 0.64,
     "environment_count": 10,
     "query_count": 90,
     "action_eligible_decisions_all": 25
