@@ -130,7 +130,7 @@ def main():
         if index < 4:
             c.line(left+16, cy+37, 2318, cy+37, '#E7ECE9', 1)
     c.line(left, 749, 2334, 749, INK, 2)
-    c.text(left, 784, 'ADE / FDE in pixels. Action = preferred-level pair overlap (0, 0.5, or 1), not binary success.', 20, MUTED)
+    c.text(left, 784, 'ADE / FDE in pixels. Door Action: first-close level (exact 1, +/-1 level 0.5). Ball Action: pair overlap.', 20, MUTED)
     c.text(left, 815, 'Soft above: all 9 environments. Standard did not train on 4L, 7R or 6M; the matched-coverage comparison is below.', 20, MUTED)
 
     # Frozen shared-six object means from the accepted family-mean comparison.

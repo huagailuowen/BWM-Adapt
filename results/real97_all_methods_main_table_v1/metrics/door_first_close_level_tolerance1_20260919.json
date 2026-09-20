@@ -1,0 +1,70 @@
+{
+  "metric": "door_first_closing_level_tolerance1",
+  "date": "2026-09-19",
+  "definition": {
+    "prediction": "lowest level from 1 through 10 classified as closing the door",
+    "ground_truth": "lowest GT level that closes the door",
+    "score": {
+      "exact": 1.0,
+      "absolute_level_error_1": 0.5,
+      "otherwise_or_no_predicted_closure": 0.0
+    },
+    "aggregation": "mean over nine closable environments",
+    "excluded_environment": "door-12u-Half-11d-Half"
+  },
+  "ground_truth_lowest_level": {
+    "door-0": 1,
+    "door-12u-Half": 9,
+    "door-2u-1d": 2,
+    "door-2u-4d": 4,
+    "door-3u": 3,
+    "door-3u-4d": 5,
+    "door-4d": 3,
+    "door-6u-7d": 7,
+    "door-6u-8d": 8
+  },
+  "methods": {
+    "standard": {
+      "predicted_lowest_level": {"door-0": 1, "door-12u-Half": 4, "door-2u-1d": 2, "door-2u-4d": 5, "door-3u": 4, "door-3u-4d": 3, "door-4d": 2, "door-6u-7d": 1, "door-6u-8d": 4},
+      "exact_count": 2,
+      "within_one_count": 5,
+      "weighted_points": 3.5,
+      "score_pct": 38.88888888888889
+    },
+    "lora_tta": {
+      "predicted_lowest_level": {"door-0": 1, "door-12u-Half": 4, "door-2u-1d": 2, "door-2u-4d": 5, "door-3u": 1, "door-3u-4d": 8, "door-4d": 1, "door-6u-7d": 1, "door-6u-8d": null},
+      "exact_count": 2,
+      "within_one_count": 3,
+      "weighted_points": 2.5,
+      "score_pct": 27.77777777777778
+    },
+    "dinov2_concat_mlp": {
+      "predicted_lowest_level": {"door-0": 3, "door-12u-Half": 4, "door-2u-1d": 2, "door-2u-4d": 5, "door-3u": 3, "door-3u-4d": 3, "door-4d": 2, "door-6u-7d": 1, "door-6u-8d": 2},
+      "exact_count": 2,
+      "within_one_count": 4,
+      "weighted_points": 3.0,
+      "score_pct": 33.33333333333333
+    },
+    "ttt": {
+      "predicted_lowest_level": {"door-0": 3, "door-12u-Half": 4, "door-2u-1d": 2, "door-2u-4d": 4, "door-3u": 4, "door-3u-4d": 3, "door-4d": 2, "door-6u-7d": 4, "door-6u-8d": 4},
+      "exact_count": 2,
+      "within_one_count": 4,
+      "weighted_points": 3.0,
+      "score_pct": 33.33333333333333
+    },
+    "ours_simlr": {
+      "predicted_lowest_level": {"door-0": 1, "door-12u-Half": 8, "door-2u-1d": 3, "door-2u-4d": 4, "door-3u": 3, "door-3u-4d": 3, "door-4d": 2, "door-6u-7d": 7, "door-6u-8d": 8},
+      "exact_count": 5,
+      "within_one_count": 8,
+      "weighted_points": 6.5,
+      "score_pct": 72.22222222222221
+    }
+  },
+  "sources": {
+    "standard_and_dinov2": "outputs/eval_real97_ball_door_scores_20260912_v2/summary_provisional.json",
+    "lora_tta": "outputs/eval_real97_lora_reference_scores_20260914_v1/summary_provisional.json",
+    "ttt": "outputs/eval_real97_ttt_reference_scores_20260914_v1/summary_provisional.json",
+    "ours_simlr": "outputs/eval_real97_door_simlr_20260918_v1/summary_provisional.json"
+  },
+  "main_csv_compatibility_note": "door_action_pair_overlap_pct retains its historical name but stores this metric in the current release"
+}

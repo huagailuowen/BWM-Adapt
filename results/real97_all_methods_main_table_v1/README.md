@@ -1,3 +1,17 @@
+## Current Door action rule: first closing level (2026-09-19)
+
+Door Action now scans levels 1 through 10 and selects the lowest level predicted to close the door. It scores 1.0 when this equals the GT lowest closing level, 0.5 when it differs by exactly one level, and 0 otherwise. A method that predicts no closing level receives 0. The unclosable `door-12u-Half-11d-Half` environment remains excluded, leaving nine scored environments.
+
+| Method | Exact | Within one level | Weighted Action score |
+|---|---:|---:|---:|
+| Standard | 2/9 | 5/9 | 38.89% |
+| LoRA TTA | 2/9 | 3/9 | 27.78% |
+| DINOv2 concat-MLP | 2/9 | 4/9 | 33.33% |
+| TTT | 2/9 | 4/9 | 33.33% |
+| Ours, sim-LR | 5/9 | 8/9 | 72.22% |
+
+The CSV column name `door_action_pair_overlap_pct` is retained only as a compatibility alias; its current values use this first-closing-level rule, not pair overlap. Full per-environment decisions and source summaries are recorded in [the Door action snapshot](metrics/door_first_close_level_tolerance1_20260919.json).
+
 ## Current release: Stick DINO / TTT completed (2026-09-19)
 
 The CSV and compact SVG/PNG main charts now include Stick DINO and TTT. Only their previously empty Stick cells were filled. All current sim-LR Ours scores, other baseline scores, and Soft Onset@6deg scores are preserved.
@@ -45,7 +59,7 @@ Door/Ball: dual6500 cluster centers. Stick3900: full-table mean. Soft5500: L/R/8
 
 | Task | PSNR | SSIM | LPIPS | ADE px | FDE px | Action % |
 |---|---:|---:|---:|---:|---:|---:|
-| door | 32.07 | 0.92660 | 0.03361 | 9.01 | 15.75 | 61.11 |
+| door | 32.07 | 0.92660 | 0.03361 | 9.01 | 15.75 | 72.22 |
 | ball | 35.96 | 0.96001 | 0.02883 | 20.36 | 41.14 | 56.25 |
 | stick | 32.05 | 0.94271 | 0.04175 | 2.27 | 5.01 | 83.33 |
 | soft | 32.58 | 0.96143 | 0.07529 | 18.24 | 22.59 | 81.82 |

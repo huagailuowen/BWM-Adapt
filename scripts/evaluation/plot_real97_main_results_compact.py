@@ -70,7 +70,7 @@ def main():
     c.line(left, bottom, right, bottom, renderer.INK, 2)
     c.text(left, bottom+32, '* Stick action: post-hoc selected seed 20260927, 1 balanced + 3 unbalanced per environment; provisional.', 18, renderer.MUTED)
     c.text(left, bottom+60, '** Soft onset: 8px motion for 3 frames; Success@6 degrees on 11 GT-positive queries. Tolerance selected post hoc; provisional.', 18, renderer.MUTED)
-    c.text(left, bottom+88, 'ADE/FDE: pixels. Door/Ball action: pair overlap. Stick action: precision. Ours = Stage2. Missing = not available.', 18, renderer.MUTED)
+    c.text(left, bottom+88, 'ADE/FDE: pixels. Door action: first-close level (exact 1, +/-1 level 0.5). Ball action: pair overlap.', 18, renderer.MUTED)
     c.text(left, bottom+116, 'Ours: selected sim-LR inference. Tracking-valid masks differ across methods; coverage and source protocols are recorded in README.', 18, renderer.MUTED)
     svg = out / 'real97_main_results.svg'
     png = out / 'real97_main_results.png'
