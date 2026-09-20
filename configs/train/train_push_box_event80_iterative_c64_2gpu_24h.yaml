@@ -1,6 +1,6 @@
-# Event80 ablation: 128-D environment code, 2-GPU iterative training.
+# Event80 ablation: 64-D environment code, 2-GPU iterative training.
 # Stage 1 grouped latent-C curriculum on event-tap segmented80 fixed 65-105 data.
-# C dim=128 with an MLP projection. Friction groups start from independent random vectors.
+# C dim=64 with an MLP projection. Friction groups start from independent random vectors.
 # Curriculum: 300 model-only warmup, then initial 5 groups also get a high-LR C bootstrap,
 # then add 5 groups per round, capped at the reference run's 35 active groups.
 # Keep all 80 metadata groups so nested-uniform activation preserves membership.
@@ -48,7 +48,7 @@ action:
 
 physical_context:
   physical_context_mode: "both"
-  physical_context_dim: 128
+  physical_context_dim: 64
   physical_context_tokens: 1
   physical_context_hidden_dim: 128
   physical_context_projection: "mlp"
@@ -101,7 +101,7 @@ training:
   batch_size: 1
 
 output:
-  output_path: "./outputs/method_benchmarks/pushbox_friction_event80/ours_context_dim_128/seed_20260708/checkpoints"
+  output_path: "./outputs/method_benchmarks/pushbox_friction_event80/ours_context_dim_64/seed_20260708/checkpoints"
   remove_prefix_in_ckpt: "pipe.dit."
   save_steps: 200
   checkpoint_save_minutes: 60
