@@ -1,0 +1,31 @@
+{
+  "ours": "outputs/infer_real916_stick_3900_simlr_globalmean_20260918_v1",
+  "standard": "outputs/infer_real916_stick_standard_step4559_final_20260917_v1",
+  "prepared": "outputs/evaluation_real916_stick_support_bracket_20260918_v1",
+  "output": "outputs/eval_real916_stick_simlr_matched_20260918_v1",
+  "geometry_config": "configs/evaluation/stick_common_reference_rigid_review_v3.json",
+  "fusion_config": "configs/evaluation/stick_fused_terminal_review_v4.json",
+  "contact_config": "configs/evaluation/stick_terminal_contact_boundary_v8.json",
+  "methods": [
+    "standard",
+    "ours_stage1",
+    "ours_stage2"
+  ],
+  "model_frames": 33,
+  "coordinate_size_wh": [
+    640,
+    480
+  ],
+  "angle_thresholds_deg": [
+    3,
+    5
+  ],
+  "primary_angle_threshold_deg": 5,
+  "hold_seconds": 0.3,
+  "require_commanded_lift_end": true,
+  "rise_ratio_required": false,
+  "exclude_condition_and_padding": true,
+  "primary_split": "test",
+  "action_metric": "GT balanced among model-predicted balanced chunks; unknown GT yields precision bounds",
+  "formal_metric_approved": false
+}

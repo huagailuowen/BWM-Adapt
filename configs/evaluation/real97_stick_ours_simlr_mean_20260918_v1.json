@@ -1,0 +1,69 @@
+{
+  "seed": 20260917,
+  "manifest": "data/real916_stick_lift15_driftstable_v1",
+  "reference_prepared": "outputs/evaluation_real916_stick_final_20260917_v1",
+  "prepared": "outputs/evaluation_real916_stick_support_bracket_20260918_v1",
+  "checkpoint_cache_prepared": "outputs/evaluation_real916_stick_final_20260917_v1",
+  "reference_metrics": "outputs/eval_real916_stick_visible_tail_20260917_v2",
+  "selected_cohort": "results/real97_all_methods_main_table_v1/metrics/stick_action_seed20260927.json",
+  "methods": {
+    "ours": {
+      "training_run": "outputs/real97_train_real916_stick_ours_lift15_3x8_2gpu_v1_job117977",
+      "training_job": 117977,
+      "checkpoint": "step-3900.safetensors",
+      "table": "step-3900.context_table.json",
+      "step": 3900,
+      "output": "outputs/infer_real916_stick_3900_simlr_globalmean_20260918_v1"
+    }
+  },
+  "stage2": {
+    "stage2_inner_lr_schedule": "3.0:10,1.5:10,0.5:10,0.15:10",
+    "stage2_inner_steps": 40,
+    "stage2_inner_grad_clip": 0.0,
+    "stage2_context_reg_weight": 0.0,
+    "ttt_context_fp32": true,
+    "ttt_support_gradient_accumulation": true,
+    "ttt_adapt_scope": "context",
+    "stage2_group_keys": "environment"
+  },
+  "support_policy": "Train-only explicitly left_down and right_down nearest to the balanced support-position interval; exclude every frozen query episode; no query performance used",
+  "one_sided_policy": "Keep original balanced plus nearest one-sided support unchanged",
+  "expected_changed_environments": [
+    "stick-L0-R0",
+    "stick-L0-R1",
+    "stick-L0-R2",
+    "stick-L1-R0",
+    "stick-L2-R0"
+  ],
+  "expected_one_sided_environments": [
+    "stick-L0-R3",
+    "stick-L0-R4",
+    "stick-L3-R0",
+    "stick-L4-R0"
+  ],
+  "ours": "outputs/infer_real916_stick_3900_simlr_globalmean_20260918_v1",
+  "standard": "outputs/infer_real916_stick_standard_step4559_final_20260917_v1",
+  "output": "outputs/eval_real916_stick_simlr_globalmean_20260918_v1",
+  "geometry_config": "configs/evaluation/stick_common_reference_rigid_review_v3.json",
+  "fusion_config": "configs/evaluation/stick_fused_terminal_review_v4.json",
+  "contact_config": "configs/evaluation/stick_terminal_contact_boundary_v8.json",
+  "angle_thresholds_deg": [
+    3,
+    5
+  ],
+  "hold_seconds": 0.3,
+  "workers": 8,
+  "roi": false,
+  "inference_light_augmentation": false,
+  "formal_metric_approved": false,
+  "initialization": "mean_training_table",
+  "initialization_noise": null,
+  "known_environment_initialization": false,
+  "sim_lr_ablation": {
+    "purpose": "learning-rate-only ablation with requested mean initialization",
+    "simulation_lr_reference": "configs/evaluation/inference/event80/iterative_c32_400_400_after_train118065.yaml",
+    "only_lr_schedule_transferred": true,
+    "retain_real_support_query_and_generation_settings": true,
+    "formal_metric_approved": false
+  }
+}

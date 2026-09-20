@@ -1,0 +1,44 @@
+{
+  "source_inference": "outputs/infer_real97_soft_5500_simlr_family_20260918_v1",
+  "tracking_config": "configs/evaluation/real97_soft_dino_fullvideo.json",
+  "detector_config": "configs/evaluation/real97_soft_open_vocab_probe.json",
+  "filter_config": "configs/evaluation/real97_soft_open_vocab_color_filter.json",
+  "expected_queries": 36,
+  "shards": 6,
+  "seed": 20260911,
+  "center_definition": "visible_box",
+  "model_frames": 29,
+  "observed_frames": 1,
+  "native_size": [
+    512,
+    256
+  ],
+  "model_size": [
+    320,
+    160
+  ],
+  "native_fps": 20,
+  "playback_fps": 6.666666666666667,
+  "camera_size": [
+    640,
+    480
+  ],
+  "original_image_crop_offset": [
+    32,
+    224
+  ],
+  "random_review_per_split": 6,
+  "formal_metric_approved": false,
+  "score_action_selection": false,
+  "purpose": "Unchanged matched-window tracker and image metrics for sim-LR Stage2; report fixed shared6 test12 separately.",
+  "standard_inference": "outputs/infer_real97_soft_standard_matched_balanced9_static_20260914_v1",
+  "output": "outputs/eval_real97_soft_simlr_20260918_v1",
+  "common_future_frames": 28,
+  "methods": [
+    "standard",
+    "stage1",
+    "stage2"
+  ],
+  "original_inference": "outputs/infer_real97_soft_balanced9_dual_static1_train115613_job116188",
+  "original_metrics": "outputs/eval_real97_soft_balanced9_static_matched_20260914_v1"
+}
