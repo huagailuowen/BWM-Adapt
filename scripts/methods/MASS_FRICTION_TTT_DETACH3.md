@@ -17,6 +17,7 @@ fast-state values into chunk four rather than resetting to shared initial weight
 | Loss normalization | Each segment sum divided by six times the number of local environments |
 | Optimizer and clipping | Once after all local environments and both segments, as before |
 | DDP synchronization | With sync_per_update enabled, synchronize only at the last segment of the last local environment |
+| DDP unused parameters | Enabled for this variant: shared initial fast weights are absent from the final detached segment's graph |
 | Diffusion timestep | Same sampled timestep across the six chunks, retaining the previous behavior |
 | Saves | Every 200 updates or 60 minutes; retain the latest two checkpoints |
 
@@ -46,3 +47,7 @@ logs record completed backward and whether the numerical state was carried.
 Splitting reduces cross-chunk graph retention but does not guarantee that a
 single chunk's full-token higher-order scan fits; no such claim should be made
 before observing the actual training run.
+
+The September 18 launch requests two B200 GPUs and 128 GiB host memory. The
+preceding unsplit B200 job 117917 exhausted device memory before its first update.
+This run therefore starts from BLM, with no optimizer state to resume.

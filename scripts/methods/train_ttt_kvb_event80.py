@@ -66,6 +66,12 @@ def add_ttt_kvb_config(parser: argparse.ArgumentParser) -> argparse.ArgumentPars
     group.add_argument("--ttt_write_token_budget", type=int, default=512)
     group.add_argument("--ttt_gate_init", type=float, default=0.01)
     group.add_argument("--ttt_slow_learning_rate", type=float, default=1.0e-4)
+    group.add_argument(
+        "--ttt_start_step",
+        type=int,
+        default=0,
+        help="Logical completed-update offset for model-only checkpoint continuation.",
+    )
     group.add_argument("--ttt_max_updates", type=int, default=50000)
     group.add_argument("--ttt_protocol", type=str, default="prequential_read_then_write")
     group.add_argument("--ttt_gate_vector", action=argparse.BooleanOptionalAction, default=False)
@@ -151,6 +157,9 @@ def main() -> None:
 
     if int(args.ttt_detach_every_chunks) < 0:
         raise ValueError("ttt_detach_every_chunks must be nonnegative")
+    start_step = int(args.ttt_start_step)
+    if start_step < 0 or start_step >= int(args.ttt_max_updates):
+        raise ValueError("ttt_start_step must be in [0, ttt_max_updates)")
     if int(args.ttt_detach_every_chunks):
         if args.ttt_protocol != "oneminute_write_then_predict" or not args.ttt_backward_per_stream:
             raise ValueError("Chunk-boundary detach requires causal write-then-predict and backward_per_stream")
@@ -258,7 +267,7 @@ def main() -> None:
     scheduler = LambdaLR(
         optimizer,
         lr_lambda=lambda step: (
-            min(1.0, float(step + 1) / float(warmup_steps))
+            min(1.0, float(start_step + step + 1) / float(warmup_steps))
             if warmup_steps > 0
             else 1.0
         ),
@@ -273,6 +282,7 @@ def main() -> None:
         keep_last=args.checkpoint_keep_last,
         log_steps=args.log_steps,
     )
+    model_logger.num_steps = start_step
 
     saved_storage = None
     if args.ttt_saved_tensor_policy == "selective":
@@ -295,6 +305,7 @@ def main() -> None:
         print(
             "[ttt_kvb_prequential] "
             f"layers={installation.layer_indices} sequence_length={args.ttt_sequence_length} "
+            f"start_step={start_step} "
             f"detach_every_chunks={args.ttt_detach_every_chunks} "
             f"environments_per_rank={args.ttt_environments_per_rank} "
             f"protocol={args.ttt_protocol} updates_per_chunk={updates_per_chunk} "
@@ -311,7 +322,7 @@ def main() -> None:
         )
 
     iterator = tqdm(
-        range(int(args.ttt_max_updates)),
+        range(start_step, int(args.ttt_max_updates)),
         disable=not accelerator.is_local_main_process,
     )
     sequence_length = int(args.ttt_sequence_length)

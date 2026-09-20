@@ -1,6 +1,6 @@
 dataset:
-  dataset_base_path: "/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/mass-fric/libero_two_box_mass_friction_balanced100env_9action_900eps_lerobot_2026-07-18_hai-machine"
-  dataset_metadata_path: "data/mass_friction_joint100_bwm_full61_20260718/train_active84_91267_step7172.jsonl"
+  dataset_base_path: "/afs/ir/users/c/y/cyzhou05/TTT-Physics/datasets/pushbox_various_env/libero_plus_push_box_event80_matched_physics_30background_pool_30friction_10action_random5per_pair_1500eps_adaptive_end_2026-09-03_hai-machine"
+  dataset_metadata_path: "data/push_box_matchedphysics30bg_uniform20fric_10action_65_105_shared_20260903/train.jsonl"
   dataset_repeat: 1
   dataset_num_workers: 0
   data_file_keys: "video,action"
@@ -8,7 +8,7 @@ video:
   height: 224
   width: 224
   max_pixels: 16777216
-  num_frames: 61
+  num_frames: 41
   resize_mode: "fit"
   num_history_frames: 1
   time_division_factor: 4
@@ -32,7 +32,7 @@ model:
   action_mode: "adaln"
 action:
   action_type: "eef_delta"
-  action_stat_path: "data/mass_friction_joint100_bwm_full61_20260718/action_stats.json"
+  action_stat_path: "data/push_box_matchedphysics30bg_uniform20fric_10action_65_105_shared_20260903/action_stats.json"
   action_dim: 14
 physical_context:
   physical_context_mode: "none"
@@ -42,13 +42,13 @@ physical_context:
   physical_context_init_std: 0.0
   physical_adapter_mode: "none"
 ttt_kvb:
-  ttt_active_environment_manifest: "configs/methods/mass_friction/manifests/ours_91267_step7172_active84.yaml"
-  ttt_environment_key: "friction_mu"
+  ttt_active_environment_manifest: "configs/methods/pushbox_multibackground/manifests/matchedphysics30bg_uniform20.yaml"
+  ttt_environment_key: "context_group_id"
   ttt_action_key: "action_id"
   ttt_distinct_actions: true
   ttt_sequence_length: 6
-  # Two three-chunk backward segments, carrying numerical fast-state values.
-  # The optimizer still steps once after all four six-chunk environments.
+  # Match the established TTT setup: two three-chunk backward segments while
+  # carrying the detached numerical fast state into the second segment.
   ttt_detach_every_chunks: 3
   ttt_environments_per_rank: 4
   ttt_layers: "uniform:8"
@@ -61,9 +61,6 @@ ttt_kvb:
   ttt_serial_after_attention: true
   ttt_saved_tensor_cpu_offload: false
   ttt_saved_tensor_policy: "selective"
-  # Preserve all tokens and within-segment higher-order gradients. Truncate
-  # cross-chunk gradients only at the explicit three-chunk detach boundary.
-  # Do not enable checkpoint replay of mutable Wan blocks.
   ttt_scan_checkpoint_updates: 8
   ttt_gpu_saved_tensor_budget_gib: 64.0
   ttt_host_saved_tensor_budget_gib: 24.0
@@ -71,26 +68,29 @@ ttt_kvb:
   ttt_backward_per_stream: true
   ttt_sync_per_update: true
   ttt_protocol: "oneminute_write_then_predict"
-  ttt_slow_learning_rate: 1.0e-4
-  ttt_start_step: 0
+  ttt_slow_learning_rate: 1e-4
   ttt_max_updates: 50000
 training:
-  learning_rate: 1.0e-5
+  learning_rate: 1e-5
   stage1_warmup_steps: 100
   num_epochs: 100000
   trainable_models: "dit,action_encoder"
-  # The final synchronized segment starts from detached fast state and does not
-  # use the shared initial fast weights. DDP must handle this dynamic usage.
   find_unused_parameters: true
   weight_decay: 0.01
   task: "sft"
-  seed: 20260719
+  seed: 20260903
   mixed_precision: "bf16"
   max_timestep_boundary: 1.0
   min_timestep_boundary: 0.0
   batch_size: 1
+  spatial_loss_mode: "fixed_polygon"
+  spatial_loss_roi_weight: 10.0
+  spatial_loss_roi_view_indices: "0"
+  spatial_loss_roi_source_width: 224
+  spatial_loss_roi_source_height: 224
+  spatial_loss_roi_polygon: "94,92;142,92;154,224;78,224"
 output:
-  output_path: "./outputs/method_benchmarks/joint_mass_friction/ttt_kqv_prequential6_detach3_4envpergpu/seed_20260719/checkpoints"
+  output_path: "./outputs/method_benchmarks/pushbox_matchedphysics30bg_active20/ttt_kqv_prequential6_roi10x/__JOB_ID__/checkpoints"
   remove_prefix_in_ckpt: "pipe.dit."
   save_steps: 200
   checkpoint_save_minutes: 60

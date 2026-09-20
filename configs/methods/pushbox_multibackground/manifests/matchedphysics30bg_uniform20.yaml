@@ -1,0 +1,21 @@
+benchmark: pushbox_matchedphysics_30background
+
+source:
+  dataset: libero_plus_push_box_event80_matched_physics_30background_pool_30friction_10action_random5per_pair
+  selection: uniformly_spaced_20_of_30_friction_levels
+
+selection:
+  environment_key: context_group_id
+  physical_value_key: physical_friction_mu
+  total_environment_count: 20
+  active_environment_count: 20
+  held_out_environment_count: 0
+  source_mu_indices: [0, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18, 20, 21, 23, 24, 26, 27, 29]
+  active_environment_ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+
+curriculum:
+  wave_1: [0, 4, 8, 12, 16]
+  wave_2: [1, 5, 9, 13, 17]
+  wave_3: [2, 6, 10, 14, 18]
+  wave_4: [3, 7, 11, 15, 19]
+  post_wave_4: alternate_all_context_200_then_model_200
