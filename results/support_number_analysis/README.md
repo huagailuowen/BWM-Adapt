@@ -25,7 +25,8 @@
 | Light Switch | K=1 | One fixed red-button support | Complete | 50.0% |
 | Light Switch | K=2 | One red and one blue support | Complete | 87.5% |
 | Light Switch | K=4 | Red/blue crossed with lamp-off/lamp-on | Complete | 87.5% |
-| Light Switch | K=8 | Two action-diverse samples for each color/state combination | Pending (`120147`) | -- |
+| Light Switch | K=8 original formal | Original 8-support protocol with 15 disjoint queries per environment | Complete | 87.5% |
+| Light Switch | K=8 controlled | Two action-diverse samples for each color/state combination | Pending (`120147`) | -- |
 | Event80 | K=1 | Original informative displacement support | Complete | See formal Event80 result |
 | Event80 | K=2 diagnostic | K=1 support plus one action-space farthest point | Pending (`120103`) | -- |
 | Event80 | K=4 diagnostic | K=1 support plus three action-space farthest points | Pending (`120104`) | -- |
@@ -129,11 +130,14 @@ Result root:
 - K=1 uses one fixed red-button support and reaches 50% action success. One button observation cannot fully identify the alternative button behavior.
 - K=2 uses one red and one blue support and reaches 87.5% under the selected formal protocol.
 - K=4 covers `(red, off)`, `(red, on)`, `(blue, off)`, and `(blue, on)` and also reaches 87.5%.
-- K=8 selects two action-diverse trajectories for each of the four color/state combinations. Job `120147` is pending.
+- The original formal K=8 experiment has already completed. It uses 8 support trajectories and 15 support-disjoint query trajectories in each of the four causal environments (`neither`, `red_only`, `blue_only`, and `both`), for 60 query rollouts in total. Ours reaches 87.5% action success, PSNR 33.454, and SSIM 0.9443. Its protocol is recorded in `protocol/support_query_manifest.json`, and its aggregate metrics are in `metrics/complete_v1/summary.csv` under the Light Switch result root.
+- A new controlled K=8 experiment separately selects two action-diverse trajectories for each of `(red, off)`, `(red, on)`, `(blue, off)`, and `(blue, on)`. Job `120147` is pending. This controlled construction is intended for a cleaner comparison with K=4 and must not be conflated with the completed original K=8 result.
 
 The four K=2 initial-state combinations produced 87.5%, 87.5%, 100%, and 100% action success. This shows that K alone is insufficient: initial lamp-state coverage materially affects identifiability.
 
 Under the selected K=2 protocol, DINOv2, LoRA-TTA, and TTT-KQV each reach 50%, compared with 87.5% for Ours.
+
+Current Light Switch support-count results are therefore `K=1: 50%`, `K=2: 87.5%`, `K=4: 87.5%`, and original formal `K=8: 87.5%`. Since the support-selection policies are not identical across all four points, this is an empirical trend rather than a strictly quantity-only ablation; the pending controlled K=8 run addresses part of that mismatch.
 
 ## 5. Event80 Push-box Friction
 
