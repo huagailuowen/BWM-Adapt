@@ -1,0 +1,12 @@
+task,variant,k,support_construction,action_success,action_success_id,action_success_ood,mean_regret,status,result_root
+Event80,K1 informative,1,One informative displacement support,0.72,0.6923076923,0.75,,formal,results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1
+Event80,K2 overlap diagnostic,2,K1 plus one action-space farthest support,0.60,0.5384615385,0.6666666667,0.0299547051,diagnostic_support_query_overlap,results/pushbox_friction_event80/event80_k2_k4_frozen_k1_query_overlap_diagnostic_v1/methods/ours/k2
+Event80,K4 overlap diagnostic,4,K1 plus three action-space farthest supports,0.64,0.6153846154,0.6666666667,0.0258798713,diagnostic_support_query_overlap,results/pushbox_friction_event80/event80_k2_k4_frozen_k1_query_overlap_diagnostic_v1/methods/ours/k4
+Light Switch,K1 red-only,1,One fixed red-button support,0.50,,,0.5,complete,results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/ours_red_k1_inner40
+Light Switch,K2 red1+blue1,2,One red-button and one blue-button support,0.875,,,0.125,formal,results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/ours_red1_blue1_k2_inner40
+Light Switch,K4 color-state coverage,4,Red and blue crossed with lamp-off and lamp-on,0.875,,,0.125,complete,results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/ours_redblue_oppositestate_k4_inner40
+Light Switch,K8 original formal,8,Eight original support trajectories with disjoint queries,0.875,,,,complete,results/lightswitch/physicalpress33_all4env_support8_query15_v1
+Mass Balance,K1 nearest-unbalanced,1,Nearest informative unbalanced support,0.70,1.0,0.40,1.5971345415,formal,results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1
+Mass Balance,K2 unbalanced bracket,2,Two near-balance unbalanced supports preferably on opposite sides,0.80,1.0,0.60,0.5591393876,complete,results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1
+Mass Balance,K2 unbalanced+balanced,2,K1 support plus the most-balanced support,1.0,1.0,1.0,0.0,complete,results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_nearest_unbalanced_plus_balanced_dense15_v1
+Mass Balance,K4 mixed,4,K2 bracket plus random-unbalanced and balanced supports,1.0,1.0,1.0,0.0,complete,results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k4_k2plus_random_unbalanced_balanced_dense15_v1

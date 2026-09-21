@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2700" height="1160" viewBox="0 0 2700 1160">
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="DejaVu Serif, serif" fill="#172033">
+<text x="1350.0" y="72.0" text-anchor="middle" dominant-baseline="middle" font-size="48" font-weight="700" fill="#172033">Support Number and Support Composition</text>
+<text x="1350.0" y="137.0" text-anchor="middle" dominant-baseline="middle" font-size="29" font-weight="400" fill="#52606D">Action success on completed Ours evaluations</text>
+<rect x="120.0" y="180" width="763.3" height="780" rx="22" fill="#FAFBFC" stroke="#D9E1E8" stroke-width="2"/>
+<text x="501.7" y="216.0" text-anchor="middle" dominant-baseline="middle" font-size="32" font-weight="700" fill="#172033">Event80</text>
+<line x1="212.0" y1="880.0" x2="845.3" y2="880.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="194.0" y="880.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">40</text>
+<line x1="212.0" y1="665.0" x2="845.3" y2="665.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="194.0" y="665.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">60</text>
+<line x1="212.0" y1="450.0" x2="845.3" y2="450.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="194.0" y="450.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">80</text>
+<line x1="212.0" y1="235.0" x2="845.3" y2="235.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="194.0" y="235.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">100</text>
+<text x="212.0" y="918.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#394654">K=1</text>
+<text x="528.7" y="918.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#394654">K=2</text>
+<text x="845.3" y="918.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#394654">K=4</text>
+<line x1="212.0" y1="536.0" x2="528.7" y2="665.0" stroke="#2F6690" stroke-width="5" stroke-dasharray="14 12"/>
+<line x1="528.7" y1="665.0" x2="845.3" y2="622.0" stroke="#2F6690" stroke-width="5" stroke-dasharray="14 12"/>
+<circle cx="212.0" cy="536.0" r="11" fill="#2F6690" stroke="#2F6690" stroke-width="4"/>
+<text x="212.0" y="505.0" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="700" fill="#2F6690">72%</text>
+<circle cx="528.7" cy="665.0" r="11" fill="white" stroke="#2F6690" stroke-width="4"/>
+<text x="528.7" y="634.0" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="700" fill="#2F6690">60%</text>
+<circle cx="845.3" cy="622.0" r="11" fill="white" stroke="#2F6690" stroke-width="4"/>
+<text x="845.3" y="591.0" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="700" fill="#2F6690">64%</text>
+<text x="528.7" y="925.0" text-anchor="middle" dominant-baseline="middle" font-size="19" font-weight="400" fill="#8A4B08">K2/K4 are overlap diagnostics</text>
+<rect x="968.3" y="180" width="763.3" height="780" rx="22" fill="#FAFBFC" stroke="#D9E1E8" stroke-width="2"/>
+<text x="1350.0" y="216.0" text-anchor="middle" dominant-baseline="middle" font-size="32" font-weight="700" fill="#172033">Light Switch</text>
+<line x1="1060.3" y1="880.0" x2="1693.7" y2="880.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="1042.3" y="880.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">40</text>
+<line x1="1060.3" y1="665.0" x2="1693.7" y2="665.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="1042.3" y="665.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">60</text>
+<line x1="1060.3" y1="450.0" x2="1693.7" y2="450.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="1042.3" y="450.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">80</text>
+<line x1="1060.3" y1="235.0" x2="1693.7" y2="235.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="1042.3" y="235.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">100</text>
+<text x="1060.3" y="918.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#394654">K=1</text>
+<text x="1271.4" y="918.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#394654">K=2</text>
+<text x="1482.6" y="918.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#394654">K=4</text>
+<text x="1693.7" y="918.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#394654">K=8</text>
+<polyline points="1060.3,772.5 1271.4,369.4 1482.6,369.4 1693.7,369.4" fill="none" stroke="#D97706" stroke-width="5"/>
+<circle cx="1060.3" cy="772.5" r="11" fill="#D97706" stroke="#D97706" stroke-width="4"/>
+<text x="1060.3" y="741.5" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="700" fill="#D97706">50%</text>
+<circle cx="1271.4" cy="369.4" r="11" fill="#D97706" stroke="#D97706" stroke-width="4"/>
+<text x="1271.4" y="338.4" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="700" fill="#D97706">87.5%</text>
+<circle cx="1482.6" cy="369.4" r="11" fill="#D97706" stroke="#D97706" stroke-width="4"/>
+<text x="1482.6" y="338.4" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="700" fill="#D97706">87.5%</text>
+<circle cx="1693.7" cy="369.4" r="11" fill="#D97706" stroke="#D97706" stroke-width="4"/>
+<text x="1693.7" y="338.4" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="700" fill="#D97706">87.5%</text>
+<text x="1377.0" y="925.0" text-anchor="middle" dominant-baseline="middle" font-size="19" font-weight="400" fill="#52606D">Complementary red+blue K2 is sufficient</text>
+<rect x="1816.7" y="180" width="763.3" height="780" rx="22" fill="#FAFBFC" stroke="#D9E1E8" stroke-width="2"/>
+<text x="2198.3" y="216.0" text-anchor="middle" dominant-baseline="middle" font-size="32" font-weight="700" fill="#172033">Mass Balance</text>
+<line x1="1908.7" y1="880.0" x2="2542.0" y2="880.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="1890.7" y="880.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">40</text>
+<line x1="1908.7" y1="665.0" x2="2542.0" y2="665.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="1890.7" y="665.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">60</text>
+<line x1="1908.7" y1="450.0" x2="2542.0" y2="450.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="1890.7" y="450.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">80</text>
+<line x1="1908.7" y1="235.0" x2="2542.0" y2="235.0" stroke="#DDE3E8" stroke-width="2"/>
+<text x="1890.7" y="235.0" text-anchor="end" dominant-baseline="middle" font-size="22" font-weight="400" fill="#52606D">100</text>
+<text x="1908.7" y="918.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#394654">K=1</text>
+<text x="2225.3" y="918.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#394654">K=2</text>
+<text x="2542.0" y="918.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#394654">K=4</text>
+<polyline points="1908.7,557.5 2225.3,450.0 2542.0,235.0" fill="none" stroke="#16856B" stroke-width="5"/>
+<circle cx="1908.7" cy="557.5" r="11" fill="#16856B" stroke="#16856B" stroke-width="4"/>
+<text x="1908.7" y="526.5" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="700" fill="#16856B">70%</text>
+<circle cx="2225.3" cy="450.0" r="11" fill="#16856B" stroke="#16856B" stroke-width="4"/>
+<text x="2225.3" y="419.0" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="700" fill="#16856B">80%</text>
+<polygon points="2225.3,222.0 2238.3,235.0 2225.3,248.0 2212.3,235.0" fill="#B45309" stroke="#172033" stroke-width="2"/>
+<text x="2225.3" y="204.0" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="700" fill="#9A3412">100%</text>
+<text x="2245.3" y="269.0" text-anchor="start" dominant-baseline="middle" font-size="18" font-weight="400" fill="#9A3412">balanced K2</text>
+<circle cx="2542.0" cy="235.0" r="11" fill="#16856B" stroke="#16856B" stroke-width="4"/>
+<text x="2542.0" y="204.0" text-anchor="middle" dominant-baseline="middle" font-size="22" font-weight="700" fill="#16856B">100%</text>
+<text x="2225.3" y="925.0" text-anchor="middle" dominant-baseline="middle" font-size="18" font-weight="400" fill="#8A4B08">Diamond: informative unbalanced+balanced K2</text>
+<text x="1350.0" y="1025.0" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#52606D">Support composition is controlled within each labeled protocol; points across tasks are not directly comparable.</text>
+<text x="1350.0" y="1070.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#52606D">Event80 action scores use the revised 2026-09-20 selection rule.</text>
+</g>
+</svg>

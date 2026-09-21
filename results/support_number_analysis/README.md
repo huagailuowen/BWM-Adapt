@@ -20,16 +20,16 @@
 |---|---|---|---|---:|
 | Mass Balance | K=1 | Nearest unbalanced support | Complete | 70.0% |
 | Mass Balance | K=2 bracket | Two near-balance unbalanced supports, preferably on opposite sides | Complete | 80.0% |
-| Mass Balance | K=2 unbalanced+balanced | Formal K=1 support plus one most-balanced support | Pending (`120155`) | -- |
+| Mass Balance | K=2 unbalanced+balanced | Formal K=1 support plus one most-balanced support | Complete | 100.0% |
 | Mass Balance | K=4 | K=2 bracket plus random-unbalanced and balanced support | Complete | 100.0% |
 | Light Switch | K=1 | One fixed red-button support | Complete | 50.0% |
 | Light Switch | K=2 | One red and one blue support | Complete | 87.5% |
 | Light Switch | K=4 | Red/blue crossed with lamp-off/lamp-on | Complete | 87.5% |
 | Light Switch | K=8 original formal | Original 8-support protocol with 15 disjoint queries per environment | Complete | 87.5% |
 | Light Switch | K=8 controlled | Two action-diverse samples for each color/state combination | Pending (`120147`) | -- |
-| Event80 | K=1 | Original informative displacement support | Complete | See formal Event80 result |
-| Event80 | K=2 diagnostic | K=1 support plus one action-space farthest point | Pending (`120103`) | -- |
-| Event80 | K=4 diagnostic | K=1 support plus three action-space farthest points | Pending (`120104`) | -- |
+| Event80 | K=1 | Original informative displacement support | Complete | 72.0% |
+| Event80 | K=2 diagnostic | K=1 support plus one action-space farthest point | Complete | 60.0% |
+| Event80 | K=4 diagnostic | K=1 support plus three action-space farthest points | Complete | 64.0% |
 
 Status and Slurm IDs in this table are a snapshot. Result directories and protocol files are the authoritative long-term records.
 
@@ -74,7 +74,7 @@ Result root:
 
 Ours reaches 80% action success: 100% ID and 60% OOD. Under the same protocol, LoRA-TTA reaches 50%, Standard Pooled WM 40%, DINOv2 30%, and TTT-KQV 30%.
 
-### 3.4 K=2 unbalanced+balanced: current controlled experiment
+### 3.4 K=2 unbalanced+balanced: completed controlled experiment
 
 This is a distinct K=2 experiment and should not be merged with the bracket result.
 
@@ -83,7 +83,7 @@ This is a distinct K=2 experiment and should not be merged with the bracket resu
 - The remaining 13 candidates are disjoint queries.
 - The environment set remains the same 5 ID + 5 OOD set.
 
-The experiment isolates whether one explicit near-equilibrium observation is more useful than a second unbalanced observation. Ours is currently submitted as job `120155`; no score is available yet.
+The experiment isolates whether one explicit near-equilibrium observation is more useful than a second unbalanced observation. Ours reaches 100% action success: 100% ID and 100% OOD, with zero mean regret. This is substantially stronger than the 80% bracket construction at the same K and shows that support composition, rather than support count alone, controls identifiability.
 
 Planned result root:
 
@@ -105,9 +105,10 @@ This result is not a pure support-count effect because the support composition a
 |---:|---:|---:|---:|---:|---:|---:|
 | 1 | 70% | 100% | 40% | 0.02457 | 1.199 px | 0.739 deg |
 | 2 bracket | 80% | 100% | 60% | 0.02395 | 1.164 px | 0.640 deg |
+| 2 unbalanced+balanced | 100% | 100% | 100% | -- | -- | -- |
 | 4 mixed | 100% | 100% | 100% | 0.02290 | 1.124 px | 0.494 deg |
 
-The trend is monotonic, but K and support informativeness are currently confounded.
+The bracket path is monotonic, but the controlled K=2 result reaches the same 100% action success as K=4. Two complementary observations are therefore sufficient on this evaluation; adding support beyond K=2 is not intrinsically necessary.
 
 ## 4. Light Switch
 
@@ -159,7 +160,7 @@ The submitted diagnostic freezes the original K=1 query set and adds support tra
 - Frozen query count: 9 per environment.
 - Ours checkpoint: step 7272.
 
-Jobs `120103` and `120104` are pending.
+Both diagnostic runs are complete. After re-scoring their cached action candidates with the current formal Event80 rule, K=2 reaches 60% action success and K=4 reaches 64%. The revised rule changes the short target to normalized image-y `[0.595, 0.68]`; when no prediction reaches the long target, it maximizes predicted image-y rounded to three decimals and breaks ties toward the larger action level. Re-scoring did not change either diagnostic score. For comparison, the formal K=1 result is 72% under the same current action rule.
 
 Diagnostic root:
 
@@ -185,3 +186,11 @@ The ablation should answer two separate questions:
 2. **Support coverage:** for a fixed K, do complementary physical outcomes or action/state coverage outperform redundant observations?
 
 Mass Balance K=2 bracket versus K=2 unbalanced+balanced addresses support composition. Light Switch directly tests causal color/state coverage. Event80 K=2/K=4 currently tests action diversity diagnostically and still requires a disjoint formal rerun.
+
+## 7. Consolidated artifacts
+
+- Machine-readable results: `support_number_summary.csv`.
+- Paper-style action-success figure: `support_number_action_success.svg` and `support_number_action_success.png`.
+- Reproducible renderer: `scripts/evaluation/render_support_number_analysis.py`.
+
+The figure separates the two Mass Balance K=2 constructions and marks Event80 K=2/K=4 as overlap diagnostics. It must not be interpreted as a strictly quantity-only ablation across all tasks because support composition changes between several points.
