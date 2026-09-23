@@ -1,0 +1,45 @@
+{
+  "task": "door",
+  "environment": "door-6u-8d",
+  "K": 4,
+  "initialization": "global mean",
+  "support_loss_reduction": "mean",
+  "selection": [
+    {
+      "episode_index": 32,
+      "level": 7,
+      "support_index": 16
+    },
+    {
+      "episode_index": 49,
+      "level": 10,
+      "support_index": 17
+    },
+    {
+      "episode_index": 56,
+      "level": 7,
+      "support_index": 47
+    },
+    {
+      "episode_index": 19,
+      "level": 10,
+      "support_index": 48
+    }
+  ],
+  "source": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/support_number_analysis/real/globalmean_20260922/door/k4",
+  "query_indices": [
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119
+  ],
+  "query_episode_disjoint": true
+}

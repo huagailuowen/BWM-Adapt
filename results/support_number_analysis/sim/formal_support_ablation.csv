@@ -1,0 +1,13 @@
+task,k,support_policy,action_success,successes,eligible_decisions,status
+mass_collision,1,observed_informative,0.6111111111,11,18,mixed_support_outcome_policy
+mass_collision,2,two_supports_model_prediction,0.6666666667,12,18,complete
+mass_collision,4,four_supports_model_prediction,0.7222222222,13,18,complete
+mass_collision,8,eight_supports_sum_loss_model_prediction,0.7777777778,14,18,complete_sum_loss_distinct_inner_objective
+mass_balance,1,nearest_unbalanced,0.7,7,10,complete_all_action_predictions
+mass_balance,2,bidirectional_near_balance,0.8,8,10,complete_all_action_predictions
+mass_balance,4,bracket_plus_random_unbalanced_plus_balanced,0.9,9,10,complete_all_action_predictions
+mass_balance,8,k4_plus_four_farthest_action_bins,0.9,9,10,complete_all_action_predictions
+light_switch,1,red_only,0.5,,,complete
+light_switch,2,red_one_blue_one,0.875,,,complete
+light_switch,4,button_color_cross_lamp_state,0.875,,,complete
+light_switch,8,original_formal_eight_supports,0.875,,,selected_original_formal

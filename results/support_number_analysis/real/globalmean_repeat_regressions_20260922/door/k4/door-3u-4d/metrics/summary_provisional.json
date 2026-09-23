@@ -1,0 +1,296 @@
+{
+  "status": "train_gt_calibrated_pending_heldout_overlay_audit",
+  "queries_expected": 12,
+  "queries_scored": 12,
+  "image_object": [
+    {
+      "task": "door",
+      "split": "train",
+      "method": "ours_stage1",
+      "queries": 2,
+      "environments": 1,
+      "query_mean": {
+        "psnr": 33.66210949037837,
+        "ssim": 0.936879771559075,
+        "ade_px": 3.357142857142857,
+        "fde_px": 7.5,
+        "observed_only_ade_px": 3.357142857142857,
+        "missing_penalized_ade_px": 3.357142857142857,
+        "paired_valid_frames": 38.0,
+        "gt_valid_frames": 38.0,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 1.0,
+        "lpips": 0.021517311688512564
+      },
+      "valid_query_counts": {
+        "psnr": 2,
+        "ssim": 2,
+        "ade_px": 2,
+        "fde_px": 2,
+        "observed_only_ade_px": 2,
+        "missing_penalized_ade_px": 2,
+        "paired_valid_frames": 2,
+        "gt_valid_frames": 2,
+        "gt_coverage": 2,
+        "prediction_coverage": 2,
+        "paired_coverage": 2,
+        "closure_agreement_with_tracked_gt": 2,
+        "lpips": 2
+      },
+      "environment_macro": {
+        "psnr": 33.66210949037837,
+        "ssim": 0.936879771559075,
+        "ade_px": 3.357142857142857,
+        "fde_px": 7.5,
+        "observed_only_ade_px": 3.357142857142857,
+        "missing_penalized_ade_px": 3.357142857142857,
+        "paired_valid_frames": 38.0,
+        "gt_valid_frames": 38.0,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 1.0,
+        "lpips": 0.021517311688512564
+      }
+    },
+    {
+      "task": "door",
+      "split": "train",
+      "method": "ours_stage2",
+      "queries": 2,
+      "environments": 1,
+      "query_mean": {
+        "psnr": 33.40137967174977,
+        "ssim": 0.9356662289333465,
+        "ade_px": 3.577380952380952,
+        "fde_px": 8.5,
+        "observed_only_ade_px": 3.577380952380952,
+        "missing_penalized_ade_px": 3.577380952380952,
+        "paired_valid_frames": 38.0,
+        "gt_valid_frames": 38.0,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 1.0,
+        "lpips": 0.0226734085008502
+      },
+      "valid_query_counts": {
+        "psnr": 2,
+        "ssim": 2,
+        "ade_px": 2,
+        "fde_px": 2,
+        "observed_only_ade_px": 2,
+        "missing_penalized_ade_px": 2,
+        "paired_valid_frames": 2,
+        "gt_valid_frames": 2,
+        "gt_coverage": 2,
+        "prediction_coverage": 2,
+        "paired_coverage": 2,
+        "closure_agreement_with_tracked_gt": 2,
+        "lpips": 2
+      },
+      "environment_macro": {
+        "psnr": 33.40137967174977,
+        "ssim": 0.9356662289333465,
+        "ade_px": 3.577380952380952,
+        "fde_px": 8.5,
+        "observed_only_ade_px": 3.577380952380952,
+        "missing_penalized_ade_px": 3.577380952380952,
+        "paired_valid_frames": 38.0,
+        "gt_valid_frames": 38.0,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 1.0,
+        "lpips": 0.0226734085008502
+      }
+    },
+    {
+      "task": "door",
+      "split": "test",
+      "method": "ours_stage1",
+      "queries": 10,
+      "environments": 1,
+      "query_mean": {
+        "psnr": 32.66818991877447,
+        "ssim": 0.9304462690859555,
+        "ade_px": 11.058863014462677,
+        "fde_px": 18.5,
+        "observed_only_ade_px": 11.058863014462677,
+        "missing_penalized_ade_px": 11.058863014462677,
+        "paired_valid_frames": 36.6,
+        "gt_valid_frames": 36.6,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.9,
+        "lpips": 0.035243320651352404
+      },
+      "valid_query_counts": {
+        "psnr": 10,
+        "ssim": 10,
+        "ade_px": 10,
+        "fde_px": 10,
+        "observed_only_ade_px": 10,
+        "missing_penalized_ade_px": 10,
+        "paired_valid_frames": 10,
+        "gt_valid_frames": 10,
+        "gt_coverage": 10,
+        "prediction_coverage": 10,
+        "paired_coverage": 10,
+        "closure_agreement_with_tracked_gt": 10,
+        "lpips": 10
+      },
+      "environment_macro": {
+        "psnr": 32.66818991877447,
+        "ssim": 0.9304462690859555,
+        "ade_px": 11.058863014462677,
+        "fde_px": 18.5,
+        "observed_only_ade_px": 11.058863014462677,
+        "missing_penalized_ade_px": 11.058863014462677,
+        "paired_valid_frames": 36.6,
+        "gt_valid_frames": 36.6,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.9,
+        "lpips": 0.035243320651352404
+      }
+    },
+    {
+      "task": "door",
+      "split": "test",
+      "method": "ours_stage2",
+      "queries": 10,
+      "environments": 1,
+      "query_mean": {
+        "psnr": 30.64086980295635,
+        "ssim": 0.9172302242934712,
+        "ade_px": 24.751865351427536,
+        "fde_px": 44.1,
+        "observed_only_ade_px": 24.751865351427536,
+        "missing_penalized_ade_px": 24.751865351427536,
+        "paired_valid_frames": 36.6,
+        "gt_valid_frames": 36.6,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.7,
+        "lpips": 0.05824045613408089
+      },
+      "valid_query_counts": {
+        "psnr": 10,
+        "ssim": 10,
+        "ade_px": 10,
+        "fde_px": 10,
+        "observed_only_ade_px": 10,
+        "missing_penalized_ade_px": 10,
+        "paired_valid_frames": 10,
+        "gt_valid_frames": 10,
+        "gt_coverage": 10,
+        "prediction_coverage": 10,
+        "paired_coverage": 10,
+        "closure_agreement_with_tracked_gt": 10,
+        "lpips": 10
+      },
+      "environment_macro": {
+        "psnr": 30.64086980295635,
+        "ssim": 0.9172302242934712,
+        "ade_px": 24.751865351427536,
+        "fde_px": 44.1,
+        "observed_only_ade_px": 24.751865351427536,
+        "missing_penalized_ade_px": 24.751865351427536,
+        "paired_valid_frames": 36.6,
+        "gt_valid_frames": 36.6,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "closure_agreement_with_tracked_gt": 0.7,
+        "lpips": 0.05824045613408089
+      }
+    }
+  ],
+  "action": [
+    {
+      "task": "door",
+      "method": "ours_stage1",
+      "environment_count": 1,
+      "scorable_count": 1,
+      "macro_score": 0.5,
+      "conservative_score_fixed_denominator": 0.5,
+      "decisions": [
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.5,
+          "closed_by_level": {
+            "5": true,
+            "7": true,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "1": false,
+            "3": false,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    },
+    {
+      "task": "door",
+      "method": "ours_stage2",
+      "environment_count": 1,
+      "scorable_count": 1,
+      "macro_score": 0.0,
+      "conservative_score_fixed_denominator": 0.0,
+      "decisions": [
+        {
+          "environment": "door-3u-4d",
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "gt_prefer": [
+            5,
+            6
+          ],
+          "score": 0.0,
+          "closed_by_level": {
+            "5": true,
+            "7": true,
+            "9": true,
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": false,
+            "1": false,
+            "3": true,
+            "8": true
+          },
+          "missing_levels": [],
+          "uncertain_levels": []
+        }
+      ]
+    }
+  ],
+  "checkpoint_steps": {
+    "door": {
+      "ours_stage1": 6500,
+      "ours_stage2": 6500
+    }
+  },
+  "fairness_note": "Single-environment factual subset of the frozen baseline queries."
+}

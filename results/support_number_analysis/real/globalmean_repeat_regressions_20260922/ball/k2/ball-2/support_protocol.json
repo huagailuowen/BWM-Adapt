@@ -1,0 +1,35 @@
+{
+  "task": "ball",
+  "environment": "ball-2",
+  "K": 2,
+  "initialization": "global mean",
+  "support_loss_reduction": "mean",
+  "selection": [
+    {
+      "episode_index": 21,
+      "level": 2,
+      "support_index": 3
+    },
+    {
+      "episode_index": 3,
+      "level": 2,
+      "support_index": 18
+    }
+  ],
+  "source": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/support_number_analysis/real/globalmean_20260922/ball/k2",
+  "query_indices": [
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47
+  ],
+  "query_episode_disjoint": true
+}

@@ -1,0 +1,16 @@
+{
+  "support_size": 8,
+  "reference_k4_manifest": "results/mass_collision/noleak_highmass2x_support_k1_k2_k4_all_model_predictions_v1/methods/ours_action8_highmass2x/k4/step_4300/seed_20260827/manifest.json",
+  "additional_support_selection": "greedy_farthest_speed_index_lower_speed_tiebreak",
+  "support_loss_reduction": "sum",
+  "spatial_loss_mode": "none",
+  "checkpoint": "outputs/mass20of30_collision_noleak_mainview_c32_oldrandom_8action_highmass2x_s1_108592/step-4300.safetensors",
+  "inner_steps": 40,
+  "inner_lr_schedule": "3.0:10,1.5:10,0.5:10,0.15:10",
+  "action_outcomes": "all nine model predictions, including support actions; GT only scores decisions",
+  "video_prediction_count_per_environment": 9,
+  "video_metrics_include_support_predictions": true,
+  "disjoint_query_count_per_environment": 1,
+  "prior_k1_k2_k4_outputs_unchanged": true,
+  "reference_mean_output": "results/mass_collision/noleak_highmass2x_support_k1_k2_k4_all_model_predictions_v1/methods/ours_action8_highmass2x/k8/step_4300/seed_20260827"
+}

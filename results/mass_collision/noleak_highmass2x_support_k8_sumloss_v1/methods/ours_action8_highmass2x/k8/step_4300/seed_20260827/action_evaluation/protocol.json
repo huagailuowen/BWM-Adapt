@@ -1,0 +1,68 @@
+{
+  "action_order_field": "speed_index",
+  "candidate_count_is_protocol_defined": true,
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/mass_collision/noleak_highmass2x_support_k8_sumloss_v1/methods/ours_action8_highmass2x/k8/step_4300/seed_20260827/action_evaluation.yaml",
+  "method": "ours_k8_sumloss",
+  "observed_support_is_selectable": true,
+  "selection_strategy": "nearest",
+  "selection_uses_query_ground_truth": false,
+  "targets": [
+    {
+      "id": "short_displacement",
+      "kind": "point_rectangle",
+      "object_index": 0,
+      "object_role": "struck_object",
+      "region": {
+        "x_max": 0.57,
+        "x_min": 0.43,
+        "y_max": 0.72,
+        "y_min": 0.62
+      }
+    },
+    {
+      "id": "medium_displacement",
+      "kind": "point_rectangle",
+      "object_index": 0,
+      "object_role": "struck_object",
+      "region": {
+        "x_max": 0.57,
+        "x_min": 0.43,
+        "y_max": 0.86,
+        "y_min": 0.75
+      }
+    },
+    {
+      "id": "long_displacement",
+      "kind": "point_rectangle",
+      "max_action_steps_above_minimum": 1,
+      "object_index": 0,
+      "object_role": "struck_object",
+      "region": {
+        "x_max": 0.58,
+        "x_min": 0.42,
+        "y_max": 1.0,
+        "y_min": 0.92
+      },
+      "selection_strategy": "first_reaching",
+      "success_policy": "minimum_reaching"
+    }
+  ],
+  "task": "mass_collision",
+  "transfer_plans": [
+    {
+      "domain_by_source": {
+        "9": "id",
+        "10": "ood",
+        "16": "ood",
+        "19": "id",
+        "37": "ood",
+        "66": "id",
+        "95": "ood",
+        "153": "id",
+        "240": "id",
+        "241": "ood"
+      },
+      "path": "results/mass_collision/noleak_highmass2x_support_k8_sumloss_v1/methods/ours_action8_highmass2x/k8/step_4300/seed_20260827/transfer/action_plan.json"
+    }
+  ]
+}

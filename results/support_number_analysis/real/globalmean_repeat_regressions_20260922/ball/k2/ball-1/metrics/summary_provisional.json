@@ -1,0 +1,352 @@
+{
+  "status": "train_gt_calibrated_pending_heldout_overlay_audit",
+  "queries_expected": 12,
+  "queries_scored": 12,
+  "image_object": [
+    {
+      "task": "ball",
+      "split": "train",
+      "method": "ours_stage1",
+      "queries": 2,
+      "environments": 1,
+      "query_mean": {
+        "psnr": 36.41199776752896,
+        "ssim": 0.9603397340490156,
+        "ade_px": 16.335964403604063,
+        "fde_px": 40.21130491123273,
+        "observed_only_ade_px": 16.779629727234912,
+        "missing_penalized_ade_px": 16.335964403604063,
+        "paired_valid_frames": 45.5,
+        "gt_valid_frames": 45.5,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 39.63180353959768,
+        "lpips": 0.027039325330406427
+      },
+      "valid_query_counts": {
+        "psnr": 2,
+        "ssim": 2,
+        "ade_px": 2,
+        "fde_px": 2,
+        "observed_only_ade_px": 2,
+        "missing_penalized_ade_px": 2,
+        "paired_valid_frames": 2,
+        "gt_valid_frames": 2,
+        "gt_coverage": 2,
+        "prediction_coverage": 2,
+        "paired_coverage": 2,
+        "peak_x_error_px": 2,
+        "lpips": 2
+      },
+      "environment_macro": {
+        "psnr": 36.41199776752896,
+        "ssim": 0.9603397340490156,
+        "ade_px": 16.335964403604063,
+        "fde_px": 40.21130491123273,
+        "observed_only_ade_px": 16.779629727234912,
+        "missing_penalized_ade_px": 16.335964403604063,
+        "paired_valid_frames": 45.5,
+        "gt_valid_frames": 45.5,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 39.63180353959768,
+        "lpips": 0.027039325330406427
+      }
+    },
+    {
+      "task": "ball",
+      "split": "train",
+      "method": "ours_stage2",
+      "queries": 2,
+      "environments": 1,
+      "query_mean": {
+        "psnr": 36.900858825706315,
+        "ssim": 0.9625064623252051,
+        "ade_px": 5.712153963923751,
+        "fde_px": 14.87522850911909,
+        "observed_only_ade_px": 6.0576104641795006,
+        "missing_penalized_ade_px": 5.712153963923751,
+        "paired_valid_frames": 45.5,
+        "gt_valid_frames": 45.5,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 14.304889263397683,
+        "lpips": 0.014948191121220589
+      },
+      "valid_query_counts": {
+        "psnr": 2,
+        "ssim": 2,
+        "ade_px": 2,
+        "fde_px": 2,
+        "observed_only_ade_px": 2,
+        "missing_penalized_ade_px": 2,
+        "paired_valid_frames": 2,
+        "gt_valid_frames": 2,
+        "gt_coverage": 2,
+        "prediction_coverage": 2,
+        "paired_coverage": 2,
+        "peak_x_error_px": 2,
+        "lpips": 2
+      },
+      "environment_macro": {
+        "psnr": 36.900858825706315,
+        "ssim": 0.9625064623252051,
+        "ade_px": 5.712153963923751,
+        "fde_px": 14.87522850911909,
+        "observed_only_ade_px": 6.0576104641795006,
+        "missing_penalized_ade_px": 5.712153963923751,
+        "paired_valid_frames": 45.5,
+        "gt_valid_frames": 45.5,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 14.304889263397683,
+        "lpips": 0.014948191121220589
+      }
+    },
+    {
+      "task": "ball",
+      "split": "test",
+      "method": "ours_stage1",
+      "queries": 10,
+      "environments": 1,
+      "query_mean": {
+        "psnr": 36.43973472476435,
+        "ssim": 0.9604035624137583,
+        "ade_px": 15.514386146683616,
+        "fde_px": 19.018159194027874,
+        "observed_only_ade_px": 16.151611658873232,
+        "missing_penalized_ade_px": 15.514386146683616,
+        "paired_valid_frames": 49.7,
+        "gt_valid_frames": 49.7,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 17.263263338050738,
+        "lpips": 0.02446285942569375
+      },
+      "valid_query_counts": {
+        "psnr": 10,
+        "ssim": 10,
+        "ade_px": 10,
+        "fde_px": 10,
+        "observed_only_ade_px": 10,
+        "missing_penalized_ade_px": 10,
+        "paired_valid_frames": 10,
+        "gt_valid_frames": 10,
+        "gt_coverage": 10,
+        "prediction_coverage": 10,
+        "paired_coverage": 10,
+        "peak_x_error_px": 10,
+        "lpips": 10
+      },
+      "environment_macro": {
+        "psnr": 36.43973472476435,
+        "ssim": 0.9604035624137583,
+        "ade_px": 15.514386146683616,
+        "fde_px": 19.018159194027874,
+        "observed_only_ade_px": 16.151611658873232,
+        "missing_penalized_ade_px": 15.514386146683616,
+        "paired_valid_frames": 49.7,
+        "gt_valid_frames": 49.7,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 17.263263338050738,
+        "lpips": 0.02446285942569375
+      }
+    },
+    {
+      "task": "ball",
+      "split": "test",
+      "method": "ours_stage2",
+      "queries": 10,
+      "environments": 1,
+      "query_mean": {
+        "psnr": 36.47928987568278,
+        "ssim": 0.9607613046912803,
+        "ade_px": 13.839951233619729,
+        "fde_px": 11.390540017792466,
+        "observed_only_ade_px": 14.47434545346712,
+        "missing_penalized_ade_px": 13.839951233619729,
+        "paired_valid_frames": 49.7,
+        "gt_valid_frames": 49.7,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 10.037454658801858,
+        "lpips": 0.022513969987630843
+      },
+      "valid_query_counts": {
+        "psnr": 10,
+        "ssim": 10,
+        "ade_px": 10,
+        "fde_px": 10,
+        "observed_only_ade_px": 10,
+        "missing_penalized_ade_px": 10,
+        "paired_valid_frames": 10,
+        "gt_valid_frames": 10,
+        "gt_coverage": 10,
+        "prediction_coverage": 10,
+        "paired_coverage": 10,
+        "peak_x_error_px": 10,
+        "lpips": 10
+      },
+      "environment_macro": {
+        "psnr": 36.47928987568278,
+        "ssim": 0.9607613046912803,
+        "ade_px": 13.839951233619729,
+        "fde_px": 11.390540017792466,
+        "observed_only_ade_px": 14.47434545346712,
+        "missing_penalized_ade_px": 13.839951233619729,
+        "paired_valid_frames": 49.7,
+        "gt_valid_frames": 49.7,
+        "gt_coverage": 1.0,
+        "prediction_coverage": 1.0,
+        "paired_coverage": 1.0,
+        "peak_x_error_px": 10.037454658801858,
+        "lpips": 0.022513969987630843
+      }
+    }
+  ],
+  "action": [
+    {
+      "task": "ball",
+      "method": "ours_stage1",
+      "rule": "first_reach_and_successor_pair_overlap",
+      "environment_count": 1,
+      "scorable_count": 1,
+      "macro_score": 0.5,
+      "conservative_score_fixed_denominator": 0.5,
+      "decisions": [
+        {
+          "environment": "ball-1",
+          "gt_first_reach": 4,
+          "predicted_first_reach": 3,
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "predicted_prefer": [
+            3,
+            4
+          ],
+          "score": 0.5,
+          "gt_complete": true,
+          "gt_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "predicted_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": true
+          },
+          "threshold_x_by_level": {
+            "10": 406.82758620689657,
+            "2": 406.98604651162793,
+            "4": 406.81,
+            "6": 406.75728155339806,
+            "8": 406.6916299559471,
+            "1": 406.75728155339806,
+            "5": 407.04347826086956,
+            "7": 406.91509433962267,
+            "9": 406.85714285714283,
+            "3": 406.97536945812806
+          },
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        }
+      ]
+    },
+    {
+      "task": "ball",
+      "method": "ours_stage2",
+      "rule": "first_reach_and_successor_pair_overlap",
+      "environment_count": 1,
+      "scorable_count": 1,
+      "macro_score": 1.0,
+      "conservative_score_fixed_denominator": 1.0,
+      "decisions": [
+        {
+          "environment": "ball-1",
+          "gt_first_reach": 4,
+          "predicted_first_reach": 4,
+          "gt_prefer": [
+            4,
+            5
+          ],
+          "predicted_prefer": [
+            4,
+            5
+          ],
+          "score": 1.0,
+          "gt_complete": true,
+          "gt_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "predicted_reaches_by_level": {
+            "10": true,
+            "2": false,
+            "4": true,
+            "6": true,
+            "8": true,
+            "1": false,
+            "5": true,
+            "7": true,
+            "9": true,
+            "3": false
+          },
+          "threshold_x_by_level": {
+            "10": 406.82758620689657,
+            "2": 406.98604651162793,
+            "4": 406.81,
+            "6": 406.75728155339806,
+            "8": 406.6916299559471,
+            "1": 406.75728155339806,
+            "5": 407.04347826086956,
+            "7": 406.91509433962267,
+            "9": 406.85714285714283,
+            "3": 406.97536945812806
+          },
+          "unknown_prediction_levels": [],
+          "level11_is_formal_successor_only": false
+        }
+      ]
+    }
+  ],
+  "checkpoint_steps": {
+    "ball": {
+      "ours_stage1": 6500,
+      "ours_stage2": 6500
+    }
+  },
+  "fairness_note": "Single-environment factual subset of the frozen baseline queries."
+}

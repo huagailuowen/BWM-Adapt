@@ -1,0 +1,76 @@
+{
+  "all_valid_decisions": {
+    "count": 30,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 0.010974118614633276,
+    "selected_is_oracle_rate": 0.6666666666666666,
+    "task_success_rate": 0.4666666666666667,
+    "uniform_random_success_rate": 0.25925925925925924
+  },
+  "by_domain_and_target": {
+    "id/long_displacement": {
+      "count": 5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.016937160651712645,
+      "selected_is_oracle_rate": 0.6,
+      "task_success_rate": 0.4,
+      "uniform_random_success_rate": 0.2222222222222222
+    },
+    "id/medium_displacement": {
+      "count": 5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.008374280920421872,
+      "selected_is_oracle_rate": 0.8,
+      "task_success_rate": 0.4,
+      "uniform_random_success_rate": 0.25925925925925924
+    },
+    "id/short_displacement": {
+      "count": 5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.007622181792665339,
+      "selected_is_oracle_rate": 0.8,
+      "task_success_rate": 0.4,
+      "uniform_random_success_rate": 0.3888888888888889
+    },
+    "ood/long_displacement": {
+      "count": 5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.008085923800008143,
+      "selected_is_oracle_rate": 0.4,
+      "task_success_rate": 0.6,
+      "uniform_random_success_rate": 0.2222222222222222
+    },
+    "ood/medium_displacement": {
+      "count": 5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.014678644376471529,
+      "selected_is_oracle_rate": 0.6,
+      "task_success_rate": 0.4,
+      "uniform_random_success_rate": 0.1851851851851852
+    },
+    "ood/short_displacement": {
+      "count": 5,
+      "mean_action_coverage": 1.0,
+      "mean_regret": 0.010146520146520132,
+      "selected_is_oracle_rate": 0.8,
+      "task_success_rate": 0.6,
+      "uniform_random_success_rate": 0.3333333333333333
+    }
+  },
+  "complete_candidate_set_decisions": {
+    "count": 30,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 0.010974118614633276,
+    "selected_is_oracle_rate": 0.6666666666666666,
+    "task_success_rate": 0.4666666666666667,
+    "uniform_random_success_rate": 0.25925925925925924
+  },
+  "headline_oracle_reachable_complete_decisions": {
+    "count": 18,
+    "mean_action_coverage": 1.0,
+    "mean_regret": 0.009259658166807468,
+    "selected_is_oracle_rate": 0.7222222222222222,
+    "task_success_rate": 0.7777777777777778,
+    "uniform_random_success_rate": 0.25925925925925924
+  }
+}

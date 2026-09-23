@@ -1,0 +1,35 @@
+{
+  "action_order_field": "sampled_support_offset_m",
+  "candidate_count_is_protocol_defined": true,
+  "config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k8_k4plus_farthest4_dense15_v1/methods/ours/step_4300/seed_20260902/action_evaluation_predict_all_actions.yaml",
+  "method": "ours",
+  "observed_support_is_selectable": true,
+  "selection_strategy": "boundary_crossing",
+  "selection_uses_query_ground_truth": false,
+  "targets": [
+    {
+      "id": "balanced",
+      "kind": "scalar_interval",
+      "max": 3.0,
+      "min": -3.0
+    }
+  ],
+  "task": "mass_balance",
+  "transfer_plans": [
+    {
+      "domain_by_source": {
+        "4": "id",
+        "229": "id",
+        "469": "id",
+        "661": "id",
+        "892": "id",
+        "907": "ood",
+        "994": "ood",
+        "1093": "ood",
+        "1246": "ood",
+        "1339": "ood"
+      },
+      "path": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k8_k4plus_farthest4_dense15_v1/methods/ours/step_4300/seed_20260902/all_actions_model_predictions/transfer/transfer_plan.json"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "environment": [
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0009",
+      "lpips": 0.05061707231733534,
+      "method": "ours_k8_sumloss",
+      "psnr": 31.52587827046712,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.963497166750861,
+      "support_size": 8
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0019",
+      "lpips": 0.03895983182721668,
+      "method": "ours_k8_sumloss",
+      "psnr": 32.86961216396756,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9666592449438378,
+      "support_size": 8
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0066",
+      "lpips": 0.04728567124240928,
+      "method": "ours_k8_sumloss",
+      "psnr": 31.461595747205948,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9625702878165114,
+      "support_size": 8
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0153",
+      "lpips": 0.040938793785042234,
+      "method": "ours_k8_sumloss",
+      "psnr": 32.36690542432997,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9637865221131262,
+      "support_size": 8
+    },
+    {
+      "count": 9,
+      "domain": "id",
+      "environment_id": "source0240",
+      "lpips": 0.0282387708624204,
+      "method": "ours_k8_sumloss",
+      "psnr": 34.78966267903646,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.970730599918435,
+      "support_size": 8
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0010",
+      "lpips": 0.055191645605696574,
+      "method": "ours_k8_sumloss",
+      "psnr": 30.674282921685112,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9616071603554411,
+      "support_size": 8
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0016",
+      "lpips": 0.040311125210589834,
+      "method": "ours_k8_sumloss",
+      "psnr": 32.60651546054416,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9661436741035059,
+      "support_size": 8
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0037",
+      "lpips": 0.049997682165768415,
+      "method": "ours_k8_sumloss",
+      "psnr": 31.174700207180447,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.962575753855575,
+      "support_size": 8
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0095",
+      "lpips": 0.04859627327985234,
+      "method": "ours_k8_sumloss",
+      "psnr": 31.30416128370497,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9623608340548253,
+      "support_size": 8
+    },
+    {
+      "count": 9,
+      "domain": "ood",
+      "environment_id": "source0241",
+      "lpips": 0.03318439279165533,
+      "method": "ours_k8_sumloss",
+      "psnr": 33.89732466803657,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.968131784098613,
+      "support_size": 8
+    }
+  ],
+  "seed": [
+    {
+      "count": 5,
+      "domain": "id",
+      "lpips": 0.04120802800688479,
+      "method": "ours_k8_sumloss",
+      "psnr": 32.60273085700141,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.9654487643085543,
+      "support_size": 8
+    },
+    {
+      "count": 5,
+      "domain": "ood",
+      "lpips": 0.0454562238107125,
+      "method": "ours_k8_sumloss",
+      "psnr": 31.931396908230248,
+      "seed": 20260827,
+      "split": "evaluation",
+      "ssim": 0.964163841293592,
+      "support_size": 8
+    }
+  ],
+  "summary": [
+    {
+      "count": 1,
+      "domain": "id",
+      "lpips": 0.04120802800688479,
+      "method": "ours_k8_sumloss",
+      "psnr": 32.60273085700141,
+      "split": "evaluation",
+      "ssim": 0.9654487643085543,
+      "support_size": 8
+    },
+    {
+      "count": 1,
+      "domain": "ood",
+      "lpips": 0.0454562238107125,
+      "method": "ours_k8_sumloss",
+      "psnr": 31.931396908230248,
+      "split": "evaluation",
+      "ssim": 0.964163841293592,
+      "support_size": 8
+    }
+  ]
+}
