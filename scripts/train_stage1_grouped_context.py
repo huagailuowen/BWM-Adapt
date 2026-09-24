@@ -440,6 +440,11 @@ class GroupedContextStage1Module(WanTrainingModule):
         return loss
 
     def forward(self, data, inputs=None):
+        if isinstance(data, list):
+            from wan_video_action.grouped_tensor_batch import grouped_tensor_batch_loss
+            if inputs is not None:
+                raise ValueError("Tensor microbatches prepare their own pipeline inputs.")
+            return grouped_tensor_batch_loss(self, data)
         donor_data = data.get("_self_correction_donor_data")
         timestep_index = data.get("_flow_timestep_index")
         if donor_data is None and timestep_index is None:
@@ -721,6 +726,7 @@ def add_grouped_context_config(parser: argparse.ArgumentParser):
     group.add_argument("--grouped_context_environment_weight_multiplier", type=float, default=1.0)
     group.add_argument("--grouped_context_backgrounds_per_action", type=int, default=1)
     group.add_argument("--grouped_context_microbatches_per_update", type=int, default=0)
+    group.add_argument("--grouped_context_tensor_batch_size", type=int, default=1)
     group.add_argument("--grouped_context_sampling_mode", type=str, default="common_actions")
     group.add_argument("--grouped_context_action_weight_path", type=str, default=None)
     group.add_argument(
@@ -1491,6 +1497,66 @@ def _sample_update_indices(
             raise ValueError(
                 f"balanced_repeated_groups requires microbatches_per_update={expected}, "
                 f"got {microbatches_per_update}."
+            )
+        rng.shuffle(sample_indices)
+        return sample_indices
+
+    if mode in (
+        "independent_environment_slots",
+        "environment_slots_with_replacement",
+        "common_action_environment_slots",
+    ):
+        # Each rank independently draws environment slots with replacement.
+        # Repeated slots independently resample distinct actions and one random
+        # episode/background candidate for every action.
+        rng = random.Random(
+            int(args.seed)
+            + int(update_idx) * max(1, int(accelerator.num_processes))
+            + int(accelerator.process_index)
+        )
+        allowed_values = None
+        if allowed_friction_values is not None:
+            allowed_values = [float(value) for value in allowed_friction_values]
+
+        def is_allowed(value: float) -> bool:
+            if allowed_values is None:
+                return True
+            return any(abs(float(value) - allowed) <= 1e-5 for allowed in allowed_values)
+
+        eligible_values = sorted(
+            float(value)
+            for value, by_action in grouped_indices.items()
+            if is_allowed(float(value)) and len(by_action) >= int(actions_per_update)
+        )
+        if not eligible_values:
+            raise ValueError(
+                "independent_environment_slots found no eligible environment groups."
+            )
+        slot_values = [
+            rng.choice(eligible_values) for _ in range(int(friction_groups))
+        ]
+        shared_actions = None
+        if mode == "common_action_environment_slots":
+            common_actions = set(grouped_indices[slot_values[0]])
+            for value in slot_values[1:]:
+                common_actions.intersection_update(grouped_indices[value])
+            if len(common_actions) < int(actions_per_update):
+                raise ValueError("Environment slots have too few common actions.")
+            shared_actions = rng.sample(sorted(common_actions), int(actions_per_update))
+        sample_indices: list[int] = []
+        for value in slot_values:
+            by_action = grouped_indices[value]
+            selected_actions = shared_actions if shared_actions is not None else rng.sample(
+                sorted(by_action), int(actions_per_update)
+            )
+            sample_indices.extend(
+                rng.choice(by_action[action_id]) for action_id in selected_actions
+            )
+        expected = int(friction_groups) * int(actions_per_update)
+        if int(microbatches_per_update) != expected:
+            raise ValueError(
+                "independent_environment_slots requires an exact logical batch: "
+                f"microbatches_per_update={microbatches_per_update}, expected={expected}."
             )
         rng.shuffle(sample_indices)
         return sample_indices
@@ -4752,7 +4818,20 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
                 flush=True,
             )
         sample_values = [friction_values[index] for index in phase_sample_group_indices]
-        sample_friction_groups = min(friction_groups_per_update, len(sample_values))
+        sampling_mode = str(
+            getattr(args, "grouped_context_sampling_mode", "common_actions")
+            or "common_actions"
+        ).strip().lower()
+        if sampling_mode in (
+            "independent_environment_slots",
+            "environment_slots_with_replacement",
+            "common_action_environment_slots",
+        ):
+            # Environment slots are independent draws with replacement. Keep the
+            # requested slot count even when the active curriculum pool is smaller.
+            sample_friction_groups = friction_groups_per_update
+        else:
+            sample_friction_groups = min(friction_groups_per_update, len(sample_values))
         sample_indices = _sample_update_indices(
             grouped_indices=grouped_indices,
             rows=metadata_rows,
@@ -4766,37 +4845,41 @@ def launch_curriculum_grouped_stage1(accelerator, dataset, model, model_logger, 
         )
         optimizer.zero_grad(set_to_none=True)
         detached_losses = []
-        for micro_idx, sample_index in enumerate(sample_indices):
+        tensor_batch_size = int(args.grouped_context_tensor_batch_size)
+        if tensor_batch_size < 1:
+            raise ValueError("grouped_context_tensor_batch_size must be positive.")
+        update_started = time.perf_counter()
+        for batch_start in range(0, len(sample_indices), tensor_batch_size):
+            batch_indices = sample_indices[batch_start:batch_start + tensor_batch_size]
             sync_context = (
                 accelerator.no_sync(model)
-                if micro_idx < len(sample_indices) - 1
+                if batch_start + len(batch_indices) < len(sample_indices)
                 else contextlib.nullcontext()
             )
             with sync_context:
-                sample_data = dataset[sample_index]
-                if random_context_warmup and step <= initial_steps:
-                    random_context = random.Random(
-                        int(args.seed)
-                        + int(step) * 104729
-                        + int(accelerator.process_index) * 1009
-                        + int(micro_idx)
-                    )
-                    pool_size = min(
-                        int(args.grouped_context_curriculum_initial_groups),
-                        len(group_order),
-                    )
-                    borrowed_index = group_order[random_context.randrange(pool_size)]
-                    sample_data = sample_data.copy()
-                    sample_data["friction_mu"] = float(friction_values[borrowed_index])
-                elif shared_context_values:
-                    sample_group_value = float(metadata_rows[sample_index]["friction_mu"])
-                    canonical_value = shared_context_values.get(sample_group_value)
-                    if canonical_value is not None:
+                samples = []
+                for offset, sample_index in enumerate(batch_indices):
+                    micro_idx = batch_start + offset
+                    sample_data = dataset[sample_index]
+                    if random_context_warmup and step <= initial_steps:
+                        random_context = random.Random(
+                            int(args.seed) + int(step) * 104729
+                            + int(accelerator.process_index) * 1009 + int(micro_idx)
+                        )
+                        pool_size = min(int(args.grouped_context_curriculum_initial_groups), len(group_order))
+                        borrowed_index = group_order[random_context.randrange(pool_size)]
                         sample_data = sample_data.copy()
-                        sample_data["friction_mu"] = canonical_value
-                loss = model(sample_data)
-                detached_losses.append(loss.detach())
-                accelerator.backward(loss / len(sample_indices))
+                        sample_data["friction_mu"] = float(friction_values[borrowed_index])
+                    elif shared_context_values:
+                        sample_group_value = float(metadata_rows[sample_index]["friction_mu"])
+                        canonical_value = shared_context_values.get(sample_group_value)
+                        if canonical_value is not None:
+                            sample_data = sample_data.copy()
+                            sample_data["friction_mu"] = canonical_value
+                    samples.append(sample_data)
+                loss = model(samples if tensor_batch_size > 1 else samples[0])
+                detached_losses.extend([loss.detach()] * len(samples))
+                accelerator.backward(loss * (len(samples) / len(sample_indices)))
         frozen_context_snapshot = None
         frozen_context_mask = None
         if phase in ("new_context", "new_context_mid", "all_context", "joint"):

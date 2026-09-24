@@ -192,7 +192,7 @@ def render(config: dict, output_dir: Path) -> None:
     for task_index, task in enumerate(tasks):
         group_x0 = method_right + task_index * len(METRICS) * metric_width
         group_x1 = group_x0 + len(METRICS) * metric_width
-        color = palette[task_index]
+        color = palette[task_index % len(palette)]
         svg.append(f'<rect x="{group_x0:.1f}" y="{table_top}" width="{group_x1-group_x0:.1f}" height="{group_bottom-table_top}" fill="{color}"/>')
         draw.rectangle((group_x0, table_top, group_x1, group_bottom), fill=color)
         svg_text((group_x0 + group_x1) / 2, (table_top + group_bottom) / 2, task["label"], 29, css="bold")
@@ -255,7 +255,7 @@ def render(config: dict, output_dir: Path) -> None:
 
     notes = [
         "Bold: best. Object/physical metrics are task-specific and listed in each header.",
-        "* Mass Balance Ours uses the completed fixed-pose 5-ID/5-OOD test; baseline rows use workspace-random data.",
+        "* Mass Balance Ours uses a fixed-pose test; Multi-background Ours is provisional old-5bg, not matched with 30-bg baselines.",
         "\u2020 Collision LoRA: prior protocol. Mass Friction action: +/-1 level at y=0.62/0.75/0.92 (post-hoc revision); --: unavailable.",
         "DINOv2: Transformer for Friction; concat-MLP for Gravity/Collision/Light/Balance. Mass x Friction is pending.",
     ]

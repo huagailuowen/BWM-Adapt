@@ -4,6 +4,7 @@ PCA is fitted independently per task, using only its active training codes.
 Inference codes never affect the fitted basis. Original 32-D vectors are retained.
 """
 import argparse
+import bisect
 import csv
 import hashlib
 import json
@@ -15,6 +16,16 @@ import numpy as np
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
+PUBLIC_TASK_NAMES = {'event80': 'friction'}
+
+COLOR_SPECS = {
+    'event80': ('continuous_absolute', 'friction_mu', None),
+    'gravity': ('ordinal', 'gravity_mps2', None),
+    'mass_collision': ('ordinal', 'target_mass_kg', None),
+    'light_switch': ('categorical_environment', 'causal_class', None),
+    'mass_balance': ('ordinal', 'mass_ratio', None),
+    'mass_friction': ('bivariate_ordinal', 'target_table_friction_mu', 'target_mass_kg'),
+}
 
 
 def jsonl(path):
@@ -35,6 +46,63 @@ def physical(row, task):
         'mass_friction': ['environment_group_id', 'environment_id', 'target_mass_kg', 'target_table_friction_mu'],
     }[task]
     return {name: row[name] for name in names if name in row}
+
+
+def annotate_color_encodings(rows, task):
+    """Record the exact task-local color semantics used by the formal figure."""
+    scheme, primary_key, secondary_key = COLOR_SPECS[task]
+    physical_rows = [json.loads(row['physical_parameters_json']) for row in rows]
+    training_physical = [
+        values for row, values in zip(rows, physical_rows)
+        if row['phase'] == 'training_time'
+    ]
+    if scheme == 'categorical_environment':
+        class_order = ['neither', 'red_only', 'blue_only', 'both']
+        observed = {str(values[primary_key]) for values in training_physical}
+        primary_values = [value for value in class_order if value in observed]
+    else:
+        primary_values = sorted({float(values[primary_key]) for values in training_physical})
+    primary_rank = {value: index for index, value in enumerate(primary_values)}
+    secondary_values = [] if secondary_key is None else sorted(
+        {float(values[secondary_key]) for values in training_physical}
+    )
+    def ordinal_rank(value, reference):
+        """Place held-out physics between equally spaced training ranks."""
+        value = float(value)
+        index = bisect.bisect_left(reference, value)
+        if index < len(reference) and close(reference[index], value):
+            return float(index)
+        if index == 0:
+            return 0.0
+        if index == len(reference):
+            return float(len(reference) - 1)
+        return float(index) - 0.5
+    for row, values in zip(rows, physical_rows):
+        primary_value = str(values[primary_key]) if scheme == 'categorical_environment' else float(values[primary_key])
+        secondary_value = '' if secondary_key is None else float(values[secondary_key])
+        if scheme == 'categorical_environment':
+            mapped_primary_rank = primary_rank[primary_value]
+            primary_count = len(primary_values)
+        else:
+            mapped_primary_rank = ordinal_rank(primary_value, primary_values)
+            primary_count = len(primary_values)
+        row.update({
+            'color_scheme': scheme,
+            'color_reference': 'training_causal_environment' if scheme == 'categorical_environment' else 'active_training_physical_values_only',
+            'color_tone': 'base' if row['phase'] == 'training_time' else 'dark',
+            'color_primary_key': primary_key,
+            'color_primary_value': primary_value,
+            'color_primary_rank': mapped_primary_rank,
+            'color_primary_count': primary_count,
+            'color_primary_min': primary_values[0],
+            'color_primary_max': primary_values[-1],
+            'color_secondary_key': secondary_key or '',
+            'color_secondary_value': secondary_value,
+            'color_secondary_rank': '' if secondary_key is None else ordinal_rank(secondary_value, secondary_values),
+            'color_secondary_count': '' if secondary_key is None else len(secondary_values),
+            'color_secondary_min': '' if secondary_key is None else secondary_values[0],
+            'color_secondary_max': '' if secondary_key is None else secondary_values[-1],
+        })
 
 
 def task_rows(spec):
@@ -124,6 +192,7 @@ def task_rows(spec):
                               support_size=len(supports), support_indices_json=json.dumps(supports),
                               physical_parameters_json=json.dumps(physical(meta, task), sort_keys=True),
                               support_physics_json=json.dumps([physical(evaluation[i], task) for i in supports], sort_keys=True)))
+    annotate_color_encodings(output, task)
     print(json.dumps({'task': task, 'training_rows': len(selected), 'adaptation_episodes': len(final_steps),
                       'inference_rows': len(records), 'pca_explained_variance_ratio': ratios.tolist()}), flush=True)
     return output
@@ -136,16 +205,43 @@ def main():
     if not os.environ.get('SLURM_JOB_ID'):
         raise RuntimeError('Run PCA and postprocessing on a Slurm compute node.')
     config = yaml.safe_load((ROOT / args.config).read_text())
-    rows = [row for spec in config['tasks'] for row in task_rows(spec)]
+    internal_rows = [row for spec in config['tasks'] for row in task_rows(spec)]
     output = ROOT / config['output_csv']
     output.parent.mkdir(parents=True, exist_ok=True)
+    internal_output = output.with_name(output.stem + '_internal.csv')
+    internal_temporary = internal_output.with_name(
+        internal_output.name + f'.partial-{os.environ["SLURM_JOB_ID"]}'
+    )
+    with internal_temporary.open('w', newline='') as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(internal_rows[0]))
+        writer.writeheader()
+        writer.writerows(internal_rows)
+    os.replace(internal_temporary, internal_output)
+    public_rows = [
+        row for row in internal_rows
+        if row['phase'] == 'training_time' or row['is_final'] is True
+    ]
+    rows = [{
+        'task': PUBLIC_TASK_NAMES.get(row['task'], row['task']),
+        'split': 'train' if row['phase'] == 'training_time' else 'test',
+        'physical_parameters': json.dumps(
+            json.loads(row['physical_parameters_json']), sort_keys=True, separators=(',', ':')
+        ),
+        'latent': json.dumps(
+            [row[f'Z_{index:02d}'] for index in range(32)], separators=(',', ':')
+        ),
+        'PC1': row['PC1'],
+        'PC2': row['PC2'],
+        'PC3': row['PC3'],
+    } for row in public_rows]
     temporary = output.with_name(output.name + f'.partial-{os.environ["SLURM_JOB_ID"]}')
     with temporary.open('w', newline='') as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
     os.replace(temporary, output)
-    print(f'[done] {output} rows={len(rows)} tasks={len(config["tasks"])}', flush=True)
+    print(f'[done] {output} rows={len(rows)} columns={list(rows[0])}', flush=True)
+    print(f'[done] {internal_output} rows={len(internal_rows)} internal_render_data=true', flush=True)
 
 
 if __name__ == '__main__':

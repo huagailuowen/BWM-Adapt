@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "disable_context_clamp": true,
+  "stage1_replica": 0,
+  "noise_seed": 20260913,
+  "noise_min": 0.0,
+  "noise_max": 0.0,
+  "tasks": {
+    "ball": {
+      "source_prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job121963/ball_prep",
+      "source_inference": "outputs/infer_real97_ball_dual6500_simlr_globalmean_supportL7_20260922_v1",
+      "training_run": "outputs/real97_ball_dual_joint_resume6000_500steps_c005_6x10_20260917_v1_job118302",
+      "training_config": "configs/train/train_real97_ball_dual_joint_resume6000_500steps_c005_6x10_2gpu_20260917_v1.yaml",
+      "action_stats": "outputs/real97_ball_dual_joint_resume6000_500steps_c005_6x10_20260917_v1_job118302/input_manifest/action_stats.json",
+      "prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/${SLURM_JOB_ID}/ball_prep",
+      "initial_context": "mean_training_table",
+      "require_exact_original_support": true,
+      "expected_latents": 16,
+      "model_step": 6500,
+      "table_step": 6500,
+      "initialization_groups": {
+        "cluster_0": [
+          2,
+          5,
+          7,
+          8,
+          9,
+          10,
+          13
+        ],
+        "cluster_1": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          11,
+          12,
+          14,
+          15
+        ]
+      },
+      "environment_initialization_group": {
+        "ball-0": "cluster_1",
+        "ball-1": "cluster_0",
+        "ball-1dot5": "cluster_1",
+        "ball-2": "cluster_1",
+        "ball-3": "cluster_0",
+        "ball-4": "cluster_0",
+        "ball-7": "cluster_1",
+        "ball-9": "cluster_1"
+      },
+      "support_levels": {
+        "ball-0": [
+          2
+        ],
+        "ball-1": [
+          2
+        ]
+      },
+      "partial_stage2_replacement": true
+    }
+  },
+  "stage2": {
+    "inner_lr_schedule": "3.0:10,1.5:10,0.5:10,0.15:10",
+    "inner_steps": 40,
+    "context_precision": "float32",
+    "regularization": 0,
+    "hard_bounds": null,
+    "roi": false,
+    "inference_light_augmentation": false
+  },
+  "known_family_prior": false,
+  "query_GT_used_for_initialization": false,
+  "output": "outputs/infer_real97_ball_dual6500_simlr_globalmean_k1l2_20260922_v1",
+  "training_dependency_job_id": 118302,
+  "completion_policy": "afterok plus exact step-6500 completed model/table; no earlier checkpoint fallback",
+  "sim_lr_ablation": {
+    "purpose": "learning-rate-only ablation with requested mean initialization",
+    "simulation_lr_reference": "configs/evaluation/inference/event80/iterative_c32_400_400_after_train118065.yaml",
+    "only_lr_schedule_transferred": true,
+    "retain_real_support_query_and_generation_settings": true,
+    "formal_metric_approved": false
+  },
+  "source_table_sha256": "b032937ebdab1a4c1cc6ed4aa344223bf365015ecad25d4d6e1068de3e1c8135",
+  "experiment_note": "K=1 Level-2 support for ball-0 and ball-1 only; other six environments and their Stage2 results reused from outputs/infer_real97_ball_dual6500_simlr_globalmean_supportL7_20260922_v1. SIMLR 3.0/1.5/0.5/0.15 x10; no hard bounds.",
+  "initialization_policy": "single global mean of all training-time table rows; no environment/family/cluster prior"
+}

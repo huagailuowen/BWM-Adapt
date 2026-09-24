@@ -453,6 +453,7 @@ def aggregate_action_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
 def main() -> None:
     args = parse_args()
     config = yaml.safe_load(args.config.read_text(encoding="utf-8"))
+    predict_support_actions = config.get("use_model_predictions_for_support", False) is True
     benchmark_root = resolve_path(config["benchmark_root"])
     protocol_path = resolve_path(config["protocol_path"])
     metadata_path = resolve_path(config["metadata_path"])
@@ -475,7 +476,17 @@ def main() -> None:
 
     protocol = read_json(protocol_path)
     environments = list(protocol["environments"])
-    metadata = {int(row["episode_index"]): row for row in read_jsonl(metadata_path)}
+    metadata_rows = read_jsonl(metadata_path)
+    metadata_index_mode = str(config.get("metadata_index_mode", "episode_index"))
+    if metadata_index_mode == "episode_index":
+        metadata = {int(row["episode_index"]): row for row in metadata_rows}
+    elif metadata_index_mode == "row_order":
+        metadata = {index: row for index, row in enumerate(metadata_rows)}
+    else:
+        raise ValueError(
+            "metadata_index_mode must be 'episode_index' or 'row_order', "
+            f"got {metadata_index_mode!r}"
+        )
     query_indices = {
         int(index) for environment in environments for index in environment["query_indices"]
     }
@@ -520,11 +531,18 @@ def main() -> None:
     benchmark_summary: dict[str, Any] = {}
     for method, relative_method_root in config["methods"].items():
         method_root = benchmark_root / relative_method_root
-        predictions = prediction_index(method_root, query_indices)
+        predictions = prediction_index(
+            method_root, candidate_indices if predict_support_actions else query_indices
+        )
         query_rows: list[dict[str, Any]] = []
         predicted_endpoints: dict[int, list[float] | None] = {}
         for environment in environments:
-            for value in environment["query_indices"]:
+            evaluation_indices = list(environment["query_indices"])
+            if predict_support_actions:
+                evaluation_indices = list(dict.fromkeys(
+                    evaluation_indices + environment["support_indices"]
+                ))
+            for value in evaluation_indices:
                 sample_index = int(value)
                 row, endpoint = evaluate_prediction(
                     method=method,
@@ -540,7 +558,9 @@ def main() -> None:
                     lpips_evaluator=lpips_evaluator,
                     lpips_batch_size=lpips_batch_size,
                 )
-                query_rows.append(row)
+                row["support_size"] = len(environment["support_indices"])
+                if int(value) in set(map(int, environment["query_indices"])):
+                    query_rows.append(row)
                 predicted_endpoints[sample_index] = endpoint
 
         video_summary = aggregate_video_rows(query_rows)
@@ -549,7 +569,7 @@ def main() -> None:
         for environment in environments:
             support_indices = {int(index) for index in environment["support_indices"]}
             candidates: list[dict[str, Any]] = []
-            for value in environment["support_indices"] + environment["query_indices"]:
+            for value in dict.fromkeys(environment["support_indices"] + environment["query_indices"]):
                 sample_index = int(value)
                 is_support = sample_index in support_indices
                 candidate = {
@@ -561,15 +581,15 @@ def main() -> None:
                     "sample_index": sample_index,
                     "action_id": int(metadata[sample_index]["action_id"]),
                     "is_support": is_support,
-                    "selection_source": "observed_support" if is_support else "model_prediction",
+                    "selection_source": "observed_support" if is_support and not predict_support_actions else "model_prediction",
                     "selection_xy": (
                         ground_truth[sample_index]["endpoint_xy"]
-                        if is_support
+                        if is_support and not predict_support_actions
                         else predicted_endpoints[sample_index]
                     ),
                     "ground_truth_xy": ground_truth[sample_index]["endpoint_xy"],
                     "prediction_path": (
-                        None if is_support else str(predictions[sample_index])
+                        None if is_support and not predict_support_actions else str(predictions[sample_index])
                     ),
                 }
                 candidates.append(candidate)
@@ -588,6 +608,11 @@ def main() -> None:
                 decision_rows.append(decision)
 
         action_summary = aggregate_action_rows(decision_rows)
+        if predict_support_actions:
+            action_summary["selection_protocol"] = (
+                "model predictions for all candidate actions, including support actions; "
+                "GT is used only to score the selected action"
+            )
         method_output = output_root / "methods" / method
         write_jsonl(method_output / "video_object_per_query.jsonl", query_rows)
         write_jsonl(
@@ -634,11 +659,14 @@ def main() -> None:
         "dataset_root": str(dataset_root),
         "action_target_config": str(target_config_path),
         "support_size": int(protocol["support_size"]),
-        "support_is_excluded_from_query_metrics": True,
+        "support_is_excluded_from_query_metrics": all(
+            not (set(e["support_indices"]) & set(e["query_indices"])) for e in environments
+        ),
+        "use_model_predictions_for_support": predict_support_actions,
         "query_ground_truth_used_for_action_selection": False,
         "ground_truth_window": "metadata start_frame and length (65-105 for Event80)",
         "future_start_frame": future_start,
-        "aggregation": "equal weight per environment after averaging its nine queries",
+        "aggregation": "equal weight per environment after averaging its configured evaluation clips",
         "object_metric": "main-camera pushed-block centroid ADE/FDE",
         "offscreen_handling": "hold final observed centroid after confirmed exit",
         "tracker_type": tracker_type,

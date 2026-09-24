@@ -107,9 +107,12 @@ def stage_cache(pinned: dict, config: dict) -> tuple[Path, Path]:
         if not all((wan / name).is_file() and (wan / name).stat().st_size for name in required):
             wan.mkdir(parents=True, exist_ok=True)
             run("rsync", "-aL", "--partial", str(ROOT / "models/Wan2.2-TI2V-5B") + "/", str(wan) + "/")
-        checkpoint = cache / "trained_ckpts" / f"event80-{config['method']}-train{config['training_job_id']}-step{pinned['checkpoint_step']}.safetensors"
-        if not complete_checkpoint(checkpoint):
-            immutable_copy(Path(pinned["checkpoint"]), checkpoint)
+        if config.get("cache_checkpoint_in_tmp", True):
+            checkpoint = cache / "trained_ckpts" / f"event80-{config['method']}-train{config['training_job_id']}-step{pinned['checkpoint_step']}.safetensors"
+            if not complete_checkpoint(checkpoint):
+                immutable_copy(Path(pinned["checkpoint"]), checkpoint)
+        else:
+            checkpoint = Path(pinned["checkpoint"])
         print(f"[cache] Wan={wan} checkpoint={checkpoint}", flush=True)
     return wan, checkpoint
 

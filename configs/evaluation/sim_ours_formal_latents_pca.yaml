@@ -10,7 +10,7 @@ tasks:
   - task: gravity
     checkpoint_step: 3837
     context_table: outputs/gravity80_full61_c32_oldrandom_s1_89152/step-3837.context_table.json
-    active_manifest: configs/methods/gravity/manifests/ours_89152_step3837_active25.yaml
+    active_manifest: configs/methods/gravity/manifests/ours_89152_step3837_active20.yaml
     train_metadata: data/gravity_bwm_full61_20260710/train.jsonl
     eval_metadata: data/gravity_bwm_full61_20260710/train.jsonl
     result_root: results/gravity/gravity80_uniform5id5ood_strict_v1/methods/ours/step_3837/seed_20260712
@@ -24,7 +24,7 @@ tasks:
   - task: light_switch
     checkpoint_step: 3100
     context_table: outputs/lightswitch_physicalpress33jitter11to22_maincam_group20_c32_3wave1400_actions8_high2gpu_107549/step-3100.context_table.json
-    active_manifest: configs/methods/lightswitch/manifests/physicalpress_active12_train.yaml
+    active_manifest: configs/methods/lightswitch/manifests/ours_107549_step3100_active8.yaml
     train_metadata: data/lightswitch_randominitial_absolute_eef_physicalpress33jitter11to22_maincam_group20_20260827/physical_press_event_group20_train.jsonl
     eval_metadata: data/lightswitch_randominitial_absolute_eef_physicalpress33jitter11to22_maincam_group20_20260827/physical_press_event_group20_train.jsonl
     result_root: results/lightswitch/physicalpress33_all4env_support8_query15_v1/methods/ours_red1_blue1_k2_inner40/step_3100/seed_20260828

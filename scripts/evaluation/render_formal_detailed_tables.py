@@ -83,6 +83,34 @@ def write_csv(path, rows):
         writer.writerows(rows)
 
 
+def write_ablation_markdown(path, title, rows):
+    headers = ['Method'] + [m[1] for m in ablation.METRICS]
+    lines = [title, '',
+             '| ' + ' | '.join(headers) + ' |',
+             '| ' + ' | '.join(['---'] * len(headers)) + ' |']
+    for row in rows:
+        lines.append('| ' + ' | '.join(
+            [row['label']] + [ablation.formatted(row, metric) for metric in ablation.METRICS]
+        ) + ' |')
+    lines += ['', 'Values copied from the current formal scoreboard; no rollout or metric recomputation.',
+              'ADE and FDE are main-view object-centroid errors in pixels. Both are lower-is-better.', '']
+    path.write_text('\n'.join(lines))
+
+
+def render_ablation_companion(destination, stem_name, title, rows):
+    stem = destination / stem_name
+    ablation.render(title, rows, stem)
+    order = [metric[0] for metric in ablation.METRICS]
+    write_csv(stem.with_suffix('.csv'), [
+        {'method': row['method'], 'label': row['label'],
+         'checkpoint_step': row.get('checkpoint_step'),
+         'source_scoreboard': row.get('source_scoreboard'),
+         **{key: row.get(key) for key in order}}
+        for row in rows
+    ])
+    write_ablation_markdown(stem.with_suffix('.md'), '# ' + title, rows)
+
+
 def main():
     if not os.environ.get('SLURM_JOB_ID'):
         raise RuntimeError('Render on a Slurm compute node, not the login node.')
@@ -125,24 +153,17 @@ def main():
              'centroid_ade_px', 'centroid_fde_px', 'action_success_all']
     definitions = {m[0]: m for m in ablation.METRICS}
     ablation.METRICS = [definitions[key] for key in order]
-    stem = destination / 'event80_formal_ablation_table_detailed'
-    ablation.render(spec['title'] + ': Detailed Metrics', rows, stem)
-    write_csv(stem.with_suffix('.csv'), [
-        {'method': r['method'], 'label': r['label'], 'checkpoint_step': r.get('checkpoint_step'),
-         'source_scoreboard': r.get('source_scoreboard'), **{key: r.get(key) for key in order}}
-        for r in rows
-    ])
-    headers = ['Method'] + [m[1] for m in ablation.METRICS]
-    lines = ['# Event80 formal ablation: detailed metrics', '',
-             '| ' + ' | '.join(headers) + ' |', '| ' + ' | '.join(['---'] * len(headers)) + ' |']
-    for row in rows:
-        lines.append('| ' + ' | '.join([row['label']] + [ablation.formatted(row, m) for m in ablation.METRICS]) + ' |')
-    lines += ['', 'Values copied from the formal scoreboard; no rollout or metric recomputation.',
-              'ADE and FDE are main-view object-centroid errors in pixels. Both are lower-is-better.', '']
-    stem.with_suffix('.md').write_text('\n'.join(lines))
+    detailed_stem = 'event80_formal_ablation_table_detailed'
+    render_ablation_companion(destination, detailed_stem,
+                              spec['title'] + ': Detailed Metrics', rows)
+    rows_without_c4 = [row for row in rows if row['method'] != 'ours_context_dim_4']
+    without_c4_stem = 'event80_formal_ablation_table_without_c4'
+    render_ablation_companion(destination, without_c4_stem,
+                              spec['title'] + ': Detailed Metrics (without C=4)', rows_without_c4)
     print(json.dumps({'simulation_rows': len(records), 'ablation_rows': len(rows),
                       'simulation': str(output / 'sim_all_methods_main_table_detailed.svg'),
-                      'ablation': str(stem.with_suffix('.svg'))}), flush=True)
+                      'ablation': str((destination / detailed_stem).with_suffix('.svg')),
+                      'ablation_without_c4': str((destination / without_c4_stem).with_suffix('.svg'))}), flush=True)
 
 
 if __name__ == '__main__':

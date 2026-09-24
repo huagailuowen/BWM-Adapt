@@ -181,6 +181,34 @@ def prepare_manifest(config, train, metric, output):
     return path, rows
 
 
+def prepare_inference_metadata(config, metric, output, rows):
+    """Shift only support windows while preserving query/evaluation metadata."""
+    shift = int(config.get('support_frame_shift', 0))
+    source = resolve(metric['metadata_jsonl'])
+    if shift == 0:
+        return source
+    if shift < 0:
+        raise ValueError('support_frame_shift must be non-negative.')
+    metadata = jsonl(source)
+    support_indices = {int(row['source_index']) for row in rows}
+    for index in support_indices:
+        item = metadata[index]
+        item['start_frame'] = int(item['start_frame']) + shift
+        item['end_frame'] = int(item['end_frame']) + shift
+        requested = int(item.get('length', item['end_frame'] - item['start_frame'] + 1))
+        available = max(0, int(item.get('total_frames', item['end_frame'] + 1)) - item['start_frame'])
+        item['length'] = requested
+        item['valid_frames'] = min(requested, available)
+        item['pad_short'] = item['valid_frames'] < requested
+        item['support_frame_shift'] = shift
+    destination = output / f'inference_metadata_support_shift{shift}.jsonl'
+    text = ''.join(json.dumps(row, sort_keys=True) + '\n' for row in metadata)
+    temporary = destination.with_suffix(destination.suffix + '.tmp')
+    temporary.write_text(text, encoding='utf-8')
+    os.replace(temporary, destination)
+    return destination
+
+
 def quarantine_incomplete_videos(flat, expected_frames):
     for path in flat.glob('*.mp4'):
         probe = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
@@ -212,8 +240,11 @@ def main():
     flat = output / 'flat'
     flat.mkdir(parents=True, exist_ok=True)
     manifest, rows = prepare_manifest(config, train, metric, output)
+    inference_metadata = prepare_inference_metadata(config, metric, output, rows)
     write_json(output / 'launch_protocol.json', {'launch_config': config, 'checkpoint': selected,
                'training_config': train, 'inference_support_size': 1,
+               'support_frame_shift': int(config.get('support_frame_shift', 0)),
+               'query_windows_shifted': False,
                'domain_rule': 'match physical values from the training active set, not evaluation indices'})
     marker = output / 'rollouts.complete'
     if not marker.exists():
@@ -221,7 +252,7 @@ def main():
         wan, dino, checkpoint, extracted = stage_weights(config, train, selected)
         run(PYTHON, ROOT / 'scripts/methods/infer_dinov2_event80.py',
             '--config', resolve(config['train_config']),
-            '--dataset_metadata_path', resolve(metric['metadata_jsonl']),
+            '--dataset_metadata_path', inference_metadata,
             '--dataset_base_path', resolve(metric['dataset_root']),
             '--model_paths', wan, '--dinov2_model_path', dino,
             '--dinov2_checkpoint_path', checkpoint, '--wan_checkpoint_output', extracted,

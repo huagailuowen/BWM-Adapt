@@ -425,6 +425,9 @@ def main():
                     (np.hstack([column[frame] for column in columns]) for frame in range(33)), config['fps'])
         pca_plot(output / 'training_inference_Z_pca.svg', table, contexts,
                  [item for item in plan['environments'] if item['environment'] in contexts])
+    # A resumed run may skip every completed environment, so redraw from the
+    # final context table even when no environment was processed in this attempt.
+    pca_plot(output / 'training_inference_Z_pca.svg', table, contexts, plan['environments'])
     write_json(output / 'inference_complete.json', {
         'method': 'ours_static_single_frame_balanced9_dual', 'stage1_replica': 0,
         'stage2_initialization': 'mean_of_all_18_latents', 'context_hard_bounds': None, 'model_step': config['model_step'], 'table_step': config['table_step'],

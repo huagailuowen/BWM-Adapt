@@ -14,6 +14,7 @@ import imageio.v2 as imageio
 import numpy as np
 import pyarrow.parquet as pq
 import torch
+import yaml
 from PIL import Image, ImageDraw
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -182,6 +183,7 @@ def _write_context_pca_plot(
     table,
     trajectory_rows: list[dict],
     active_values: list[float] | None = None,
+    metadata_path: Path | None = None,
 ) -> None:
     if table is None or not trajectory_rows:
         return
@@ -206,6 +208,31 @@ def _write_context_pca_plot(
     if np.isfinite(pc1_correlation) and pc1_correlation < 0:
         components[0] *= -1
         table_xy[:, 0] *= -1
+
+    # Some grouped datasets store environment IDs, not physical coefficients,
+    # in the context table's friction_mu field. PCA still uses the same Z
+    # vectors; only the plot's friction colors need the physical scale.
+    if metadata_path is not None and metadata_path.is_file():
+        physical_mu_by_group: dict[float, float] = {}
+        consistent = True
+        with metadata_path.open(encoding="utf-8") as metadata_file:
+            for line in metadata_file:
+                if not line.strip():
+                    continue
+                record = json.loads(line)
+                if record.get("context_group_id") is None or record.get("physical_friction_mu") is None:
+                    continue
+                group = float(record["context_group_id"])
+                physical_mu = float(record["physical_friction_mu"])
+                previous = physical_mu_by_group.get(group)
+                if previous is not None and not np.isclose(previous, physical_mu, atol=1e-6, rtol=0.0):
+                    consistent = False
+                    break
+                physical_mu_by_group[group] = physical_mu
+        if consistent and all(float(value) in physical_mu_by_group for value in table_values):
+            table_values = np.asarray(
+                [physical_mu_by_group[float(value)] for value in table_values], dtype=np.float64
+            )
 
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -958,6 +985,13 @@ def _adapt_ttt_state(
         )
     ]
     adapter_reg_value = 0.0
+    support_loss_reduction = str(
+        getattr(args, "ttt_support_loss_reduction", "mean")
+    ).lower()
+    if support_loss_reduction not in {"mean", "sum"}:
+        raise ValueError(
+            f"Unsupported ttt_support_loss_reduction={support_loss_reduction!r}."
+        )
     try:
         for inner_idx, inner_lr in enumerate(inner_lrs):
             prev_context = context.detach()
@@ -972,7 +1006,11 @@ def _adapt_ttt_state(
             if bool(getattr(args, "ttt_support_gradient_accumulation", False)):
                 grads: list[torch.Tensor | None] = [None] * len(grad_targets)
                 support_loss_value = 0.0
-                support_scale = 1.0 / float(len(support_items))
+                support_scale = (
+                    1.0 / float(len(support_items))
+                    if support_loss_reduction == "mean"
+                    else 1.0
+                )
                 for item in support_items:
                     inputs = _prepare_loss_inputs(pipe, item, context, args)
                     item_loss = _flow_match_loss(pipe, inputs, args)
@@ -1030,7 +1068,9 @@ def _adapt_ttt_state(
                 for item in support_items:
                     inputs = _prepare_loss_inputs(pipe, item, context, args)
                     support_losses.append(_flow_match_loss(pipe, inputs, args))
-                support_loss = torch.stack(support_losses).mean()
+                support_loss = getattr(
+                    torch.stack(support_losses), support_loss_reduction
+                )()
                 support_loss_value = float(support_loss.detach().float().cpu())
                 loss = support_loss
                 if use_context and float(args.stage2_context_reg_weight) > 0:
@@ -1252,6 +1292,15 @@ def parse_args():
         help=(
             "Compute the support-batch mean gradient one chunk at a time, then apply one update. "
             "This is mathematically a mean support loss without retaining every DiT graph at once."
+        ),
+    )
+    parser.add_argument(
+        "--ttt_support_loss_reduction",
+        choices=("mean", "sum"),
+        default="mean",
+        help=(
+            "Aggregate support flow-matching losses by mean (default) or sum. "
+            "With gradient accumulation, sum removes the per-support 1/K scale."
         ),
     )
     parser.add_argument(
@@ -1973,11 +2022,17 @@ def main() -> None:
                 for value in args.ttt_context_active_values.split(",")
                 if value.strip()
             ]
+        pca_metadata_path = Path(args.dataset_metadata_path) if args.dataset_metadata_path else None
+        if args.config:
+            training_metadata = yaml.safe_load(Path(args.config).read_text()).get("dataset", {}).get("dataset_metadata_path")
+            if training_metadata and Path(training_metadata).is_file():
+                pca_metadata_path = Path(training_metadata)
         _write_context_pca_plot(
             pca_output_path,
             context_table,
             trajectory_rows,
             active_values=active_values,
+            metadata_path=pca_metadata_path,
         )
         print(f"[done] context_trajectory={trajectory_path}", flush=True)
         print(f"[done] context_pca={pca_output_path}", flush=True)

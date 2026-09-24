@@ -1,0 +1,17 @@
+task: gravity
+method: dinov2_concat_mlp_random_k1k2_support_shift1
+train_job_id: 115810
+train_config: configs/train/train_gravity80_active25_dinov2_concat_mlp_random_k1k2_total4_4envpergpu_2gpu_24h.yaml
+checkpoint_dir: outputs/method_benchmarks/gravity/dinov2_concat_mlp_random_k1k2_total4_4envpergpu/seed_20260708_job_115810/checkpoints
+required_checkpoint_step: 8000
+reference_plan: results/gravity/gravity80_uniform5id5ood_strict_v1/methods/ours/step_3837/seed_20260712/transfer/transfer_plan.json
+metric_template: configs/evaluation/action_tasks/dinov2/gravity80_step8000_uniform5id5ood_strict_v1.yaml
+output_base: results/gravity/gravity80_uniform5id5ood_strict_support_shift1_v1/methods/dinov2_concat_mlp_random_k1k2_support_shift1/train_job_115810
+support_frame_shift: 1
+expected_environments: 10
+expected_queries: 90
+seed: 20260708
+fps: 10
+num_inference_steps: 25
+cfg_scale: 1.0
+quality: 6

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "experiment": "ball_lora_supportL7_ball7_ball9_20260920_v1",
+  "seed": 20260910,
+  "num_inference_steps": 50,
+  "lora": {
+    "rank": 8,
+    "alpha": 8,
+    "target_modules": [
+      "q",
+      "k",
+      "v",
+      "o"
+    ],
+    "steps": 50,
+    "learning_rate": 0.0001,
+    "optimizer": "AdamW",
+    "weight_decay": 0,
+    "gradient_clip_norm": 1,
+    "adapter_seed": 20260708,
+    "state_dtype": "float32",
+    "reset_per_environment": true,
+    "query_updates_lora": false,
+    "initialization": "shared_random_A_and_zero_B_so_initial_residual_is_zero"
+  },
+  "tasks": {
+    "door": {
+      "prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114799/door_prep",
+      "standard_training": "outputs/real97_train_real97_door_standard_pooled_2gpu_20260909_v1_job114454",
+      "standard_inference": "outputs/infer_real97_door_standard_step5500_reference_job115187",
+      "checkpoint": "protected/step-5500.safetensors",
+      "geometry": [
+        49,
+        192,
+        256
+      ],
+      "expected_queries": 120
+    },
+    "ball": {
+      "prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job120635/ball_prep",
+      "standard_training": "outputs/real97_train_real97_ball_standard_pooled_2gpu_20260909_v1_job114454",
+      "standard_inference": "outputs/infer_real97_ball_standard_step5500_reference_job115189",
+      "checkpoint": "protected/step-5500.safetensors",
+      "geometry": [
+        61,
+        160,
+        320
+      ],
+      "expected_queries": 96
+    }
+  },
+  "support_policy": "Exact frozen current-reference training supports; no reselection; use all selected supports per environment",
+  "inference_lighting_augmentation": false,
+  "spatial_loss_mode": "none",
+  "factual_grid": "GT / frozen Standard / support-adapted LoRA; numerical action levels, train/test separate",
+  "extension": "Same test initial frame and original training action templates; no paired future GT or formal action score",
+  "adaptation_implementation": "scripts/methods/infer_lora_tta_event80.py:adapt_lora; existing Event80 defaults, without hyperparameter tuning on query outcomes"
+}

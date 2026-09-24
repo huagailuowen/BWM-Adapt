@@ -43,7 +43,10 @@ def freeze_manifest(config, output):
         queries.append({**q, 'paths':paths, 'source_markers':{'ours':str(marker)}})
     result = dict(config=config, queries=queries, methods=list(engine.METHODS), paired_gt_only=True,
                   checkpoint_steps={'door':{'ours_stage1':6500,'ours_stage2':6500}},
-                  fairness_note='Fixed prior queries/calibration. Known training-cluster prior for Stage2; not a blind environment initialization. Excludes counterfactual sweeps.')
+                  fairness_note=config.get(
+                      'fairness_note',
+                      'Fixed prior queries/calibration. Known training-cluster prior for Stage2; not a blind '
+                      'environment initialization. Excludes counterfactual sweeps.'))
     engine.save_json(path,result)
     return result
 

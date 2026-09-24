@@ -1,0 +1,32 @@
+benchmark: lightswitch_physicalpress33_noleak
+
+source:
+  method: ours_random_c32
+  job_id: 107549
+  checkpoint_step: 3100
+  checkpoint: outputs/lightswitch_physicalpress33jitter11to22_maincam_group20_c32_3wave1400_actions8_high2gpu_107549/step-3100.safetensors
+  metadata: data/lightswitch_randominitial_absolute_eef_physicalpress33jitter11to22_maincam_group20_20260827/physical_press_event_group20_train.jsonl
+  activation_evidence: logs/slurm/lsphy33mc-107549.out
+  phase_at_checkpoint: round_2_model_end
+
+selection:
+  environment_key: friction_mu
+  physical_value_key: context_group_id
+  stratify_key: causal_class
+  action_key: action_id
+  total_environment_count: 20
+  active_environment_count: 8
+  held_out_environment_count: 12
+  active_environment_ids:
+    - 3
+    - 4
+    - 7
+    - 8
+    - 12
+    - 13
+    - 18
+    - 19
+  camera_protocol: observation.images.image only
+  actions_per_environment: 8
+  chunks_sampled_per_update: 8
+  sampling_mode: independent_windows

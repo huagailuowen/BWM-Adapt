@@ -34,11 +34,12 @@ class EvaluationRecord:
     task: str | None = None
     object_index: int = 0
     metadata: dict[str, Any] = field(default_factory=dict)
+    allow_support_prediction: bool = False
 
     def __post_init__(self) -> None:
         if not self.sample_id or not self.environment_id:
             raise ValueError("sample_id and environment_id are required.")
-        if self.sample_id in self.support_ids:
+        if self.sample_id in self.support_ids and not self.allow_support_prediction:
             raise ValueError(
                 f"Query {self.sample_id!r} is also present in its support set."
             )

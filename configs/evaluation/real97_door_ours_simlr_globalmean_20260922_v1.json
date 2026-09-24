@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "disable_context_clamp": true,
+  "stage1_replica": 0,
+  "noise_seed": 20260913,
+  "noise_min": 0.0,
+  "noise_max": 0.0,
+  "tasks": {
+    "door": {
+      "source_prepared": "outputs/evaluation_real97_support_overrides_20260911_v1/job114799/door_prep",
+      "source_inference": "outputs/infer_real97_door_ours_reference_job114799",
+      "training_run": "outputs/real97_door_dual_joint_resume6000_500steps_c005_6x10_20260917_v1_job118301",
+      "training_config": "configs/train/train_real97_door_dual_joint_resume6000_500steps_c005_6x10_2gpu_20260917_v1.yaml",
+      "action_stats": "outputs/real97_door_dual_joint_resume6000_500steps_c005_6x10_20260917_v1_job118301/input_manifest/action_stats.json",
+      "prepared": "outputs/evaluation_real97_door_dual6500_simlr_globalmean_20260922_v1/door_prep",
+      "initial_context": "mean_training_table",
+      "require_exact_original_support": true,
+      "expected_latents": 20,
+      "model_step": 6500,
+      "table_step": 6500
+    }
+  },
+  "stage2": {
+    "inner_lr_schedule": "3.0:10,1.5:10,0.5:10,0.15:10",
+    "inner_steps": 40,
+    "context_precision": "float32",
+    "regularization": 0,
+    "hard_bounds": null,
+    "roi": false,
+    "inference_light_augmentation": false
+  },
+  "known_family_prior": false,
+  "query_GT_used_for_initialization": false,
+  "output": "outputs/infer_real97_door_dual6500_simlr_globalmean_20260922_v1",
+  "training_dependency_job_id": 118301,
+  "completion_policy": "afterok plus exact step-6500 completed model/table; no earlier checkpoint fallback",
+  "cluster_policy": "Preserve prior 12u11d pair/core17 membership; recompute centers from final table; exclude 6u8d replica1 from core mean",
+  "sim_lr_ablation": {
+    "purpose": "learning-rate-only ablation with requested mean initialization",
+    "simulation_lr_reference": "configs/evaluation/inference/event80/iterative_c32_400_400_after_train118065.yaml",
+    "only_lr_schedule_transferred": true,
+    "retain_real_support_query_and_generation_settings": true,
+    "formal_metric_approved": false
+  },
+  "initialization_policy": "single global mean of all training-time table rows; no environment/family/cluster prior",
+  "experiment_note": "Global-mean initialization ablation. Keep the formal step6500 checkpoint/table, exact Door support/query cohort, and SIMLR 3.0/1.5/0.5/0.15 x10 schedule unchanged."
+}

@@ -259,6 +259,9 @@ def main() -> None:
                     gt_video_path=str(_video_path(row, dataset_root)),
                     pred_video_path=str(prediction_path),
                     support_ids=support_ids,
+                    allow_support_prediction=(
+                        config.get("video_metrics_include_support_predictions", False) is True
+                    ),
                     gt_start_frame=int(row.get("start_frame", 0)),
                     pred_start_frame=0,
                     num_frames=count,
@@ -273,6 +276,7 @@ def main() -> None:
                         "source_index": source_index,
                         "target_index": target_index,
                         "action_id": row.get(config.get("action_field", "action_id")),
+                        "is_support_prediction": target_id in support_ids,
                     },
                 )
                 manifest_rows.append(asdict(record))

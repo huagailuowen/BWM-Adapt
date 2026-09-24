@@ -44,7 +44,10 @@ def freeze_manifest(config, output):
         queries.append({**q, 'paths':paths, 'source_markers':{'ours':str(marker)}})
     result = dict(config=config, queries=queries, methods=list(engine.METHODS), paired_gt_only=True,
                   checkpoint_steps={'ball':{'ours_stage1':6500,'ours_stage2':6500}},
-                  fairness_note='Fixed factual queries and existing tracking calibration. Known training-cluster prior; cross-cluster replicas use z0 cluster. Counterfactual action sweeps excluded.')
+                  fairness_note=config.get(
+                      'fairness_note',
+                      'Fixed factual queries and existing tracking calibration. Known training-cluster prior; '
+                      'cross-cluster replicas use z0 cluster. Counterfactual action sweeps excluded.'))
     engine.save_json(path, result)
     return result
 

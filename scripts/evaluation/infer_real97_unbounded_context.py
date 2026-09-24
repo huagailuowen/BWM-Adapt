@@ -47,6 +47,7 @@ def main():
     parser.add_argument('--task', choices=['door', 'ball'], required=True)
     parser.add_argument('--prepared', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--finalize-only', action='store_true')
     cli = parser.parse_args()
     if not os.environ.get('SLURM_JOB_ID'):
         raise RuntimeError('Inference must run on a compute allocation')
@@ -76,11 +77,37 @@ def main():
         old_support = read_jsonl(source / 'support.jsonl')
         new_support = read_jsonl(prepared / 'support.jsonl')
         old_groups = {row['environment']: row for row in old_plan['environments']}
+        replacement_levels = setting.get('support_levels', {})
+        replacement_environments = set(replacement_levels)
+        if replacement_environments and not setting.get('partial_stage2_replacement', False):
+            raise ValueError('Support replacement requires partial_stage2_replacement=true')
+        plan_environments = {row['environment'] for row in plan['environments']}
+        missing_replacements = replacement_environments - plan_environments
+        if missing_replacements:
+            raise ValueError(f'Support replacement environments missing from plan: {sorted(missing_replacements)}')
         for row in plan['environments']:
-            before = [old_support[i] for i in old_groups[row['environment']]['support_indices']]
+            environment = row['environment']
+            before = [old_support[i] for i in old_groups[environment]['support_indices']]
             after = [new_support[i] for i in row['support_indices']]
-            if before != after:
-                raise ValueError(f'Original Support changed unexpectedly: {row["environment"]}')
+            if environment not in replacement_environments:
+                if before != after:
+                    raise ValueError(f'Original Support changed unexpectedly: {environment}')
+                continue
+            allowed_levels = {int(level) for level in replacement_levels[environment]}
+            if not after:
+                raise ValueError(f'No replacement Support selected: {environment}')
+            for support in after:
+                if support.get('environment') != environment:
+                    raise ValueError(f'Replacement Support environment mismatch: {environment}')
+                if support.get('dataset_split') != 'train':
+                    raise ValueError(f'Replacement Support is not train-only: {environment}')
+                if int(support.get('action_level', -1)) not in allowed_levels:
+                    raise ValueError(f'Replacement Support level is not explicitly allowed: {environment}')
+            print('[support_replacement]', json.dumps({
+                'environment': environment,
+                'allowed_levels': sorted(allowed_levels),
+                'episodes': [support['episode_index'] for support in after],
+            }), flush=True)
 
     import torch
     from scripts import infer_stage2_ttt as core
@@ -210,14 +237,20 @@ def main():
     core._adapt_ttt_state = adapt_with_policy
     from scripts.evaluation import infer_real97_ball_door_reference as reference
     synchronize_contexts()
-    sys.argv = [str(ROOT / 'scripts/evaluation/infer_real97_ball_door_reference.py'),
-                '--prepared', str(prepared), '--output', str(output)]
-    if config.get('stage2_only', False):
-        sys.argv.append('--stage2-only')
-    reference.main()
+    if not cli.finalize_only:
+        sys.argv = [str(ROOT / 'scripts/evaluation/infer_real97_ball_door_reference.py'),
+                    '--prepared', str(prepared), '--output', str(output)]
+        if config.get('stage2_only', False):
+            sys.argv.append('--stage2-only')
+        reference.main()
     synchronize_contexts()
     records, trajectory = [], []
-    for environment in environments:
+    finalized_environments = list(environments)
+    if setting.get('partial_stage2_replacement', False):
+        finalized_environments = sorted(setting.get('support_levels', {}))
+        if not finalized_environments:
+            raise ValueError('Partial Stage2 replacement has no declared Support environments')
+    for environment in finalized_environments:
         record = read_json(initializations / (environment + '.json'))
         if 'final_context' not in record:
             raise ValueError(f'Incomplete context adaptation: {environment}')
@@ -231,12 +264,20 @@ def main():
     provenance['legacy_finite_parser_bounds_overridden'] = True
     write_json(output / 'provenance.json', provenance)
     write_json(output / 'unbounded_inference_complete.json', {
-        'task': cli.task, 'environments': len(environments), 'context_bounds': None,
+        'task': cli.task, 'environments': len(environments),
+        'finalized_initialization_environments': finalized_environments,
+        'context_bounds': None,
         'initialization': setting['initial_context'],
-        'support_and_query_unchanged': bool(setting.get('require_exact_original_support', False)),
+        'support_and_query_unchanged': bool(
+            setting.get('require_exact_original_support', False)
+            and not setting.get('partial_stage2_replacement', False)
+        ),
+        'support_replacement_environments': sorted(setting.get('support_levels', {})),
         'query_windows_unchanged': True,
         'rerun_environments': setting.get('rerun_environments', list(environments)),
-        'actual_slurm_job_id': os.environ['SLURM_JOB_ID'], 'formal_metric_approved': False,
+        'actual_slurm_job_id': os.environ['SLURM_JOB_ID'],
+        'finalize_only': cli.finalize_only,
+        'formal_metric_approved': False,
     })
 
 

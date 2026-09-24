@@ -19,6 +19,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-csv", type=Path, required=True)
     parser.add_argument("--parameter-label", default="environment value")
     parser.add_argument("--title", default="Final active context-table PCA")
+    parser.add_argument(
+        "--active-values",
+        type=float,
+        nargs="+",
+        help="Fit and plot only these context-table friction_mu/group values.",
+    )
     return parser.parse_args()
 
 
@@ -31,6 +37,15 @@ def main() -> None:
     args = parse_args()
     payload = json.loads(args.table_path.read_text())
     records = sorted(payload["records"], key=lambda row: float(row["friction_mu"]))
+    if args.active_values is not None:
+        records = [
+            row for row in records
+            if any(abs(float(row["friction_mu"]) - value) <= 1e-8 for value in args.active_values)
+        ]
+        if len(records) != len(set(args.active_values)):
+            raise ValueError(
+                f"Requested {len(set(args.active_values))} active values but matched {len(records)} records."
+            )
     values = np.asarray([float(row["friction_mu"]) for row in records], dtype=np.float64)
     contexts = np.stack([
         np.asarray(row["context"], dtype=np.float64).reshape(-1) for row in records
@@ -84,7 +99,7 @@ def main() -> None:
         '<rect width="100%" height="100%" fill="white"/>',
         '<style>text{font-family:"DejaVu Sans",sans-serif;fill:#17212b}.muted{fill:#64748b}</style>',
         f'<text x="{width/2}" y="48" text-anchor="middle" font-size="28" font-weight="700">{escaped_title}</text>',
-        f'<text x="{width/2}" y="82" text-anchor="middle" font-size="15" class="muted">20 active training environments | PC1 {explained[0]*100:.1f}% | PC2 {explained[1]*100:.1f}% | corr({escaped_parameter}, PC1)={correlation:.3f}</text>',
+        f'<text x="{width/2}" y="82" text-anchor="middle" font-size="15" class="muted">{len(records)} active training environments | PC1 {explained[0]*100:.1f}% | PC2 {explained[1]*100:.1f}% | corr({escaped_parameter}, PC1)={correlation:.3f}</text>',
         f'<line x1="{left}" y1="{bottom}" x2="{right}" y2="{bottom}" stroke="#263445" stroke-width="2"/>',
         f'<line x1="{left}" y1="{top}" x2="{left}" y2="{bottom}" stroke="#263445" stroke-width="2"/>',
         f'<text x="{(left+right)/2}" y="770" text-anchor="middle" font-size="18">PC1</text>',

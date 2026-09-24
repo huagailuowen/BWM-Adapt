@@ -4,14 +4,15 @@ output_dir: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_inf
 source_scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv
 source_protocol: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/protocol.json
 support_query_manifest: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json
-selection_note: User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10, then added the 100/100 and 400/400 iteration-frequency ablations; include Ours as the reference.
+selection_note: User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10, then added the 100/100 and 400/400 iteration-frequency ablations and C8, C16, C64, C128 dimensions; include Ours as the reference.
 notes:
   - Existing reported metrics are reused; no video generation or metric recomputation.
   - Blank metric cells mean unavailable or pending, never zero.
   - Historical initialization runs retain their recorded training schedules and are not claimed to be strict single-variable controls.
   - C4 and direct-token jobs use two GPUs, 4 environments x 4 actions per rank, the intended original active35 pool, and the 1000-step alternating curriculum.
   - The evaluated C4 checkpoint is step6300 with 30 actually active environments; direct-token step7700 and reference C32 step7272 use 35. C4 is not a strict dimension-only comparison at matched active-environment count.
-  - The 1000-step pure-joint variant, C1, C128, new-C200/joint800, shuffled groups, and per-trajectory codes are not selected for this formal table.
+  - The 1000-step pure-joint variant, C1, new-C200/joint800, shuffled groups, and per-trajectory codes are not selected for this formal table.
+  - The evaluated C64 step5200 and C128 step4938 checkpoints have 25 active environments, versus 35 for reference C32; they are not matched-active-count comparisons.
   - The iteration-frequency runs retain initial model-only 300 steps and new-code-only 200 steps per 1000-step wave; the remaining 800 steps alternate all-active code and model updates in 100/100 or 400/400 blocks.
   - Both iteration-frequency runs used two GPUs with 4 environments x 4 chunks per rank and a 24-hour training limit. Evaluation uses the latest complete model/code-table pair, not a later context-only snapshot.
   - The 100/100 checkpoint is step6900 with 35 active environments; the 400/400 checkpoint is step6300 with 30. The latter is not a matched-active-count comparison with the reference; the frozen evaluation support/query identities are unchanged.
@@ -50,6 +51,34 @@ rows:
     status: scored
     source_scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_4/train_job_115984/step_6300/seed_20260708/metrics/complete_v1/scoreboard.csv
     setting: Independent U(0,1) 4-D codes; standard 1000-step alternating curriculum; 30 actually active environments at the evaluated checkpoint, out of the intended 35.
+  - method: ours_context_dim_8_common_actions
+    label: C=8 + MLP
+    candidate: latent_dimension_8
+    source_job: 121568
+    checkpoint_step: 6300
+    status: scored
+    source_scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_8_common_actions/train_job_121568/step_6300/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - method: ours_context_dim_16_common_actions
+    label: C=16 + MLP
+    candidate: latent_dimension_16
+    source_job: 121567
+    checkpoint_step: 7300
+    status: scored
+    source_scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_16_common_actions/train_job_121567/step_7300/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - method: ours_context_dim_64_common_actions
+    label: C=64 + MLP
+    candidate: latent_dimension_64
+    source_job: 121871
+    checkpoint_step: 5200
+    status: scored
+    source_scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_64_common_actions/train_job_121871/step_5200/seed_20260708/metrics/complete_v1/scoreboard.csv
+  - method: ours_context_dim_128_common_actions
+    label: C=128 + MLP
+    candidate: latent_dimension_128
+    source_job: 121872
+    checkpoint_step: 4938
+    status: scored
+    source_scoreboard: results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_128_common_actions/train_job_121872/step_4938/seed_20260708/metrics/complete_v1/scoreboard.csv
   - method: ours_direct_environment_token
     label: Direct token (3072-D)
     candidate: 8

@@ -693,13 +693,26 @@ def model_fn_wan_video_action(
         condition_t = 1 if fused_condition_latent_frames is None else int(fused_condition_latent_frames)
         condition_t = max(0, min(condition_t, latents.shape[2]))
         spatial_token_count = latents.shape[3] * latents.shape[4] // 4
-        t = torch.concat(
+        if timestep.numel() > 1:
+            if timestep.numel() != latents.shape[0]:
+                raise ValueError("Independent timesteps must match the latent batch size.")
+            token_times = timestep.reshape(-1, 1, 1).expand(
+                -1, latents.shape[2], spatial_token_count
+            ).clone()
+            token_times[:, :condition_t] = 0
+            t = dit.time_embedding(
+                sinusoidal_embedding_1d(dit.freq_dim, token_times.flatten()).reshape(
+                    latents.shape[0], -1, dit.freq_dim
+                )
+            )
+        else:
+            t = torch.concat(
             [
                 torch.zeros((condition_t, spatial_token_count), dtype=latents.dtype, device=latents.device),
                 torch.ones((latents.shape[2] - condition_t, spatial_token_count), dtype=latents.dtype, device=latents.device) * timestep,
             ]
-        ).flatten()
-        t = dit.time_embedding(sinusoidal_embedding_1d(dit.freq_dim, t).unsqueeze(0))
+            ).flatten()
+            t = dit.time_embedding(sinusoidal_embedding_1d(dit.freq_dim, t).unsqueeze(0))
     else:
         t = dit.time_embedding(sinusoidal_embedding_1d(dit.freq_dim, timestep))
 
