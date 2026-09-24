@@ -5,14 +5,15 @@
   "source_scoreboard": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/scoreboard.csv",
   "source_protocol": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/metrics/complete_v1/protocol.json",
   "support_query_manifest": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json",
-  "selection_note": "User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10, then added the 100/100 and 400/400 iteration-frequency ablations; include Ours as the reference.",
+  "selection_note": "User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10, then added the 100/100 and 400/400 iteration-frequency ablations and C8, C16, C64, C128 dimensions; include Ours as the reference.",
   "notes": [
     "Existing reported metrics are reused; no video generation or metric recomputation.",
     "Blank metric cells mean unavailable or pending, never zero.",
     "Historical initialization runs retain their recorded training schedules and are not claimed to be strict single-variable controls.",
     "C4 and direct-token jobs use two GPUs, 4 environments x 4 actions per rank, the intended original active35 pool, and the 1000-step alternating curriculum.",
     "The evaluated C4 checkpoint is step6300 with 30 actually active environments; direct-token step7700 and reference C32 step7272 use 35. C4 is not a strict dimension-only comparison at matched active-environment count.",
-    "The 1000-step pure-joint variant, C1, C128, new-C200/joint800, shuffled groups, and per-trajectory codes are not selected for this formal table.",
+    "The 1000-step pure-joint variant, C1, new-C200/joint800, shuffled groups, and per-trajectory codes are not selected for this formal table.",
+    "The evaluated C64 step5200 and C128 step4938 checkpoints have 25 active environments, versus 35 for reference C32; they are not matched-active-count comparisons.",
     "The iteration-frequency runs retain initial model-only 300 steps and new-code-only 200 steps per 1000-step wave; the remaining 800 steps alternate all-active code and model updates in 100/100 or 400/400 blocks.",
     "Both iteration-frequency runs used two GPUs with 4 environments x 4 chunks per rank and a 24-hour training limit. Evaluation uses the latest complete model/code-table pair, not a later context-only snapshot.",
     "The 100/100 checkpoint is step6900 with 35 active environments; the 400/400 checkpoint is step6300 with 30. The latter is not a matched-active-count comparison with the reference; the frozen evaluation support/query identities are unchanged."
@@ -61,6 +62,42 @@
       "status": "scored",
       "source_scoreboard": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_4/train_job_115984/step_6300/seed_20260708/metrics/complete_v1/scoreboard.csv",
       "setting": "Independent U(0,1) 4-D codes; standard 1000-step alternating curriculum; 30 actually active environments at the evaluated checkpoint, out of the intended 35."
+    },
+    {
+      "method": "ours_context_dim_8_common_actions",
+      "label": "C=8 + MLP",
+      "candidate": "latent_dimension_8",
+      "source_job": 121568,
+      "checkpoint_step": 6300,
+      "status": "scored",
+      "source_scoreboard": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_8_common_actions/train_job_121568/step_6300/seed_20260708/metrics/complete_v1/scoreboard.csv"
+    },
+    {
+      "method": "ours_context_dim_16_common_actions",
+      "label": "C=16 + MLP",
+      "candidate": "latent_dimension_16",
+      "source_job": 121567,
+      "checkpoint_step": 7300,
+      "status": "scored",
+      "source_scoreboard": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_16_common_actions/train_job_121567/step_7300/seed_20260708/metrics/complete_v1/scoreboard.csv"
+    },
+    {
+      "method": "ours_context_dim_64_common_actions",
+      "label": "C=64 + MLP",
+      "candidate": "latent_dimension_64",
+      "source_job": 121871,
+      "checkpoint_step": 5200,
+      "status": "scored",
+      "source_scoreboard": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_64_common_actions/train_job_121871/step_5200/seed_20260708/metrics/complete_v1/scoreboard.csv"
+    },
+    {
+      "method": "ours_context_dim_128_common_actions",
+      "label": "C=128 + MLP",
+      "candidate": "latent_dimension_128",
+      "source_job": 121872,
+      "checkpoint_step": 4938,
+      "status": "scored",
+      "source_scoreboard": "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_128_common_actions/train_job_121872/step_4938/seed_20260708/metrics/complete_v1/scoreboard.csv"
     },
     {
       "method": "ours_direct_environment_token",
@@ -137,7 +174,7 @@
       }
     },
     "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_4/train_job_115984/step_6300/seed_20260708/metrics/complete_v1/scoreboard.csv": {
-      "sha256": "833bb1c889850a0819888508476ace338a353ad639806f5000f10f079eeb1512",
+      "sha256": "850c114ef77af29a1ba46bc362607685fe5607e9b0f89931c958824237d0c3b9",
       "protocol_snapshot": {
         "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
         "aggregation": "equal weight per environment after averaging its nine queries",
@@ -159,8 +196,104 @@
         "tracker_type": "event80"
       }
     },
+    "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_8_common_actions/train_job_121568/step_6300/seed_20260708/metrics/complete_v1/scoreboard.csv": {
+      "sha256": "f4fc5f6bb3c7dc7dde4ef08a7bddf78c20017ac88c5e3e76c9f7b805b132c6e5",
+      "protocol_snapshot": {
+        "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
+        "aggregation": "equal weight per environment after averaging its configured evaluation clips",
+        "dataset_root": "/hai/scratch/cyzhou05/projects/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine",
+        "future_start_frame": 1,
+        "ground_truth_window": "metadata start_frame and length (65-105 for Event80)",
+        "lpips_implementation": "official lpips package",
+        "lpips_network": "alex",
+        "metadata_path": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl",
+        "methods": {
+          "ours_context_dim_8_common_actions": "methods/ours_context_dim_8_common_actions/train_job_121568/step_6300/seed_20260708"
+        },
+        "object_metric": "main-camera pushed-block centroid ADE/FDE",
+        "offscreen_handling": "hold final observed centroid after confirmed exit",
+        "query_ground_truth_used_for_action_selection": false,
+        "source_protocol": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json",
+        "support_is_excluded_from_query_metrics": true,
+        "support_size": 1,
+        "tracker_type": "event80",
+        "use_model_predictions_for_support": false
+      }
+    },
+    "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_16_common_actions/train_job_121567/step_7300/seed_20260708/metrics/complete_v1/scoreboard.csv": {
+      "sha256": "0cbf4ec28bb16b5590677eb8b93c9b93124d4e7013453c604b6132743a0def27",
+      "protocol_snapshot": {
+        "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
+        "aggregation": "equal weight per environment after averaging its configured evaluation clips",
+        "dataset_root": "/hai/scratch/cyzhou05/projects/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine",
+        "future_start_frame": 1,
+        "ground_truth_window": "metadata start_frame and length (65-105 for Event80)",
+        "lpips_implementation": "official lpips package",
+        "lpips_network": "alex",
+        "metadata_path": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl",
+        "methods": {
+          "ours_context_dim_16_common_actions": "methods/ours_context_dim_16_common_actions/train_job_121567/step_7300/seed_20260708"
+        },
+        "object_metric": "main-camera pushed-block centroid ADE/FDE",
+        "offscreen_handling": "hold final observed centroid after confirmed exit",
+        "query_ground_truth_used_for_action_selection": false,
+        "source_protocol": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json",
+        "support_is_excluded_from_query_metrics": true,
+        "support_size": 1,
+        "tracker_type": "event80",
+        "use_model_predictions_for_support": false
+      }
+    },
+    "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_64_common_actions/train_job_121871/step_5200/seed_20260708/metrics/complete_v1/scoreboard.csv": {
+      "sha256": "9e1e1ed9fc51a78837ffa2a3c624f1f44a763bf4bc92d237223292302c088e36",
+      "protocol_snapshot": {
+        "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
+        "aggregation": "equal weight per environment after averaging its configured evaluation clips",
+        "dataset_root": "/hai/scratch/cyzhou05/projects/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine",
+        "future_start_frame": 1,
+        "ground_truth_window": "metadata start_frame and length (65-105 for Event80)",
+        "lpips_implementation": "official lpips package",
+        "lpips_network": "alex",
+        "metadata_path": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl",
+        "methods": {
+          "ours_context_dim_64_common_actions": "methods/ours_context_dim_64_common_actions/train_job_121871/step_5200/seed_20260708"
+        },
+        "object_metric": "main-camera pushed-block centroid ADE/FDE",
+        "offscreen_handling": "hold final observed centroid after confirmed exit",
+        "query_ground_truth_used_for_action_selection": false,
+        "source_protocol": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json",
+        "support_is_excluded_from_query_metrics": true,
+        "support_size": 1,
+        "tracker_type": "event80",
+        "use_model_predictions_for_support": false
+      }
+    },
+    "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_context_dim_128_common_actions/train_job_121872/step_4938/seed_20260708/metrics/complete_v1/scoreboard.csv": {
+      "sha256": "aeab914a2b2a0fea23bad38a84fa59d98af5d7ca67c86742dfb05e2537068da8",
+      "protocol_snapshot": {
+        "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
+        "aggregation": "equal weight per environment after averaging its configured evaluation clips",
+        "dataset_root": "/hai/scratch/cyzhou05/projects/TTT-Physics/datasets/pushbox/libero_push_box_event_tap_segmented80_10action_hidden_lerobot_A500_offset160_stop_2026-07-05_hai-machine",
+        "future_start_frame": 1,
+        "ground_truth_window": "metadata start_frame and length (65-105 for Event80)",
+        "lpips_implementation": "official lpips package",
+        "lpips_network": "alex",
+        "metadata_path": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/data/push_box_bwm_event_tap_segmented80_10action_A500_offset160_stop_65_105_20260705/train.jsonl",
+        "methods": {
+          "ours_context_dim_128_common_actions": "methods/ours_context_dim_128_common_actions/train_job_121872/step_4938/seed_20260708"
+        },
+        "object_metric": "main-camera pushed-block centroid ADE/FDE",
+        "offscreen_handling": "hold final observed centroid after confirmed exit",
+        "query_ground_truth_used_for_action_selection": false,
+        "source_protocol": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/protocol/support_query_manifest.json",
+        "support_is_excluded_from_query_metrics": true,
+        "support_size": 1,
+        "tracker_type": "event80",
+        "use_model_predictions_for_support": false
+      }
+    },
     "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours_direct_environment_token/train_job_115985/step_7700/seed_20260708/metrics/complete_v1/scoreboard.csv": {
-      "sha256": "0d3dafc23720dfe6bde83c7c45c247cabe07cea046689c8a78292865d643265d",
+      "sha256": "7fe164e4f4f988dfc5f61d07e6588358e3db4149979c938e7a61a13f4b3dda7d",
       "protocol_snapshot": {
         "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
         "aggregation": "equal weight per environment after averaging its nine queries",
@@ -183,7 +316,7 @@
       }
     },
     "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/iterative_c32_100_100/train_job_118064/step_6900/seed_20260708/metrics/complete_v1/scoreboard.csv": {
-      "sha256": "06cefe94b12f39a2a18ec357a5b89e8ee097972482b35039714554dcf768db7d",
+      "sha256": "655bd475efeaf66a7116fb7b8d4e2f8f43791391fcf8641216a8586e69ebc9aa",
       "protocol_snapshot": {
         "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
         "aggregation": "equal weight per environment after averaging its nine queries",
@@ -206,7 +339,7 @@
       }
     },
     "results/pushbox_friction_event80/event80_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/iterative_c32_400_400/train_job_118065/step_6300/seed_20260708/metrics/complete_v1/scoreboard.csv": {
-      "sha256": "e19cf02258ff39f949701ec9750db559c9bb4d551d6d9310fe17a3e6819d0ac9",
+      "sha256": "5732b0e07c7a79b29e6d37cbe90a583a30d59a51dc4f57f93ff905f77bfb276a",
       "protocol_snapshot": {
         "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
         "aggregation": "equal weight per environment after averaging its nine queries",
@@ -229,7 +362,7 @@
       }
     }
   },
-  "render_job_id": "local_rescore_20260920",
+  "render_job_id": "122762",
   "source_protocol_snapshot": {
     "action_target_config": "/hai/scratch/cyzhou05/projects/TTT-Physics/repos/BWM-Adapt/configs/evaluation/action_targets/event80_pushbox_image_space.yaml",
     "aggregation": "equal weight per environment after averaging its nine queries",

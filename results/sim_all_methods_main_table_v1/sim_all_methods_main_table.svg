@@ -3,166 +3,190 @@
 <style>text{font-family:"DejaVu Serif",serif;fill:#111827}.bold{font-weight:700}.muted{fill:#8a919e}.note{fill:#3f4858}</style>
 <text x="2500.0" y="72.0" text-anchor="middle" dominant-baseline="middle" font-size="52" class="bold">Simulation benchmark across adaptation methods</text>
 <text x="340.0" y="287.5" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Method</text>
-<rect x="640.0" y="155" width="720.0" height="120" fill="#e8f0f8"/>
-<text x="1000.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Push-box Friction</text>
-<text x="760.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
-<text x="760.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="1000.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
-<text x="1000.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
-<text x="1240.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
-<text x="1240.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
-<rect x="1360.0" y="155" width="720.0" height="120" fill="#eef4e7"/>
-<text x="1720.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Gravity</text>
-<text x="1480.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
-<text x="1480.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="1720.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
-<text x="1720.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
-<text x="1960.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
-<text x="1960.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
-<rect x="2080.0" y="155" width="720.0" height="120" fill="#f8eee5"/>
-<text x="2440.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Mass Collision</text>
-<text x="2200.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
-<text x="2200.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="2440.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
-<text x="2440.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
-<text x="2680.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
-<text x="2680.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
-<rect x="2800.0" y="155" width="720.0" height="120" fill="#f7f2df"/>
-<text x="3160.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Light Switch</text>
-<text x="2920.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
-<text x="2920.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="3160.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Lamp Intensity</text>
-<text x="3160.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(score) down</text>
-<text x="3400.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
-<text x="3400.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
-<rect x="3520.0" y="155" width="720.0" height="120" fill="#e9f3f1"/>
-<text x="3880.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Mass Balance</text>
-<text x="3640.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
-<text x="3640.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="3880.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Bar Tilt</text>
-<text x="3880.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(deg) down</text>
-<text x="4120.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
-<text x="4120.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
-<rect x="4240.0" y="155" width="720.0" height="120" fill="#f0edf7"/>
-<text x="4600.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Mass x Friction</text>
-<text x="4360.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
-<text x="4360.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
-<text x="4600.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
-<text x="4600.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
-<text x="4840.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
-<text x="4840.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
+<rect x="640.0" y="155" width="617.1" height="120" fill="#e8f0f8"/>
+<text x="948.6" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Push-box Friction</text>
+<text x="742.9" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
+<text x="742.9" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
+<text x="948.6" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
+<text x="948.6" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
+<text x="1154.3" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
+<text x="1154.3" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
+<rect x="1257.1" y="155" width="617.1" height="120" fill="#eef4e7"/>
+<text x="1565.7" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Gravity</text>
+<text x="1360.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
+<text x="1360.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
+<text x="1565.7" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
+<text x="1565.7" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
+<text x="1771.4" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
+<text x="1771.4" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
+<rect x="1874.3" y="155" width="617.1" height="120" fill="#f8eee5"/>
+<text x="2182.9" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Mass Collision</text>
+<text x="1977.1" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
+<text x="1977.1" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
+<text x="2182.9" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
+<text x="2182.9" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
+<text x="2388.6" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
+<text x="2388.6" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
+<rect x="2491.4" y="155" width="617.1" height="120" fill="#f7f2df"/>
+<text x="2800.0" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Light Switch</text>
+<text x="2594.3" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
+<text x="2594.3" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
+<text x="2800.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Lamp Intensity</text>
+<text x="2800.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(score) down</text>
+<text x="3005.7" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
+<text x="3005.7" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
+<rect x="3108.6" y="155" width="617.1" height="120" fill="#e9f3f1"/>
+<text x="3417.1" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Mass Balance</text>
+<text x="3211.4" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
+<text x="3211.4" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
+<text x="3417.1" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Bar Tilt</text>
+<text x="3417.1" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(deg) down</text>
+<text x="3622.9" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
+<text x="3622.9" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
+<rect x="3725.7" y="155" width="617.1" height="120" fill="#f0edf7"/>
+<text x="4034.3" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Mass x Friction</text>
+<text x="3828.6" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
+<text x="3828.6" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
+<text x="4034.3" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
+<text x="4034.3" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
+<text x="4240.0" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
+<text x="4240.0" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
+<rect x="4342.9" y="155" width="617.1" height="120" fill="#e8f0f8"/>
+<text x="4651.4" y="215.0" text-anchor="middle" dominant-baseline="middle" font-size="29" class="bold">Multi-background</text>
+<text x="4445.7" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">LPIPS</text>
+<text x="4445.7" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">down</text>
+<text x="4651.4" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Object Centroid</text>
+<text x="4651.4" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">(px) down</text>
+<text x="4857.1" y="331.5" text-anchor="middle" dominant-baseline="middle" font-size="22" class="">Success (%)</text>
+<text x="4857.1" y="364.5" text-anchor="middle" dominant-baseline="middle" font-size="20" class="note">up</text>
 <rect x="40" y="420" width="4920" height="110" fill="#f8f9fb"/>
 <text x="68.0" y="475.0" text-anchor="start" dominant-baseline="middle" font-size="28" class="">Standard Pooled WM</text>
-<text x="760.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0667</text>
-<text x="1000.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">11.06</text>
-<text x="1240.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">32.0</text>
-<text x="1480.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0345</text>
-<text x="1720.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">21.42</text>
-<text x="1960.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">23.5</text>
-<text x="2200.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0904</text>
-<text x="2440.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">21.93</text>
-<text x="2680.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">38.9</text>
-<text x="2920.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0187</text>
-<text x="3160.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.10</text>
-<text x="3400.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">50.0</text>
-<text x="3640.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0248</text>
-<text x="3880.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">1.24</text>
-<text x="4120.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">40.0</text>
-<text x="4360.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0610</text>
-<text x="4600.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">16.02</text>
-<text x="4840.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">35.0</text>
+<text x="742.9" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0667</text>
+<text x="948.6" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">11.06</text>
+<text x="1154.3" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">32.0</text>
+<text x="1360.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0345</text>
+<text x="1565.7" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">21.42</text>
+<text x="1771.4" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">23.5</text>
+<text x="1977.1" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0904</text>
+<text x="2182.9" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">21.93</text>
+<text x="2388.6" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">38.9</text>
+<text x="2594.3" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0187</text>
+<text x="2800.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.10</text>
+<text x="3005.7" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">50.0</text>
+<text x="3211.4" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0244</text>
+<text x="3417.1" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">1.18</text>
+<text x="3622.9" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">40.0</text>
+<text x="3828.6" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0610</text>
+<text x="4034.3" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">16.02</text>
+<text x="4240.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">35.0</text>
+<text x="4445.7" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.1059</text>
+<text x="4651.4" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">8.03</text>
+<text x="4857.1" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">45.8</text>
 <rect x="40" y="530" width="4920" height="110" fill="white"/>
 <text x="68.0" y="585.0" text-anchor="start" dominant-baseline="middle" font-size="28" class="">LoRA TTA</text>
-<text x="760.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0582</text>
-<text x="1000.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">8.19</text>
-<text x="1240.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">48.0</text>
-<text x="1480.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0231</text>
-<text x="1720.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">7.90</text>
-<text x="1960.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">47.1</text>
-<text x="2200.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0691†</text>
-<text x="2440.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">15.87†</text>
-<text x="2680.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">33.3†</text>
-<text x="2920.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="muted">--</text>
-<text x="3160.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="muted">--</text>
-<text x="3400.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">50.0</text>
-<text x="3640.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0628</text>
-<text x="3880.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">1.92</text>
-<text x="4120.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">40.0</text>
-<text x="4360.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0701</text>
-<text x="4600.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">16.83</text>
-<text x="4840.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">26.7</text>
+<text x="742.9" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0582</text>
+<text x="948.6" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">8.19</text>
+<text x="1154.3" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">48.0</text>
+<text x="1360.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0231</text>
+<text x="1565.7" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">7.90</text>
+<text x="1771.4" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">47.1</text>
+<text x="1977.1" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0691†</text>
+<text x="2182.9" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">15.87†</text>
+<text x="2388.6" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">33.3†</text>
+<text x="2594.3" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0175</text>
+<text x="2800.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.08</text>
+<text x="3005.7" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">50.0</text>
+<text x="3211.4" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0631</text>
+<text x="3417.1" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">1.80</text>
+<text x="3622.9" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">50.0</text>
+<text x="3828.6" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0701</text>
+<text x="4034.3" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">16.83</text>
+<text x="4240.0" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">26.7</text>
+<text x="4445.7" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.1074</text>
+<text x="4651.4" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">6.58</text>
+<text x="4857.1" y="585.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">58.3</text>
 <rect x="40" y="640" width="4920" height="110" fill="#f8f9fb"/>
 <text x="68.0" y="695.0" text-anchor="start" dominant-baseline="middle" font-size="28" class="">DINOv2 Context</text>
-<text x="760.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0681</text>
-<text x="1000.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">11.81</text>
-<text x="1240.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">48.0</text>
-<text x="1480.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0164</text>
-<text x="1720.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">3.90</text>
-<text x="1960.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">88.2</text>
-<text x="2200.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0540</text>
-<text x="2440.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">8.53</text>
-<text x="2680.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">38.9</text>
-<text x="2920.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0160</text>
-<text x="3160.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.10</text>
-<text x="3400.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">50.0</text>
-<text x="3640.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0240</text>
-<text x="3880.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">1.27</text>
-<text x="4120.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">40.0</text>
-<text x="4360.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0565</text>
-<text x="4600.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">11.81</text>
-<text x="4840.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">60.8</text>
+<text x="742.9" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0681</text>
+<text x="948.6" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">11.81</text>
+<text x="1154.3" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">48.0</text>
+<text x="1360.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0195</text>
+<text x="1565.7" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">5.93</text>
+<text x="1771.4" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">76.5</text>
+<text x="1977.1" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0540</text>
+<text x="2182.9" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">8.53</text>
+<text x="2388.6" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">38.9</text>
+<text x="2594.3" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0160</text>
+<text x="2800.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.10</text>
+<text x="3005.7" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">50.0</text>
+<text x="3211.4" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0239</text>
+<text x="3417.1" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">1.26</text>
+<text x="3622.9" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">30.0</text>
+<text x="3828.6" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0565</text>
+<text x="4034.3" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">11.81</text>
+<text x="4240.0" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">60.8</text>
+<text x="4445.7" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.1064</text>
+<text x="4651.4" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">7.74</text>
+<text x="4857.1" y="695.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">58.3</text>
 <rect x="40" y="750" width="4920" height="110" fill="white"/>
 <text x="68.0" y="805.0" text-anchor="start" dominant-baseline="middle" font-size="28" class="">TTT-KQV</text>
-<text x="760.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0649</text>
-<text x="1000.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">10.81</text>
-<text x="1240.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">32.0</text>
-<text x="1480.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0291</text>
-<text x="1720.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">18.96</text>
-<text x="1960.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">35.3</text>
-<text x="2200.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0842</text>
-<text x="2440.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">20.98</text>
-<text x="2680.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">55.6</text>
-<text x="2920.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0161</text>
-<text x="3160.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.10</text>
-<text x="3400.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">50.0</text>
-<text x="3640.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0305</text>
-<text x="3880.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">2.36</text>
-<text x="4120.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">30.0</text>
-<text x="4360.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="muted">--</text>
-<text x="4600.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="muted">--</text>
-<text x="4840.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="muted">--</text>
+<text x="742.9" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0649</text>
+<text x="948.6" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">10.81</text>
+<text x="1154.3" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">32.0</text>
+<text x="1360.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0291</text>
+<text x="1565.7" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">18.96</text>
+<text x="1771.4" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">35.3</text>
+<text x="1977.1" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0842</text>
+<text x="2182.9" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">20.98</text>
+<text x="2388.6" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">55.6</text>
+<text x="2594.3" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0161</text>
+<text x="2800.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.10</text>
+<text x="3005.7" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">50.0</text>
+<text x="3211.4" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0312</text>
+<text x="3417.1" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">2.51</text>
+<text x="3622.9" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">30.0</text>
+<text x="3828.6" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0726</text>
+<text x="4034.3" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">18.95</text>
+<text x="4240.0" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">33.3</text>
+<text x="4445.7" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.1116</text>
+<text x="4651.4" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">7.78</text>
+<text x="4857.1" y="805.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">58.3</text>
 <rect x="40" y="860" width="4920" height="110" fill="#eaf4ef"/>
 <text x="68.0" y="915.0" text-anchor="start" dominant-baseline="middle" font-size="28" class="bold">Ours</text>
-<text x="760.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0495</text>
-<text x="1000.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">3.85</text>
-<text x="1240.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">72.0</text>
-<text x="1480.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0202</text>
-<text x="1720.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">7.34</text>
-<text x="1960.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">82.4</text>
-<text x="2200.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0538</text>
-<text x="2440.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">6.45</text>
-<text x="2680.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">61.1</text>
-<text x="2920.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0150</text>
-<text x="3160.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.03</text>
-<text x="3400.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">87.5</text>
-<text x="3640.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0218*</text>
-<text x="3880.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.76*</text>
-<text x="4120.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">70.0*</text>
-<text x="4360.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0500</text>
-<text x="4600.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">8.15</text>
-<text x="4840.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">69.7</text>
+<text x="742.9" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0495</text>
+<text x="948.6" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">3.85</text>
+<text x="1154.3" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">72.0</text>
+<text x="1360.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0202</text>
+<text x="1565.7" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">7.34</text>
+<text x="1771.4" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">82.4</text>
+<text x="1977.1" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0538</text>
+<text x="2182.9" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">6.45</text>
+<text x="2388.6" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">61.1</text>
+<text x="2594.3" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0150</text>
+<text x="2800.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.03</text>
+<text x="3005.7" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">87.5</text>
+<text x="3211.4" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0240</text>
+<text x="3417.1" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.64</text>
+<text x="3622.9" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">80.0</text>
+<text x="3828.6" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">0.0500</text>
+<text x="4034.3" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">8.15</text>
+<text x="4240.0" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="bold">69.7</text>
+<text x="4445.7" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">0.0888*</text>
+<text x="4651.4" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">3.71*</text>
+<text x="4857.1" y="915.0" text-anchor="middle" dominant-baseline="middle" font-size="27" class="">66.7*</text>
 <line x1="40" y1="155" x2="4960" y2="155" stroke="#25324a" stroke-width="5"/>
 <line x1="40" y1="275" x2="4960" y2="275" stroke="#25324a" stroke-width="2"/>
 <line x1="40" y1="420" x2="4960" y2="420" stroke="#25324a" stroke-width="4"/>
 <line x1="40" y1="970" x2="4960" y2="970" stroke="#25324a" stroke-width="5"/>
 <line x1="640" y1="155" x2="640" y2="970" stroke="#25324a" stroke-width="2"/>
-<line x1="1360.0" y1="155" x2="1360.0" y2="970" stroke="#9aa2af" stroke-width="2"/>
-<line x1="2080.0" y1="155" x2="2080.0" y2="970" stroke="#9aa2af" stroke-width="2"/>
-<line x1="2800.0" y1="155" x2="2800.0" y2="970" stroke="#9aa2af" stroke-width="2"/>
-<line x1="3520.0" y1="155" x2="3520.0" y2="970" stroke="#9aa2af" stroke-width="2"/>
-<line x1="4240.0" y1="155" x2="4240.0" y2="970" stroke="#9aa2af" stroke-width="2"/>
+<line x1="1257.1" y1="155" x2="1257.1" y2="970" stroke="#9aa2af" stroke-width="2"/>
+<line x1="1874.3" y1="155" x2="1874.3" y2="970" stroke="#9aa2af" stroke-width="2"/>
+<line x1="2491.4" y1="155" x2="2491.4" y2="970" stroke="#9aa2af" stroke-width="2"/>
+<line x1="3108.6" y1="155" x2="3108.6" y2="970" stroke="#9aa2af" stroke-width="2"/>
+<line x1="3725.7" y1="155" x2="3725.7" y2="970" stroke="#9aa2af" stroke-width="2"/>
+<line x1="4342.9" y1="155" x2="4342.9" y2="970" stroke="#9aa2af" stroke-width="2"/>
 <text x="40.0" y="1018.0" text-anchor="start" dominant-baseline="middle" font-size="20" class="note">Bold: best. Object/physical metrics are task-specific and listed in each header.</text>
-<text x="40.0" y="1061.0" text-anchor="start" dominant-baseline="middle" font-size="20" class="note">* Mass Balance Ours uses the completed fixed-pose 5-ID/5-OOD test; baseline rows use workspace-random data.</text>
+<text x="40.0" y="1061.0" text-anchor="start" dominant-baseline="middle" font-size="20" class="note">* Mass Balance Ours uses a fixed-pose test; Multi-background Ours is provisional old-5bg, not matched with 30-bg baselines.</text>
 <text x="40.0" y="1104.0" text-anchor="start" dominant-baseline="middle" font-size="20" class="note">† Collision LoRA: prior protocol. Mass Friction action: +/-1 level at y=0.62/0.75/0.92 (post-hoc revision); --: unavailable.</text>
 <text x="40.0" y="1147.0" text-anchor="start" dominant-baseline="middle" font-size="20" class="note">DINOv2: Transformer for Friction; concat-MLP for Gravity/Collision/Light/Balance. Mass x Friction is pending.</text>
 </svg>

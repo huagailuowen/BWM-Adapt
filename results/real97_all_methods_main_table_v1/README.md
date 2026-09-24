@@ -1,16 +1,18 @@
-## Current Door action rule: first closing level (2026-09-19)
+## Current Door/Ball action rule: exact first-reaching level (2026-09-23)
 
-Door Action now scans levels 1 through 10 and selects the lowest level predicted to close the door. It scores 1.0 when this equals the GT lowest closing level, 0.5 when it differs by exactly one level, and 0 otherwise. A method that predicts no closing level receives 0. The unclosable `door-12u-Half-11d-Half` environment remains excluded, leaving nine scored environments.
+This section supersedes the historical tolerance and pair-overlap action scores below. Only Door and Ball Action columns change; all image/object metrics, other tasks, and method outputs remain unchanged. A missing predicted successful level scores zero.
 
-| Method | Exact | Within one level | Weighted Action score |
-|---|---:|---:|---:|
-| Standard | 2/9 | 5/9 | 38.89% |
-| LoRA TTA | 2/9 | 3/9 | 27.78% |
-| DINOv2 concat-MLP | 2/9 | 4/9 | 33.33% |
-| TTT | 2/9 | 4/9 | 33.33% |
-| Ours, sim-LR | 5/9 | 8/9 | 72.22% |
+Door scans levels 1 through 10 and scores 1 only when the predicted lowest closing level exactly equals the frozen GT lowest closing level. The unclosable `door-12u-Half-11d-Half` environment is excluded, leaving nine scored environments. Current Door Ours remains the dual6500 SIM-LR global-mean run; its 100-test-query PSNR/SSIM/LPIPS/ADE/FDE remain 32.15/0.92675/0.03208/7.95/13.47. Automated tracking remains provisional.
 
-The CSV column name `door_action_pair_overlap_pct` is retained only as a compatibility alias; its current values use this first-closing-level rule, not pair overlap. Full per-environment decisions and source summaries are recorded in [the Door action snapshot](metrics/door_first_close_level_tolerance1_20260919.json).
+| Method | Door exact | Door Action | Ball exact | Ball Action |
+|---|---:|---:|---:|---:|
+| Standard | 2/9 | 22.22% | 0/8 | 0.00% |
+| LoRA TTA | 2/9 | 22.22% | 4/8 | 50.00% |
+| DINOv2 concat-MLP | 2/9 | 22.22% | 1/8 | 12.50% |
+| TTT | 2/9 | 22.22% | 2/8 | 25.00% |
+| Ours | 5/9 | 55.56% | 5/8 | 62.50% |
+
+Ball scores 1 only when the predicted first action level reaching the blue marker minus 30 px exactly matches the GT first-reaching level. Its eight environments include the formal cluster run with Level-7 support for `ball-7` and `ball-9`; Door Ours uses global-mean initialization. Both CSV columns retain their historical `*_action_pair_overlap_pct` names as compatibility aliases, but now hold exact-match rates. [Current action-score sources](metrics/door_ball_exact_first_reach_20260923.json). The [earlier Door tolerance snapshot](metrics/door_first_close_level_tolerance1_20260919.json) and [Door global-mean image/object selection](metrics/door_globalmean_selected_20260922.json) remain archived.
 
 ## Current release: Stick DINO / TTT completed (2026-09-19)
 
@@ -28,9 +30,9 @@ Action preserves the existing post-hoc seed20260927 fixed36 subset: DINO 1/5, TT
 
 Baseline provenance: [DINO](metrics/stick_dino_completed_codecfix_20260919.json), [TTT](metrics/stick_ttt_completed_codecfix_20260919.json). Only each baseline's own scores are promoted from these snapshots; their historical Ours comparison rows are NOT the current Ours. Scoring uses canonical reference GT after an all-frame export-codec audit; raw predictions are unchanged. Additional manual visual auditing remains pending.
 
-Current Ours provenance: [sim-LR selection](metrics/ours_simlr_mean_selected_20260918.json), superseded for Soft's latest common-mask scores by the following Soft section. Stage2 uses 3.0/1.5/0.5/0.15 for ten updates each, no ROI or hard Z bounds. Door/Ball use dual6500 cluster centers; Stick3900 uses the whole-table mean; Soft5500 uses L/R/8 family means.
+Current Ours provenance: [sim-LR selection](metrics/ours_simlr_mean_selected_20260918.json), superseded for Door by the [global-mean selection](metrics/door_globalmean_selected_20260922.json) and for Soft's latest common-mask scores by the following Soft section. Stage2 uses 3.0/1.5/0.5/0.15 for ten updates each, no ROI or hard Z bounds. Door dual6500 and Stick3900 use whole-table means; Ball dual6500 uses two-cluster centers; Soft5500 uses L/R/8 family means.
 
-The current main latent figure is the [sim-LR training/inference PCA](train_inference_latents_simlr_20260918_v1/train_inference_pca_preview.svg), with [source manifest](train_inference_latents_simlr_20260918_v1/manifest.json). It retains training-only PCA bases and original environment colors; circles denote training and black-bordered triangles denote inference. Latest third-latent training plots are separate experiments, not replacements for this selected result.
+The [2026-09-18 sim-LR training/inference PCA](train_inference_latents_simlr_20260918_v1/train_inference_pca_preview.svg), with [source manifest](train_inference_latents_simlr_20260918_v1/manifest.json), retains the earlier cluster-initialized Door inference points; it is not the current global-mean Door table run. Circles denote training and black-bordered triangles denote inference. Latest third-latent training plots are separate experiments.
 
 Soft includes its action-related sliding-onset Success@6deg metric, currently 81.82% (9/11) for Ours; the previous "no Soft action metric" statements below are historical.
 
@@ -55,11 +57,11 @@ All-nine results remain in `metrics/soft_static9_standard_lora_full_summary_2026
 
 This section supersedes historical Ours entries below. Main and detailed tables now use the user-selected sim-LR results; baseline rows are unchanged.
 Stage2: 3.0 / 1.5 / 0.5 / 0.15, ten updates each; no ROI or hard Z bounds.
-Door/Ball: dual6500 cluster centers. Stick3900: full-table mean. Soft5500: L/R/8 means.
+Door dual6500: full-table mean (2026-09-22 override). Ball dual6500: two-cluster centers. Stick3900: full-table mean. Soft5500: L/R/8 means.
 
 | Task | PSNR | SSIM | LPIPS | ADE px | FDE px | Action % |
 |---|---:|---:|---:|---:|---:|---:|
-| door | 32.07 | 0.92660 | 0.03361 | 9.01 | 15.75 | 72.22 |
+| door | 32.15 | 0.92675 | 0.03208 | 7.95 | 13.47 | 77.78 |
 | ball | 35.96 | 0.96001 | 0.02883 | 20.36 | 41.14 | 56.25 |
 | stick | 32.05 | 0.94271 | 0.04175 | 2.27 | 5.01 | 83.33 |
 | soft | 32.58 | 0.96143 | 0.07529 | 18.24 | 22.59 | 81.82 |
@@ -67,7 +69,7 @@ Door/Ball: dual6500 cluster centers. Stick3900: full-table mean. Soft5500: L/R/8
 Stick FDE uses 36 valid new-Ours queries; baseline counts/masks are not changed. Do not assume identical valid-frame sets across versions.
 Stick action remains the post-hoc seed20260927 fixed36 subset (5/6 selected candidates correct). Soft onset remains the previously post-hoc selected <=6-degree rule (9/11).
 Automatic tracking has not received an additional manual audit. Changing checkpoint/initialization as well as LR prevents attributing differences solely to LR.
-Full precision and provenance: `metrics/ours_simlr_mean_selected_20260918.json`.
+Full precision and provenance: `metrics/ours_simlr_mean_selected_20260918.json`, overridden for Door by `metrics/door_globalmean_selected_20260922.json`.
 Historical Ours row: `metrics/ours_before_simlr_promotion_20260918.json`.
 
 ---
@@ -352,4 +354,4 @@ All image/object metrics, raw predictions, dataset splits, and training runs are
 
 ## Combined training / inference latent archive
 
-The selected sim-LR run is archived in [train_inference_latents_simlr_20260918_v1/index.html](train_inference_latents_simlr_20260918_v1/index.html): one combined table (99 rows), all 32-dimensional training/inference Z values, initial Z, complete trajectories, configs and a four-task PCA preview. No model binaries or videos.
+The selected sim-LR run is archived in [train_inference_latents_simlr_20260918_v1/index.html](train_inference_latents_simlr_20260918_v1/index.html): one combined table (99 rows), all 32-dimensional training/inference Z values, initial Z, complete trajectories, configs and a four-task PCA preview. Ball-7 and Ball-9 use revised Level-7 Supports. No model binaries or videos.

@@ -85,8 +85,8 @@ def main():
             exported['action_score_pct'] = raw_action
             exported['action_definition'] = ('sliding_onset_success6deg_posthoc_gtpositive11' if task == 'soft' else
                                              'predicted_balanced_precision_posthoc36' if task == 'stick' else
-                                             'first_closing_level_exact1_adjacent0p5' if task == 'door' else
-                                             'preferred_level_pair_overlap')
+                                             'first_closing_level_exact' if task == 'door' else
+                                             'first_reaching_level_exact_marker_minus30px')
             for x, value in zip(positions[2:], values):
                 chart.text(x, y, value, 24, ours, 'center', '#111' if value not in ('-', 'N/A') else '#777')
             detailed_rows.append(exported)
@@ -94,8 +94,8 @@ def main():
         chart.line(top, 3 if task == 'soft' else 2)
     footnotes = [
         'PSNR / SSIM: higher is better. LPIPS / ADE / FDE: lower is better. ADE and FDE are in pixels.',
-        'Door Action: lowest closing level; exact = 1, +/-1 level = 0.5. The unclosable environment is excluded.',
-        'Ball Action: preferred-level pair overlap.',
+        'Door Action: exact first-closing level. The unclosable environment is excluded.',
+        'Ball Action: exact first level reaching the blue marker minus 30 px.',
         '* Stick Action: precision on post-hoc seed20260927, 36 cases (one balanced + three unbalanced per environment).',
         'Stick image / ADE: full 45-query set. FDE: 33 valid queries under the common GT / Standard / Ours / LoRA mask.',
         'Soft: six shared environments, 12 test queries; Onset Success@6 degrees uses 11 GT-positive queries.',

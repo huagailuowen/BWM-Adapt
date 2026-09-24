@@ -20,8 +20,8 @@
 |---|---|---|---|---:|
 | Mass Balance | K=1 | Nearest unbalanced support | Complete | 70.0% |
 | Mass Balance | K=2 bracket | Two near-balance unbalanced supports, preferably on opposite sides | Complete | 80.0% |
-| Mass Balance | K=2 unbalanced+balanced | Formal K=1 support plus one most-balanced support | Complete | 100.0% |
-| Mass Balance | K=4 | K=2 bracket plus random-unbalanced and balanced support | Complete | 100.0% |
+| Mass Balance | K=2 unbalanced+balanced | Formal K=1 support plus one most-balanced support; all actions use model predictions | Complete | 80.0% |
+| Mass Balance | K=4 | K=2 bracket plus random-unbalanced and balanced support; all actions use model predictions | Complete | 90.0% |
 | Light Switch | K=1 | One fixed red-button support | Complete | 50.0% |
 | Light Switch | K=2 | One red and one blue support | Complete | 87.5% |
 | Light Switch | K=4 | Red/blue crossed with lamp-off/lamp-on | Complete | 87.5% |
@@ -30,6 +30,8 @@
 | Event80 | K=1 | Original informative displacement support | Complete | 72.0% |
 | Event80 | K=2 diagnostic | K=1 support plus one action-space farthest point | Complete | 60.0% |
 | Event80 | K=4 diagnostic | K=1 support plus three action-space farthest points | Complete | 64.0% |
+| Event80 | K=2 diagnostic, sum loss | Same K=2 supports; support losses summed instead of averaged | Complete | 64.0% |
+| Event80 | K=4 diagnostic, sum loss | Same K=4 supports; support losses summed instead of averaged | Complete | 68.0% |
 
 Status and Slurm IDs in this table are a snapshot. Result directories and protocol files are the authoritative long-term records.
 
@@ -41,7 +43,7 @@ Mass Balance 当前包含已有的 `K=1/K=2/K=4` 三档实验，以及一项新�
 |---|---|---|---|---|
 | Existing K=1 | Nearest informative unbalanced | -- | 单 support 基准 | Complete |
 | Existing K=2 bracket | Near-balance unbalanced on one side | Prefer near-balance unbalanced on the opposite side | 用两条不平衡轨迹夹逼平衡点 | Complete |
-| New K=2 unbalanced+balanced | 与 Existing K=1 完全相同 | Most-balanced candidate in `[-3 deg, 3 deg]` | 对比“第二条不平衡信息”和“显式平衡信息” | Pending (`120155`) |
+| New K=2 unbalanced+balanced | 与 Existing K=1 完全相同 | Most-balanced candidate in `[-3 deg, 3 deg]` | 对比“第二条不平衡信息”和“显式平衡信息” | Complete (model-prediction action evaluation) |
 | Existing K=4 mixed | Existing K=2 bracket pair | One random-unbalanced plus one balanced | 更完整覆盖不平衡方向与平衡状态 | Complete |
 
 因此，已有 support-number 主线是 `K=1 -> K=2 bracket -> K=4 mixed`；新增 K=2 是在固定 `K=2` 数量时进行的 support 类型消融，而不是替换原有 K=2。
@@ -83,7 +85,7 @@ This is a distinct K=2 experiment and should not be merged with the bracket resu
 - The remaining 13 candidates are disjoint queries.
 - The environment set remains the same 5 ID + 5 OOD set.
 
-The experiment isolates whether one explicit near-equilibrium observation is more useful than a second unbalanced observation. Ours reaches 100% action success: 100% ID and 100% OOD, with zero mean regret. This is substantially stronger than the 80% bracket construction at the same K and shows that support composition, rather than support count alone, controls identifiability.
+The experiment tests whether one explicit near-equilibrium observation is more useful than a second unbalanced observation. All actions, including support actions, are selected using model-predicted outcomes; support GT outcomes are not used for action selection. Ours reaches 80% action success: 100% ID and 60% OOD, with mean regret 2.176331. Its aggregate success equals the bracket result; this does not establish superiority of a balanced demonstration.
 
 Planned result root:
 
@@ -91,7 +93,7 @@ Planned result root:
 
 ### 3.5 K=4
 
-K=4 augments the completed bracket K=2 support with one random-unbalanced and one balanced trajectory. Ours reaches 100% action success on the current 10 environments.
+K=4 augments the completed bracket K=2 support with one random-unbalanced and one balanced trajectory. With model predictions used for every candidate action, including the four support actions, Ours reaches 90% action success on 10 environments: 100% ID and 80% OOD, with mean regret 1.755053.
 
 Result root:
 
@@ -105,10 +107,10 @@ This result is not a pure support-count effect because the support composition a
 |---:|---:|---:|---:|---:|---:|---:|
 | 1 | 70% | 100% | 40% | 0.02457 | 1.199 px | 0.739 deg |
 | 2 bracket | 80% | 100% | 60% | 0.02395 | 1.164 px | 0.640 deg |
-| 2 unbalanced+balanced | 100% | 100% | 100% | -- | -- | -- |
-| 4 mixed | 100% | 100% | 100% | 0.02290 | 1.124 px | 0.494 deg |
+| 2 unbalanced+balanced | 80% | 100% | 60% | 0.02437 | 1.256 px | 0.698 deg |
+| 4 mixed | 90% | 100% | 80% | 0.02290 | 1.124 px | 0.494 deg |
 
-The bracket path is monotonic, but the controlled K=2 result reaches the same 100% action success as K=4. Two complementary observations are therefore sufficient on this evaluation; adding support beyond K=2 is not intrinsically necessary.
+Under model-prediction action selection, K=2 unbalanced+balanced reaches 80% and K=4 mixed reaches 90%. This suggests a benefit from the larger mixed support set in this evaluation, but quantity and composition change together. The result does not establish a quantity-only effect.
 
 ## 4. Light Switch
 
@@ -168,7 +170,25 @@ Diagnostic root:
 
 Important limitation: the extra supports are selected from the original K=1 query pool while the original query set remains frozen. Therefore, support and query overlap by construction. These runs are useful for diagnosing whether additional observations improve adaptation, but they must not be reported as formal disjoint-support/query results.
 
-### 5.3 Required formal follow-up
+### 5.3 Support-loss reduction: mean versus sum
+
+The original multi-support implementation averages the per-support adaptation losses. A controlled rerun keeps the checkpoint, support/query identities, 40-step schedule, and all other inference settings fixed, but sums those losses instead. Summation therefore scales the effective latent update with K.
+
+| Setting | PSNR | SSIM | LPIPS | Centroid ADE | Centroid FDE | Action success |
+|---|---:|---:|---:|---:|---:|---:|
+| Formal K=1 reference | 31.976 | 0.9513 | 0.0495 | 3.85 px | 7.59 px | 72% |
+| K=2, mean support loss | -- | -- | -- | -- | -- | 60% |
+| K=2, sum support loss | 31.973 | 0.9515 | 0.0492 | 3.65 px | 7.40 px | 64% |
+| K=4, mean support loss | -- | -- | -- | -- | -- | 64% |
+| K=4, sum support loss | 31.738 | 0.9510 | 0.0505 | 4.18 px | 8.34 px | 68% |
+
+Summing improves action success by four percentage points at both K=2 and K=4. K=2 sum-loss slightly improves the object/appearance metrics relative to K=1, but its action success remains lower. K=4 sum-loss raises action success to 68% while degrading the visual and trajectory metrics. Thus, the current formal K=1 setting remains the strongest aggregate result.
+
+Sum-loss diagnostic root:
+
+`results/pushbox_friction_event80/event80_k2_k4_sum_support_loss_frozen_k1_query_overlap_diagnostic_v1`
+
+### 5.4 Required formal follow-up
 
 A publication-quality Event80 support-number ablation should:
 
@@ -194,3 +214,20 @@ Mass Balance K=2 bracket versus K=2 unbalanced+balanced addresses support compos
 - Reproducible renderer: `scripts/evaluation/render_support_number_analysis.py`.
 
 The figure separates the two Mass Balance K=2 constructions and marks Event80 K=2/K=4 as overlap diagnostics. It must not be interpreted as a strictly quantity-only ablation across all tasks because support composition changes between several points.
+
+### Mass Balance action-evaluation convention
+
+For the K=2 unbalanced+balanced and K=4 mixed experiments, every candidate action remains selectable, including support actions. Candidate outcomes come exclusively from model-generated predictions using the adapted latent. Ground truth is used only to score the selected action. The boundary-crossing selector is unchanged. The authoritative action results are `action_evaluation_predict_all_actions/summary.json` in each experiment directory and are linked by `action_result_source` in the CSV files. Video/object metrics retain their existing query-only aggregation; adding support predictions for action evaluation does not change those video metrics.
+
+## Mass Collision: selected support-number results
+
+The selected report retains the original K1 observed-support convention and uses model predictions for every action in K2/K4/K8. This is a **mixed-protocol comparison, not a pure support-count ablation**. All runs use the action8 highmass2x step-4300 checkpoint without Stage2 ROI, 40 inner steps, and mean support loss.
+
+| K | Action success | Successful / reachable pairs | Support-action outcome used for selection |
+|---|---:|---:|---|
+| 1 | 61.11% | 11/18 | observed_support_gt |
+| 2 | 66.67% | 12/18 | model_prediction_for_all_actions |
+| 4 | 72.22% | 13/18 | model_prediction_for_all_actions |
+| 8 | 61.11% | 11/18 | model_prediction_for_all_actions |
+
+The prediction-only K1 recount remains preserved as a separate diagnostic (10/18, 55.56%); it is not the K1 entry selected above. Full paths are recorded in `mass_collision_support_number_selected_results.json` and `support_number_summary.csv`. K8 has only one disjoint query per environment; its video metrics, like the other new K settings, include all nine model-generated action clips, including support predictions.

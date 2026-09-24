@@ -1,6 +1,6 @@
 # Event80 Formal Ablation Study
 
-User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10, then added the 100/100 and 400/400 iteration-frequency ablations; include Ours as the reference.
+User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10, then added the 100/100 and 400/400 iteration-frequency ablations and C8, C16, C64, C128 dimensions; include Ours as the reference.
 
 | Method | Object ADE (px) lower | Object FDE (px) lower | PSNR (MV) higher | SSIM (MV) higher | LPIPS (MV) lower | Action success higher |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -9,6 +9,10 @@ User selected candidates 1 (700-step cycle only), 3, 4, 6, 8, 9, and 10, then ad
 | No curriculum + joint | 5.68 | 12.28 | 31.697 | 0.9507 | 0.0547 | 64% |
 | No curriculum + iterative | 6.17 | 12.81 | 31.799 | 0.9514 | 0.0549 | 60% |
 | C=4 + MLP | 3.71 | 7.22 | 29.353 | 0.9494 | 0.0546 | 68% |
+| C=8 + MLP | 8.92 | 19.26 | 31.293 | 0.9474 | 0.0646 | 44% |
+| C=16 + MLP | 7.63 | 15.90 | 29.557 | 0.9470 | 0.0614 | 64% |
+| C=64 + MLP | 6.86 | 13.98 | 31.692 | 0.9504 | 0.0551 | 64% |
+| C=128 + MLP | 7.08 | 14.51 | 31.372 | 0.9483 | 0.0581 | 64% |
 | Direct token (3072-D) | 94.50 | 80.49 | 15.218 | 0.3555 | 0.7626 | 24% |
 | C32 shared initialization | 7.94 | 15.98 | 30.638 | 0.9466 | 0.0631 | 64% |
 | C32 random [-0.05, 0.05] | 4.81 | 9.73 | 32.172 | 0.9509 | 0.0495 | 60% |
@@ -25,7 +29,8 @@ Metrics are copied from the recorded formal scoreboard. No new rollout or metric
 - Historical initialization runs retain their recorded training schedules and are not claimed to be strict single-variable controls.
 - C4 and direct-token jobs use two GPUs, 4 environments x 4 actions per rank, the intended original active35 pool, and the 1000-step alternating curriculum.
 - The evaluated C4 checkpoint is step6300 with 30 actually active environments; direct-token step7700 and reference C32 step7272 use 35. C4 is not a strict dimension-only comparison at matched active-environment count.
-- The 1000-step pure-joint variant, C1, C128, new-C200/joint800, shuffled groups, and per-trajectory codes are not selected for this formal table.
+- The 1000-step pure-joint variant, C1, new-C200/joint800, shuffled groups, and per-trajectory codes are not selected for this formal table.
+- The evaluated C64 step5200 and C128 step4938 checkpoints have 25 active environments, versus 35 for reference C32; they are not matched-active-count comparisons.
 - The iteration-frequency runs retain initial model-only 300 steps and new-code-only 200 steps per 1000-step wave; the remaining 800 steps alternate all-active code and model updates in 100/100 or 400/400 blocks.
 - Both iteration-frequency runs used two GPUs with 4 environments x 4 chunks per rank and a 24-hour training limit. Evaluation uses the latest complete model/code-table pair, not a later context-only snapshot.
 - The 100/100 checkpoint is step6900 with 35 active environments; the 400/400 checkpoint is step6300 with 30. The latter is not a matched-active-count comparison with the reference; the frozen evaluation support/query identities are unchanged.
@@ -39,6 +44,10 @@ Metrics are copied from the recorded formal scoreboard. No new rollout or metric
 | No curriculum + joint | 5200 |  | scored | All 35 training environments active from the beginning; joint model/code updates. |
 | No curriculum + iterative | 7000 |  | scored | All 35 training environments active from the beginning; alternating 200-step model/code blocks. |
 | C=4 + MLP | 6300 | 115984 | scored | Independent U(0,1) 4-D codes; standard 1000-step alternating curriculum; 30 actually active environments at the evaluated checkpoint, out of the intended 35. |
+| C=8 + MLP | 6300 | 121568 | scored |  |
+| C=16 + MLP | 7300 | 121567 | scored |  |
+| C=64 + MLP | 5200 | 121871 | scored |  |
+| C=128 + MLP | 4938 | 121872 | scored |  |
 | Direct token (3072-D) | 7700 | 115985 | scored | One 3072-D code per environment; identity projection; Gaussian initialization with mean 0 and std 0.02; standard alternating curriculum; all 35 environments active. |
 | C32 shared initialization | 6814 | 88822 | scored | Historical shared-initialization C32 run; retain the recorded training configuration. |
 | C32 random [-0.05, 0.05] | 7000 | 89030 | scored | Historical small-range random-initialization C32 run; retain the recorded training configuration. |

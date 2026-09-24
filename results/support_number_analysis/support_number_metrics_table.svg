@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3010" height="1770" viewBox="0 0 3010 1770">
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="DejaVu Serif, serif" fill="#172033">
+<text x="1505.0" y="66.0" text-anchor="middle" dominant-baseline="middle" font-size="50" font-weight="700" fill="#172033">Support-Number Ablation: Detailed Metrics</text>
+<text x="1505.0" y="132.0" text-anchor="middle" dominant-baseline="middle" font-size="28" font-weight="400" fill="#52606D">Global appearance, object-centric accuracy, physical consistency, and action selection</text>
+<text x="1505.0" y="181.0" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#52606D">Arrows indicate metric direction; values are aggregated under each recorded protocol.</text>
+<line x1="90" y1="235.0" x2="2920" y2="235.0" stroke="#263442" stroke-width="5"/>
+<line x1="90" y1="340.0" x2="2920" y2="340.0" stroke="#263442" stroke-width="2"/>
+<text x="255.0" y="287.5" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="700" fill="#172033">Task</text>
+<text x="675.0" y="287.5" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="700" fill="#172033">Setting</text>
+<text x="982.5" y="287.5" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="700" fill="#172033">K</text>
+<text x="1147.5" y="273.0" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="700" fill="#172033">PSNR</text>
+<text x="1147.5" y="302.0" text-anchor="middle" dominant-baseline="middle" font-size="21" font-weight="400" fill="#172033">(higher)</text>
+<text x="1372.5" y="273.0" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="700" fill="#172033">SSIM</text>
+<text x="1372.5" y="302.0" text-anchor="middle" dominant-baseline="middle" font-size="21" font-weight="400" fill="#172033">(higher)</text>
+<text x="1597.5" y="273.0" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="700" fill="#172033">LPIPS</text>
+<text x="1597.5" y="302.0" text-anchor="middle" dominant-baseline="middle" font-size="21" font-weight="400" fill="#172033">(lower)</text>
+<text x="1860.0" y="273.0" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="700" fill="#172033">Object mean</text>
+<text x="1860.0" y="302.0" text-anchor="middle" dominant-baseline="middle" font-size="21" font-weight="400" fill="#172033">(lower)</text>
+<text x="2160.0" y="273.0" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="700" fill="#172033">Object final</text>
+<text x="2160.0" y="302.0" text-anchor="middle" dominant-baseline="middle" font-size="21" font-weight="400" fill="#172033">(lower)</text>
+<text x="2465.0" y="273.0" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="700" fill="#172033">Physical error</text>
+<text x="2465.0" y="302.0" text-anchor="middle" dominant-baseline="middle" font-size="21" font-weight="400" fill="#172033">(lower)</text>
+<text x="2770.0" y="273.0" text-anchor="middle" dominant-baseline="middle" font-size="25" font-weight="700" fill="#172033">Action success</text>
+<text x="2770.0" y="302.0" text-anchor="middle" dominant-baseline="middle" font-size="21" font-weight="400" fill="#172033">(higher)</text>
+<text x="106.0" y="385.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Event80</text>
+<text x="436.0" y="385.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K1 informative</text>
+<text x="982.5" y="385.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">1</text>
+<text x="1147.5" y="385.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">31.976</text>
+<text x="1372.5" y="385.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9513</text>
+<text x="1597.5" y="385.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0495</text>
+<text x="1860.0" y="385.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">3.854</text>
+<text x="2160.0" y="385.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">7.593</text>
+<text x="2465.0" y="385.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">--</text>
+<text x="2770.0" y="385.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">72%</text>
+<rect x="90" y="430" width="2830" height="90" fill="#F7F9FB"/>
+<text x="106.0" y="475.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Event80</text>
+<text x="436.0" y="475.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K2 mean loss</text>
+<text x="982.5" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">2</text>
+<text x="1147.5" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">31.839</text>
+<text x="1372.5" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9513</text>
+<text x="1597.5" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0507</text>
+<text x="1860.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">4.554</text>
+<text x="2160.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">9.904</text>
+<text x="2465.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">--</text>
+<text x="2770.0" y="475.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">60%</text>
+<text x="106.0" y="565.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Event80</text>
+<text x="436.0" y="565.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K4 mean loss</text>
+<text x="982.5" y="565.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">4</text>
+<text x="1147.5" y="565.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">31.895</text>
+<text x="1372.5" y="565.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9513</text>
+<text x="1597.5" y="565.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0500</text>
+<text x="1860.0" y="565.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">4.215</text>
+<text x="2160.0" y="565.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">9.113</text>
+<text x="2465.0" y="565.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">--</text>
+<text x="2770.0" y="565.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">64%</text>
+<rect x="90" y="610" width="2830" height="90" fill="#F7F9FB"/>
+<text x="106.0" y="655.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Event80</text>
+<text x="436.0" y="655.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K2 sum loss</text>
+<text x="982.5" y="655.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">2</text>
+<text x="1147.5" y="655.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">31.973</text>
+<text x="1372.5" y="655.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9515</text>
+<text x="1597.5" y="655.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0492</text>
+<text x="1860.0" y="655.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">3.650</text>
+<text x="2160.0" y="655.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">7.397</text>
+<text x="2465.0" y="655.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">--</text>
+<text x="2770.0" y="655.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">64%</text>
+<text x="106.0" y="745.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Event80</text>
+<text x="436.0" y="745.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K4 sum loss</text>
+<text x="982.5" y="745.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">4</text>
+<text x="1147.5" y="745.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">31.738</text>
+<text x="1372.5" y="745.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9510</text>
+<text x="1597.5" y="745.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0505</text>
+<text x="1860.0" y="745.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">4.184</text>
+<text x="2160.0" y="745.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">8.339</text>
+<text x="2465.0" y="745.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">--</text>
+<text x="2770.0" y="745.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">68%</text>
+<rect x="90" y="790" width="2830" height="90" fill="#F7F9FB"/>
+<line x1="90" y1="790.0" x2="2920" y2="790.0" stroke="#7A8793" stroke-width="3"/>
+<text x="106.0" y="835.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Light Switch</text>
+<text x="436.0" y="835.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K1 red-only</text>
+<text x="982.5" y="835.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">1</text>
+<text x="1147.5" y="835.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">32.089</text>
+<text x="1372.5" y="835.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9403</text>
+<text x="1597.5" y="835.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0196</text>
+<text x="1860.0" y="835.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.083</text>
+<text x="2160.0" y="835.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.146</text>
+<text x="2465.0" y="835.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">10.500</text>
+<text x="2770.0" y="835.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">50%</text>
+<text x="106.0" y="925.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Light Switch</text>
+<text x="436.0" y="925.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K2 red1+blue1</text>
+<text x="982.5" y="925.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">2</text>
+<text x="1147.5" y="925.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">33.517</text>
+<text x="1372.5" y="925.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9442</text>
+<text x="1597.5" y="925.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0150</text>
+<text x="1860.0" y="925.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.034</text>
+<text x="2160.0" y="925.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.047</text>
+<text x="2465.0" y="925.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">2.317</text>
+<text x="2770.0" y="925.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">87.5%</text>
+<rect x="90" y="970" width="2830" height="90" fill="#F7F9FB"/>
+<text x="106.0" y="1015.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Light Switch</text>
+<text x="436.0" y="1015.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K4 color-state coverage</text>
+<text x="982.5" y="1015.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">4</text>
+<text x="1147.5" y="1015.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">33.532</text>
+<text x="1372.5" y="1015.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9443</text>
+<text x="1597.5" y="1015.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0150</text>
+<text x="1860.0" y="1015.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.034</text>
+<text x="2160.0" y="1015.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.047</text>
+<text x="2465.0" y="1015.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">2.317</text>
+<text x="2770.0" y="1015.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">87.5%</text>
+<text x="106.0" y="1105.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Light Switch</text>
+<text x="436.0" y="1105.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K8 original formal</text>
+<text x="982.5" y="1105.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">8</text>
+<text x="1147.5" y="1105.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">33.454</text>
+<text x="1372.5" y="1105.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9443</text>
+<text x="1597.5" y="1105.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0150</text>
+<text x="1860.0" y="1105.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.036</text>
+<text x="2160.0" y="1105.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.050</text>
+<text x="2465.0" y="1105.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">2.300</text>
+<text x="2770.0" y="1105.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">87.5%</text>
+<rect x="90" y="1150" width="2830" height="90" fill="#F7F9FB"/>
+<line x1="90" y1="1150.0" x2="2920" y2="1150.0" stroke="#7A8793" stroke-width="3"/>
+<text x="106.0" y="1195.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Mass Balance</text>
+<text x="436.0" y="1195.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K1 nearest-unbalanced</text>
+<text x="982.5" y="1195.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">1</text>
+<text x="1147.5" y="1195.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">32.662</text>
+<text x="1372.5" y="1195.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9593</text>
+<text x="1597.5" y="1195.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0246</text>
+<text x="1860.0" y="1195.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">1.199</text>
+<text x="2160.0" y="1195.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">3.135</text>
+<text x="2465.0" y="1195.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.739</text>
+<text x="2770.0" y="1195.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">70%</text>
+<text x="106.0" y="1285.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Mass Balance</text>
+<text x="436.0" y="1285.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K2 unbalanced bracket</text>
+<text x="982.5" y="1285.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">2</text>
+<text x="1147.5" y="1285.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">32.814</text>
+<text x="1372.5" y="1285.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9601</text>
+<text x="1597.5" y="1285.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0240</text>
+<text x="1860.0" y="1285.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">1.164</text>
+<text x="2160.0" y="1285.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">3.242</text>
+<text x="2465.0" y="1285.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.640</text>
+<text x="2770.0" y="1285.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">80%</text>
+<rect x="90" y="1330" width="2830" height="90" fill="#F7F9FB"/>
+<text x="106.0" y="1375.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Mass Balance</text>
+<text x="436.0" y="1375.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K2 unbalanced+balanced</text>
+<text x="982.5" y="1375.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">2</text>
+<text x="1147.5" y="1375.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">32.692</text>
+<text x="1372.5" y="1375.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9594</text>
+<text x="1597.5" y="1375.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0244</text>
+<text x="1860.0" y="1375.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">1.256</text>
+<text x="2160.0" y="1375.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">2.925</text>
+<text x="2465.0" y="1375.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.698</text>
+<text x="2770.0" y="1375.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">80%</text>
+<text x="106.0" y="1465.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">Mass Balance</text>
+<text x="436.0" y="1465.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">K4 mixed</text>
+<text x="982.5" y="1465.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">4</text>
+<text x="1147.5" y="1465.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">32.921</text>
+<text x="1372.5" y="1465.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.9609</text>
+<text x="1597.5" y="1465.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.0229</text>
+<text x="1860.0" y="1465.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">1.124</text>
+<text x="2160.0" y="1465.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">3.065</text>
+<text x="2465.0" y="1465.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400" fill="#172033">0.494</text>
+<text x="2770.0" y="1465.0" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="700" fill="#172033">90%</text>
+<line x1="90" y1="1510.0" x2="2920" y2="1510.0" stroke="#263442" stroke-width="5"/>
+<text x="90.0" y="1558.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#52606D">Event80 object: pushed-block centroid ADE/FDE (px); no separate physical-error column.</text>
+<text x="90.0" y="1603.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#52606D">Light Switch object: yellow-light score MAE/final absolute error; physical: transition-time absolute error (frames).</text>
+<text x="90.0" y="1648.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#52606D">Mass Balance object: bar-centroid ADE/FDE (px); physical: beam-tilt MAE (deg).</text>
+<text x="90.0" y="1693.0" text-anchor="start" dominant-baseline="middle" font-size="23" font-weight="400" fill="#8A4B08">Event80 K=2/K=4 mean/sum rows retain support-query overlap and are diagnostic, not formal disjoint evaluations.</text>
+</g>
+</svg>

@@ -99,12 +99,12 @@
           "action_success": 0.4705882353
         },
         "dino": {
-          "psnr": 34.39044507344563,
-          "ssim": 0.9568447320187679,
-          "lpips": 0.01641299572462837,
-          "object": 3.8972750934033256,
-          "object_final": 5.8150374958,
-          "action_success": 0.8823529411764706
+          "psnr": 34.09516152275933,
+          "ssim": 0.9563566738139085,
+          "lpips": 0.019473417361991274,
+          "object": 5.9300029924646855,
+          "object_final": 8.82895184652123,
+          "action_success": 0.7647058823529411
         },
         "ttt_kqv": {
           "psnr": 33.3080467436,
@@ -125,7 +125,7 @@
       },
       "source": "results/gravity/gravity80_uniform5id5ood_strict_v1",
       "metric_provenance": {
-        "dino": "results/gravity/gravity80_uniform5id5ood_strict_v1/methods/dinov2_concat_mlp_random_k1k2/train_job_115810/step_8000/seed_20260708",
+        "dino": "results/gravity/gravity80_uniform5id5ood_strict_support_shift1_v1/methods/dinov2_concat_mlp_random_k1k2_support_shift1/train_job_115810/step_8000/seed_20260708",
         "ours": "results/gravity/gravity80_uniform5id5ood_strict_v1/methods/ours/step_3837/seed_20260712"
       }
     },
@@ -199,11 +199,11 @@
           "action_success": 0.5
         },
         "lora": {
-          "psnr": null,
-          "ssim": null,
-          "lpips": null,
-          "object": null,
-          "object_final": null,
+          "psnr": 33.12328128814697,
+          "ssim": 0.9485057978919058,
+          "lpips": 0.0174950047240903,
+          "object": 0.08281366035107088,
+          "object_final": 0.147690305790501,
           "action_success": 0.5
         },
         "dino": {
@@ -240,56 +240,60 @@
       "label": "Mass Balance",
       "object_metric": "Bar Tilt",
       "object_unit": "deg",
-      "unranked_metrics": [
-        "lpips"
-      ],
       "dino_variant": "concat_mlp",
       "values": {
         "standard": {
-          "psnr": 32.9205344473,
-          "ssim": 0.9604870589,
-          "lpips": 0.024793747,
-          "object": 1.2440945434,
-          "object_final": 4.7821744132,
+          "psnr": 32.96856083503137,
+          "ssim": 0.9607626206767492,
+          "lpips": 0.024398168076116306,
+          "object": 1.1844499692473058,
+          "object_final": 4.557094851157406,
           "action_success": 0.4
         },
         "lora": {
-          "psnr": 25.0171887398,
-          "ssim": 0.8865342236,
-          "lpips": 0.0628337131,
-          "object": 1.9245402889,
-          "object_final": 7.7827585869,
-          "action_success": 0.4
+          "psnr": 24.89535933274489,
+          "ssim": 0.8857624861469412,
+          "lpips": 0.06309694828322301,
+          "object": 1.7975106682579431,
+          "object_final": 7.310538616540657,
+          "action_success": 0.5
         },
         "dino": {
-          "psnr": 33.2519247464,
-          "ssim": 0.9620577002,
-          "lpips": 0.023964699,
-          "object": 1.2733094998,
-          "object_final": 4.9726544196,
-          "action_success": 0.4
+          "psnr": 33.2625269816472,
+          "ssim": 0.9621318837044164,
+          "lpips": 0.023912931548861358,
+          "object": 1.263568938800828,
+          "object_final": 4.9480243892307385,
+          "action_success": 0.3
         },
         "ttt_kqv": {
-          "psnr": 32.1670852252,
-          "ssim": 0.9568346087,
-          "lpips": 0.030535396,
-          "object": 2.3578835273,
-          "object_final": 9.5113131844,
+          "psnr": 32.11395265139066,
+          "ssim": 0.9564854404827889,
+          "lpips": 0.031232861486765053,
+          "object": 2.507469265724529,
+          "object_final": 10.175889581468788,
           "action_success": 0.3
         },
         "ours": {
-          "psnr": 33.5094529833,
-          "ssim": 0.9639204866,
-          "lpips": 0.02179223984213812,
-          "object": 0.7616631395,
-          "object_final": 2.4563853256,
-          "action_success": 0.7,
-          "marker": "cross_dataset"
+          "psnr": 32.8140349314763,
+          "ssim": 0.960062493683026,
+          "lpips": 0.02395390772189085,
+          "object": 0.640287438006705,
+          "object_final": 2.0842302290931967,
+          "action_success": 0.8
         }
       },
-      "source": {
-        "baselines": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1",
-        "ours": "results/mass_balance/fixed_pose_30ratio_noleak_id5_ood5_k1_nearest_unbalanced_support_dense15_v1"
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1",
+      "support_protocol": "bidirectional_near_balance_k2_disjoint_queries",
+      "support_size": 2,
+      "environment_count": 10,
+      "query_count_per_environment": 13,
+      "checkpoint_steps": {
+        "standard": 4500,
+        "lora": 4500,
+        "dino": 4500,
+        "ttt_kqv": 1673,
+        "ours": 4300
       }
     },
     {
@@ -342,12 +346,12 @@
           "action_success": 0.6083333333333333
         },
         "ttt_kqv": {
-          "psnr": null,
-          "ssim": null,
-          "lpips": null,
-          "object": null,
-          "object_final": null,
-          "action_success": null
+          "psnr": 29.73915808200836,
+          "ssim": 0.9614130744191467,
+          "lpips": 0.07264170590788126,
+          "object": 18.951118369816783,
+          "object_final": 29.14112422822884,
+          "action_success": 0.3333333333333333
         },
         "ours": {
           "psnr": 30.6733222961,
@@ -358,16 +362,100 @@
           "action_success": 0.6972222222222223
         }
       },
-      "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1"
+      "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1",
+      "method_source_overrides": {
+        "ttt_kqv": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ttt_kqv_detach3/train_job_120094/step_1400/seed_20260720"
+      },
+      "action_source_overrides": {
+        "ttt_kqv": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ttt_kqv_detach3/train_job_120094/step_1400/seed_20260720/action_first_crossing/summary.json"
+      }
+    },
+    {
+      "id": "pushbox_multibackground",
+      "label": "Multi-background",
+      "object_metric": "Object Centroid",
+      "object_unit": "px",
+      "dino_variant": "concat_mlp_random_k1k2",
+      "values": {
+        "standard": {
+          "psnr": 28.201082187228728,
+          "ssim": 0.8045889176759455,
+          "lpips": 0.10586547702550889,
+          "object": 8.02603345038876,
+          "object_final": 16.18305496394699,
+          "action_success": 0.4583333333333333
+        },
+        "lora": {
+          "psnr": 27.985777134365502,
+          "ssim": 0.8006526753637525,
+          "lpips": 0.10741125345230103,
+          "object": 6.580490084501955,
+          "object_final": 16.232762193954365,
+          "action_success": 0.5833333333333334
+        },
+        "dino": {
+          "psnr": 27.999539841545953,
+          "ssim": 0.8101055667301018,
+          "lpips": 0.1063623882830143,
+          "object": 7.736721339585418,
+          "object_final": 16.006474003613008,
+          "action_success": 0.5833333333333334
+        },
+        "ttt_kqv": {
+          "psnr": 27.691123941209582,
+          "ssim": 0.79017388186521,
+          "lpips": 0.11160413838095136,
+          "object": 7.778337814481479,
+          "object_final": 15.586915013508378,
+          "action_success": 0.5833333333333334
+        },
+        "ours": {
+          "psnr": 28.80352024502224,
+          "ssim": 0.8203555447856585,
+          "lpips": 0.08883595168590545,
+          "object": 3.714547410660129,
+          "object_final": 6.340304798587124,
+          "action_success": 0.6666666666666666,
+          "marker": "cross_dataset",
+          "rank": false
+        }
+      },
+      "source": "results/pushbox_multibackground/old5bg_step4400_matched_current_friction_id5_ood5_k1_20260922",
+      "support_protocol": "oracle_informative_support25_60_k1_disjoint_queries",
+      "support_size": 1,
+      "environment_count": 10,
+      "query_count_per_environment": 9,
+      "video_metric_scope": "multiview",
+      "aggregation": "query_mean_within_environment_then_equal_environment_mean",
+      "action_subset": "complete_candidate_sets_with_gt_reachable_target",
+      "action_decision_count": 24,
+      "checkpoint_steps": {
+        "standard": 5000,
+        "lora": 5000,
+        "dino": 6000,
+        "ttt_kqv": 750
+      },
+      "training_dataset_provenance": {
+        "baselines": "matched-physics 30-background data, 20 active training environments",
+        "ours": "original 5-background data"
+      },
+      "metric_sources": {
+        "lora": "metrics/lora_tta_old5bg_step5000/benchmark_summary.json",
+        "standard": "metrics/standard_pooled_wm_old5bg_step5000/benchmark_summary.json",
+        "dino": "metrics/dinov2_concat_mlp_random_k1k2_old5bg_step6000/benchmark_summary.json",
+        "ttt_kqv": "metrics/ttt_kqv_old5bg_step750/benchmark_summary.json",
+        "ours": "metrics/complete_v1/benchmark_summary.json"
+      }
     }
   ],
   "notes": [
+    "Multi-background methods are evaluated on the same original 5-background data with 5 ID and 5 OOD environments, K=1, and 90 disjoint queries. Baseline checkpoints were trained on matched-physics 30-background data with 20 active environments, whereas Ours* was trained on the original 5-background data; training data are not matched, so exclude this block from controlled-method ranking. Video metrics are multiview, object errors are centroid distances in pixels, and Action Success averages 24 GT-reachable complete-candidate decisions.",
     "Push-box Friction short-range success uses normalized image-y 0.595-0.68; if no predicted action reaches the long-range target, selection maximizes predicted image-y rounded to three decimals and breaks ties toward the higher action level.",
     "Lower is better for LPIPS and the task-specific object/physical metric; higher is better for Action Success.",
     "DINOv2 uses Transformer fusion for Push-box Friction and concat-MLP fusion for Gravity, Mass Collision, Light Switch, and Mass Balance; the completed Mass x Friction DINOv2 evaluation is included.",
-    "Mass Balance Ours values marked with an asterisk use the completed fixed-pose 5-ID/5-OOD nearest-unbalanced-support test, while baseline rows use workspace-random data; available values participate in column ranking.",
+    "Mass Balance uses workspace-random no-leak data for every method, with 5 ID and 5 OOD environments, shared K=2 bidirectional near-balance supports and 13 disjoint queries per environment; Standard pooled does not consume support. Ours uses step 4300.",
     "Mass Collision LoRA values marked with a dagger come from the earlier compatible no-leak balanced-support run rather than the high-mass-2x result root.",
     "A double dash denotes an unfinished or unavailable evaluation, not zero performance.",
-    "Light Switch uses the fixed red-one plus blue-one K=2 support protocol for Ours, DINOv2, LoRA-TTA, and TTT-KQV; Standard pooled does not consume support. LoRA-TTA K=2 video metrics are pending and are not mixed with its prior K=1 values."
+    "Light Switch uses the fixed red-one plus blue-one K=2 support protocol for Ours, DINOv2, LoRA-TTA, and TTT-KQV; Standard pooled does not consume support."
   ]
 }

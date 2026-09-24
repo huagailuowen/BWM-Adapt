@@ -1,0 +1,303 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2120" height="1330" viewBox="0 0 2120 1330" role="img" aria-labelledby="title desc">
+<title id="title">Support-count ablation: detailed simulation and real-world results</title>
+<desc id="desc">Paper-style grouped table. Simulation has Mass Collision, Mass Balance, and Light Switch with all reported K=1,2,4,8 configurations. Real-world has Door, Stick Balance, and Soft Body with all reported K=1,2,4 configurations. Ball is excluded pending further analysis. Metrics are PSNR, SSIM, LPIPS, object mean and final error, task-specific physical error, and action success.</desc>
+<rect width="2120" height="1330" fill="#fff"/>
+<g font-family="Georgia, Times New Roman, serif" fill="#20252b">
+<text x="70" y="56" font-size="34" font-weight="700">Support-Count Ablation: Detailed Results</text>
+<text x="70" y="86" font-size="17" fill="#525d65">All recorded support settings for three simulation and three real-world tasks; Ball remains under study.</text>
+<text x="70" y="119" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="700" fill="#20252b">SIMULATION</text>
+<line x1="70" y1="139" x2="2050" y2="139" stroke="#20252b" stroke-width="2.4"/>
+<text x="76" y="167" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Task</text>
+<text x="274" y="167" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Support construction</text>
+<text x="748" y="167" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">K</text>
+<text x="851" y="167" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Videos</text>
+<text x="956" y="167" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">PSNR (+)</text>
+<text x="1060" y="167" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">SSIM (+)</text>
+<text x="1180" y="167" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">LPIPS (-)</text>
+<text x="1313" y="167" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Obj. mean (-)</text>
+<text x="1443" y="167" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Obj. final (-)</text>
+<text x="1472" y="167" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Physical error (-)</text>
+<text x="2045" y="167" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Action (+)</text>
+<line x1="70" y1="187" x2="2050" y2="187" stroke="#20252b" stroke-width="1.4"/>
+<text x="76" y="256" text-anchor="start" dominant-baseline="middle" font-size="17" font-weight="700" fill="#20252b">Mass Collision</text>
+<text x="76" y="279" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#667078">struck centroid, px</text>
+<text x="76" y="431.5" text-anchor="start" dominant-baseline="middle" font-size="17" font-weight="700" fill="#20252b">Mass Balance</text>
+<text x="76" y="454.5" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#667078">bar centroid, px</text>
+<line x1="70" y1="344" x2="2050" y2="344" stroke="#869098" stroke-width="1"/>
+<text x="76" y="607" text-anchor="start" dominant-baseline="middle" font-size="17" font-weight="700" fill="#20252b">Light Switch</text>
+<text x="76" y="630" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#667078">lamp brightness, score</text>
+<line x1="70" y1="539" x2="2050" y2="539" stroke="#869098" stroke-width="1"/>
+<text x="274" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Observed informative support</text>
+<text x="748" y="207.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">1</text>
+<text x="851" y="207.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">80</text>
+<text x="956" y="207.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">31.150</text>
+<text x="1060" y="207.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9625</text>
+<text x="1180" y="207.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0538</text>
+<text x="1313" y="207.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">6.452</text>
+<text x="1443" y="207.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">8.132</text>
+<text x="1472" y="207.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">8.118 / 7.883 / 0.509</text>
+<text x="1990" y="207.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">61.1%</text>
+<text x="2045" y="207.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">11 / 18</text>
+<text x="274" y="246.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Prediction-only, mean loss</text>
+<text x="748" y="246.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">2</text>
+<text x="851" y="246.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">90</text>
+<text x="956" y="246.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">31.301</text>
+<text x="1060" y="246.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9627</text>
+<text x="1180" y="246.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0535</text>
+<text x="1313" y="246.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">6.534</text>
+<text x="1443" y="246.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">8.151</text>
+<text x="1472" y="246.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">8.170 / 7.968 / 0.360</text>
+<text x="1990" y="246.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">66.7%</text>
+<text x="2045" y="246.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">12 / 18</text>
+<text x="274" y="285.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Prediction-only, mean loss</text>
+<text x="748" y="285.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">4</text>
+<text x="851" y="285.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">90</text>
+<text x="956" y="285.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">31.451</text>
+<text x="1060" y="285.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9631</text>
+<text x="1180" y="285.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0511</text>
+<text x="1313" y="285.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">5.946</text>
+<text x="1443" y="285.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">7.723</text>
+<text x="1472" y="285.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">7.726 / 7.570 / 0.247</text>
+<text x="1990" y="285.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">72.2%</text>
+<text x="2045" y="285.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">13 / 18</text>
+<text x="274" y="324.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Prediction-only, sum loss</text>
+<text x="748" y="324.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">8</text>
+<text x="851" y="324.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">90</text>
+<text x="956" y="324.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.267</text>
+<text x="1060" y="324.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9648</text>
+<text x="1180" y="324.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0433</text>
+<text x="1313" y="324.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">3.962</text>
+<text x="1443" y="324.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">5.098</text>
+<text x="1472" y="324.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">4.979 / 4.929 / 0.193</text>
+<text x="1990" y="324.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">77.8%</text>
+<text x="2045" y="324.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">14 / 18</text>
+<text x="274" y="363.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Nearest unbalanced</text>
+<text x="748" y="363.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">1</text>
+<text x="851" y="363.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">140</text>
+<text x="956" y="363.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.662</text>
+<text x="1060" y="363.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9593</text>
+<text x="1180" y="363.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0246</text>
+<text x="1313" y="363.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">1.199</text>
+<text x="1443" y="363.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">3.135</text>
+<text x="1472" y="363.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">0.739 / 2.446 / 2.025</text>
+<text x="1990" y="363.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">70.0%</text>
+<text x="2045" y="363.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">7 / 10</text>
+<text x="274" y="402.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Unbalanced bracket</text>
+<text x="748" y="402.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">2</text>
+<text x="851" y="402.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">130</text>
+<text x="956" y="402.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.814</text>
+<text x="1060" y="402.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9601</text>
+<text x="1180" y="402.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0240</text>
+<text x="1313" y="402.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">1.164</text>
+<text x="1443" y="402.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">3.242</text>
+<text x="1472" y="402.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">0.640 / 2.084 / 2.019</text>
+<text x="1990" y="402.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">80.0%</text>
+<text x="2045" y="402.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">8 / 10</text>
+<text x="274" y="441.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Unbalanced + balanced</text>
+<text x="748" y="441.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">2</text>
+<text x="851" y="441.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">130</text>
+<text x="956" y="441.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.692</text>
+<text x="1060" y="441.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9594</text>
+<text x="1180" y="441.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0244</text>
+<text x="1313" y="441.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">1.256</text>
+<text x="1443" y="441.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">2.925</text>
+<text x="1472" y="441.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">0.698 / 2.324 / 2.159</text>
+<text x="1990" y="441.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">80.0%</text>
+<text x="2045" y="441.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">8 / 10</text>
+<text x="274" y="480.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Bracket + random + balanced</text>
+<text x="748" y="480.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">4</text>
+<text x="851" y="480.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">110</text>
+<text x="956" y="480.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.921</text>
+<text x="1060" y="480.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9609</text>
+<text x="1180" y="480.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0229</text>
+<text x="1313" y="480.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">1.124</text>
+<text x="1443" y="480.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">3.065</text>
+<text x="1472" y="480.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">0.494 / 1.492 / 1.926</text>
+<text x="1990" y="480.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">90.0%</text>
+<text x="2045" y="480.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">9 / 10</text>
+<text x="274" y="519.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">K4 + four distant actions; all-action video</text>
+<text x="748" y="519.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">8</text>
+<text x="851" y="519.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">150</text>
+<text x="956" y="519.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.761</text>
+<text x="1060" y="519.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9598</text>
+<text x="1180" y="519.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0238</text>
+<text x="1313" y="519.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">1.134</text>
+<text x="1443" y="519.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">3.070</text>
+<text x="1472" y="519.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">0.607 / 1.890 / 1.964</text>
+<text x="1990" y="519.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">90.0%</text>
+<text x="2045" y="519.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">9 / 10</text>
+<text x="274" y="558.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Red only</text>
+<text x="748" y="558.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">1</text>
+<text x="851" y="558.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">--</text>
+<text x="956" y="558.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.089</text>
+<text x="1060" y="558.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9403</text>
+<text x="1180" y="558.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0196</text>
+<text x="1313" y="558.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.083</text>
+<text x="1443" y="558.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.146</text>
+<text x="1472" y="558.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">10.500</text>
+<text x="1990" y="558.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">50.0%</text>
+<text x="2045" y="558.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">--</text>
+<text x="274" y="597.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">One red + one blue</text>
+<text x="748" y="597.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">2</text>
+<text x="851" y="597.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">--</text>
+<text x="956" y="597.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">33.517</text>
+<text x="1060" y="597.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9442</text>
+<text x="1180" y="597.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0150</text>
+<text x="1313" y="597.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.034</text>
+<text x="1443" y="597.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.047</text>
+<text x="1472" y="597.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">2.317</text>
+<text x="1990" y="597.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">87.5%</text>
+<text x="2045" y="597.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">--</text>
+<text x="274" y="636.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Color-state coverage</text>
+<text x="748" y="636.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">4</text>
+<text x="851" y="636.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">--</text>
+<text x="956" y="636.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">33.532</text>
+<text x="1060" y="636.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9443</text>
+<text x="1180" y="636.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0150</text>
+<text x="1313" y="636.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.034</text>
+<text x="1443" y="636.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.047</text>
+<text x="1472" y="636.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">2.317</text>
+<text x="1990" y="636.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">87.5%</text>
+<text x="2045" y="636.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">--</text>
+<text x="274" y="675.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Original formal support</text>
+<text x="748" y="675.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">8</text>
+<text x="851" y="675.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">--</text>
+<text x="956" y="675.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">33.454</text>
+<text x="1060" y="675.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9443</text>
+<text x="1180" y="675.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0150</text>
+<text x="1313" y="675.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.036</text>
+<text x="1443" y="675.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.050</text>
+<text x="1472" y="675.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">2.300</text>
+<text x="1990" y="675.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">87.5%</text>
+<text x="2045" y="675.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">--</text>
+<line x1="70" y1="695" x2="2050" y2="695" stroke="#20252b" stroke-width="2.4"/>
+<text x="70" y="727" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="700" fill="#20252b">REAL WORLD</text>
+<line x1="70" y1="747" x2="2050" y2="747" stroke="#20252b" stroke-width="2.4"/>
+<text x="76" y="775" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Task</text>
+<text x="274" y="775" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Support construction</text>
+<text x="748" y="775" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">K</text>
+<text x="851" y="775" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Videos</text>
+<text x="956" y="775" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">PSNR (+)</text>
+<text x="1060" y="775" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">SSIM (+)</text>
+<text x="1180" y="775" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">LPIPS (-)</text>
+<text x="1313" y="775" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Obj. mean (-)</text>
+<text x="1443" y="775" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Obj. final (-)</text>
+<text x="1472" y="775" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Physical error (-)</text>
+<text x="2045" y="775" text-anchor="end" dominant-baseline="middle" font-size="15" font-weight="700" fill="#20252b">Action (+)</text>
+<line x1="70" y1="795" x2="2050" y2="795" stroke="#20252b" stroke-width="1.4"/>
+<text x="76" y="844.5" text-anchor="start" dominant-baseline="middle" font-size="17" font-weight="700" fill="#20252b">Door</text>
+<text x="76" y="867.5" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#667078">tracked-object ADE/FDE, px</text>
+<text x="76" y="961.5" text-anchor="start" dominant-baseline="middle" font-size="17" font-weight="700" fill="#20252b">Stick Balance</text>
+<text x="76" y="984.5" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#667078">tracked-object ADE/FDE, px</text>
+<line x1="70" y1="913" x2="2050" y2="913" stroke="#869098" stroke-width="1"/>
+<text x="76" y="1078.5" text-anchor="start" dominant-baseline="middle" font-size="17" font-weight="700" fill="#20252b">Soft Body</text>
+<text x="76" y="1101.5" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#667078">tracked-object ADE/FDE, px</text>
+<line x1="70" y1="1030" x2="2050" y2="1030" stroke="#869098" stroke-width="1"/>
+<text x="274" y="815.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Global-mean initialization</text>
+<text x="748" y="815.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">1</text>
+<text x="851" y="815.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">100</text>
+<text x="956" y="815.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">31.732</text>
+<text x="1060" y="815.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9234</text>
+<text x="1180" y="815.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0378</text>
+<text x="1313" y="815.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">11.337</text>
+<text x="1443" y="815.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">20.230</text>
+<text x="1472" y="815.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">--</text>
+<text x="1990" y="815.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">22.2%</text>
+<text x="2045" y="815.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">N = 9</text>
+<text x="274" y="854.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Global-mean initialization</text>
+<text x="748" y="854.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">2</text>
+<text x="851" y="854.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">100</text>
+<text x="956" y="854.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.152</text>
+<text x="1060" y="854.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9267</text>
+<text x="1180" y="854.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0321</text>
+<text x="1313" y="854.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">7.954</text>
+<text x="1443" y="854.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">13.470</text>
+<text x="1472" y="854.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">--</text>
+<text x="1990" y="854.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">55.6%</text>
+<text x="2045" y="854.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">N = 9</text>
+<text x="274" y="893.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Global-mean initialization, sum loss</text>
+<text x="748" y="893.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">4</text>
+<text x="851" y="893.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">100</text>
+<text x="956" y="893.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.494</text>
+<text x="1060" y="893.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9292</text>
+<text x="1180" y="893.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0296</text>
+<text x="1313" y="893.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">6.889</text>
+<text x="1443" y="893.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">10.770</text>
+<text x="1472" y="893.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">--</text>
+<text x="1990" y="893.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">55.6%</text>
+<text x="2045" y="893.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">N = 9</text>
+<text x="274" y="932.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Formal support set</text>
+<text x="748" y="932.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">1</text>
+<text x="851" y="932.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">45</text>
+<text x="956" y="932.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">31.696</text>
+<text x="1060" y="932.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9405</text>
+<text x="1180" y="932.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0444</text>
+<text x="1313" y="932.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">2.941</text>
+<text x="1443" y="932.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">6.692</text>
+<text x="1472" y="932.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">--</text>
+<text x="1990" y="932.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">57.1%</text>
+<text x="2045" y="932.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">N = 7</text>
+<text x="274" y="971.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Formal support set</text>
+<text x="748" y="971.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">2</text>
+<text x="851" y="971.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">45</text>
+<text x="956" y="971.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.046</text>
+<text x="1060" y="971.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9427</text>
+<text x="1180" y="971.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0418</text>
+<text x="1313" y="971.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">2.269</text>
+<text x="1443" y="971.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">5.014</text>
+<text x="1472" y="971.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">--</text>
+<text x="1990" y="971.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">83.3%</text>
+<text x="2045" y="971.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">N = 6</text>
+<text x="274" y="1010.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Formal support set</text>
+<text x="748" y="1010.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">4</text>
+<text x="851" y="1010.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">45</text>
+<text x="956" y="1010.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.050</text>
+<text x="1060" y="1010.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9426</text>
+<text x="1180" y="1010.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0421</text>
+<text x="1313" y="1010.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">2.402</text>
+<text x="1443" y="1010.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">5.521</text>
+<text x="1472" y="1010.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">--</text>
+<text x="1990" y="1010.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">100.0%</text>
+<text x="2045" y="1010.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">N = 4</text>
+<text x="274" y="1049.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Formal support set</text>
+<text x="748" y="1049.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">1</text>
+<text x="851" y="1049.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">12</text>
+<text x="956" y="1049.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.522</text>
+<text x="1060" y="1049.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9613</text>
+<text x="1180" y="1049.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0758</text>
+<text x="1313" y="1049.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">18.710</text>
+<text x="1443" y="1049.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">23.588</text>
+<text x="1472" y="1049.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">--</text>
+<text x="1990" y="1049.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">81.8%</text>
+<text x="2045" y="1049.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">N = 11</text>
+<text x="274" y="1088.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Formal support set</text>
+<text x="748" y="1088.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">2</text>
+<text x="851" y="1088.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">12</text>
+<text x="956" y="1088.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.574</text>
+<text x="1060" y="1088.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9614</text>
+<text x="1180" y="1088.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0754</text>
+<text x="1313" y="1088.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">18.363</text>
+<text x="1443" y="1088.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">22.745</text>
+<text x="1472" y="1088.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">--</text>
+<text x="1990" y="1088.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">81.8%</text>
+<text x="2045" y="1088.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">N = 11</text>
+<text x="274" y="1127.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">Formal support set</text>
+<text x="748" y="1127.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">4</text>
+<text x="851" y="1127.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">12</text>
+<text x="956" y="1127.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">32.580</text>
+<text x="1060" y="1127.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.9614</text>
+<text x="1180" y="1127.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">0.0753</text>
+<text x="1313" y="1127.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">18.060</text>
+<text x="1443" y="1127.5" text-anchor="end" dominant-baseline="middle" font-size="16" font-weight="400" fill="#20252b">22.590</text>
+<text x="1472" y="1127.5" text-anchor="start" dominant-baseline="middle" font-size="15" font-weight="400" fill="#20252b">--</text>
+<text x="1990" y="1127.5" text-anchor="end" dominant-baseline="middle" font-size="17" font-weight="600" fill="#20252b">81.8%</text>
+<text x="2045" y="1127.5" text-anchor="end" dominant-baseline="middle" font-size="12" font-weight="400" fill="#606a71">N = 11</text>
+<line x1="70" y1="1147" x2="2050" y2="1147" stroke="#20252b" stroke-width="2.4"/>
+<line x1="70" y1="1184" x2="2050" y2="1184" stroke="#a2aaaf" stroke-width="0.9"/>
+<text x="70" y="1210" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#59636a">Metrics: PSNR and SSIM higher is better; LPIPS and all object/physical errors lower are better. Videos = evaluated query clips.</text>
+<text x="70" y="1230" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#59636a">Collision physical = travel-distance error (px) / final-displacement error (px) / terminal-speed error (px/s). K=1 uses observed support; K=2/4/8 use predicted actions.</text>
+<text x="70" y="1250" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#59636a">Balance physical = bar-tilt MAE (deg) / final tilt error (deg) / angular-velocity MAE (deg/s). K=8 video metrics use the full 15-action set; K=1/2/4 use disjoint query subsets.</text>
+<text x="70" y="1270" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#59636a">Light physical = switch-transition time error (frames); query-video count and action denominator were not reported in the source summary. Real-world physical-error column is unreported.</text>
+<text x="70" y="1290" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#59636a">Collision K=8 and Door K=4 sums support losses, unlike their mean-loss counterparts. Door action requires the exact first-close level; adjacent levels receive zero. N = 9 environments.</text>
+<text x="70" y="1310" text-anchor="start" dominant-baseline="middle" font-size="13" font-weight="400" fill="#59636a">Stick action precision on seeded36: K=2 5/6; K=4 4/4. Cross-task object values have different meanings/units and should not be ranked against one another.</text>
+</g></svg>

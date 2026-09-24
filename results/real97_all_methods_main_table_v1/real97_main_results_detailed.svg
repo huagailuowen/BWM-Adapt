@@ -22,35 +22,35 @@
 <text x="1220" y="284" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.05700</text>
 <text x="1420" y="284" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">21.82 px</text>
 <text x="1605" y="284" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">41.22 px</text>
-<text x="1905" y="284" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">38.89%</text>
+<text x="1905" y="284" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">22.22%</text>
 <text x="392" y="351" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">LoRA TTA</text>
 <text x="845" y="351" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">30.24</text>
 <text x="1028" y="351" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.9150</text>
 <text x="1220" y="351" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.04946</text>
 <text x="1420" y="351" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">17.35 px</text>
 <text x="1605" y="351" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">32.14 px</text>
-<text x="1905" y="351" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">27.78%</text>
+<text x="1905" y="351" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">22.22%</text>
 <text x="392" y="418" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">DINOv2 concat-MLP</text>
 <text x="845" y="418" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">30.28</text>
 <text x="1028" y="418" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.9137</text>
 <text x="1220" y="418" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.05490</text>
 <text x="1420" y="418" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">21.12 px</text>
 <text x="1605" y="418" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">38.90 px</text>
-<text x="1905" y="418" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">33.33%</text>
+<text x="1905" y="418" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">22.22%</text>
 <text x="392" y="485" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">TTT</text>
 <text x="845" y="485" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">30.95</text>
 <text x="1028" y="485" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.9178</text>
 <text x="1220" y="485" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.05164</text>
 <text x="1420" y="485" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">19.87 px</text>
 <text x="1605" y="485" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">35.93 px</text>
-<text x="1905" y="485" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">33.33%</text>
+<text x="1905" y="485" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">22.22%</text>
 <text x="392" y="552" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">Ours (Stage2)</text>
-<text x="845" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">32.07</text>
-<text x="1028" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">0.9266</text>
-<text x="1220" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">0.03361</text>
-<text x="1420" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">9.01 px</text>
-<text x="1605" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">15.75 px</text>
-<text x="1905" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">72.22%</text>
+<text x="845" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">32.15</text>
+<text x="1028" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">0.9267</text>
+<text x="1220" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">0.03208</text>
+<text x="1420" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">7.95 px</text>
+<text x="1605" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">13.47 px</text>
+<text x="1905" y="552" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">55.56%</text>
 <line x1="60" x2="2160" y1="603" y2="603" stroke="#111" stroke-width="2"/>
 <text x="72" y="642" text-anchor="start" dominant-baseline="middle" font-size="25" font-weight="400" fill="#111">Ball friction</text>
 <text x="72" y="669" text-anchor="start" dominant-baseline="middle" font-size="16" font-weight="400" fill="#555">80 test queries / 8 envs</text>
@@ -60,35 +60,35 @@
 <text x="1220" y="642" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.03153</text>
 <text x="1420" y="642" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">28.36 px</text>
 <text x="1605" y="642" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">64.42 px</text>
-<text x="1905" y="642" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">37.50%</text>
+<text x="1905" y="642" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.00%</text>
 <text x="392" y="709" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">LoRA TTA</text>
-<text x="845" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">35.58</text>
-<text x="1028" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.9591</text>
-<text x="1220" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.03697</text>
-<text x="1420" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">36.82 px</text>
-<text x="1605" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">70.02 px</text>
-<text x="1905" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">56.25%</text>
+<text x="845" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">35.44</text>
+<text x="1028" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.9588</text>
+<text x="1220" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.03805</text>
+<text x="1420" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">37.48 px</text>
+<text x="1605" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">72.09 px</text>
+<text x="1905" y="709" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">50.00%</text>
 <text x="392" y="776" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">DINOv2 concat-MLP</text>
-<text x="845" y="776" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">36.31</text>
+<text x="845" y="776" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">36.32</text>
 <text x="1028" y="776" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.9613</text>
-<text x="1220" y="776" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.02942</text>
-<text x="1420" y="776" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">25.52 px</text>
-<text x="1605" y="776" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">54.33 px</text>
-<text x="1905" y="776" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">37.50%</text>
+<text x="1220" y="776" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.02934</text>
+<text x="1420" y="776" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">24.90 px</text>
+<text x="1605" y="776" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">52.54 px</text>
+<text x="1905" y="776" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">12.50%</text>
 <text x="392" y="843" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">TTT</text>
 <text x="845" y="843" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">36.29</text>
 <text x="1028" y="843" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.9613</text>
-<text x="1220" y="843" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.03238</text>
-<text x="1420" y="843" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">29.66 px</text>
-<text x="1605" y="843" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">67.32 px</text>
-<text x="1905" y="843" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">50.00%</text>
+<text x="1220" y="843" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">0.03224</text>
+<text x="1420" y="843" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">29.80 px</text>
+<text x="1605" y="843" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">67.37 px</text>
+<text x="1905" y="843" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="400" fill="#111">25.00%</text>
 <text x="392" y="910" text-anchor="start" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">Ours (Stage2)</text>
-<text x="845" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">35.96</text>
-<text x="1028" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">0.9600</text>
-<text x="1220" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">0.02883</text>
-<text x="1420" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">20.36 px</text>
-<text x="1605" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">41.14 px</text>
-<text x="1905" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">56.25%</text>
+<text x="845" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">36.23</text>
+<text x="1028" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">0.9607</text>
+<text x="1220" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">0.02401</text>
+<text x="1420" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">14.47 px</text>
+<text x="1605" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">24.57 px</text>
+<text x="1905" y="910" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">62.50%</text>
 <line x1="60" x2="2160" y1="961" y2="961" stroke="#111" stroke-width="2"/>
 <text x="72" y="1000" text-anchor="start" dominant-baseline="middle" font-size="25" font-weight="400" fill="#111">Stick balance</text>
 <text x="72" y="1027" text-anchor="start" dominant-baseline="middle" font-size="16" font-weight="400" fill="#555">45 test queries; Action: 36*</text>
@@ -167,8 +167,8 @@
 <text x="1905" y="1626" text-anchor="middle" dominant-baseline="middle" font-size="24" font-weight="700" fill="#111">81.82%</text>
 <line x1="60" x2="2160" y1="1677" y2="1677" stroke="#111" stroke-width="3"/>
 <text x="72" y="1719" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400" fill="#444">PSNR / SSIM: higher is better. LPIPS / ADE / FDE: lower is better. ADE and FDE are in pixels.</text>
-<text x="72" y="1754" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400" fill="#444">Door Action: lowest closing level; exact = 1, +/-1 level = 0.5. The unclosable environment is excluded.</text>
-<text x="72" y="1789" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400" fill="#444">Ball Action: preferred-level pair overlap.</text>
+<text x="72" y="1754" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400" fill="#444">Door Action: exact first-closing level. The unclosable environment is excluded.</text>
+<text x="72" y="1789" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400" fill="#444">Ball Action: exact first level reaching the blue marker minus 30 px.</text>
 <text x="72" y="1824" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400" fill="#444">* Stick Action: precision on post-hoc seed20260927, 36 cases (one balanced + three unbalanced per environment).</text>
 <text x="72" y="1859" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400" fill="#444">Stick image / ADE: full 45-query set. FDE: 33 valid queries under the common GT / Standard / Ours / LoRA mask.</text>
 <text x="72" y="1894" text-anchor="start" dominant-baseline="middle" font-size="21" font-weight="400" fill="#444">Soft: six shared environments, 12 test queries; Onset Success@6 degrees uses 11 GT-positive queries.</text>

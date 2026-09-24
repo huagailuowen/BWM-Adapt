@@ -1,77 +1,91 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="3130" height="1275" viewBox="0 0 3130 1275">
+<svg xmlns="http://www.w3.org/2000/svg" width="3130" height="1475" viewBox="0 0 3130 1475">
 <rect width="100%" height="100%" fill="white"/>
 <g fill="#111111" font-family="DejaVu Serif, Liberation Serif, serif">
-<text x="1565.0" y="75" text-anchor="middle" dominant-baseline="middle" font-size="48" font-weight="700">Event80 Formal Ablation Study</text>
+<text x="1565.0" y="75" text-anchor="middle" dominant-baseline="middle" font-size="48" font-weight="700">Event80 Formal Ablation Study: Detailed Metrics (without C=4)</text>
 <text x="1565.0" y="145" text-anchor="middle" dominant-baseline="middle" font-size="30" font-weight="400">5 ID + 5 OOD environments; K=1 informative support; 90 disjoint queries</text>
 <line x1="90" y1="225" x2="3040" y2="225" stroke="#111111" stroke-width="5"/>
 <line x1="90" y1="320" x2="3040" y2="320" stroke="#111111" stroke-width="2"/>
-<line x1="90" y1="1020" x2="3040" y2="1020" stroke="#111111" stroke-width="5"/>
+<line x1="90" y1="1220" x2="3040" y2="1220" stroke="#111111" stroke-width="5"/>
 <text x="105" y="272.5" text-anchor="start" dominant-baseline="middle" font-size="32" font-weight="700">Method</text>
-<text x="1210.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">Object ADE (px)</text>
-<text x="1210.0" y="290" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400">lower is better</text>
-<text x="1550.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">Object FDE (px)</text>
-<text x="1550.0" y="290" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400">lower is better</text>
-<text x="1870.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">PSNR (MV)</text>
-<text x="1870.0" y="290" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400">higher is better</text>
-<text x="2170.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">SSIM (MV)</text>
-<text x="2170.0" y="290" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400">higher is better</text>
-<text x="2470.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">LPIPS (MV)</text>
+<text x="1210.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">PSNR (MV)</text>
+<text x="1210.0" y="290" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400">higher is better</text>
+<text x="1550.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">SSIM (MV)</text>
+<text x="1550.0" y="290" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400">higher is better</text>
+<text x="1870.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">LPIPS (MV)</text>
+<text x="1870.0" y="290" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400">lower is better</text>
+<text x="2170.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">Object ADE (px)</text>
+<text x="2170.0" y="290" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400">lower is better</text>
+<text x="2470.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">Object FDE (px)</text>
 <text x="2470.0" y="290" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400">lower is better</text>
 <text x="2830.0" y="257" text-anchor="middle" dominant-baseline="middle" font-size="27" font-weight="700">Action success</text>
 <text x="2830.0" y="290" text-anchor="middle" dominant-baseline="middle" font-size="23" font-weight="400">higher is better</text>
 <text x="105" y="370.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="700">Ours (random C32)</text>
-<text x="1210.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">3.85</text>
-<text x="1550.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">7.59</text>
-<text x="1870.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.976</text>
-<text x="2170.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9513</text>
-<text x="2470.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0495</text>
-<text x="2830.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">68%</text>
+<text x="1210.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.976</text>
+<text x="1550.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9513</text>
+<text x="1870.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0495</text>
+<text x="2170.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">3.85</text>
+<text x="2470.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">7.59</text>
+<text x="2830.0" y="370.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">72%</text>
 <line x1="90" y1="420" x2="3040" y2="420" stroke="#111111" stroke-width="1"/>
 <text x="105" y="470.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">Joint model-Z (700-step cycle)</text>
-<text x="1210.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">7.03</text>
-<text x="1550.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">15.66</text>
-<text x="1870.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.203</text>
-<text x="2170.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9465</text>
-<text x="2470.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0657</text>
-<text x="2830.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">64%</text>
+<text x="1210.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.203</text>
+<text x="1550.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9465</text>
+<text x="1870.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0657</text>
+<text x="2170.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">7.03</text>
+<text x="2470.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">15.66</text>
+<text x="2830.0" y="470.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">68%</text>
 <text x="105" y="570.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">No curriculum + joint</text>
-<text x="1210.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">5.68</text>
-<text x="1550.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">12.28</text>
-<text x="1870.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.697</text>
-<text x="2170.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9507</text>
-<text x="2470.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0547</text>
-<text x="2830.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">60%</text>
+<text x="1210.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.697</text>
+<text x="1550.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9507</text>
+<text x="1870.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0547</text>
+<text x="2170.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">5.68</text>
+<text x="2470.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">12.28</text>
+<text x="2830.0" y="570.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">64%</text>
 <text x="105" y="670.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">No curriculum + iterative</text>
-<text x="1210.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">6.17</text>
-<text x="1550.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">12.81</text>
-<text x="1870.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.799</text>
-<text x="2170.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">0.9514</text>
-<text x="2470.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0549</text>
-<text x="2830.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">56%</text>
+<text x="1210.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">31.799</text>
+<text x="1550.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9514</text>
+<text x="1870.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0549</text>
+<text x="2170.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">6.17</text>
+<text x="2470.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">12.81</text>
+<text x="2830.0" y="670.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">60%</text>
 <text x="105" y="770.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">Direct token (3072-D)</text>
-<text x="1210.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">94.50</text>
-<text x="1550.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">80.49</text>
-<text x="1870.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">15.218</text>
-<text x="2170.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.3555</text>
-<text x="2470.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.7626</text>
+<text x="1210.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">15.218</text>
+<text x="1550.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.3555</text>
+<text x="1870.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.7626</text>
+<text x="2170.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">94.50</text>
+<text x="2470.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">80.49</text>
 <text x="2830.0" y="770.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">24%</text>
 <text x="105" y="870.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">C32 shared initialization</text>
-<text x="1210.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">7.94</text>
-<text x="1550.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">15.98</text>
-<text x="1870.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">30.638</text>
-<text x="2170.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9466</text>
-<text x="2470.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0631</text>
-<text x="2830.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">56%</text>
+<text x="1210.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">30.638</text>
+<text x="1550.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9466</text>
+<text x="1870.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0631</text>
+<text x="2170.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">7.94</text>
+<text x="2470.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">15.98</text>
+<text x="2830.0" y="870.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">64%</text>
 <text x="105" y="970.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">C32 random [-0.05, 0.05]</text>
-<text x="1210.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">4.81</text>
-<text x="1550.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">9.73</text>
-<text x="1870.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">32.172</text>
-<text x="2170.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9509</text>
-<text x="2470.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">0.0495</text>
+<text x="1210.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">32.172</text>
+<text x="1550.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9509</text>
+<text x="1870.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0495</text>
+<text x="2170.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">4.81</text>
+<text x="2470.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">9.73</text>
 <text x="2830.0" y="970.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">60%</text>
-<text x="90" y="1075" text-anchor="start" dominant-baseline="middle" font-size="25" font-weight="400">MV: concatenated main + wrist views. Object ADE/FDE: main-view centroid error in pixels.</text>
-<text x="90" y="1121" text-anchor="start" dominant-baseline="middle" font-size="25" font-weight="400">Action success: 25 reachable environment-target decisions. Bold: best available value per column.</text>
-<text x="90" y="1167" text-anchor="start" dominant-baseline="middle" font-size="25" font-weight="400">Blank cells denote unfinished training or unavailable formal metrics, never zero.</text>
-<text x="90" y="1213" text-anchor="start" dominant-baseline="middle" font-size="25" font-weight="400">Historical initialization runs retain their training schedules; these are not all strict one-factor controls.</text>
+<text x="105" y="1070.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">Alternating Z/model (100/100)</text>
+<text x="1210.0" y="1070.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">32.208</text>
+<text x="1550.0" y="1070.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">0.9531</text>
+<text x="1870.0" y="1070.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">0.0484</text>
+<text x="2170.0" y="1070.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">5.41</text>
+<text x="2470.0" y="1070.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">11.50</text>
+<text x="2830.0" y="1070.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">56%</text>
+<text x="105" y="1170.0" text-anchor="start" dominant-baseline="middle" font-size="31" font-weight="400">Alternating Z/model (400/400)</text>
+<text x="1210.0" y="1170.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="700">32.430</text>
+<text x="1550.0" y="1170.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.9528</text>
+<text x="1870.0" y="1170.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">0.0507</text>
+<text x="2170.0" y="1170.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">4.31</text>
+<text x="2470.0" y="1170.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">8.80</text>
+<text x="2830.0" y="1170.0" text-anchor="middle" dominant-baseline="middle" font-size="33" font-weight="400">68%</text>
+<text x="90" y="1275" text-anchor="start" dominant-baseline="middle" font-size="25" font-weight="400">MV: concatenated main + wrist views. Object ADE/FDE: main-view centroid error in pixels.</text>
+<text x="90" y="1321" text-anchor="start" dominant-baseline="middle" font-size="25" font-weight="400">Action success: 25 reachable environment-target decisions. Bold: best available value per column.</text>
+<text x="90" y="1367" text-anchor="start" dominant-baseline="middle" font-size="25" font-weight="400">Blank cells denote unfinished training or unavailable formal metrics, never zero.</text>
+<text x="90" y="1413" text-anchor="start" dominant-baseline="middle" font-size="25" font-weight="400">Historical initialization runs retain their training schedules; these are not all strict one-factor controls.</text>
 </g>
 </svg>

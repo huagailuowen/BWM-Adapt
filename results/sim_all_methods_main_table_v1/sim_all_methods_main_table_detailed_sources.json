@@ -1,5 +1,5 @@
 {
-  "render_job_id": "119366",
+  "render_job_id": null,
   "metrics_recomputed": false,
   "aggregation": "Same arithmetic mean of formal domain summaries as recorded ADE.",
   "sources": [
@@ -135,6 +135,202 @@
       "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ours/step_7172/seed_20260720/video_metrics/object_centric/object_summary.json",
       "sha256": "8d182f765836509e9889e0fe9e8de0a57c38721ebc7165ea5767ab2f5e98833e",
       "centroid_fde_px": 13.722182582732096
+    },
+    {
+      "task": "mass_balance",
+      "method": "standard",
+      "metric_group": "global",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/standard_pooled_wm/step_4500/seed_20260902/video_metrics/global/global_summary.json",
+      "sha256": "6451a6f3a9da95ff44d446824eca62062a078e1f3abc760de4d2d3fa0f67b66a",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "standard",
+      "metric_group": "bar_tilt",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/standard_pooled_wm/step_4500/seed_20260902/video_metrics/task_specific/task_summary.json",
+      "sha256": "c7b606631548b2f695edfc45bc90af2737dde9fb265f45ffb9c0e797f346eb0e",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "standard",
+      "metric_group": "action",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/standard_pooled_wm/step_4500/seed_20260902/action_evaluation/summary.json",
+      "sha256": "72946da6c0baec17715fdad7de163cb5cbbccafd19d7d808c0a403f07209294d",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "lora",
+      "metric_group": "global",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/lora_tta/pooled_step_4500/seed_20260902/video_metrics/global/global_summary.json",
+      "sha256": "f74636c57e78fea4e1efc90aa03a99f0dbbf0abb6017bcfb2afc99517a5e7d3b",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "lora",
+      "metric_group": "bar_tilt",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/lora_tta/pooled_step_4500/seed_20260902/video_metrics/task_specific/task_summary.json",
+      "sha256": "46a42336a459339ff394c760fe50caaf3e41750aadcb80f7eaa647738c4d823b",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "lora",
+      "metric_group": "action",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/lora_tta/pooled_step_4500/seed_20260902/action_evaluation/summary.json",
+      "sha256": "6d477769960e87326acb8667f878a468935058ee2247a096ce08b166b608c962",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "dino",
+      "metric_group": "global",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/dinov2_concat_mlp_pool2/step_4500/seed_20260902/video_metrics/global/global_summary.json",
+      "sha256": "c376dead367934e3e71d716c20d5d8bbc6824dbf4ea822465a8927fa03507092",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "dino",
+      "metric_group": "bar_tilt",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/dinov2_concat_mlp_pool2/step_4500/seed_20260902/video_metrics/task_specific/task_summary.json",
+      "sha256": "8f0b366b8d8c175477197e861d745c4f77be2fbf3c79d0e9e651a912f97e081b",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "dino",
+      "metric_group": "action",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/dinov2_concat_mlp_pool2/step_4500/seed_20260902/action_evaluation/summary.json",
+      "sha256": "d06d197c10a02d16a005426428b221316af565230b557d15d488451bd941fda4",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "ttt_kqv",
+      "metric_group": "global",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/ttt_kqv/step_1673/seed_20260902/video_metrics/global/global_summary.json",
+      "sha256": "098701207f1e537746354bd3770d698cb618fd6b057ad1767ef538393a3eb2e1",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "ttt_kqv",
+      "metric_group": "bar_tilt",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/ttt_kqv/step_1673/seed_20260902/video_metrics/task_specific/task_summary.json",
+      "sha256": "b02b3b0973b129e86f1a171effe65a38335590feb94018a7e992191cb7bbd4b2",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "ttt_kqv",
+      "metric_group": "action",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/ttt_kqv/step_1673/seed_20260902/action_evaluation/summary.json",
+      "sha256": "73245d983420b075f049ba9efc6aa0a9fcb78d5aa0fc6635014e56d46cceca2e",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "ours",
+      "metric_group": "global",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/ours/step_4300/seed_20260902/video_metrics/global/global_summary.json",
+      "sha256": "91dd47e6b46cb768662c515ca70f54b7db5c30b424e736ca4c5fc88d99997ce3",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "ours",
+      "metric_group": "bar_tilt",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/ours/step_4300/seed_20260902/video_metrics/task_specific/task_summary.json",
+      "sha256": "f3303f3409a8f7c71ae99a67cfc790ac30655964876bb485d86a2c941e915ee8",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "mass_balance",
+      "method": "ours",
+      "metric_group": "action",
+      "source": "results/mass_balance/workspace_random_30ratio_noleak_id5_ood5_k2_bidirectional_near_balance_dense15_v1/methods/ours/step_4300/seed_20260902/action_evaluation/summary.json",
+      "sha256": "64d1bc28c973be425926594fdc731ca5a8a2edd8e0a3b19e9f13c7e3486c1692",
+      "support_size": 2,
+      "dataset_variant": "workspace_random_30ratio_noleak"
+    },
+    {
+      "task": "pushbox_multibackground",
+      "method": "standard",
+      "source": "results/pushbox_multibackground/old5bg_step4400_matched_current_friction_id5_ood5_k1_20260922/metrics/standard_pooled_wm_old5bg_step5000/benchmark_summary.json",
+      "sha256": "8ef62d36bdd328735b8cc5daf65b476fa93109bc18f93a8a3dbc48af0be9aca9",
+      "support_size": 1,
+      "metric_group": "video_object_and_action",
+      "video_metric_scope": "multiview"
+    },
+    {
+      "task": "pushbox_multibackground",
+      "method": "lora",
+      "source": "results/pushbox_multibackground/old5bg_step4400_matched_current_friction_id5_ood5_k1_20260922/metrics/lora_tta_old5bg_step5000/benchmark_summary.json",
+      "sha256": "b0261a1f383d2e8d9ad47357f3484ee39d9f27f67d36e0a18ae7a0488164d7fe",
+      "support_size": 1,
+      "metric_group": "video_object_and_action",
+      "video_metric_scope": "multiview"
+    },
+    {
+      "task": "pushbox_multibackground",
+      "method": "dino",
+      "source": "results/pushbox_multibackground/old5bg_step4400_matched_current_friction_id5_ood5_k1_20260922/metrics/dinov2_concat_mlp_random_k1k2_old5bg_step6000/benchmark_summary.json",
+      "sha256": "abaf5918c9f58a6be04b84bad0c2306640d70e8082f002eb2451583995ad3a4c",
+      "support_size": 1,
+      "metric_group": "video_object_and_action",
+      "video_metric_scope": "multiview"
+    },
+    {
+      "task": "pushbox_multibackground",
+      "method": "ttt_kqv",
+      "source": "results/pushbox_multibackground/old5bg_step4400_matched_current_friction_id5_ood5_k1_20260922/metrics/ttt_kqv_old5bg_step750/benchmark_summary.json",
+      "sha256": "c7936589820d068c7c9d0d6e489f691780e6159f4233df2f017a6c9e35329e24",
+      "support_size": 1,
+      "metric_group": "video_object_and_action",
+      "video_metric_scope": "multiview"
+    },
+    {
+      "task": "mass_friction",
+      "method": "ttt_kqv",
+      "metric_group": "global",
+      "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ttt_kqv_detach3/train_job_120094/step_1400/seed_20260720/video_metrics/global/global_summary.json",
+      "sha256": "9962b945676720a5b5a8ecd18c93ff0906a5ff1aa1fd787e9f398b22b4de6ed2",
+      "checkpoint_step": 1400
+    },
+    {
+      "task": "mass_friction",
+      "method": "ttt_kqv",
+      "metric_group": "object",
+      "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ttt_kqv_detach3/train_job_120094/step_1400/seed_20260720/video_metrics/object_centric/object_summary.json",
+      "sha256": "1e9e56adbed8b787e8582cb567bfc0196dd4e6b6c5d4f111f00417281d1f4b69",
+      "checkpoint_step": 1400
+    },
+    {
+      "task": "mass_friction",
+      "method": "ttt_kqv",
+      "metric_group": "action",
+      "source": "results/mass_friction/joint100_grid_id5_ood5_k1_oracle_informative_support25_60_v1/methods/ttt_kqv_detach3/train_job_120094/step_1400/seed_20260720/action_first_crossing/summary.json",
+      "sha256": "66b4a5418af750add4e184f7bdbd340405a900f3ebf0ff009c087440da08987d",
+      "checkpoint_step": 1400
     }
-  ]
+  ],
+  "refresh_note": "Table-only refresh from scored original-5bg evaluation summaries; metrics not recomputed."
 }

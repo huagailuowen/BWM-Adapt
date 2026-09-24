@@ -1,0 +1,195 @@
+{
+  "metric": "exact predicted first-close level equals GT first-close level; adjacent level receives zero credit",
+  "denominator": 9,
+  "runs": [
+    {
+      "k": 1,
+      "exact_hits": 2,
+      "environments": 9,
+      "action_pct": 22.22222222222222,
+      "source": "results/support_number_analysis/real/globalmean_20260922/door/k1/formal_action_decisions.json",
+      "decisions": [
+        {
+          "environment": "door-0",
+          "gt_first_close": 1,
+          "predicted_first_close": 1,
+          "exact_score": 1
+        },
+        {
+          "environment": "door-12u-Half",
+          "gt_first_close": 9,
+          "predicted_first_close": 10,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-2u-1d",
+          "gt_first_close": 2,
+          "predicted_first_close": 4,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-2u-4d",
+          "gt_first_close": 4,
+          "predicted_first_close": 5,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-3u",
+          "gt_first_close": 3,
+          "predicted_first_close": 4,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-3u-4d",
+          "gt_first_close": 5,
+          "predicted_first_close": 4,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-4d",
+          "gt_first_close": 3,
+          "predicted_first_close": 4,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-6u-7d",
+          "gt_first_close": 7,
+          "predicted_first_close": 4,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-6u-8d",
+          "gt_first_close": 8,
+          "predicted_first_close": 8,
+          "exact_score": 1
+        }
+      ]
+    },
+    {
+      "k": 2,
+      "exact_hits": 5,
+      "environments": 9,
+      "action_pct": 55.55555555555556,
+      "source": "results/support_number_analysis/real/globalmean_20260922/door/k2/formal_action_decisions.json",
+      "decisions": [
+        {
+          "environment": "door-0",
+          "gt_first_close": 1,
+          "predicted_first_close": 1,
+          "exact_score": 1
+        },
+        {
+          "environment": "door-12u-Half",
+          "gt_first_close": 9,
+          "predicted_first_close": 8,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-2u-1d",
+          "gt_first_close": 2,
+          "predicted_first_close": 3,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-2u-4d",
+          "gt_first_close": 4,
+          "predicted_first_close": 5,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-3u",
+          "gt_first_close": 3,
+          "predicted_first_close": 3,
+          "exact_score": 1
+        },
+        {
+          "environment": "door-3u-4d",
+          "gt_first_close": 5,
+          "predicted_first_close": 5,
+          "exact_score": 1
+        },
+        {
+          "environment": "door-4d",
+          "gt_first_close": 3,
+          "predicted_first_close": 2,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-6u-7d",
+          "gt_first_close": 7,
+          "predicted_first_close": 7,
+          "exact_score": 1
+        },
+        {
+          "environment": "door-6u-8d",
+          "gt_first_close": 8,
+          "predicted_first_close": 8,
+          "exact_score": 1
+        }
+      ]
+    },
+    {
+      "k": 4,
+      "exact_hits": 5,
+      "environments": 9,
+      "action_pct": 55.55555555555556,
+      "source": "results/support_number_analysis/real/globalmean_sumloss_original_support_20260922/door/k4/formal_summary.json",
+      "decisions": [
+        {
+          "environment": "door-0",
+          "gt_first_close": 1,
+          "predicted_first_close": 1,
+          "exact_score": 1
+        },
+        {
+          "environment": "door-12u-Half",
+          "gt_first_close": 9,
+          "predicted_first_close": 9,
+          "exact_score": 1
+        },
+        {
+          "environment": "door-2u-1d",
+          "gt_first_close": 2,
+          "predicted_first_close": 2,
+          "exact_score": 1
+        },
+        {
+          "environment": "door-2u-4d",
+          "gt_first_close": 4,
+          "predicted_first_close": 5,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-3u",
+          "gt_first_close": 3,
+          "predicted_first_close": 4,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-3u-4d",
+          "gt_first_close": 5,
+          "predicted_first_close": 4,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-4d",
+          "gt_first_close": 3,
+          "predicted_first_close": 4,
+          "exact_score": 0
+        },
+        {
+          "environment": "door-6u-7d",
+          "gt_first_close": 7,
+          "predicted_first_close": 7,
+          "exact_score": 1
+        },
+        {
+          "environment": "door-6u-8d",
+          "gt_first_close": 8,
+          "predicted_first_close": 8,
+          "exact_score": 1
+        }
+      ]
+    }
+  ]
+}
